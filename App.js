@@ -29,6 +29,7 @@ import {
 import HomeScreen from './src/screens/Home';
 import Post from './src/components/Post';
 import feed from './assets/data/feed';
+import SearchResultsScreen from './src/screens/SearchResults';
 const post1 = feed[0];
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -67,7 +68,8 @@ const App: () => Node = () => {
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       {/*<HomeScreen  />*/}
-      <Post post={post1}/>
+      {/*<Post post={post1}/>*/}
+      <SearchResultsScreen/>
     </SafeAreaView>
   );
 };
