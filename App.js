@@ -5,7 +5,7 @@
  * @format
  * @flow strict-local
  */
-
+ import 'react-native-gesture-handler';
 import React from 'react';
 import type {Node} from 'react';
 import {
@@ -32,6 +32,7 @@ import feed from './assets/data/feed';
 import SearchResultsScreen from './src/screens/SearchResults';
 import DestinationSearchScreen from './src/screens/DestinationSearch';
 import GuestsScreen from './src/screens/GuestsScreen';
+import Router from './src/navigation/Router';
 const post1 = feed[0];
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -67,14 +68,11 @@ const App: () => Node = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      {/*<HomeScreen  />*/}
-      {/*<Post post={post1}/>*/}
-      {/* <SearchResultsScreen/> */}
-      {/*<DestinationSearchScreen />*/}
-      <GuestsScreen />
-    </SafeAreaView>
+      
+      <Router />
+      </>
   );
 };
 
