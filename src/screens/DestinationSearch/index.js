@@ -14,7 +14,7 @@ const DestinationSearch = (props) => {
     return (
         <View style={styles.container}>
             {/* Input Component */}
-            <View style={{height:500}}>
+            
             <GooglePlacesAutocomplete
                 placeholder='Where do you want to rent?'
                 onPress={(data, details = null) => {
@@ -36,7 +36,7 @@ const DestinationSearch = (props) => {
                 suppressDefaultStyles
                 renderRow={(item) => <SuggestionRow item={item}/>}
                 />
-            </View>
+            
             
             
         </View>
