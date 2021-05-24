@@ -1,14 +1,22 @@
 import React from "react";
-import {View, Image ,Text} from "react-native";
+import {View, Image ,Text, Pressable} from "react-native";
 import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
 import styles from './styles.js';
+import {useNavigation} from '@react-navigation/native';
 
 const Post = (props) => {
 
     const post = props.post;
     const width = useWindowDimensions().width;
+    
+    const navigation = useNavigation();
+    const goToPostPage = () =>{
+            navigation.navigate("Post", {postId: post.id});
+    }
+    
+    
     return(
-        <View style={styles.container, {width: width - 60}}>
+        <Pressable onPress={goToPostPage} style={styles.container, {width: width - 60}}>
             {/* Image */}
             <View style={styles.innerContainer}>
                 <Image style={styles.image}
@@ -36,7 +44,7 @@ const Post = (props) => {
                 </View>
             </View>
             
-        </View>
+        </Pressable>
     );
 };
 
