@@ -33,6 +33,7 @@ import SearchResultsScreen from './src/screens/SearchResults';
 import DestinationSearchScreen from './src/screens/DestinationSearch';
 import GuestsScreen from './src/screens/GuestsScreen';
 import Router from './src/navigation/Router';
+import { withAuthenticator } from 'aws-amplify-react-native';
 const post1 = feed[0];
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -77,4 +78,4 @@ const App: () => Node = () => {
 };
 
 
-export default App;
+export default withAuthenticator(App);
