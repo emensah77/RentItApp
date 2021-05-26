@@ -7,7 +7,7 @@ const GuestsScreen = (props) => {
     const navigation = useNavigation();
     const [adults, setAdults] = useState(0);
     const [children, setChildren] = useState(0);
-    const [infants, setInfants] = useState(0);
+    const [rooms, setrooms] = useState(0);
     return (
 
         <View style={{justifyContent: 'space-between', height: '100%'}}>
@@ -82,23 +82,23 @@ const GuestsScreen = (props) => {
 
                 <View style={styles.row}>
                 <View>
-                    <Text style={{fontWeight: 'bold'}}>Infants</Text>
-                    <Text style={{color: 'darkgray'}}>Under 2</Text>
+                    <Text style={{fontWeight: 'bold'}}>Rooms</Text>
+                    <Text style={{color: 'darkgray'}}>Number of Rooms</Text>
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
 
                     <Pressable 
-                    onPress={() => setInfants(Math.max(0, infants - 1))}
+                    onPress={() => setrooms(Math.max(0, rooms - 1))}
                     style = {styles.button}
                     >
                         <Text style={{fontSize: 20, color: 'black'}}>-</Text>
                         
                     </Pressable>
 
-                    <Text style={{marginHorizontal: 20, fontSize: 20}}>{infants}</Text>
+                    <Text style={{marginHorizontal: 20, fontSize: 20}}>{rooms}</Text>
 
-                    <Pressable onPress={() => setInfants (infants + 1)}
+                    <Pressable onPress={() => setrooms (rooms + 1)}
                     style = {styles.button}
                     >
                         <Text style={{fontSize: 20, color: 'black'}}>+</Text>
@@ -121,6 +121,10 @@ const GuestsScreen = (props) => {
                         screen: 'Explore',
                         params: {
                             screen: 'SearchResults',
+                            params:{
+                                guests: rooms,
+                            }
+                            
                         },
 
                     })
