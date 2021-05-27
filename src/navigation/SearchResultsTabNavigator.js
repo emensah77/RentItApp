@@ -10,7 +10,8 @@ const Tab = createMaterialTopTabNavigator();
 const SearchResultsTabNavigator = (props) => {
     
     const route = useRoute();
-    const {guests} = route.params; 
+    const {guests, viewport } = route.params; 
+    
     return (
         <Tab.Navigator tabBarOptions={{
                 activeTintColor: 'cyan',
@@ -22,7 +23,7 @@ const SearchResultsTabNavigator = (props) => {
                 name={"list"}
                > 
                {() => (
-                   <SearchResults guests={guests}/>
+                   <SearchResults guests={guests} viewport={viewport}/>
                )}
                     
                </Tab.Screen>
@@ -31,7 +32,7 @@ const SearchResultsTabNavigator = (props) => {
                 name={"map"}
                 >
                     {() => (
-                        <SearchResultsMaps guests={guests}/>
+                        <SearchResultsMaps guests={guests} viewport={viewport} />
                     )}
                     
                     </Tab.Screen>

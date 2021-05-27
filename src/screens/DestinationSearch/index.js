@@ -20,7 +20,7 @@ const DestinationSearch = (props) => {
                 onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
                     console.log(data, details);
-                    navigation.navigate('Number of Guests')
+                    navigation.navigate('Number of Guests', {viewport: details.geometry.viewport});
                 }}
                 fetchDetails
                 styles={{

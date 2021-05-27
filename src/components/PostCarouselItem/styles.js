@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
         color: 'darkgray',
     },
     description: {
-        fontSize: 15,
+        fontSize: 12,
+        fontWeight: 'normal',
         
 
     },

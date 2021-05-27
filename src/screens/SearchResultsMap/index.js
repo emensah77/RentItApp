@@ -10,7 +10,7 @@ import {listPosts} from '../../graphql/queries';
 
 
 const SearchResultsMaps = (props) => {
-    const {guests} = props;
+    const {guests, viewport} = props;
     const[posts, setPosts] = useState([]);
     const [selectedPlacedId, setSelectedPlacedId] = useState(null);
     const width = useWindowDimensions().width;
@@ -30,9 +30,24 @@ const SearchResultsMaps = (props) => {
                 const postsResult = await API.graphql(
                     graphqlOperation(listPosts, {
                         filter: {
-                            maxGuests: {
-                                ge: guests
+                            and: {
+                                maxGuests: {
+                                    ge: guests
+                                },
+                                latitude: {
+                                    between: [
+                                        viewport.southwest.lat,
+                                        viewport.northeast.lat,
+                                    ],
+                                },
+                                longitude: {
+                                    between: [
+                                        viewport.southwest.lng,
+                                        viewport.northeast.lng,
+                                    ],
+                                }
                             }
+                            
                         }
                     })
                 )
@@ -81,8 +96,8 @@ const SearchResultsMaps = (props) => {
                 style={{width:'100%', height: '100%'}}
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
-                latitude: 28.3279822,
-                longitude: -16.5124847,
+                latitude: 5.602028159656166, 
+                longitude: -0.183158678544458,
                 latitudeDelta: 0.8,
                 longitudeDelta: 0.8,
                 }}
@@ -100,7 +115,7 @@ const SearchResultsMaps = (props) => {
 
             </MapView>
 
-            <View style={{position: 'absolute', bottom: 30}}>
+            <View style={{position: 'absolute', bottom: 10}}>
                 <FlatList 
                     ref={flatlist}
                     data={posts}

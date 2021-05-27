@@ -70,9 +70,11 @@ const App: () => Node = () => {
 
   return (
     <>
+    
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      
+     
       <Router />
+      
       </>
   );
 };
