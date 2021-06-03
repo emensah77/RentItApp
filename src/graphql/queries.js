@@ -6,6 +6,10 @@ export const getPost = /* GraphQL */ `
     getPost(id: $id) {
       id
       image
+      image2
+      image3
+      image4
+      image5
       type
       title
       description
@@ -31,6 +35,10 @@ export const listPosts = /* GraphQL */ `
       items {
         id
         image
+        image2
+        image3
+        image4
+        image5
         type
         title
         description

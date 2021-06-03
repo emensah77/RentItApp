@@ -25,7 +25,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
+import awsconfig from './src/aws-exports';
 import HomeScreen from './src/screens/Home';
 import Post from './src/components/Post';
 import feed from './assets/data/feed';
@@ -34,6 +34,11 @@ import DestinationSearchScreen from './src/screens/DestinationSearch';
 import GuestsScreen from './src/screens/GuestsScreen';
 import Router from './src/navigation/Router';
 import { withAuthenticator } from 'aws-amplify-react-native';
+import { Authenticator } from 'aws-amplify-react-native/dist/Auth';
+import Amplify from '@aws-amplify/core';
+
+
+
 const post1 = feed[0];
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -75,9 +80,11 @@ const App: () => Node = () => {
      
       <Router />
       
+      
       </>
   );
 };
 
 
-export default withAuthenticator(App);
+
+export default (App);

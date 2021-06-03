@@ -1,6 +1,6 @@
 {
   "auth": {
-    "airbnbclone55545da9": {
+    "airbnbclone053ab1d3": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

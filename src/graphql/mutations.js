@@ -9,6 +9,10 @@ export const createPost = /* GraphQL */ `
     createPost(input: $input, condition: $condition) {
       id
       image
+      image2
+      image3
+      image4
+      image5
       type
       title
       description
@@ -32,6 +36,10 @@ export const updatePost = /* GraphQL */ `
     updatePost(input: $input, condition: $condition) {
       id
       image
+      image2
+      image3
+      image4
+      image5
       type
       title
       description
@@ -55,6 +63,10 @@ export const deletePost = /* GraphQL */ `
     deletePost(input: $input, condition: $condition) {
       id
       image
+      image2
+      image3
+      image4
+      image5
       type
       title
       description

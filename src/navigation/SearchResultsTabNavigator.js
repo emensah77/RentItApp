@@ -14,9 +14,9 @@ const SearchResultsTabNavigator = (props) => {
     
     return (
         <Tab.Navigator tabBarOptions={{
-                activeTintColor: 'cyan',
+                activeTintColor: 'blue',
                 indicatorStyle: {
-                    backgroundColor: 'cyan'
+                    backgroundColor: 'blue'
                 }
         }}>
             <Tab.Screen 

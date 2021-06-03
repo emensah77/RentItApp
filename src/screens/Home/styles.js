@@ -9,13 +9,63 @@ const styles = StyleSheet.create({
             
         },
 
+        image1: {
+            width: '100%',
+            height: 400,
+            resizeMode: 'cover',
+            justifyContent: 'center',
+            borderRadius: 5,
+            
+        },
+
     title: {
         fontSize: 50,
         fontWeight: 'bold',
-        color: 'cyan',
+        color: 'blue',
         marginLeft: 25,
         top: 10,
         
+    },
+
+    
+
+    imageLocationIcon: {
+        position: 'absolute',
+        marginTop: 4, 
+        left: 5,
+        bottom: 10,
+        
+           
+    },
+    ImageText: {
+        position: 'absolute',
+        color: 'white',
+        marginTop: 4,
+        fontSize: 18,
+        fontWeight: 'bold',
+        left: 35,
+        bottom: 15
+    },
+
+    ImageOverlay: {
+        width: 250,
+        height: 250,
+        marginRight: 8,
+        borderRadius: 10,
+        position: 'absolute',
+        backgroundColor: '#000',
+        opacity: .5
+
+    },
+
+    ImageOverlay1: {
+        width: '100%',
+        height: 220,
+        marginRight: 8,
+        borderRadius: 10,
+        position: 'absolute',
+        backgroundColor: '#000',
+        opacity: 1,
     },
 
     button: {

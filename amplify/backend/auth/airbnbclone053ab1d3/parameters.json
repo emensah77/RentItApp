@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "airbnbclone55545da9_identitypool_55545da9",
+    "identityPoolName": "airbnbclone053ab1d3_identitypool_053ab1d3",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "airbnb55545da9",
-    "userPoolName": "airbnbclone55545da9_userpool_55545da9",
+    "resourceNameTruncated": "airbnb053ab1d3",
+    "userPoolName": "airbnbclone053ab1d3_userpool_053ab1d3",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -18,7 +18,8 @@
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-        "email"
+        "name",
+        "phone_number"
     ],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
@@ -28,10 +29,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "airbnb55545da9_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "airbnb053ab1d3_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "55545da9",
-    "resourceName": "airbnbclone55545da9",
+    "sharedId": "053ab1d3",
+    "resourceName": "airbnbclone053ab1d3",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -46,8 +47,17 @@
         ]
     },
     "useDefault": "default",
+    "usernameAttributes": [
+        "phone_number"
+    ],
+    "triggers": "{}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "breakCircularDependency": true,
+    "permissions": [],
     "dependsOn": []
 }
