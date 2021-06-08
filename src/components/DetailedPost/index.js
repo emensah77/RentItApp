@@ -3,6 +3,8 @@ import {View, Image ,Text, ScrollView, Platform, Linking ,Pressable} from "react
 import styles from './styles.js';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {FlatListSlider} from 'react-native-flatlist-slider';
+import { withAuthenticator } from 'aws-amplify-react-native';
+import Amplify from '@aws-amplify/core';
 
 
 const DetailedPost = (props) => {
@@ -104,7 +106,9 @@ const DetailedPost = (props) => {
                 </Pressable>
             </View>
         </ScrollView>
+
+    
     );
 };
 
-export default DetailedPost;
+export default (DetailedPost);

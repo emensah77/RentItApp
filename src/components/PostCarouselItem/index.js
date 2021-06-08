@@ -3,7 +3,7 @@ import {View, Image ,Text, Pressable} from "react-native";
 import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
-
+import { withAuthenticator } from 'aws-amplify-react-native';
 const Post = (props) => {
 
     const post = props.post;

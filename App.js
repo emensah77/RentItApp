@@ -9,6 +9,7 @@
 import React from 'react';
 import type {Node} from 'react';
 import {
+  Dimensions,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -36,7 +37,116 @@ import Router from './src/navigation/Router';
 import { withAuthenticator } from 'aws-amplify-react-native';
 import { Authenticator } from 'aws-amplify-react-native/dist/Auth';
 import Amplify from '@aws-amplify/core';
+import Onboarding from './src/screens/Onboarding';
 
+import { AmplifyTheme } from "aws-amplify-react-native";
+const myTheme = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingTop: 20,
+    width: '100%',
+    backgroundColor: '#FFF',
+    padding: 10,
+  },
+  
+  section: {
+    flex: 1,
+    width: '100%',
+    padding: 30,
+  },
+  sectionHeader: {
+    width: '100%',
+    marginBottom: 32,
+  },
+  sectionHeaderText: {
+    color: "blue",
+    fontSize: 20,
+    fontWeight: '500',
+  },
+  sectionFooter: {
+    width: '70%',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 1,
+    marginBottom: 10,
+  },
+  
+  sectionFooterLink: {
+    fontSize: 14,
+    color: 'blue',
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'space-evenly'
+  },
+  navBar: {
+    marginTop: 35,
+    padding: 15,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  navButton: {
+    marginLeft: 12,
+    borderRadius: 40,
+    
+  },
+  
+  
+  button: {
+    backgroundColor: 'blue',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 50,
+    width: "100%",
+  },
+  buttonDisabled: {
+    backgroundColor: 'blue',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 50,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  formField: {
+    marginBottom: 22,
+  },
+  input: {
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 80,
+    borderColor: '#C4C4C4',
+  },
+  inputLabel: {
+    marginBottom: 8,
+  },
+  phoneContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'space-between'
+  },
+  phoneInput: {
+    flex: 1,
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 40,
+    borderColor: '#C4C4C4',
+  },
+  picker: {
+    flex: 1,
+    height: 44,
+  },
+  pickerItem: {
+    height: 44,
+  },
+});
 
 
 const post1 = feed[0];
@@ -77,8 +187,12 @@ const App: () => Node = () => {
     <>
     
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-     
+      
+      
+      
+      
       <Router />
+      
       
       
       </>
@@ -86,5 +200,5 @@ const App: () => Node = () => {
 };
 
 
-
 export default (App);
+

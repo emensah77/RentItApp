@@ -5,6 +5,9 @@ import DestinationSearchScreen from "../screens/DestinationSearch";
 import GuestsScreen from "../screens/GuestsScreen";
 import HomeTabNavigator from "./HomeTabNavigator";
 import PostScreen from '../screens/PostScreen';
+import Onboarding from '../screens/Onboarding';
+import Splash from '../screens/Splash';
+
 
 const Stack = createStackNavigator();
 
@@ -12,9 +15,9 @@ const Stack = createStackNavigator();
 
 const Router = (props) => {
     return (
-        <NavigationContainer>
+        <NavigationContainer >
 
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName="Splash">
                 <Stack.Screen 
                 name={"Home"}
                 component={HomeTabNavigator} 
@@ -22,8 +25,14 @@ const Router = (props) => {
                     headerShown: false,
                 }}
                     />
+            <Stack.Screen 
+                name={"Splash"}
+                component={Splash} 
+                options={{
+                    headerShown: false,
+                }}
+                    />
             
-
 
 
 
@@ -50,6 +59,18 @@ const Router = (props) => {
                 component={PostScreen} 
                 
                 />
+
+            <Stack.Screen 
+                name={"Onboarding"}
+                component={Onboarding}
+                options={{
+                    headerShown: false,
+                }} 
+                
+                />
+
+
+            
             </Stack.Navigator>
         </NavigationContainer>
     );
