@@ -40,7 +40,7 @@ const HomeTabNavigator = (props) => {
                         }}
                         />
 
-
+            {/*
             <Tab.Screen
                         name={"Wishlists"}
                         component={HomeScreen}
@@ -62,6 +62,8 @@ const HomeTabNavigator = (props) => {
                             )
                         }}
                         />
+
+                    */}
 
 
 

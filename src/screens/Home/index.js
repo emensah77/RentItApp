@@ -87,7 +87,7 @@ const HomeScreen =(props) => {
 
 
     return (
-        <ScrollView>
+        <ScrollView style={{backgroundColor:"#fff"}}>
             <View>
 
                 <Pressable 
@@ -215,7 +215,60 @@ const HomeScreen =(props) => {
 
                     </View>
 
+                    
+
                 </ScrollView>
+
+                    <Pressable onPress={() => navigation.navigate('Profile')} style={{margin: 10, padding: 16, backgroundColor: 'white'}}>
+                        <Text style={{margin: 10, fontSize:25, fontWeight:'bold'}}>Stay Informed</Text>
+                        <View style={{margin: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Text>For Tenants</Text>
+                        
+                        <Text>For Landlords</Text>
+                        
+                        </View>
+                        <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View>
+                                <View style={{padding: 5, marginBottom: 5,}}>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Cancellation Options</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Learn of our flexible policy</Text>
+                                    </View>
+
+                                    <View style={{padding: 5, marginBottom: 5,}}>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Help Center</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Get Support</Text>
+                                    </View>
+
+                                    <View style={{padding: 5, marginBottom: 5,}}>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Help Center</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Get Support</Text>
+                                    </View>
+                            </View>
+
+
+                            <View>
+                                <View style={{padding: 5, marginBottom: 5,}}>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Cancellation Options</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Learn of our flexible policy</Text>
+                                    </View>
+
+                                    <View style={{padding: 5, marginBottom: 5,}}>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Help Center</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Get Support</Text>
+                                    </View>
+
+                                    <View style={{padding: 5, marginBottom: 5,}}>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Help Center</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Get Support</Text>
+                                    </View>
+                            </View>
+                                
+
+                                
+                        </View>
+                        
+                        
+                    </Pressable>
                         
         </ScrollView>
             

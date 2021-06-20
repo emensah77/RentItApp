@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
     fontSize: 20,
     color: 'blue',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    position: 'absolute'
   },
   subTitleContainer: {
     width: 100,
