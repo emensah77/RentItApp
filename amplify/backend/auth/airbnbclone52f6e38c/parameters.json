@@ -1,6 +1,6 @@
 {
     "identityPoolName": "airbnbclone52f6e38c_identitypool_52f6e38c",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "airbnb52f6e38c",
     "userPoolName": "airbnbclone52f6e38c_userpool_52f6e38c",
     "autoVerifiedAttributes": [

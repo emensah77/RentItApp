@@ -24,5 +24,11 @@
         }
       }
     }
+  },
+  "analytics": {
+    "rentIt": {
+      "service": "Pinpoint",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

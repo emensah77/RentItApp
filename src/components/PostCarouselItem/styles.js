@@ -3,8 +3,10 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     container: {
         height: 120,
-        padding: 5,   
+        padding: 15,
+        justifyContent: 'space-around',   
         shadowColor: '#000',
+        borderRadius:10,
         shadowOffset: {
             width: 0,
             height: 5,
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: 'white',
         overflow: 'hidden',
-        borderRadius: 10,
+        borderRadius: 20,
     },
     image: {
         height : '100%',

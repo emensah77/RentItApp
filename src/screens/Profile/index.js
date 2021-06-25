@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Pressable, ImageBackground, StyleSheet, TextInput, ScrollView} from 'react-native';
+import {View, Dimensions, Text, Pressable, ImageBackground, StyleSheet, TextInput, ScrollView} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 const ProfileScreen = (props) => {
@@ -12,7 +12,7 @@ const ProfileScreen = (props) => {
             <View> 
             <ImageBackground
             source={{uri:"https://images.contentstack.io/v3/assets/bltfa2cefdbe7482368/blt6b74dc9eac1dca00/5f7391b94c3b684e759d32c6/GoNear_LA_2580w.jpg"}}
-            style={{width: '100%', height: 270}}
+            style={{width: Dimensions.get('screen').width, height: Dimensions.get('screen').height/4}}
             imageStyle={{borderBottomRightRadius:25, borderBottomLeftRadius:25}}>
 
                 <View style={styles.DarkOverlay}></View>
@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         left: 0,
-        height: 270,
+        width: Dimensions.get('screen').width, 
+        height: Dimensions.get('screen').height/4,
         backgroundColor: '#000',
         opacity: 0.3,
         borderBottomRightRadius: 25,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
     },
     UserGreetings: {
-        fontSize: 58,
+        fontSize: 32,
         fontWeight: 'bold',
         color: 'white',
     },

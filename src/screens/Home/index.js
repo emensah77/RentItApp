@@ -7,6 +7,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from "@react-navigation/native";
 const image = {uri : "https://a0.muscache.com/im/pictures/7d82ca14-56e5-4465-8218-dcfa7d69b6ac.jpg?im_w=720"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
+import { Dimensions} from "react-native";
+import {OptimizedFlatList} from 'react-native-optimized-flatlist'
 
 
 
@@ -129,7 +131,9 @@ const HomeScreen =(props) => {
                     </View>
 
                     <View>
-                        <FlatList
+                        <OptimizedFlatList
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
                         horizontal={true} 
                            data={images} 
                            renderItem={({item}) => {
@@ -156,7 +160,9 @@ const HomeScreen =(props) => {
                         </Text>
                         <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'sans-serif'}}>We have rooms for everyone</Text>
                     </View>
-                    <FlatList
+                    <OptimizedFlatList
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
                         horizontal={true}
                         decelerationRate="fast" 
                            data={imagesApt} 
@@ -194,10 +200,10 @@ const HomeScreen =(props) => {
                                                     </Text>
 
                                                     <Pressable 
-                                                      style={{ height: 50, width: 150, backgroundColor: 'white',
-                                                      marginHorizontal: 100, justifyContent: 'center', flexDirection: 'row',
+                                                      style={{ width: Dimensions.get('screen').width /2, backgroundColor: 'white',
+                                                      marginHorizontal: Dimensions.get('screen').width/6, justifyContent: 'center', flexDirection: 'row',
                                                       alignItems: 'center', borderRadius: 50,
-                                                      marginTop: 20
+                                                      top: 20, position: 'relative', zIndex:1
                                                       
                                                     }}
                                                         onPress={makeCall}>

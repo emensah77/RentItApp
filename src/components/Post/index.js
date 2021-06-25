@@ -43,10 +43,10 @@ const Post = (props) => {
             
             <Text style={styles.prices}>
                 <Text style={styles.oldPrice}>
-                    ${post.oldPrice}
+                GH₵{post.oldPrice}
                 </Text>
                 <Text style={styles.newPrice}>
-                      ${post.newPrice} / night
+                GH₵{post.newPrice} / night
                 </Text>
                 <View  style={{paddingHorizontal:50, paddingVertical:1}}>
                     <Pressable onPress={handleClick}>
@@ -58,7 +58,7 @@ const Post = (props) => {
             </Text>
             {/* Total price */}
             <Text style={styles.totalPrice}>
-                ${post.newPrice * days}
+            GH₵{post.newPrice * days}
             </Text>
         </Pressable>
     );

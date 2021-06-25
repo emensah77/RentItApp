@@ -3,6 +3,8 @@ import {View, FlatList, Text} from 'react-native';
 import Post from '../../components/Post';
 import {API, graphqlOperation} from 'aws-amplify';
 import {listPosts} from '../../graphql/queries'; 
+import {OptimizedFlatList} from 'react-native-optimized-flatlist'
+
 
 
 
@@ -54,7 +56,7 @@ const SearchResultsScreen = (props) => {
     
     return (
         <View>
-            <FlatList 
+            <OptimizedFlatList
             data={posts}
             renderItem={({item}) => <Post post={item}/>}
             />

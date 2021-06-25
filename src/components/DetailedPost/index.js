@@ -64,15 +64,15 @@ const DetailedPost = (props) => {
                 {/* Old and new Price */}
                 <Text style={styles.prices}>
                     <Text style={styles.oldPrice}>
-                        ${post.oldPrice}
+                    GH₵{post.oldPrice} 
                     </Text>
                     <Text style={styles.newPrice}>
-                        ${post.newPrice} / night
+                    GH₵{post.newPrice} / night
                     </Text>
                 </Text>
                 {/* Total price */}
                 <Text style={styles.totalPrice}>
-                    ${post.totalPrice}
+                GH₵{post.totalPrice}
                 </Text>
 
                 <Text style={styles.longDescription}>

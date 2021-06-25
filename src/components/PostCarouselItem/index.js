@@ -24,13 +24,13 @@ const Post = (props) => {
     
     
     return(
-        <Pressable onPress={goToPostPage} style={styles.container, {width: width - 60}}>
+        <Pressable onPress={goToPostPage} style={styles.container, {width: width - 60, marginHorizontal: 5}}>
             {/* Image */}
             <View style={styles.innerContainer}>
                 <Image style={styles.image}
                 source={{uri: post.image}}/>
                 {/* Bed and Bedroom */}
-                <View style={{flex: 1, marginHorizontal: 10}}>
+                <View style={{flex: 1, marginHorizontal: 10, marginBottom:10}}>
                         <Text style={styles.bedrooms}>
                             {post.bed} bed {post.bedrooms} bedrooms
                         </Text>
@@ -45,7 +45,7 @@ const Post = (props) => {
                                 
                           
                             <Text style={styles.newPrice}>
-                                ${post.newPrice} / night
+                            GH₵{post.newPrice} / year
                             </Text>
                             <View  style={{paddingHorizontal: 30, paddingVertical:1}}>
                             <Pressable onPress={handleClick}>
