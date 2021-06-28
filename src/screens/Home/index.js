@@ -5,7 +5,7 @@ import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from "@react-navigation/native";
-const image = {uri : "https://a0.muscache.com/im/pictures/7d82ca14-56e5-4465-8218-dcfa7d69b6ac.jpg?im_w=720"};
+const image = {uri : "https://i.postimg.cc/4Nzgk39M/house8.jpg"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
 import {OptimizedFlatList} from 'react-native-optimized-flatlist'
@@ -58,7 +58,7 @@ const HomeScreen =(props) => {
            },
     
            {
-            image: {uri: 'https://i.ytimg.com/vi/doTGAewB04w/maxresdefault.jpg',
+            image: {uri: 'https://i.postimg.cc/kXP0cdpy/house9.jpg',
            }, title: 'Apartment', key: '3'
            },
        ]);
@@ -66,7 +66,7 @@ const HomeScreen =(props) => {
 
        const [partner, setpartner] = useState([
         {
-         image: {uri: 'https://i.pinimg.com/originals/51/b1/51/51b151f069082996ffe5104f99c62e01.jpg',
+         image: {uri: 'https://i.postimg.cc/kXP0cdpy/house9.jpg',
         }, title: 'Full Homes', key: '1'
         },
         
@@ -186,24 +186,33 @@ const HomeScreen =(props) => {
                     
                                    <View style={{margin: 20, padding: 16 }}>
                                        
-                                        <ImageBackground 
+                                        <Image 
                                                 source={image} 
-                                                style={{borderRadius: 200, height: 550, width: '100%'}}>
+                                                style={{borderRadius: 20, height: 500, width: '100%', alignSelf:"center"}}/>
                                                  <View style={styles.ImageOverlay1}></View>   
-                                                    <Text style={{marginLeft: 60 ,alignItems: 'center' ,justifyContent: 'center', margin: 10, top: 10, color: 'white', fontWeight: 'bold', fontSize: 25}}>
+                                                    <Text style={{ color:"white",
+                                                      marginHorizontal: 100, width:"100%",
+                                                      top: 10, position: 'absolute', zIndex:1, fontWeight:"bold", fontSize:25
+                                                      
+                                                    }}>
                                                         Become a Partner
 
                                                     </Text>
-                                                    <Text style={{marginLeft: 60 ,alignItems: 'center' ,justifyContent: 'center', margin: 10, top: 10, color: 'white', fontWeight: 'normal', fontSize: 15}}>
+                                                    <Text style={{ color:"white",
+                                                      marginHorizontal: 100, justifyContent: 'center',
+                                                      alignItems: 'center', width:'50%', justifyContent:'center',
+                                                      top: 50, position: 'absolute', zIndex:1, fontSize:15,
+                                                      
+                                                    }}>
                                                         Upload your home for rent and earn extra income. Fast, Easy, Convenient 
 
                                                     </Text>
 
                                                     <Pressable 
                                                       style={{ width: Dimensions.get('screen').width /2, backgroundColor: 'white',
-                                                      marginHorizontal: Dimensions.get('screen').width/6, justifyContent: 'center', flexDirection: 'row',
+                                                      marginHorizontal: Dimensions.get('screen').width/5, justifyContent: 'center', flexDirection: 'row',
                                                       alignItems: 'center', borderRadius: 50,
-                                                      top: 20, position: 'relative', zIndex:1
+                                                      top: 150, position: 'absolute', zIndex:1
                                                       
                                                     }}
                                                         onPress={makeCall}>
@@ -212,7 +221,7 @@ const HomeScreen =(props) => {
                                                         <Text style={{justifyContent: 'center', alignItems: 'center', fontSize: 18, fontWeight: 'bold'}}>Call Now</Text>
                                                             
                                                             </Pressable>
-                                                </ImageBackground>
+                                                
                                             
                                     </View>
 
@@ -246,8 +255,8 @@ const HomeScreen =(props) => {
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Help Center</Text>
-                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Get Support</Text>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Trust and Safety</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Our Commitment</Text>
                                     </View>
                             </View>
 
@@ -264,8 +273,8 @@ const HomeScreen =(props) => {
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Help Center</Text>
-                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Get Support</Text>
+                                        <Text style={{padding:2, fontSize:17, fontWeight: 'bold'}}>Trust and Safety</Text>
+                                        <Text style={{fontSize:14, fontWeight: 'normal'}}>Our Commitment</Text>
                                     </View>
                             </View>
                                 

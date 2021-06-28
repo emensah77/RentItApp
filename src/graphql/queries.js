@@ -16,6 +16,11 @@ export const getPost = /* GraphQL */ `
       bed
       bedroom
       maxGuests
+      wifi
+      kitchen
+      bathroom
+      water
+      toilet
       oldPrice
       newPrice
       latitude
@@ -45,6 +50,11 @@ export const listPosts = /* GraphQL */ `
         bed
         bedroom
         maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
         oldPrice
         newPrice
         latitude

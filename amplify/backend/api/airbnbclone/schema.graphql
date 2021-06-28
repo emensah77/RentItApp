@@ -13,6 +13,11 @@ type Post @model {
   bed: Int!
   bedroom: Int!
   maxGuests: Int!
+  wifi: String!,
+  kitchen: String!,
+  bathroom: String!,
+  water: String!,
+  toilet: String!,
 
   oldPrice: Float
   newPrice: Float!

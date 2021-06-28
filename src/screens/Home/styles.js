@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
 
     ImageOverlay1: {
         width: '100%',
-        height: 220,
-        marginRight: 8,
-        borderRadius: 10,
+        height: 250,
+        alignSelf:"center",
+        borderRadius: 20,
         position: 'absolute',
         backgroundColor: '#000',
         opacity: 1,

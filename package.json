@@ -10,6 +10,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-brands-svg-icons": "^5.15.3",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-native-fontawesome": "^0.2.6",
     "@freakycoder/react-native-helpers": "^1.0.1",
     "@react-native-async-storage/async-storage": "^1.15.4",
     "@react-native-community/masked-view": "^0.1.11",
@@ -30,11 +34,13 @@
     "react-native-login-screen": "^2.1.4",
     "react-native-maps": "0.28.0",
     "react-native-material-textfield": "^0.16.1",
+    "react-native-optimized-flatlist": "^1.0.4",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.3.0",
     "react-native-spinkit": "^1.5.1",
     "react-native-splash-screen": "^3.2.0",
+    "react-native-svg": "^12.1.1",
     "react-native-swiper": "^1.6.0-rc.3",
     "react-native-tab-view": "^2.16.0",
     "react-native-vector-icons": "^8.1.0"

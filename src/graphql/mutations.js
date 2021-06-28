@@ -19,6 +19,11 @@ export const createPost = /* GraphQL */ `
       bed
       bedroom
       maxGuests
+      wifi
+      kitchen
+      bathroom
+      water
+      toilet
       oldPrice
       newPrice
       latitude
@@ -46,6 +51,11 @@ export const updatePost = /* GraphQL */ `
       bed
       bedroom
       maxGuests
+      wifi
+      kitchen
+      bathroom
+      water
+      toilet
       oldPrice
       newPrice
       latitude
@@ -73,6 +83,11 @@ export const deletePost = /* GraphQL */ `
       bed
       bedroom
       maxGuests
+      wifi
+      kitchen
+      bathroom
+      water
+      toilet
       oldPrice
       newPrice
       latitude

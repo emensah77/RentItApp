@@ -7,6 +7,8 @@ import PostCarouselItem from '../../components/PostCarouselItem';
 import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
 import {API, graphqlOperation} from 'aws-amplify';
 import {listPosts} from '../../graphql/queries'; 
+import { Dimensions} from "react-native";
+import Feather from 'react-native-vector-icons/Feather';
 
 const mapStyle = [
     {
@@ -304,6 +306,25 @@ const SearchResultsMaps = (props) => {
     
     return (
         <View style={{width: '100%', height: '100%'}}>
+               <View 
+                        style={{backgroundColor: '#fff',
+                        width: Dimensions.get('screen').width - 20,
+                        marginHorizontal: 10,
+                        height: 60,
+                        borderRadius: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display: "flex",
+                        flexDirection: "row",
+                        position: "absolute",
+                        top: 20,
+                        zIndex:1,}}>
+                        <Feather name="home" size={25} color={"blue"}/>
+                        <Text style={{
+                              fontSize: 18,
+                              fontWeight: 'bold',}}> {posts.length} homes to rent</Text>
+                            
+                      </View>
             <MapView
                 ref={map}
                 style={{width:'100%', height: '100%', backgroundColor:"white"}}

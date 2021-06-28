@@ -5,6 +5,10 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { withAuthenticator } from 'aws-amplify-react-native';
 import Amplify from '@aws-amplify/core';
+import Feather from 'react-native-vector-icons/Feather';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUtensils , faFaucet, faBath, faBed, faToilet} from '@fortawesome/free-solid-svg-icons'
+
 
 
 const DetailedPost = (props) => {
@@ -78,6 +82,31 @@ const DetailedPost = (props) => {
                 <Text style={styles.longDescription}>
                     {post.description}
                 </Text>
+                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Wifi <Feather name="wifi" size={25} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.wifi}</Text>
+                </View>
+                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Kitchen <FontAwesomeIcon icon={faUtensils} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.kitchen}</Text>
+                </View>
+                <View style={{margin:10, padding: 1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Bathroom <FontAwesomeIcon icon={faBath} size={25} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.bathroom}</Text>
+                </View>
+                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color:'blue',fontSize:18, fontWeight:'bold'}}>Bedroom <FontAwesomeIcon icon={faBed} size={25} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.bed}</Text>
+                </View>
+                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Water <FontAwesomeIcon icon={faFaucet} size={25} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.water}</Text>
+                </View>
+                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Toilet <FontAwesomeIcon icon={faToilet} size={25} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.toilet}</Text>
+                </View>
+       
                 
                 
             </View>

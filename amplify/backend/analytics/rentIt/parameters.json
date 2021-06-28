@@ -1,0 +1,21 @@
+{
+    "appName": "rentIt",
+    "roleName": "pinpointLambdaRole5a9c7740",
+    "cloudformationPolicyName": "cloudformationPolicy5a9c7740",
+    "cloudWatchPolicyName": "cloudWatchPolicy5a9c7740",
+    "pinpointPolicyName": "pinpointPolicy5a9c7740",
+    "authPolicyName": "pinpoint_amplify_5a9c7740",
+    "unauthPolicyName": "pinpoint_amplify_5a9c7740",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}
