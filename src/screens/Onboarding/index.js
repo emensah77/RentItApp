@@ -81,11 +81,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo:{
-    fontWeight:"bold",
+    fontWeight:"normal",
     fontSize:50,
     color:"blue",
     top: 50,
-    fontFamily: 'Montserrat-Black'
+    fontFamily: 'Montserrat-Bold'
   },
   slide: {
     
@@ -115,10 +115,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   title: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Montserrat-SemiBold',
     fontSize: 20,
     color: 'blue',
-    fontWeight: 'bold',
+    fontWeight: 'normal',
     position: 'absolute'
   },
   subTitleContainer: {
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   subtitle: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Montserrat-Medium',
     fontSize: 24,
     color: 'blue',
     top: 50,
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
    
   },
   login: {
-    fontFamily: 'Helvetica',
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat-ExtraBold',
+    fontWeight: 'normal',
     fontSize: 20,
     color: 'white'
   }
