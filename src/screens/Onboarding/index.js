@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     fontSize:50,
     color:"blue",
     top: 50,
-    fontFamily: "Heletivica",
+    fontFamily: 'Montserrat-Black'
   },
   slide: {
     
