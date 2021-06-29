@@ -5,7 +5,7 @@ import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from "@react-navigation/native";
-const image = {uri : "https://i.postimg.cc/4Nzgk39M/house8.jpg"};
+const image = {uri : "https://i.postimg.cc/kXP0cdpy/house9.jpg"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
 import {OptimizedFlatList} from 'react-native-optimized-flatlist'
@@ -201,10 +201,10 @@ const HomeScreen =(props) => {
                                                     <Text style={{ color:"white",
                                                       marginHorizontal: 100, justifyContent: 'center',
                                                       alignItems: 'center', width:'50%', justifyContent:'center',
-                                                      top: 50, position: 'absolute', zIndex:1, fontSize:15,
+                                                      top: 50, position: 'absolute', zIndex:1, fontSize:18,
                                                       
                                                     }}>
-                                                        Upload your home for rent and earn extra income. Fast, Easy, Convenient 
+                                                        Open your home for rent and earn extra income. 
 
                                                     </Text>
 
@@ -234,7 +234,7 @@ const HomeScreen =(props) => {
 
                 </ScrollView>
 
-                    <Pressable onPress={() => navigation.navigate('Profile')} style={{margin: 10, padding: 16, backgroundColor: 'white'}}>
+                    <Pressable onPress={() => navigation.navigate('Profile')} style={{margin: 10, padding: 16, backgroundColor: 'lightgray', borderRadius:10}}>
                         <Text style={{margin: 10, fontSize:25, fontWeight:'bold'}}>Stay Informed</Text>
                         <View style={{margin: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Text>For Tenants</Text>

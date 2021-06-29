@@ -11,54 +11,97 @@ const ProfileScreen = (props) => {
             <View>
             <View> 
             <ImageBackground
-            source={{uri:"https://images.contentstack.io/v3/assets/bltfa2cefdbe7482368/blt6b74dc9eac1dca00/5f7391b94c3b684e759d32c6/GoNear_LA_2580w.jpg"}}
+            source={{uri:"https://i.postimg.cc/QdkCDW7C/wallpaper1.jpg"}}
             style={{width: Dimensions.get('screen').width, height: Dimensions.get('screen').height/4}}
             imageStyle={{borderBottomRightRadius:25, borderBottomLeftRadius:25}}>
 
                 <View style={styles.DarkOverlay}></View>
                 <View style={styles.searchContainer}>
                     <Text style={styles.UserGreetings}>Hey, Welcome</Text>
-                    <Text style={styles.userText}>Explore, Go Near and Far</Text>
+                    <Text style={styles.userText}>Go Near and Far</Text>
                 </View>
                 
             </ImageBackground>
             </View>
 
-            
+            <View style={{margin:10, padding:5,}}>
+                <Text style={{fontWeight:'bold', fontSize:25}}>For Tenants</Text>
                 <View style={{margin: 20, padding:5,}}>
-                    <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
-                    
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
-                        Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    
-                </View>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
+                        
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
+                            Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
 
 
-                <View style={{margin: 20, padding:5}}>
-                    <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
+                    <View style={{margin: 20, padding:5}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Trust and Safety</Text>
 
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    
-                </View>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
+
+                    <View style={{margin: 20, padding:5,}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Cancellation Options</Text>
+                        
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
+                            Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
 
 
-                <View style={{margin: 20, padding:5}}>
-                    <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
+                    <View style={{margin: 20, padding:5}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Help and Support</Text>
 
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    
-                </View>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
+            </View>
+                
+            <View style={{margin:10, padding:5}}>
+                <Text style={{fontWeight:'bold', fontSize:25}}>For LandLords</Text>
+                <View style={{margin: 20, padding:5,}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
+                        
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
+                            Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
 
-                <View style={{margin: 20, padding:5}}>
-                    <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
 
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
-                    
-                </View>
+                    <View style={{margin: 20, padding:5}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Trust and Safety</Text>
+
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
+
+                    <View style={{margin: 20, padding:5}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Cancellation Options</Text>
+
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
+
+                    <View style={{margin: 20, padding:5}}>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Help and Support</Text>
+
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
+                        
+                    </View>
+            </View>
+                
+
+
                 
 
             
