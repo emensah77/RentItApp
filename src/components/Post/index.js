@@ -48,18 +48,23 @@ const Post = (props) => {
                 <Text style={styles.newPrice}>
                 GH₵{post.newPrice} / night
                 </Text>
-                <View  style={{paddingHorizontal:50, paddingVertical:1}}>
-                    <Pressable onPress={handleClick}>
-                        
-                        <Fontisto name="heart" size={30} color={isLike ? colorStyle : "yellow"}/>
-                    </Pressable>
-                </View>
+                
                 
             </Text>
             {/* Total price */}
-            <Text style={styles.totalPrice}>
-            GH₵{post.newPrice * days}
-            </Text>
+            <View style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
+                <Text style={styles.totalPrice}>
+                        GH₵{post.newPrice * days}
+                    </Text>
+                <View  style={{padding:5,}}>
+                        <Pressable onPress={handleClick}>
+                            
+                            <Fontisto name="heart" size={30} color={isLike ? colorStyle : "yellow"}/>
+                        </Pressable>
+                    </View>
+                    
+            </View>
+            
         </Pressable>
     );
 };

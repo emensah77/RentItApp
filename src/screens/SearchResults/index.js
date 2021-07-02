@@ -7,6 +7,7 @@ import {OptimizedFlatList} from 'react-native-optimized-flatlist'
 import Fontisto from "react-native-vector-icons/Fontisto";
 import { Dimensions} from "react-native";
 import Feather from 'react-native-vector-icons/Feather';
+import AnimatedEllipsis from 'react-native-animated-ellipsis';
 
 const SearchResultsScreen = (props) => {
     
@@ -56,35 +57,57 @@ const SearchResultsScreen = (props) => {
     
     
     return (
+        
       
         <View>
-          
+
+            
+                {posts.length > 0 ? <View>
             <View 
-                        style={{backgroundColor: '#fff',
-                        width: Dimensions.get('screen').width - 20,
-                        marginHorizontal: 10,
-                        height: 60,
-                        borderRadius: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        display: "flex",
-                        flexDirection: "row",
-                        position: "absolute",
-                        top: 20,
-                        zIndex:1,}}>
-                        <Feather name="home" size={25} color={"blue"}/>
-                        <Text style={{
-                              fontSize: 18,
-                              fontWeight: 'bold',}}> {posts.length} homes to rent</Text>
-                            
-                      </View>
+                          style={{backgroundColor: '#fff',
+                          width: Dimensions.get('screen').width - 20,
+                          marginHorizontal: 10,
+                          height: 60,
+                          borderRadius: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          display: "flex",
+                          flexDirection: "row",
+                          position: "absolute",
+                          top: 20,
+                          zIndex:1,}}>
+                          <Feather name="home" size={25} color={"blue"}/>
+                          <Text style={{
+                                fontSize: 18,
+                                fontWeight: 'bold',}}> {posts.length} homes to rent</Text>
+                              
+                        </View>
+                        
+            
+                <View style={{marginBottom:100, top:80}}>
+                  <OptimizedFlatList
+                      data={posts}
+                      renderItem={({item}) => <Post post={item}/>}
+                />
+                  </View>  
+            </View>
+                
+            : <View style={{alignItems: 'center', justifyContent:"center"}}>
+            <AnimatedEllipsis animationDelay={150} style={{
+            color: 'blue',
+            fontSize: 100,
+            
+            letterSpacing: -15,
+            
+          }}/></View>
+
+
+
+            }
+                
+        
           
-              <View style={{top:80}}>
-                <OptimizedFlatList
-              data={posts}
-              renderItem={({item}) => <Post post={item}/>}
-              />
-                </View>  
+            
             
         </View>
     );

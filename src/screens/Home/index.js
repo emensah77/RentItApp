@@ -96,7 +96,7 @@ const HomeScreen =(props) => {
                         style={styles.searchButton}
                         onPress={()=> navigation.navigate('Destination Search')}>
                         <Fontisto name="search" size={25} color={"#f15454"}/>
-                        <Text style={styles.searchButtonText}>Where do you want to rent?</Text>
+                        <Text adjustsFontSizeToFit={true} style={styles.searchButtonText}>Where do you want to rent?</Text>
                             
                             </Pressable>
                 {/* Search bar */}
@@ -104,7 +104,7 @@ const HomeScreen =(props) => {
                 source={image} 
                 style={styles.image}>
                     
-                    <Text style={styles.title}>
+                    <Text adjustsFontSizeToFit={true} style={styles.title}>
                         Find your Next Home
 
                     </Text>
@@ -113,7 +113,7 @@ const HomeScreen =(props) => {
                         style={styles.button}
                         onPress={()=> navigation.navigate
                         ('Destination Search')}>
-                        <Text style={styles.buttonText}>Explore nearby stays</Text>
+                        <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Explore nearby stays</Text>
                             
                             </Pressable>
                 </ImageBackground>
@@ -190,7 +190,7 @@ const HomeScreen =(props) => {
                                                 source={image} 
                                                 style={{borderRadius: 20, height: 500, width: '100%', alignSelf:"center"}}/>
                                                  <View style={styles.ImageOverlay1}></View>   
-                                                    <Text style={{ color:"white",
+                                                    <Text adjustsFontSizeToFit={true} style={{ color:"white",
                                                       marginLeft: 60, width:"100%",
                                                       top: 10, position: 'absolute', zIndex:1, fontWeight:"normal",
                                                        fontSize:25, fontFamily:'Montserrat-ExtraBold'
@@ -199,7 +199,7 @@ const HomeScreen =(props) => {
                                                         Become a Partner
 
                                                     </Text>
-                                                    <Text style={{ color:"white",
+                                                    <Text adjustsFontSizeToFit={true} style={{ color:"white",
                                                        justifyContent: 'center',
                                                       alignSelf: 'center', width:'50%', justifyContent:'center',
                                                       top: 50, position: 'absolute', zIndex:1, fontSize:18,
@@ -220,7 +220,7 @@ const HomeScreen =(props) => {
                                                         onPress={makeCall}>
                                                         <Fontisto name="phone" size={25} style={{color: 'black' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
                                                         
-                                                        <Text style={{justifyContent: 'center', alignItems: 'center', fontSize: 18,
+                                                        <Text adjustsFontSizeToFit={true} style={{justifyContent: 'center', alignItems: 'center', fontSize: 18,
                                                          fontFamily:'Montserrat-SemiBold'}}>Call Now</Text>
                                                             
                                                             </Pressable>
@@ -238,46 +238,46 @@ const HomeScreen =(props) => {
                 </ScrollView>
 
                     <Pressable onPress={() => navigation.navigate('Profile')} style={{margin: 10, padding: 16, backgroundColor: 'lightgray', borderRadius:10}}>
-                        <Text style={{margin: 10, fontSize:25, fontFamily:'Montserrat-Bold'}}>Stay Informed</Text>
+                        <Text adjustsFontSizeToFit={true} style={{margin: 10, fontSize:25, fontFamily:'Montserrat-Bold'}}>Stay Informed</Text>
                         <View style={{margin: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={{fontFamily:'Montserrat-SemiBold'}}>For Tenants</Text>
+                        <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold'}}>For Tenants</Text>
                         
-                        <Text style={{fontFamily:'Montserrat-SemiBold'}}>For Landlords</Text>
+                        <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold'}}>For Landlords</Text>
                         
                         </View>
                         <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between'}}>
                             <View>
                                 <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
-                                        <Text style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Help Center</Text>
-                                        <Text style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Help Center</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Trust and Safety</Text>
-                                        <Text style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Trust and Safety</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
                                     </View>
                             </View>
 
 
                             <View>
                                 <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
-                                        <Text style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:14, fontFamily: 'Montserrat-Bold'}}>Help Center</Text>
-                                        <Text style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily: 'Montserrat-Bold'}}>Help Center</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text style={{padding:2, fontSize:14, fontFamily: 'Montserrat-Bold'}}>Trust and Safety</Text>
-                                        <Text style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily: 'Montserrat-Bold'}}>Trust and Safety</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
                                     </View>
                             </View>
                                 
