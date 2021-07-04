@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-airbnbclone-dev-175634-unauthRole",
       "StackName": "amplify-airbnbclone-dev-175634",
       "StackId": "arn:aws:cloudformation:us-east-2:945426664553:stack/amplify-airbnbclone-dev-175634/16261a10-bcf4-11eb-bb59-02ce3294c2f8",
-      "AmplifyAppId": "d1osmjyokgkggm"
+      "AmplifyAppId": "d1osmjyokgkggm",
+      "AuthTriggerTemplateURL": ""
     },
     "categories": {
       "auth": {

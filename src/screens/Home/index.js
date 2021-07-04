@@ -25,8 +25,13 @@ const HomeScreen =(props) => {
         } else {
           phoneNumber = 'telprompt:${1234567890}';
         }
-    
-        Linking.openURL(phoneNumber);
+        try{
+            Linking.openURL(phoneNumber);
+        }
+        catch(e){
+            console.log(e)
+        }
+        
       };
     
 

@@ -27,7 +27,7 @@ const ProfileScreen = (props) => {
             <View style={{margin:10, padding:5,}}>
                 <Text style={{fontWeight:'bold', fontSize:25}}>For Tenants</Text>
                 <View style={{margin: 20, padding:5,}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>How It Works?</Text>
                         
                         <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
                             Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
@@ -37,7 +37,7 @@ const ProfileScreen = (props) => {
 
 
                     <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Trust and Safety</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Trust and Safety</Text>
 
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
@@ -45,7 +45,7 @@ const ProfileScreen = (props) => {
                     </View>
 
                     <View style={{margin: 20, padding:5,}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Cancellation Options</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Cancellation Options</Text>
                         
                         <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
                             Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
@@ -55,7 +55,7 @@ const ProfileScreen = (props) => {
 
 
                     <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Help and Support</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Help and Support</Text>
 
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
@@ -66,7 +66,7 @@ const ProfileScreen = (props) => {
             <View style={{margin:10, padding:5}}>
                 <Text style={{fontWeight:'bold', fontSize:25}}>For LandLords</Text>
                 <View style={{margin: 20, padding:5,}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>How It Works?</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>How It Works?</Text>
                         
                         <Text style={{fontSize:16, padding:10}}>Start by exploring the locations you are interested in renting from. 
                             Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
@@ -76,7 +76,7 @@ const ProfileScreen = (props) => {
 
 
                     <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Trust and Safety</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Trust and Safety</Text>
 
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
@@ -84,7 +84,7 @@ const ProfileScreen = (props) => {
                     </View>
 
                     <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Cancellation Options</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Cancellation Options</Text>
 
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
@@ -92,7 +92,7 @@ const ProfileScreen = (props) => {
                     </View>
 
                     <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Heletivica'}}>Help and Support</Text>
+                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Help and Support</Text>
 
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
                         <Text style={{fontSize:16, padding:10}}>Start by exploring Stays or Experiences. Apply filters like entire homes, self check-in, or pets allowed to narrow your options.</Text>
