@@ -28,6 +28,7 @@
     "react": "17.0.1",
     "react-native": "0.64.1",
     "react-native-animated-ellipsis": "^2.0.0",
+    "react-native-fast-image": "^8.3.4",
     "react-native-flatlist-slider": "^1.0.5",
     "react-native-fontawesome": "^7.0.0",
     "react-native-gesture-handler": "^1.10.3",

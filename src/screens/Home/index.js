@@ -8,7 +8,8 @@ import {useNavigation} from "@react-navigation/native";
 const image = {uri : "https://i.postimg.cc/kXP0cdpy/house9.jpg"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
-import {OptimizedFlatList} from 'react-native-optimized-flatlist'
+import {OptimizedFlatList} from 'react-native-optimized-flatlist';
+import FastImage from 'react-native-fast-image';
 
 
 
@@ -31,17 +32,17 @@ const HomeScreen =(props) => {
 
     const [images, setimages] = useState([
         {
-         image: {uri: 'https://www.planetware.com/wpimages/2020/07/world-best-luxury-all-inclusive-resorts-lux-south-ari-atoll-maldives.jpg',
-        }, title: 'Kumasi', key: '1'
+         image:  'https://www.planetware.com/wpimages/2020/07/world-best-luxury-all-inclusive-resorts-lux-south-ari-atoll-maldives.jpg',
+         title: 'Kumasi', key: '1'
         },
         {
-            image: {uri: 'https://thetrumpetwlu.org/wp-content/uploads/2021/03/ia6oOD3DrA0ggTCwavIWxS6EX3ALe2lpMsrZIdXl.jpeg',
-           }, title: 'Accra', key: '2'
+            image:  'https://thetrumpetwlu.org/wp-content/uploads/2021/03/ia6oOD3DrA0ggTCwavIWxS6EX3ALe2lpMsrZIdXl.jpeg',
+            title: 'Accra', key: '2'
            },
     
            {
-            image: {uri: 'https://i.ytimg.com/vi/doTGAewB04w/maxresdefault.jpg',
-           }, title: 'CapeCoast', key: '3'
+            image:  'https://i.ytimg.com/vi/doTGAewB04w/maxresdefault.jpg',
+            title: 'CapeCoast', key: '3'
            },
        ]);
 
@@ -49,17 +50,17 @@ const HomeScreen =(props) => {
 
        const [imagesApt, setimagesapt] = useState([
         {
-         image: {uri: 'https://i.pinimg.com/originals/51/b1/51/51b151f069082996ffe5104f99c62e01.jpg',
-        }, title: 'Full Homes', key: '1'
+         image: 'https://i.pinimg.com/originals/51/b1/51/51b151f069082996ffe5104f99c62e01.jpg',
+         title: 'Full Homes', key: '1'
         },
         {
-            image: {uri: 'https://cf.bstatic.com/images/hotel/max1024x768/930/93012959.jpg',
-           }, title: '1 & 2 bedroom', key: '2'
+            image:  'https://cf.bstatic.com/images/hotel/max1024x768/930/93012959.jpg',
+            title: '1 & 2 bedroom', key: '2'
            },
     
            {
-            image: {uri: 'https://i.postimg.cc/kXP0cdpy/house9.jpg',
-           }, title: 'Apartment', key: '3'
+            image: 'https://i.postimg.cc/kXP0cdpy/house9.jpg',
+           title: 'Apartment', key: '3'
            },
        ]);
 
@@ -140,8 +141,12 @@ const HomeScreen =(props) => {
                                return (
                                    <View style={{paddingVertical:20, paddingLeft: 16 }}>
                                        <TouchableOpacity onPress={goToLocationSearch}>
-                                           <Image 
-                                           source={item.image} 
+                                           <FastImage 
+                                           source={{
+                                               uri: item.image,
+                                               headers: { Authorization: 'token' },
+                                               priority: FastImage.priority.high,
+                                            }}
                                            style={{width: 250, marginRight: 8, height: 250, borderRadius:10, resizeMode: 'cover'}}/>
                                             <View style={styles.ImageOverlay}></View>
                                             <Feather name='map-pin' size={26} color='white'
@@ -170,8 +175,12 @@ const HomeScreen =(props) => {
                                return (
                                    <View style={{paddingVertical:20, paddingLeft: 16 }}>
                                        <TouchableOpacity onPress={goToLocationSearch}>
-                                           <Image 
-                                           source={item.image} 
+                                           <FastImage 
+                                           source={{
+                                               uri: item.image,
+                                               headers: { Authorization: 'token' },
+                                               priority: FastImage.priority.high,
+                                            }} 
                                            style={{width: 250, marginRight: 8, height: 250, borderRadius:10}}/>
                                             <View style={styles.ImageOverlay}></View>
                                             

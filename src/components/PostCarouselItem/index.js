@@ -4,6 +4,7 @@ import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimen
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 import Fontisto from "react-native-vector-icons/Fontisto";
+import FastImage from 'react-native-fast-image';
 const Post = (props) => {
     const [count, setCount] = useState(0)
     const[isLike, setIsLike] = useState(false);
@@ -27,8 +28,13 @@ const Post = (props) => {
         <Pressable onPress={goToPostPage} style={styles.container, {width: width - 60, marginHorizontal: 5}}>
             {/* Image */}
             <View style={styles.innerContainer}>
-                <Image style={styles.image}
-                source={{uri: post.image}}/>
+                <FastImage style={styles.image}
+                source={{
+                    uri: post.image,
+                    headers: { Authorization: 'token' },
+                    priority: FastImage.priority.high,
+                    
+                }}/>
                 {/* Bed and Bedroom */}
                 <View style={{flex: 1, marginHorizontal: 10, marginBottom:10}}>
                         <Text style={styles.bedrooms}>
