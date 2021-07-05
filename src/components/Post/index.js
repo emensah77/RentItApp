@@ -4,7 +4,7 @@ import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
-const days = 7;
+const days = 1;
 const Post = (props) => {
 
     const [count, setCount] = useState(0)
@@ -46,7 +46,7 @@ const Post = (props) => {
                 GH₵{post.oldPrice}
                 </Text>
                 <Text style={styles.newPrice}>
-                GH₵{post.newPrice} / night
+                GH₵{post.newPrice} / year
                 </Text>
                 
                 

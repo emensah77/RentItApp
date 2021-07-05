@@ -71,7 +71,7 @@ const DetailedPost = (props) => {
                     GH₵{post.oldPrice} 
                     </Text>
                     <Text style={styles.newPrice}>
-                    GH₵{post.newPrice} / night
+                    GH₵{post.newPrice} / year
                     </Text>
                 </Text>
                 {/* Total price */}
