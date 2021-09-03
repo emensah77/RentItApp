@@ -10,6 +10,9 @@ import ExploreNavigator from './ExploreNavigator';
 import SearchResultsMaps from "../screens/SearchResultsMap";
 import PostScreen from "../screens/PostScreen";
 import ProfileScreen from '../screens/Profile';
+import LowPriceScreen from "../screens/LowPriceScreen";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCoffee, faCoins } from "@fortawesome/free-solid-svg-icons";
 
 
 const Tab = createBottomTabNavigator();
@@ -18,6 +21,15 @@ const HomeTabNavigator = (props) => {
     return (
         <Tab.Navigator tabBarOptions={{
             activeTintColor: "blue"
+        }}
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: '#fff',
+            },
+            headerTintColor: '#00000',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
         }}>
             <Tab.Screen
             name={"Explore"}
@@ -36,6 +48,16 @@ const HomeTabNavigator = (props) => {
                         options={{
                             tabBarIcon: ({color}) => (
                                 <EvilIcons name="user" size={25} color={color} />
+                            )
+                        }}
+                        />
+            <Tab.Screen
+                        name={"Discount"}
+                        component={LowPriceScreen}
+                        options={{
+                            tabBarIcon: ({color}) => (
+                                <FontAwesomeIcon icon={faCoins} size={25} color={color}/>
+                                //<Fontisto name="user" size={25} color={color} />
                             )
                         }}
                         />

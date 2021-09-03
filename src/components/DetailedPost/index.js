@@ -19,9 +19,9 @@ const DetailedPost = (props) => {
         let phoneNumber = '';
     
         if (Platform.OS === 'android') {
-          phoneNumber = 'tel:${1234567890}';
+          phoneNumber = 'tel:${0201167537}';
         } else {
-          phoneNumber = 'telprompt:${1234567890}';
+          phoneNumber = 'telprompt:${0201167537}';
         }
     
         Linking.openURL(phoneNumber);
@@ -78,9 +78,14 @@ const DetailedPost = (props) => {
                 <Text style={styles.totalPrice}>
                 GH₵{post.totalPrice}
                 </Text>
+                
 
                 <Text style={styles.longDescription}>
                     {post.description}
+                </Text>
+
+                <Text style={{margin: 10, fontSize:20, fontFamily:"Montserrat-Bold"}}>
+                    Amenities available
                 </Text>
                 <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
                     <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Wifi <Feather name="wifi" size={25} color={'blue'}/></Text>

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         position: "absolute",
-        top: 20,
+        top: 25,
         zIndex:1,
     }, 
 

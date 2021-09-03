@@ -132,11 +132,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.airbnbclone"
+        applicationId "com.rentitghana"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
-        versionName "2.0"
+        versionCode 16
+        versionName "2.4"
     }
     signingConfigs {
         release {

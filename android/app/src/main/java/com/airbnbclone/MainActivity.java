@@ -1,4 +1,4 @@
-package com.airbnbclone;
+package com.rentitghana;
 
 import com.facebook.react.ReactActivity;
 

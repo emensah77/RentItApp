@@ -40,6 +40,10 @@ import Amplify from '@aws-amplify/core';
 import Onboarding from './src/screens/Onboarding';
 
 import { AmplifyTheme } from "aws-amplify-react-native";
+Amplify.configure(awsconfig);
+
+
+
 const myTheme = StyleSheet.create({
   container: {
     flex: 1,

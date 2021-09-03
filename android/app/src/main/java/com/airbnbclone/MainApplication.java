@@ -1,4 +1,4 @@
-package com.airbnbclone;
+package com.rentitghana;
 
 import android.app.Application;
 import android.content.Context;

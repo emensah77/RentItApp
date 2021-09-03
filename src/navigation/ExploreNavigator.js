@@ -7,7 +7,17 @@ const Stack = createStackNavigator();
 
 const Router = (props) => {
         return (
-            <Stack.Navigator>
+            <Stack.Navigator
+                screenOptions={{
+                    headerStyle: {
+                        backgroundColor: '#fff'
+                    },
+                    headerTintColor: '#000000',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+            >
 
 
                 <Stack.Screen
@@ -23,7 +33,7 @@ const Router = (props) => {
                         name={'SearchResults'}
                         component={SearchResultsTabNavigator}
                         options={{
-                           title: 'Search your destination',
+                           title: 'Places to Rent',
                         }}
                         />
 

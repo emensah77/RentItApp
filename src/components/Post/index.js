@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View, Image ,Text, Pressable} from "react-native";
+import {View, Image , ImageBackground,Text, Pressable} from "react-native";
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -9,11 +9,17 @@ const Post = (props) => {
 
     const [count, setCount] = useState(0)
     const[isLike, setIsLike] = useState(false);
-
-    const colorStyle = "blue"
-
+    //const [trending, setTrending] = useState([]);
+    const trending = [];
+    const colorStyle = "white"
+    
     const handleClick = () => {
         setIsLike(!isLike);
+        //setTrending(prev => [...prev, {post}]);
+        //console.log(trending);
+        trending.push(post);
+        console.log(trending.length)
+
     }
 
 
@@ -27,8 +33,16 @@ const Post = (props) => {
     return(
         <Pressable onPress={goToPostPage} style={styles.container}>
             {/* Image */}
+            <View >
             <Image style={styles.image}
-            source={{uri: post.image}}/>
+                source={{uri: post.image}}/>
+                <Pressable  style={{padding: 15, right:0, top:0, position: 'absolute'
+            ,backgroundColor: 'transparent'}} onPress={handleClick}>
+                            
+                            <Fontisto name="heart" size={30} color={isLike ? colorStyle : "yellow"}/>
+                        </Pressable>
+            </View>
+            
             {/* Bed and Bedroom */}
 
             <Text style={styles.bedrooms}>
@@ -52,18 +66,13 @@ const Post = (props) => {
                 
             </Text>
             {/* Total price */}
-            <View style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
+            
                 <Text style={styles.totalPrice}>
                         GH₵{post.newPrice * days}
                     </Text>
-                <View  style={{padding:5,}}>
-                        <Pressable onPress={handleClick}>
-                            
-                            <Fontisto name="heart" size={30} color={isLike ? colorStyle : "yellow"}/>
-                        </Pressable>
-                    </View>
-                    
-            </View>
+                
+                        
+                  
             
         </Pressable>
     );

@@ -5,7 +5,7 @@ import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from "@react-navigation/native";
-const image = {uri : "https://i.postimg.cc/kXP0cdpy/house9.jpg"};
+const image = {uri : "https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
 import {OptimizedFlatList} from 'react-native-optimized-flatlist';
@@ -21,9 +21,9 @@ const HomeScreen =(props) => {
         let phoneNumber = '';
     
         if (Platform.OS === 'android') {
-          phoneNumber = 'tel:${1234567890}';
+          phoneNumber = 'tel:${0201167537}';
         } else {
-          phoneNumber = 'telprompt:${1234567890}';
+          phoneNumber = 'telprompt:${0201167537}';
         }
         try{
             Linking.openURL(phoneNumber);
@@ -37,16 +37,16 @@ const HomeScreen =(props) => {
 
     const [images, setimages] = useState([
         {
-         image:  'https://www.planetware.com/wpimages/2020/07/world-best-luxury-all-inclusive-resorts-lux-south-ari-atoll-maldives.jpg',
+         image:  'https://d5w4alzj7ppu4.cloudfront.net/cities/Kejetia_Kumasi.jpeg',
          title: 'Kumasi', key: '1'
         },
         {
-            image:  'https://thetrumpetwlu.org/wp-content/uploads/2021/03/ia6oOD3DrA0ggTCwavIWxS6EX3ALe2lpMsrZIdXl.jpeg',
+            image:  'https://d5w4alzj7ppu4.cloudfront.net/cities/accra.jpeg',
             title: 'Accra', key: '2'
            },
     
            {
-            image:  'https://i.ytimg.com/vi/doTGAewB04w/maxresdefault.jpg',
+            image:  'https://d5w4alzj7ppu4.cloudfront.net/cities/capecoast.jpeg',
             title: 'CapeCoast', key: '3'
            },
        ]);
@@ -55,16 +55,16 @@ const HomeScreen =(props) => {
 
        const [imagesApt, setimagesapt] = useState([
         {
-         image: 'https://i.pinimg.com/originals/51/b1/51/51b151f069082996ffe5104f99c62e01.jpg',
+         image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/fullhome.png',
          title: 'Full Homes', key: '1'
         },
         {
-            image:  'https://cf.bstatic.com/images/hotel/max1024x768/930/93012959.jpg',
+            image:  'https://d5w4alzj7ppu4.cloudfront.net/cities/1bedroom.jpeg',
             title: '1 & 2 bedroom', key: '2'
            },
     
            {
-            image: 'https://i.postimg.cc/kXP0cdpy/house9.jpg',
+            image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg',
            title: 'Apartment', key: '3'
            },
        ]);
@@ -72,7 +72,7 @@ const HomeScreen =(props) => {
 
        const [partner, setpartner] = useState([
         {
-         image: {uri: 'https://i.postimg.cc/kXP0cdpy/house9.jpg',
+         image: {uri: 'https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg',
         }, title: 'Full Homes', key: '1'
         },
         
@@ -127,7 +127,7 @@ const HomeScreen =(props) => {
 
             <ScrollView style={{marginBottom: 40, backgroundColor: 'white'}}>
                     <View style={{padding: 5, margin: 10}}>
-                        <Text style={{fontSize: 25, fontWeight: 'normal', fontFamily:'Montserrat-Bold'}}>
+                        <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
                             Live anywhere
                             
                         </Text>
@@ -164,7 +164,7 @@ const HomeScreen =(props) => {
                         />
 
                     <View style={{padding: 5, margin: 10}}>
-                        <Text style={{fontSize: 22, fontWeight: 'normal', fontFamily:'Montserrat-Bold'}}>
+                        <Text style={{fontSize: 22, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
                             Explore
 
                         </Text>
@@ -204,10 +204,10 @@ const HomeScreen =(props) => {
                                                 source={image} 
                                                 style={{borderRadius: 20, height: 500, width: '100%', alignSelf:"center"}}/>
                                                  <View style={styles.ImageOverlay1}></View>   
-                                                    <Text adjustsFontSizeToFit={true} style={{ color:"white",
-                                                      marginLeft: 60, width:"100%",
-                                                      top: 10, position: 'absolute', zIndex:1, fontWeight:"normal",
-                                                       fontSize:25, fontFamily:'Montserrat-ExtraBold'
+                                                    <Text adjustsFontSizeToFit={true} style={{flex:1, alignItems: "center", color:"white",
+                                                      marginLeft: Dimensions.get('screen').width/3.5, width:"100%",
+                                                      top: 10, position: 'absolute', zIndex:1, fontWeight:"bold",
+                                                       fontSize:16, fontFamily:'Montserrat-ExtraBold',
                                                       
                                                     }}>
                                                         Become a Partner
@@ -216,7 +216,7 @@ const HomeScreen =(props) => {
                                                     <Text adjustsFontSizeToFit={true} style={{ color:"white",
                                                        justifyContent: 'center',
                                                       alignSelf: 'center', width:'50%', justifyContent:'center',
-                                                      top: 50, position: 'absolute', zIndex:1, fontSize:18,
+                                                      top: 50, position: 'absolute', zIndex:1, fontSize:12,
                                                       fontFamily: 'Montserrat-Medium'
                                                       
                                                     }}>
@@ -254,44 +254,44 @@ const HomeScreen =(props) => {
                     <Pressable onPress={() => navigation.navigate('Profile')} style={{margin: 10, padding: 16, backgroundColor: 'lightgray', borderRadius:10}}>
                         <Text adjustsFontSizeToFit={true} style={{margin: 10, fontSize:25, fontFamily:'Montserrat-Bold'}}>Stay Informed</Text>
                         <View style={{margin: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold'}}>For Tenants</Text>
+                        <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold', fontSize:12}}>For Tenants</Text>
                         
-                        <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold'}}>For Landlords</Text>
+                        <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold', fontSize:12}}>For Landlords</Text>
                         
                         </View>
                         <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between'}}>
                             <View>
                                 <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
-                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{flex:0.8,padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Help Center</Text>
-                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Help Center</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Trust and Safety</Text>
-                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Trust and Safety</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
                                     </View>
                             </View>
 
 
                             <View>
                                 <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
-                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily: 'Montserrat-Bold'}}>Help Center</Text>
-                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily: 'Montserrat-Bold'}}>Help Center</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
                                     </View>
 
                                     <View style={{padding: 5, marginBottom: 5,}}>
-                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:14, fontFamily: 'Montserrat-Bold'}}>Trust and Safety</Text>
-                                        <Text adjustsFontSizeToFit={true} style={{fontSize:12, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily: 'Montserrat-Bold'}}>Trust and Safety</Text>
+                                        <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
                                     </View>
                             </View>
                                 

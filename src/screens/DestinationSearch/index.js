@@ -16,7 +16,10 @@ const DestinationSearch = (props) => {
             {/* Input Component */}
             
             <GooglePlacesAutocomplete
-                placeholder='Type here where you want to rent?'
+                
+                placeholder='Type where you want to rent'
+                placeholderTextColor="yellow"
+                autoFocus={true}
                 onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
                     console.log(data, details);
