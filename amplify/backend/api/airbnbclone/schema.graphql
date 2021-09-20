@@ -18,6 +18,7 @@ type Post @model {
   bathroom: String!,
   water: String!,
   toilet: String!,
+  aircondition: String!,
 
   oldPrice: Float
   newPrice: Float!

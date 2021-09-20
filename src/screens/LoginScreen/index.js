@@ -12,6 +12,7 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import SocialButton from '../../components/SocialButton';
@@ -45,12 +46,18 @@ const LoginScreen = ({navigation}) => {
   
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <StatusBar hidden={true} />
+      <StatusBar backgroundColor="blue" barStyle="light-content" />
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.text_header}> Welcome </Text>
         </View>
-        <View style={styles.footer}>
+        <Animatable.View
+        animation="fadeInUpBig"
+        duration={2000} 
+          style={styles.footer}
+        >
+          <Text style={styles.title}>Find your next home</Text>
+          
           <View style={styles.button}>
 
           {Platform.OS === 'ios' ? (
@@ -101,7 +108,7 @@ const LoginScreen = ({navigation}) => {
         }
 
           </View>
-        </View>
+        </Animatable.View>
 
         
          
@@ -324,8 +331,7 @@ const styles = StyleSheet.create({
       borderTopRightRadius: 30,
       paddingHorizontal: 20,
       paddingVertical: 30,
-      alignItems:'center',
-      justifyContent:'center'
+      
   },
   text_header: {
       color: '#fff',
@@ -379,4 +385,17 @@ const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: 'blue'
   },
+  title: {
+    color: 'blue',
+    fontSize: 30,
+    
+    fontFamily:'Montserrat-Bold'
+},
+text: {
+  color: 'blue',
+  marginTop:5,
+  fontSize:20,
+  fontFamily:'Montserrat-Bold'
+},
+  
 });
