@@ -19,9 +19,9 @@ const DetailedPost = (props) => {
         let phoneNumber = '';
     
         if (Platform.OS === 'android') {
-          phoneNumber = 'tel:${0201167537}';
+          phoneNumber = 'tel:${0552618521}';
         } else {
-          phoneNumber = 'telprompt:${0201167537}';
+          phoneNumber = 'telprompt:${0552618521}';
         }
     
         Linking.openURL(phoneNumber);

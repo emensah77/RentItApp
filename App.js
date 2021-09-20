@@ -7,7 +7,7 @@
  */
  import 'react-native-gesture-handler';
 import React from 'react';
-import type {Node} from 'react';
+
 import {
   Dimensions,
   SafeAreaView,
@@ -38,6 +38,8 @@ import { withAuthenticator } from 'aws-amplify-react-native';
 import { Authenticator } from 'aws-amplify-react-native/dist/Auth';
 import Amplify from '@aws-amplify/core';
 import Onboarding from './src/screens/Onboarding';
+import Providers from './src/navigation/Providers';
+import ActivityLoader from './src/components/ActivityLoader';
 
 import { AmplifyTheme } from "aws-amplify-react-native";
 Amplify.configure(awsconfig);
@@ -154,7 +156,7 @@ const myTheme = StyleSheet.create({
 
 
 const post1 = feed[0];
-const Section = ({children, title}): Node => {
+const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -192,10 +194,10 @@ const App: () => Node = () => {
     
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       
+      {/*<ActivityLoader/>*/}
+      <Providers/>
       
-      
-      
-      <Router />
+      {/*<Router />*/}
       
       
       

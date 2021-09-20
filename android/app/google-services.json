@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "953170635360",
+    "project_id": "rentitapp-8fc19",
+    "storage_bucket": "rentitapp-8fc19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953170635360:android:a2ef53400c14866900f105",
+        "android_client_info": {
+          "package_name": "com.rentitghana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "953170635360-49ieh8ojhngon8vik1flvjshglkmq5ub.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rentitghana",
+            "certificate_hash": "78ec0fc759f89e2e811c85176349c8d257d242e7"
+          }
+        },
+        {
+          "client_id": "953170635360-945stc78s8gvd11mbp01st9pqvdfdj20.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rentitghana",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLSAlIf_ILisY3avkSI_tOtNSk0T9SZOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "953170635360-she4b80b8s5td2eu2rqqdiuo632ubllj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.RentItGhana"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

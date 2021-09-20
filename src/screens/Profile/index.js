@@ -1,114 +1,208 @@
-import React from 'react';
-import {View, Dimensions, Text, Pressable, ImageBackground, StyleSheet, TextInput, ScrollView} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import {Share, StatusBar,View, SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {Auth} from 'aws-amplify';
+import {AuthContext} from '../../navigation/AuthProvider';
+import FormButton from '../../components/FormButton';
+import firestore from '@react-native-firebase/firestore';
+import { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
+import {useNavigation} from "@react-navigation/native";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const ProfileScreen = (props) => {
-    const logout = () => {
-        Auth.signOut();
-    }
+const ProfileScreen = ({route}) => {
+    const onShare = async () => {
+      
+        try {
+          const result = await Share.share({
+           title: 'Download RentIt',
+            message: 'Install this app and find homes to rent near you, AppLink: ', 
+            url: Platform.OS === 'android' ? 'https://play.google.com/store/apps/details?id=com.rentitghana' : 'https://apps.apple.com/us/app/rentit-find-homes-rooms/id1580456122'
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+
+    const navigation = useNavigation();
+    //const user = firebase.auth().currentUser;
+    const {user, logout} = useContext(AuthContext);
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const getUser = async() => {
+        await firestore()
+        .collection('users')
+        .doc( route.params ? route.params.userId : user.uid)
+        .get()
+        .then((documentSnapshot) => {
+          if( documentSnapshot.exists ) {
+            console.log('User Data', documentSnapshot.data());
+            setUserData(documentSnapshot.data());
+          }
+        })
+      }
+
+    useEffect(() => {
+        getUser();
+        
+        navigation.addListener("focus", () => setLoading(!loading));
+      }, [navigation, loading]);
     return (
-        <ScrollView style={{backgroundColor:'#fff', marginBottom:10}}>
-            <View>
-            <View> 
-            <ImageBackground
-            source={{uri:"https://i.postimg.cc/QdkCDW7C/wallpaper1.jpg"}}
-            style={{width: Dimensions.get('screen').width, height: Dimensions.get('screen').height/4}}
-            imageStyle={{borderBottomRightRadius:25, borderBottomLeftRadius:25}}>
+        <View style={{
+            backgroundColor: "#fff",
+            flex: 1,
 
-                <View style={styles.DarkOverlay}></View>
-                <View style={styles.searchContainer}>
-                    <Text style={styles.UserGreetings}>Hey, Welcome</Text>
-                    <Text style={styles.userText}>Go Near and Far</Text>
+        }}>
+            <StatusBar hidden={true}/>
+            <View style={{
+                backgroundColor:'#00008b',
+                height:"25%",
+                borderBottomLeftRadius:20,
+                borderBottomRightRadius: 20,
+                paddingHorizontal:20,
+            }}>
+                
+                <View style={{
+                    flexDirection:'row',
+                    alignItems:'center',
+                    marginTop: Platform.OS === 'ios' ? 50 : 25,
+                    width: '100%'
+                    
+                }}>
+                    <View
+                    style={{
+                        width: '50%'
+                    }}>
+                        <Text
+                        style={{
+                            fontSize:24,
+                            color:"#fff",
+                            fontWeight:'bold'
+                        }}>Hi {user.displayName}</Text>
+
+                    </View>
+                    <View style={{width:'50%', alignItems:'flex-end'}}>
+                    <Image
+                        source={{uri:user ? user.photoURL || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
+                        style={{
+                            height:100,
+                            width: 100,
+                            borderRadius:50,
+                           
+                        }}
+                />
+                    </View>
+
                 </View>
-                
-            </ImageBackground>
+
             </View>
 
-            <View style={{margin:10, padding:5,}}>
-                <Text style={{fontWeight:'bold', fontSize:25}}>For Tenants</Text>
-                <View style={{margin: 20, padding:5,}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>How It Works?</Text>
-                        
-                        <Text style={{fontSize:16, padding:10}}>Start by searching the location you are interested in renting from. 
-                            Apply filters like number of rooms, number of adults, or children to narrow your options.</Text>
-                        <Text style={{fontSize:16, padding:10}}>Browse through detailed descriptions of each home, including amenities available and call to rent once you have found your match.</Text>
-                        
-                    </View>
+            <View style={styles.menuWrapper}>
+        <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>
+          <View style={styles.menuItem}>
+            <Icon name="heart-outline" color="#00008b" size={25}/>
+            <Text style={styles.menuItemText}>Your Favorites</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}}>
+          <View style={styles.menuItem}>
+            <Icon name="credit-card" color="#00008b" size={25}/>
+            <Text style={styles.menuItemText}>Payment</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onShare}>
+          <View style={styles.menuItem}>
+            <Icon name="share-outline" color="#00008b" size={25}/>
+            <Text style={styles.menuItemText}>Tell Your Friends</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}}>
+          <View style={styles.menuItem}>
+            <Icon name="account-check-outline" color="#00008b" size={25}/>
+            <Text style={styles.menuItemText}>Support</Text>
+          </View>
+        </TouchableOpacity>
 
+        
+        
+  
+      </View>
 
-                    <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Trust and Safety</Text>
+      <TouchableOpacity style={styles.userBtn} onPress={() => auth().signOut()}>
+                  <Text style={styles.userBtnTxt}>Logout</Text>
+         </TouchableOpacity>
 
-                        <Text style={{fontSize:16, padding:10}}>Trust and Safety is at the core of everything we do. We make sure that every home you see on the app looks exactly as it appears in person</Text>
-                        <Text style={{fontSize:16, padding:10}}>So you can be sure everything you see on the app is verified and appears exactly as it is portrayed.</Text>
-                        
-                    </View>
-
-                    <View style={{margin: 20, padding:5,}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Cancellation Options</Text>
-                        
-                        <Text style={{fontSize:16, padding:10}}>Flexibility is important to us. So we allow you to change your mind up until you move into any home. 
-                            </Text>
-                        <Text style={{fontSize:16, padding:10}}>If you change your mind before moving into the house, we will charge you no fee for it.</Text>
-                        
-                    </View>
-
-
-                    <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Help and Support</Text>
-
-                        <Text style={{fontSize:16, padding:10}}>Whatever you choose, we are here to support you. We can also help arrange to move you into your new home</Text>
-                        <Text style={{fontSize:16, padding:10}}>We also help you after you move out to your new home in the event anything happens.</Text>
-                        
-                    </View>
-            </View>
-                
-            <View style={{margin:10, padding:5}}>
-                <Text style={{fontWeight:'bold', fontSize:25}}>For LandLords</Text>
-                <View style={{margin: 20, padding:5,}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>How It Works?</Text>
-                        
-                        <Text style={{fontSize:16, padding:10}}>You can upload your home to the RentIt App. 
-                            Open your home to thousands of tenants looking for a home to rent and earn money.</Text>
-                        <Text style={{fontSize:16, padding:10}}>Also, become a partner once you upload your home to the RentIt App for rent.</Text>
-                        
-                    </View>
-
-
-                    <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Trust and Safety</Text>
-
-                        <Text style={{fontSize:16, padding:10}}>You commit to uphold yourself to a higher standard of trust and integrity. People use RentIt because they trust everything they see.</Text>
-                        <Text style={{fontSize:16, padding:10}}>It is therefore important that every property you upload is entirely yours and is exactly as it appears.</Text>
-                        
-                    </View>
-
-                    <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Cancellation Options</Text>
-
-                        <Text style={{fontSize:16, padding:10}}>We allow our tenants a lot of flexibility in booking rooms to rent. Therefore, you commit to this flexibility
-                        once you upload your property to RentIt.</Text>
-                        <Text style={{fontSize:16, padding:10}}>You also commit to allow flexible move in dates for tenants once they rent your home.</Text>
-                        
-                    </View>
-
-                    <View style={{margin: 20, padding:5}}>
-                        <Text style={{fontSize:20, fontWeight:'bold', fontFamily: 'Montserrat'}}>Help and Support</Text>
-
-                        <Text style={{fontSize:16, padding:10}}>We offer support and help to homeowners and landlords who upload their homes to RentIt</Text>
-                        <Text style={{fontSize:16, padding:10}}>Connect with other landlords and homeowners who have rent their homes through RentIt and make strong community connections.</Text>
-                        
-                    </View>
-            </View>
-                
-
-
-                
-
-            
-            
         </View>
-        </ScrollView>
+    //     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    //     <ScrollView
+    //       style={styles.container}
+    //       contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
+    //       showsVerticalScrollIndicator={false}>
+    //       <Image
+    //         style={styles.userImg}
+    //         source={{uri: user ? user.photoURL || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
+    //       />
+    //       <Text style={styles.userName}>{user ? user.displayName || 'Test' : 'Test'}</Text>
+    //       {/* <Text>{route.params ? route.params.userId : user.uid}</Text> */}
+    //       <Text style={styles.aboutUser}>
+    //       {userData ? userData.about || 'No details added.' : ''}
+    //       </Text>
+    //       <View style={styles.userBtnWrapper}>
+    //         {route.params ? (
+    //           <>
+    //             <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
+    //               <Text style={styles.userBtnTxt}>Message</Text>
+    //             </TouchableOpacity>
+    //             <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
+    //               <Text style={styles.userBtnTxt}>Follow</Text>
+    //             </TouchableOpacity>
+    //           </>
+    //         ) : (
+    //           <>
+    //             <TouchableOpacity
+    //               style={styles.userBtn}
+    //               onPress={() => {
+    //                 navigation.navigate('EditProfile');
+    //               }}>
+    //               <Text style={styles.userBtnTxt}>Edit</Text>
+    //             </TouchableOpacity>
+    //             <TouchableOpacity style={styles.userBtn} onPress={() => auth()
+    //             .signOut()
+    //             .then(() => navigation.navigate("Login"))
+    //             }>
+    //               <Text style={styles.userBtnTxt}>Logout</Text>
+    //             </TouchableOpacity>
+    //           </>
+    //         )}
+    //       </View>
+  
+    //       <View style={styles.userInfoWrapper}>
+    //         <View style={styles.userInfoItem}>
+              
+    //           <Text style={styles.userInfoSubTitle}>Posts</Text>
+    //         </View>
+    //         <View style={styles.userInfoItem}>
+    //           <Text style={styles.userInfoTitle}>10,000</Text>
+    //           <Text style={styles.userInfoSubTitle}>Followers</Text>
+    //         </View>
+    //         <View style={styles.userInfoItem}>
+    //           <Text style={styles.userInfoTitle}>100</Text>
+    //           <Text style={styles.userInfoSubTitle}>Following</Text>
+    //         </View>
+    //       </View>
+  
+          
+    //     </ScrollView>
+    //   </SafeAreaView>
         
     );
 
@@ -118,8 +212,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ffffff',
-        alignItems: 'center',
-        justifyContent: 'center',
+        
     },
     DarkOverlay: {
         position: 'absolute',
@@ -146,7 +239,80 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         color: 'white'
-    }
+    },
+    userImg: {
+        height: 150,
+        width: 150,
+        borderRadius: 75,
+      },
+      userName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 10,
+        marginBottom: 10,
+      },
+      aboutUser: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: 10,
+      },
+      userBtnWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
+        marginBottom: 10,
+      },
+      userBtn: {
+        backgroundColor:'#00008b',
+        borderRadius: 10,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        marginHorizontal: 15,
+        alignItems:'center'
+        
+      },
+      userBtnTxt: {
+        color: '#ffffff',
+        fontSize:18,
+        fontFamily:'Montserrat-Bold'
+      },
+      userInfoWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
+        marginVertical: 20,
+      },
+      userInfoItem: {
+        justifyContent: 'center',
+      },
+      userInfoTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        textAlign: 'center',
+      },
+      userInfoSubTitle: {
+        fontSize: 12,
+        color: '#666',
+        textAlign: 'center',
+      },
+      menuWrapper: {
+        marginTop: 10,
+      },
+      menuItem: {
+        flexDirection: 'row',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+      },
+      menuItemText: {
+        color: '#777777',
+        marginLeft: 20,
+        fontWeight: '600',
+        fontSize: 16,
+        lineHeight: 26,
+      },
 })
 
 export default ProfileScreen;

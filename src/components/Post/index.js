@@ -1,24 +1,146 @@
-import React, {useState} from "react";
+import React, {useEffect, useContext,useState} from "react";
 import {View, Image , ImageBackground,Text, Pressable} from "react-native";
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
+import firestore from '@react-native-firebase/firestore';
+import { AuthContext } from '../../navigation/AuthProvider';
 const days = 1;
 const Post = (props) => {
 
-    const [count, setCount] = useState(0)
+    const {user, logout} =  useContext(AuthContext);
+    const addToTrends = async () => {
+    firestore()
+    .collection('trends')
+    .doc(post.id)
+    .set({
+        
+        image: post.image,
+        type: post.type,
+        title: post.title,
+        description: post.description,
+        
+        bed: post.bed,
+        bedroom: post.bedroom,
+        maxGuests: post.maxGuests,
+        wifi: post.wifi,
+        kitchen: post.kitchen,
+        bathroom: post.bathroom,
+        water: post.water,
+        toilet: post.toilet,
+        image2: post.image2, 
+        image3: post.image3, 
+        image4: post.image4, 
+        image5: post.image5,
+        
+        oldPrice: post.oldPrice,
+        newPrice: post.newPrice,
+        count: counter,   
+        
+        latitude: post.latitude,
+        longitude: post.longitude,
+        id: post.id,
+    })
+    .then(() =>{
+        console.log('Added to Trends');
+    })
+    .catch((error) => {
+        console.log('Something went wrong adding to Trends', error);
+    });
+
+
+
+    }
+    const updateTrendCount = async(postid) => {
+        firestore()
+        .collection('trends')
+        .doc(postid)
+        .update({
+            count: counter + 1
+        })
+        .then(() => {
+            console.log('User updated!');
+        });
+    }
+    
+    const addToFavorites = async () => {
+    firestore()
+    .collection('posts')
+    .add({
+        userId: user.uid,
+        image: post.image,
+        type: post.type,
+        title: post.title,
+        description: post.description,
+        
+        bed: post.bed,
+        bedroom: post.bedroom,
+        maxGuests: post.maxGuests,
+        wifi: post.wifi,
+        kitchen: post.kitchen,
+        bathroom: post.bathroom,
+        water: post.water,
+        toilet: post.toilet,
+        image2: post.image2, 
+        image3: post.image3, 
+        image4: post.image4, 
+        image5: post.image5,
+        
+        oldPrice: post.oldPrice,
+        newPrice: post.newPrice,
+        count: counter,   
+        
+        latitude: post.latitude,
+        longitude: post.longitude,
+        id: post.id,
+    })
+    .then((docRef) =>{
+        console.log('Added to Favorites');
+    })
+    .catch((error) => {
+        console.log('Something went wrong adding to Favorites', error);
+    });
+    }
+
+
+    const [counter, setCount] = useState(0);
     const[isLike, setIsLike] = useState(false);
-    //const [trending, setTrending] = useState([]);
-    const trending = [];
+    
     const colorStyle = "white"
+
+    
     
     const handleClick = () => {
+        var trendRef = firestore().collection('trends').doc(post.id);
         setIsLike(!isLike);
-        //setTrending(prev => [...prev, {post}]);
-        //console.log(trending);
-        trending.push(post);
-        console.log(trending.length)
+        
+        if (!isLike){
+            setCount(counter => counter + 1);
+            
+            var getDoc = trendRef.get()
+                .then(doc => {
+                    if (!doc.exists) {
+                        addToTrends();
+                        console.log('No such document!');
+                    } else {
+                        updateTrendCount(post.id);
+                        console.log('Document data:', doc.data());
+                    }
+                })
+                .catch(err => {
+                    console.log('Error getting document', err);
+                });
+
+
+            
+            
+            
+            addToFavorites();
+            
+        }
+        
+        
 
     }
 
@@ -28,6 +150,7 @@ const Post = (props) => {
     const goToPostPage = () =>{
             navigation.navigate("Post", {postId: post.id});
     }
+  
 
 
     return(

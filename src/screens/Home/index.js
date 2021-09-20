@@ -21,9 +21,9 @@ const HomeScreen =(props) => {
         let phoneNumber = '';
     
         if (Platform.OS === 'android') {
-          phoneNumber = 'tel:${0201167537}';
+          phoneNumber = 'tel:${0552618521}';
         } else {
-          phoneNumber = 'telprompt:${0201167537}';
+          phoneNumber = 'telprompt:${0552618521}';
         }
         try{
             Linking.openURL(phoneNumber);
@@ -251,7 +251,7 @@ const HomeScreen =(props) => {
 
                 </ScrollView>
 
-                    <Pressable onPress={() => navigation.navigate('Profile')} style={{margin: 10, padding: 16, backgroundColor: 'lightgray', borderRadius:10}}>
+                    <Pressable onPress={() => navigation.navigate('About')} style={{margin: 10, padding: 16, backgroundColor: 'lightgray', borderRadius:10}}>
                         <Text adjustsFontSizeToFit={true} style={{margin: 10, fontSize:25, fontFamily:'Montserrat-Bold'}}>Stay Informed</Text>
                         <View style={{margin: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold', fontSize:12}}>For Tenants</Text>

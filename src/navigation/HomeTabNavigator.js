@@ -12,8 +12,10 @@ import PostScreen from "../screens/PostScreen";
 import ProfileScreen from '../screens/Profile';
 import LowPriceScreen from "../screens/LowPriceScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCoffee, faCoins } from "@fortawesome/free-solid-svg-icons";
-
+import { faFacebook } from "@fortawesome/free-brands-svg-icons"
+import { faCoffee ,faHeart,faChartLine, faHouseUser ,faUser ,faCoins } from "@fortawesome/free-solid-svg-icons";
+import Wishlists from "../screens/Wishlists";
+import Trending from "../screens/TrendingScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -37,20 +39,12 @@ const HomeTabNavigator = (props) => {
             
             options={{
                 tabBarIcon: ({color}) => (
-                    <Fontisto name="home" size={25} color={color} />
+                    <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />
                 )
             }}
             />
 
-            <Tab.Screen
-                        name={"Profile"}
-                        component={ProfileScreen}
-                        options={{
-                            tabBarIcon: ({color}) => (
-                                <EvilIcons name="user" size={25} color={color} />
-                            )
-                        }}
-                        />
+            
             <Tab.Screen
                         name={"Discount"}
                         component={LowPriceScreen}
@@ -62,19 +56,37 @@ const HomeTabNavigator = (props) => {
                         }}
                         />
 
-            {/*
+           
             <Tab.Screen
                         name={"Wishlists"}
-                        component={HomeScreen}
+                        component={Wishlists}
                         options={{
                             tabBarIcon: ({color}) => (
-                                <FontAwesome name="heart-o" size={25} color={color} />
+                                <FontAwesomeIcon icon={faHeart} size={25} color={color} />
+                            )
+                        }}
+                        />
+            <Tab.Screen
+                        name={"Trending"}
+                        component={Trending}
+                        options={{
+                            tabBarIcon: ({color}) => (
+                                <FontAwesomeIcon icon={faChartLine} size={25} color={color} />
+                            )
+                        }}
+                        />
+            <Tab.Screen
+                        name={"Profile"}
+                        component={ProfileScreen}
+                        options={{
+                            tabBarIcon: ({color}) => (
+                                <FontAwesomeIcon icon={faUser} size={25} color={color} />
                             )
                         }}
                         />
 
 
-
+        {/*
             <Tab.Screen
                         name={"Messages"}
                         component={HomeScreen}

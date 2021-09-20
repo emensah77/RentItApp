@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:AirbnbClone.xcodeproj">
+      location = "group:/Users/ebenobiri/RentItApp/ios/AirbnbClone.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:AirbnbClone.xcodeproj">
    </FileRef>
 </Workspace>

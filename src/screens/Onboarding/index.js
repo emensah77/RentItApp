@@ -24,7 +24,7 @@ const Onboarding = (props) =>  {
   const navigation = useNavigation();
 
   const goto = () =>{
-    navigation.replace("Home");
+    navigation.navigate("Login");
   }
   
   

@@ -7,7 +7,7 @@ target 'AirbnbClone' do
   # React Native Maps dependencies
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
-
+  pod 'GoogleSignIn', '~> 5.0.2'
 
   config = use_native_modules!
 
@@ -33,6 +33,11 @@ target 'AirbnbClone' do
   use_flipper!()
 
   post_install do |installer|
+    installer.aggregate_targets.first.user_project.native_targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['LIBRARY_SEARCH_PATHS'] = ['$(inherited)', '$(SDKROOT)/usr/lib/swift']
+      end
+    end
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['ENABLE_BITCODE'] = 'NO'

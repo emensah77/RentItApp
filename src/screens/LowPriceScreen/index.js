@@ -1,14 +1,19 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, SafeAreaView,Dimensions, Image, Text, Pressable, ImageBackground, StyleSheet, TextInput, ScrollView, Platform} from 'react-native';
 import {Auth} from 'aws-amplify';
 import Swiper from 'react-native-swiper';
-import { useEffect, useState } from 'react/cjs/react.development';
 import {listPosts} from '../../graphql/queries';
 import {API, graphqlOperation} from 'aws-amplify';
 import {OptimizedFlatList} from 'react-native-optimized-flatlist'
 import Post from '../../components/Post';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 const LowPriceScreen = (props) => {
     const[posts, setPosts] = useState([]);
+
+
+    
 
     useEffect ( () => {
         const fetchPosts = async () => {
@@ -37,11 +42,11 @@ const LowPriceScreen = (props) => {
     //console.log(result)
 
     return (
-        <ScrollView style={{backgroundColor:'#fff', marginBottom:10}}>
+        <ScrollView style={{backgroundColor:'#fff', paddingBottom:180}}>
             <View> 
             <ImageBackground
             source={{uri:"https://i.postimg.cc/QdkCDW7C/wallpaper1.jpg"}}
-            style={{width: Dimensions.get('screen').width, height: Dimensions.get('screen').height/8}}
+            style={{width: Dimensions.get('screen').width, height: Dimensions.get('screen').height/6}}
             imageStyle={{borderBottomRightRadius:25, borderBottomLeftRadius:25}}>
 
                 <View style={styles.DarkOverlay}></View>
@@ -149,7 +154,7 @@ const styles = StyleSheet.create({
         right: 0,
         left: 0,
         width: Dimensions.get('screen').width, 
-        height: Dimensions.get('screen').height/8,
+        height: Dimensions.get('screen').height/6,
         backgroundColor: '#000',
         opacity: 0.3,
         borderBottomRightRadius: 25,

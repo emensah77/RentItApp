@@ -57,6 +57,10 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+#android hprof
+android/
+
+*.hprof
 
 #amplify
 amplify/\#current-cloud-backend
