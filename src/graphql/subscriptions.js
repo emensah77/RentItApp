@@ -21,6 +21,7 @@ export const onCreatePost = /* GraphQL */ `
       bathroom
       water
       toilet
+      aircondition
       oldPrice
       newPrice
       latitude
@@ -50,6 +51,7 @@ export const onUpdatePost = /* GraphQL */ `
       bathroom
       water
       toilet
+      aircondition
       oldPrice
       newPrice
       latitude
@@ -79,6 +81,7 @@ export const onDeletePost = /* GraphQL */ `
       bathroom
       water
       toilet
+      aircondition
       oldPrice
       newPrice
       latitude

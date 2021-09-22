@@ -7,8 +7,9 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
 const days = 1;
-const Post = (props) => {
 
+const Post = (props) => {
+    var docRefId;
     const {user, logout} =  useContext(AuthContext);
     const addToTrends = async () => {
     firestore()
@@ -63,6 +64,8 @@ const Post = (props) => {
             console.log('User updated!');
         });
     }
+
+    
     
     const addToFavorites = async () => {
     firestore()
@@ -96,6 +99,8 @@ const Post = (props) => {
         id: post.id,
     })
     .then((docRef) =>{
+        docRefId = docRef.id;
+        
         console.log('Added to Favorites');
     })
     .catch((error) => {
@@ -115,6 +120,8 @@ const Post = (props) => {
         var trendRef = firestore().collection('trends').doc(post.id);
         setIsLike(!isLike);
         
+        
+        
         if (!isLike){
             setCount(counter => counter + 1);
             
@@ -125,7 +132,7 @@ const Post = (props) => {
                         console.log('No such document!');
                     } else {
                         updateTrendCount(post.id);
-                        console.log('Document data:', doc.data());
+                        console.log('Document data:', doc.data().image2);
                     }
                 })
                 .catch(err => {

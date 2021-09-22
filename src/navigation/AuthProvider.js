@@ -3,19 +3,18 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
-
+import { ActivityIndicator, View } from 'react-native';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(()=> {
-      if (loading === false){
-          setLoading(true)
-      }
-      
-  });
+  if (loading){ return(
+    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+      <ActivityIndicator animating={true} size="large"  color="blue" style={{opacity:1}}/>
+    </View>
+  );}
   return (
     <AuthContext.Provider
       value={{
@@ -32,6 +31,7 @@ export const AuthProvider = ({children}) => {
           try {
             
             // Get the users ID token
+            
             const { idToken } = await GoogleSignin.signIn();
             
             // Create a Google credential with the token
@@ -39,8 +39,9 @@ export const AuthProvider = ({children}) => {
             
             
             // Sign-in the user with the credential
+            setLoading(true);
             await auth().signInWithCredential(googleCredential);
-            
+            setLoading(false);
             
             // Use it only when user Sign's up, 
             // so create different social signup function
@@ -85,8 +86,9 @@ export const AuthProvider = ({children}) => {
             const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
           
             // Sign the user in with the credential
+            setLoading(true);
             return auth().signInWithCredential(appleCredential);
-
+            setLoading(false);
           }
           catch(error){
             console.log(error);
@@ -113,7 +115,9 @@ export const AuthProvider = ({children}) => {
             const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
             // Sign-in the user with the credential
+            setLoading(true);
             await auth().signInWithCredential(facebookCredential)
+            setLoading(false);
             // Use it only when user Sign's up, 
             // so create different social signup function
             // .then(() => {
@@ -134,9 +138,7 @@ export const AuthProvider = ({children}) => {
             //   })
             // })
             //we need to catch the whole sign up process if it fails too.
-            .catch(error => {
-                console.log('Something went wrong with sign up: ', error);
-            });
+            
           } catch(error) {
             console.log({error});
           }

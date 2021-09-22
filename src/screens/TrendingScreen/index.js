@@ -115,7 +115,7 @@ const Trending = (props) => {
                 }}>
                     <StatusBar hidden={true}/>
                     <View style={{
-                        backgroundColor:'#00008b',
+                        backgroundColor:'blue',
                         height:"25%",
                         borderBottomLeftRadius:20,
                         borderBottomRightRadius: 20,
@@ -169,7 +169,7 @@ const Trending = (props) => {
         }}>
             <StatusBar hidden={true}/>
             <View style={{
-                backgroundColor:'#00008b',
+                backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,

@@ -48,12 +48,20 @@ const LoginScreen = ({navigation}) => {
     <ScrollView contentContainerStyle={styles.container}>
       <StatusBar backgroundColor="blue" barStyle="light-content" />
       <View style={styles.container}>
+        
         <View style={styles.header}>
+        <Animatable.Image 
+                animation="fadeInDownBig"
+                duraton={1500}
+              source={require('../../../assets/data/images/rentitpic1.png')}
+              style={{height:200, width:200, justifyContent:'center', alignSelf:"center"}}
+              resizeMode="contain"
+            />
           <Text style={styles.text_header}> Welcome </Text>
         </View>
         <Animatable.View
         animation="fadeInUpBig"
-        duration={2000} 
+        duration={1500} 
           style={styles.footer}
         >
           <Text style={styles.title}>Find your next home</Text>
@@ -335,7 +343,7 @@ const styles = StyleSheet.create({
   },
   text_header: {
       color: '#fff',
-      fontWeight: 'bold',
+      fontFamily:"Montserrat-Bold",
       fontSize: 30
   },
   text_footer: {
@@ -387,7 +395,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'blue',
-    fontSize: 30,
+    fontSize: 25,
     
     fontFamily:'Montserrat-Bold'
 },

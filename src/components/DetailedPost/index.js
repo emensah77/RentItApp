@@ -7,13 +7,21 @@ import { withAuthenticator } from 'aws-amplify-react-native';
 import Amplify from '@aws-amplify/core';
 import Feather from 'react-native-vector-icons/Feather';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUtensils , faFaucet, faBath, faBed, faToilet} from '@fortawesome/free-solid-svg-icons'
-
+import { faUtensils , faFan ,faFaucet, faBath, faBed, faToilet} from '@fortawesome/free-solid-svg-icons'
+import firebase from '@react-native-firebase/app';
+import analytics from '@react-native-firebase/analytics';
 
 
 const DetailedPost = (props) => {
 
-
+    const logAnalyticsEvent = async () =>{
+        await analytics().logEvent('calltorent', {
+            id: 3745092,
+            item: 'Call to Rent Button Click',
+            description: 'Clicked on the call to rent button'
+            
+        })
+    }
     const makeCall = () => {
 
         let phoneNumber = '';
@@ -88,6 +96,10 @@ const DetailedPost = (props) => {
                     Amenities available
                 </Text>
                 <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Air Conditioner <FontAwesomeIcon icon={faFan}  size={25} color={'blue'}/></Text>
+                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.aircondition}</Text>
+                </View>
+                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
                     <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Wifi <Feather name="wifi" size={25} color={'blue'}/></Text>
                     <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.wifi}</Text>
                 </View>
@@ -111,6 +123,7 @@ const DetailedPost = (props) => {
                     <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Toilet <FontAwesomeIcon icon={faToilet} size={25} color={'blue'}/></Text>
                     <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.toilet}</Text>
                 </View>
+
        
                 
                 
@@ -119,6 +132,8 @@ const DetailedPost = (props) => {
 
             <View style={{margin: 20}}>
             <Pressable
+                title="Call to Rent Event"
+                
                 style={{
                     flex: 1,
                     flexDirection: 'row',
@@ -130,7 +145,10 @@ const DetailedPost = (props) => {
                     marginHorizontal: 20,
                     borderRadius: 25,
                     justifyContent: 'center'
-                }}  onPress={makeCall}>
+                }}  onPress={() => {
+                    makeCall();
+                    logAnalyticsEvent();
+                }}>
                     <Fontisto name="phone" size={25} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
                     <Text style={{
                         fontSize: 20,

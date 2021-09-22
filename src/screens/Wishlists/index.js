@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {Share, FlatList ,StatusBar,View, SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {Share, FlatList ,StatusBar,View ,SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import Post from '../../components/Post';
 import PostDelete from '../../components/PostDelete';
 import { AuthContext } from '../../navigation/AuthProvider';
-
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 const Wishlists = (props) => {
     const {user, logout} =  useContext(AuthContext);
     const navigation = useNavigation();
@@ -80,6 +80,7 @@ const Wishlists = (props) => {
                             
                             latitude: latitude,
                             longitude: longitude,
+                            id: id,
                             
     
                         }) }
@@ -87,6 +88,10 @@ const Wishlists = (props) => {
                 })
                     
                     setPosts(favorite);
+                    if(loading){
+                        setLoading(false);
+                    }
+                    
                
 
                 
@@ -102,11 +107,15 @@ const Wishlists = (props) => {
     })
 
 
+    const deletePost = (postId) => {
+        console.log('Current Post id', postId);
+    }
+
     
     
     
     
-        if (posts.length > 0){
+        if (!loading){
             return (
                 <View style={{
                     backgroundColor: "#fff",
@@ -116,7 +125,7 @@ const Wishlists = (props) => {
                 }}>
                     <StatusBar hidden={true}/>
                     <View style={{
-                        backgroundColor:'#00008b',
+                        backgroundColor:'blue',
                         height:"25%",
                         borderBottomLeftRadius:20,
                         borderBottomRightRadius: 20,
@@ -142,15 +151,52 @@ const Wishlists = (props) => {
                     
 
                 </View>
+
+                {loading ?
+                <ScrollView
+         
+        
+                style={{
+                    flex:1, }} contentContainerStyle={{justifyContent:'center', alignItems:'center', paddingTop:50}}>
+                    
+                    <SkeletonContent
+                    containerStyle={{paddingBottom:100, width: 300}}
+                    animationDirection="horizontalLeft"
+                    layout={[
+                        // long line
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+        
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+        
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10},
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+                        
+                        // ...
+                    ]}
+                    >
+                        
+                    
+                    </SkeletonContent>
+                </ScrollView>
+                :
+                
                 
                 <View>
                     <FlatList
                     data={posts}
-                    renderItem={({item}) => <PostDelete post={item}/>}
+                    renderItem={({item}) => <PostDelete post={item} />}
                     
                     />
                 </View>
-
+        }
                 </View>
             );
         }
@@ -165,7 +211,7 @@ const Wishlists = (props) => {
         }}>
             <StatusBar hidden={true}/>
             <View style={{
-                backgroundColor:'#00008b',
+                backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,

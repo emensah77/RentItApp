@@ -15,9 +15,9 @@ const ProfileScreen = ({route}) => {
       
         try {
           const result = await Share.share({
-           title: 'Download RentIt',
-            message: 'Install this app and find homes to rent near you, AppLink: ', 
-            url: Platform.OS === 'android' ? 'https://play.google.com/store/apps/details?id=com.rentitghana' : 'https://apps.apple.com/us/app/rentit-find-homes-rooms/id1580456122'
+           title: 'Download RentIt and find homes to rent in your area',
+            message: Platform.OS === 'android' ? 'https://play.google.com/store/apps/details?id=com.rentitghana' :  'https://apps.apple.com/us/app/rentit-find-homes-rooms/id1580456122'
+   
           });
           if (result.action === Share.sharedAction) {
             if (result.activityType) {
@@ -64,7 +64,7 @@ const ProfileScreen = ({route}) => {
         }}>
             <StatusBar hidden={true}/>
             <View style={{
-                backgroundColor:'#00008b',
+                backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,
@@ -109,25 +109,25 @@ const ProfileScreen = ({route}) => {
             <View style={styles.menuWrapper}>
         <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>
           <View style={styles.menuItem}>
-            <Icon name="heart-outline" color="#00008b" size={25}/>
+            <Icon name="heart-outline" color="blue" size={25}/>
             <Text style={styles.menuItemText}>Your Favorites</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {}}>
           <View style={styles.menuItem}>
-            <Icon name="credit-card" color="#00008b" size={25}/>
+            <Icon name="credit-card" color="blue" size={25}/>
             <Text style={styles.menuItemText}>Payment</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={onShare}>
           <View style={styles.menuItem}>
-            <Icon name="share-outline" color="#00008b" size={25}/>
+            <Icon name="share-outline" color="blue" size={25}/>
             <Text style={styles.menuItemText}>Tell Your Friends</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {}}>
           <View style={styles.menuItem}>
-            <Icon name="account-check-outline" color="#00008b" size={25}/>
+            <Icon name="account-check-outline" color="blue" size={25}/>
             <Text style={styles.menuItemText}>Support</Text>
           </View>
         </TouchableOpacity>
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
       },
       userBtn: {
-        backgroundColor:'#00008b',
+        backgroundColor:'blue',
         borderRadius: 10,
         paddingVertical: 8,
         paddingHorizontal: 12,

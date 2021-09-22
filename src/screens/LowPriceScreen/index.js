@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, SafeAreaView,Dimensions, Image, Text, Pressable, ImageBackground, StyleSheet, TextInput, ScrollView, Platform} from 'react-native';
+import {View, StatusBar,SafeAreaView,Dimensions, Image, Text, Pressable, ImageBackground, StyleSheet, TextInput, ScrollView, Platform} from 'react-native';
 import {Auth} from 'aws-amplify';
 import Swiper from 'react-native-swiper';
 import {listPosts} from '../../graphql/queries';
@@ -7,11 +7,11 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {OptimizedFlatList} from 'react-native-optimized-flatlist'
 import Post from '../../components/Post';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 const LowPriceScreen = (props) => {
     const[posts, setPosts] = useState([]);
-
+    const[loading, setLoading] = useState(true);
 
     
 
@@ -25,6 +25,9 @@ const LowPriceScreen = (props) => {
                 )
 
                 setPosts(postsResult.data.listPosts.items);
+                if(loading){
+                    setLoading(false);
+                }
             } catch (e){
                 console.log(e);
             }
@@ -42,24 +45,33 @@ const LowPriceScreen = (props) => {
     //console.log(result)
 
     return (
-        <ScrollView style={{backgroundColor:'#fff', paddingBottom:180}}>
-            <View> 
-            <ImageBackground
-            source={{uri:"https://i.postimg.cc/QdkCDW7C/wallpaper1.jpg"}}
-            style={{width: Dimensions.get('screen').width, height: Dimensions.get('screen').height/6}}
-            imageStyle={{borderBottomRightRadius:25, borderBottomLeftRadius:25}}>
+        <ScrollView style={{
+            backgroundColor: "#fff",
+            flex: 1,
+            paddingBottom:180,
 
-                <View style={styles.DarkOverlay}></View>
-                <View style={styles.searchContainer}>
-                    <Text style={styles.UserGreetings}>Discount</Text>
-                    <Text style={styles.userText}>Cheap Homes to Rent</Text>
+        }}>
+            <StatusBar hidden={true}/>
+            <View style={{
+                backgroundColor:'blue',
+                height:"5%",
+                borderBottomLeftRadius:20,
+                borderBottomRightRadius: 20,
+                paddingHorizontal:20,
+                justifyContent:'center'
+            }}>
+                <View style={{paddingTop:15 }}>
+                    <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Discount</Text>
+                    <Text style={{fontSize:22, color:'white', fontFamily:'Montserrat-Regular'}}>Cheap homes to rent</Text>
                 </View>
                 
-            </ImageBackground>
+                
+                
+
+
             </View>
-            <View>
-                <Text></Text>
-            </View>
+            
+            
             <View style={styles.container}>
                 <View style={styles.sliderContainer}>
                 <Swiper style={styles.wrapper} loop autoplay horizontal={false} height={200} activeDotColor="white">
@@ -127,6 +139,42 @@ const LowPriceScreen = (props) => {
                     Most Affordable
                 </Text>
                 </View>
+
+                {loading ?
+                <ScrollView
+         
+        
+                style={{
+                    flex:1, }} contentContainerStyle={{justifyContent:'center', alignItems:'center', paddingTop:50}}>
+                    
+                    <SkeletonContent
+                    containerStyle={{paddingBottom:100, width: 300}}
+                    animationDirection="horizontalLeft"
+                    layout={[
+                        // long line
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+        
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+        
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10},
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+                        
+                        // ...
+                    ]}
+                    >
+                        
+                    
+                    </SkeletonContent>
+                </ScrollView>
+                :
                 
                 <View style={{marginBottom:10, top:80}}>
                   <OptimizedFlatList
@@ -134,6 +182,8 @@ const LowPriceScreen = (props) => {
                       renderItem={({item}) => <Post post={item}/>}
                 />
                   </View>
+
+                }
                   
             </View>
         </ScrollView>
@@ -148,18 +198,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         
     },
-    DarkOverlay: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        left: 0,
-        width: Dimensions.get('screen').width, 
-        height: Dimensions.get('screen').height/6,
-        backgroundColor: '#000',
-        opacity: 0.3,
-        borderBottomRightRadius: 25,
-        borderBottomLeftRadius: 25
-    },
+    
     searchContainer: {
         paddingTop: Platform.OS === 'android' ? 10: 30,
         paddingLeft: 10,

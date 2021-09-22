@@ -9,12 +9,13 @@ import { Dimensions} from "react-native";
 import Feather from 'react-native-vector-icons/Feather';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import styles from '../Home/styles';
-
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 const SearchResultsScreen = (props) => {
     
     
     const[posts, setPosts] = useState([]);
+    const[loading, setLoading] =  useState(true);
    
     const {guests, viewport} = props;
     
@@ -41,7 +42,7 @@ const SearchResultsScreen = (props) => {
             id: 4,
         },
         {
-            status: '1000',
+            status: 'Self-Contained',
             id: 5,
             
         },
@@ -50,6 +51,11 @@ const SearchResultsScreen = (props) => {
             id: 6,
             
         },
+        {
+            status: 'Full Home',
+            id: 7,
+            
+        }
 
     ]
     
@@ -83,6 +89,9 @@ const SearchResultsScreen = (props) => {
                 )
 
                 setPosts(postsResult.data.listPosts.items);
+                if(loading){
+                    setLoading(false);
+                }
             } catch (e){
                 console.log(e);
             }
@@ -120,6 +129,7 @@ const SearchResultsScreen = (props) => {
                 )
 
                 setDatalist(postsResult.data.listPosts.items);
+                
             } catch (e){
                 console.log(e);
             }
@@ -218,8 +228,11 @@ const SearchResultsScreen = (props) => {
                                 
                             </View>
                         
-            
+                
                 <View style={{marginBottom:10, top:80}}>
+                    
+                        
+            
                   <OptimizedFlatList
                       data={datalist}
                       keyExtractor={(status, i) => i.toString()}
@@ -229,19 +242,16 @@ const SearchResultsScreen = (props) => {
                   </View>  
             </View>
                 
-            : <View style={{alignItems: 'center', justifyContent:"center"}}>
-            <AnimatedEllipsis animationDelay={150} style={{
+         : <View style={{alignItems: 'center', justifyContent:"center"}}>
+             <AnimatedEllipsis animationDelay={150} style={{
             color: 'blue',
-            fontSize: 100,
+           fontSize: 100,
             
-            letterSpacing: -15,
+          letterSpacing: -15,
             
-          }}/></View>
-
-
-
-            }
-                
+           }}/></View>
+        
+        }      
         
           
             

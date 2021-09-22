@@ -21,6 +21,7 @@ export const getPost = /* GraphQL */ `
       bathroom
       water
       toilet
+      aircondition
       oldPrice
       newPrice
       latitude
@@ -55,6 +56,7 @@ export const listPosts = /* GraphQL */ `
         bathroom
         water
         toilet
+        aircondition
         oldPrice
         newPrice
         latitude

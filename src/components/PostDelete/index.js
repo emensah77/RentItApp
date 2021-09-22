@@ -24,8 +24,7 @@ const PostDelete = (props) => {
         setIsLike(!isLike);
         
         if (!isLike){
-            
-            console.log(docRefId);
+            setCount(counter => counter + 1);
         }
 
     }
@@ -37,16 +36,20 @@ const PostDelete = (props) => {
     const goToPostPage = () =>{
             navigation.navigate("Post", {postId: post.id});
     }
-    const deletePost = () => {
-        firestore()
-        .collection('posts')
-        .doc(post.id)
-        .delete()
-        .then(() => {
-            console.log('User deleted!');
-        });
+    
+    const deletePost = (postId) => {
+
+        if (user.uid === post.userId){
+            firestore()
+            .collection('posts')
+            .doc(postId)
+            .delete()
+            .then(() => {
+                console.log('User deleted!');
+            });
+        }
+
     }
-  
 
 
     return(
@@ -92,9 +95,9 @@ const PostDelete = (props) => {
                     </Text>
 
             </View>
-            <TouchableOpacity onPress={deletePost} style={{padding:15,top:-55,flex:1, flexDirection:'row',justifyContent:'flex-end'}}>
+            {/* <TouchableOpacity onPress={() => deletePost(post.id)} style={{right:0,top:-55,flex:1, flexDirection:'row',justifyContent:'flex-end'}}>
                 <FontAwesomeIcon icon={faTrash} size={25} color={'blue'}/>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             
                 

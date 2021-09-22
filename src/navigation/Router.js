@@ -34,11 +34,7 @@ const Router = () => {
     return subscriber; // unsubscribe on unmount
   }, []);
   if (initializing) return null;
-  if (loading){ return(
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-      <ActivityIndicator size="large"/>
-    </View>
-  );}
+  
   if (!user) {
     return (
       <NavigationContainer>
