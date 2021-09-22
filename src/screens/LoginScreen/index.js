@@ -46,7 +46,7 @@ const LoginScreen = ({navigation}) => {
   
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <StatusBar backgroundColor="blue" barStyle="light-content" />
+      <StatusBar hidden={true} />
       <View style={styles.container}>
         
         <View style={styles.header}>

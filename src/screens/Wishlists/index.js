@@ -115,7 +115,7 @@ const Wishlists = (props) => {
     
     
     
-        if (!loading){
+        if (posts.length > 0){
             return (
                 <View style={{
                     backgroundColor: "#fff",

@@ -11,8 +11,11 @@ const styles = StyleSheet.create({
 
     textInput: {
         fontSize: 20,
-        marginBottom: 20,
+        marginBottom: 2,
         fontWeight: "bold",
+        paddingVertical:5,
+        paddingHorizontal: 10,
+        
         
     },
 

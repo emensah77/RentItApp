@@ -28,11 +28,17 @@ const DestinationSearch = (props) => {
                 fetchDetails
                 styles={{
                     textInput: styles.textInput,
+                    textInputContainer: {
+                        backgroundColor: 'white',
+                        borderRadius:15,
+                        borderWidth:.4,
+                        
+                      },
                 }}
                 query={{
                     key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
                     language: 'en',
-                    types: '(cities)',
+                    types: '(regions)',
                     components: 'country:gh',
                 }}
                 
