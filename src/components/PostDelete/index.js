@@ -23,9 +23,7 @@ const PostDelete = (props) => {
     const handleClick = () => {
         setIsLike(!isLike);
         
-        if (!isLike){
-            setCount(counter => counter + 1);
-        }
+        
 
     }
 
