@@ -5,6 +5,8 @@ import SearchResultsScreen from '../screens/SearchResults';
 import SearchResultsTabNavigator from './SearchResultsTabNavigator';
 import AboutScreen from '../screens/AboutScreen';
 import LoginScreen from '../screens/LoginScreen';
+import AddressScreen from '../screens/AddressScreen';
+import PaymentScreen from '../screens/PaymentScreen';
 
 
 const Stack = createStackNavigator();
@@ -39,7 +41,22 @@ const Router = (props) => {
                         headerShown: false,
                     }}
                     />
-
+                <Stack.Screen
+                    name={'Address'}
+                    component={AddressScreen}
+                    options={{
+                        headerShown: true,
+                        title:'Confirm and Pay'
+                    }}
+                    />
+                <Stack.Screen
+                    name={'Payment'}
+                    component={PaymentScreen}
+                    options={{
+                        headerShown: true,
+                        title:'Confirm and Pay'
+                    }}
+                    />
                 
 
                 <Stack.Screen

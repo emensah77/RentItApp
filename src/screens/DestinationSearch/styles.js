@@ -12,9 +12,11 @@ const styles = StyleSheet.create({
     textInput: {
         fontSize: 20,
         marginBottom: 2,
-        fontWeight: "bold",
+        fontFamily:'Montserrat-Bold',
         paddingVertical:5,
         paddingHorizontal: 10,
+        color:"black"
+       
         
         
     },

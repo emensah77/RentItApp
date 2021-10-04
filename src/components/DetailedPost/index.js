@@ -10,9 +10,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUtensils , faFan ,faFaucet, faBath, faBed, faToilet} from '@fortawesome/free-solid-svg-icons'
 import firebase from '@react-native-firebase/app';
 import analytics from '@react-native-firebase/analytics';
-
-
+import { useNavigation } from '@react-navigation/native';
+import Swiper from 'react-native-swiper';
 const DetailedPost = (props) => {
+    const post = props.post;
+    const navigation = useNavigation();
 
     const logAnalyticsEvent = async () =>{
         await analytics().logEvent('calltorent', {
@@ -21,6 +23,16 @@ const DetailedPost = (props) => {
             description: 'Clicked on the call to rent button'
             
         })
+    }
+    const payRent = () => {
+        navigation.navigate('Address', {
+            price: post.newPrice, 
+            homeimage: post.image,
+            hometitle: post.title,
+            homebed: post.bed,
+            
+
+        });
     }
     const makeCall = () => {
 
@@ -35,7 +47,7 @@ const DetailedPost = (props) => {
         Linking.openURL(phoneNumber);
       };
 
-    const post = props.post;
+    
 
     const images = [
         {
@@ -54,7 +66,7 @@ const DetailedPost = (props) => {
     ]
 
     return(
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
                 {/* Image */}
                 <FlatListSlider 
@@ -131,6 +143,31 @@ const DetailedPost = (props) => {
 
 
             <View style={{margin: 20}}>
+            <Pressable
+                
+                
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    marginBottom: 20,
+                    backgroundColor: 'deeppink',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 50,
+                    marginHorizontal: 20,
+                    borderRadius: 25,
+                    justifyContent: 'center'
+                }}  onPress={() => {
+                    payRent();
+                    logAnalyticsEvent();
+                }}>
+                    <Fontisto name="credit-card" size={25} style={{color: 'white' , margin: 10 ,}} />
+                    <Text style={{
+                        fontSize: 20,
+                        color: 'white',
+                        fontWeight: 'bold',
+                    }}>Pay to Rent</Text>
+            </Pressable>
             <Pressable
                 title="Call to Rent Event"
                 

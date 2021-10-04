@@ -45,7 +45,7 @@ const LowPriceScreen = (props) => {
     //console.log(result)
 
     return (
-        <ScrollView style={{
+        <View style={{
             backgroundColor: "#fff",
             flex: 1,
             paddingBottom:180,
@@ -54,7 +54,7 @@ const LowPriceScreen = (props) => {
             <StatusBar hidden={true}/>
             <View style={{
                 backgroundColor:'blue',
-                height:"5%",
+                height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,
                 paddingHorizontal:20,
@@ -62,7 +62,6 @@ const LowPriceScreen = (props) => {
             }}>
                 <View style={{paddingTop:15 }}>
                     <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Discount</Text>
-                    <Text style={{fontSize:22, color:'white', fontFamily:'Montserrat-Regular'}}>Cheap homes to rent</Text>
                 </View>
                 
                 
@@ -70,85 +69,31 @@ const LowPriceScreen = (props) => {
 
 
             </View>
+        
+    <View style={{padding:15}} >
+            <Text 
+            style={{
+            fontFamily:'Montserrat-Bold',
+            fontSize:20,
+            paddingBottom:10,
+            }}>Most Affordable</Text>
+            <Text 
+            style={{
+            fontFamily:'Montserrat-Regular',
+            fontSize:18
+            }}>The cheapest homes selected for you</Text>
             
-            
-            <View style={styles.container}>
-                <View style={styles.sliderContainer}>
-                <Swiper style={styles.wrapper} loop autoplay horizontal={false} height={200} activeDotColor="white">
-                    <View style={styles.slide}>
-                        
-                    <Text style={styles.text}>Cheap</Text>
-                        {/*<Image
-                            source={{uri:'https://d5w4alzj7ppu4.cloudfront.net/house1/house4.jpg'}}
-                            resizeMode="cover"
-                            style={styles.sliderImage}
-                        />
-                        */}
-                        
-                    </View>
-                    <View style={styles.slide}>
-                        <Text style={styles.text}>Affordable</Text>
-                            {/*<Image
-                                source={{uri:'https://d5w4alzj7ppu4.cloudfront.net/house1/house4.jpg'}}
-                                resizeMode="cover"
-                                style={styles.sliderImage}
-                            />
-                            */}
-                        
-                    </View>
-                    <View style={styles.slide}>
-                        <Text style={styles.text}>Homes</Text>
-                            {/*<Image
-                                source={{uri:'https://d5w4alzj7ppu4.cloudfront.net/house1/house4.jpg'}}
-                                resizeMode="cover"
-                                style={styles.sliderImage}
-                            />
-                            */}
-                        
-                    </View>
-                    <View style={styles.slide}>
-                        <Text style={styles.text}>For</Text>
-                        {/*<Image
-                            source={{uri:'https://d5w4alzj7ppu4.cloudfront.net/house1/house4.jpg'}}
-                            resizeMode="cover"
-                            style={styles.sliderImage}
-                        />
-                        */}
-                        
-                    </View>
-                    <View style={styles.slide}>
-                    <Text style={styles.text}>You</Text>
-                        {/*<Image
-                            source={{uri:'https://d5w4alzj7ppu4.cloudfront.net/house1/house4.jpg'}}
-                            resizeMode="cover"
-                            style={styles.sliderImage}
-                        />
-                        */}
-                        
-                    </View>
-                </Swiper>
-                </View>
-                <View style={{marginTop: 30}}>
-                    <Text
-                    style={{
-                        alignSelf: 'center',
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        color: '#333',
-                    }}>
-                    Most Affordable
-                </Text>
-                </View>
 
-                {loading ?
-                <ScrollView
+        </View>
+        {loading ?
+                <View
          
         
                 style={{
-                    flex:1, }} contentContainerStyle={{justifyContent:'center', alignItems:'center', paddingTop:50}}>
+                     flex:1, marginVertical:20 ,paddingLeft:20, marginHorizontal:20, justifyContent:'flex-start', alignContent:"center" }} >
                     
                     <SkeletonContent
-                    containerStyle={{paddingBottom:100, width: 300}}
+                    containerStyle={{paddingBottom:0, width: 300}}
                     animationDirection="horizontalLeft"
                     layout={[
                         // long line
@@ -173,22 +118,24 @@ const LowPriceScreen = (props) => {
                         
                     
                     </SkeletonContent>
-                </ScrollView>
+                </View>
                 :
                 
-                <View style={{marginBottom:10, top:80}}>
-                  <OptimizedFlatList
-                      data={posts}
-                      renderItem={({item}) => <Post post={item}/>}
-                />
-                  </View>
-
-                }
-                  
-            </View>
-        </ScrollView>
         
+        <View>
+            <OptimizedFlatList
+            data={posts}
+            renderItem={({item}) => <Post post={item}/>}
+            
+            />
+        </View>
+    }
+        </View>
+
+                
     );
+                
+                
 
 };
 

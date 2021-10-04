@@ -16,9 +16,8 @@ const DestinationSearch = (props) => {
             {/* Input Component */}
             
             <GooglePlacesAutocomplete
-                
+                placeholderTextColor='#ffffff'
                 placeholder='Type where you want to rent'
-                placeholderTextColor="yellow"
                 autoFocus={true}
                 onPress={(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
@@ -29,7 +28,7 @@ const DestinationSearch = (props) => {
                 styles={{
                     textInput: styles.textInput,
                     textInputContainer: {
-                        backgroundColor: 'white',
+                        backgroundColor: 'yellow',
                         borderRadius:15,
                         borderWidth:.4,
                         

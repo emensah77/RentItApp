@@ -68,3 +68,49 @@ export const listPosts = /* GraphQL */ `
     }
   }
 `;
+export const searchPosts = /* GraphQL */ `
+  query SearchPosts(
+    $filter: SearchablePostFilterInput
+    $sort: SearchablePostSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchPosts(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        image
+        image2
+        image3
+        image4
+        image5
+        type
+        title
+        description
+        bed
+        bedroom
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
+    }
+  }
+`;

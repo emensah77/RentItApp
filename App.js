@@ -44,7 +44,7 @@ import ActivityLoader from './src/components/ActivityLoader';
 import { AmplifyTheme } from "aws-amplify-react-native";
 Amplify.configure(awsconfig);
 
-
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 const myTheme = StyleSheet.create({
   container: {
@@ -194,8 +194,11 @@ const App: () => Node = () => {
     
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       
-      {/*<ActivityLoader/>*/}
-      <Providers/>
+      {/*<ActivityLoader/>*/}        
+      <StripeProvider publishableKey="pk_test_51JdytaJGNsvkOPNSU9AdMc51lk0C0OY3RtnXSSEZ2cGT0AXJ6AD3ckQJHcn2VKoUgTELzjnnQgqDx4kbqDJRw8Il00VIB5vmvs">
+        <Providers/>
+      </StripeProvider>
+      
       
       {/*<Router />*/}
       

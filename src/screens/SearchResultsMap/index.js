@@ -9,7 +9,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {listPosts} from '../../graphql/queries'; 
 import { Dimensions} from "react-native";
 import Feather from 'react-native-vector-icons/Feather';
-
+import {OptimizedFlatList} from 'react-native-optimized-flatlist'
 const mapStyle = [
     {
       "elementType": "geometry",
@@ -224,8 +224,8 @@ const mapStyle = [
       ]
     }
   ]
-const SearchResultsMaps = (props) => {
-    const {guests, viewport} = props;
+const SearchResultsMaps = ({guests, viewport}) => {
+    
     const[posts, setPosts] = useState([]);
     const [selectedPlacedId, setSelectedPlacedId] = useState(null);
     const width = useWindowDimensions().width;
@@ -238,6 +238,58 @@ const SearchResultsMaps = (props) => {
             setSelectedPlacedId(selectedPlace.id)
         }
     })
+    
+
+    const fetchPostsOnChange = async (region) => {
+      const Latitude = region.latitude;
+      const Longitude = region.longitude;
+      const LatitudeDelta = region.latitudeDelta;
+      const LongitudeDelta = region.longitudeDelta;
+      console.log('Latitude',Latitude);
+      console.log('Longitude',Longitude);
+      console.log('LatitudeDelta',LatitudeDelta);
+      console.log('LongitudeDelta',LongitudeDelta);
+      
+      try{
+
+          const postsResult = await API.graphql(
+              graphqlOperation(listPosts, {
+                  filter: {
+                      and: {
+                          maxGuests: {
+                              ge: guests
+                          },
+                          latitude: {
+                              between: [
+                                  Latitude - (LatitudeDelta/2),
+                                  Latitude + (LatitudeDelta/2),
+                                  
+                                  
+                                  //viewport.southwest.lat,
+                                  //viewport.northeast.lat,
+                              ],
+                          },
+                          longitude: {
+                              between: [
+                                
+                                Longitude - (LongitudeDelta/2),
+                                Longitude + (LongitudeDelta/2),
+                                  //viewport.southwest.lng,
+                                  //viewport.northeast.lng,
+                              ],
+                          }
+                      }
+                      
+                  }
+              })
+          )
+          
+          setPosts(postsResult.data.listPosts.items);
+          console.log(posts);
+      } catch (e){
+          console.log(e);
+      }
+  }
     
     useEffect ( () => {
         const fetchPosts = async () => {
@@ -277,7 +329,7 @@ const SearchResultsMaps = (props) => {
     }, [])
 
 
-
+    
 
 
 
@@ -304,6 +356,7 @@ const SearchResultsMaps = (props) => {
         
     }, [selectedPlacedId])
     
+    
     return (
         <View style={{width: '100%', height: '100%'}}>
                <View 
@@ -325,11 +378,15 @@ const SearchResultsMaps = (props) => {
                               fontWeight: 'bold',}}> {posts.length} homes to rent</Text>
                             
                       </View>
+            
             <MapView
                 ref={map}
                 style={{width:'100%', height: '100%', backgroundColor:"white"}}
                 provider={PROVIDER_GOOGLE}
                 customMapStyle={mapStyle}
+                zoomEnabled={true}
+                minZoomLevel={12}
+                onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
                 initialRegion={{
                 latitude: 5.602028159656166, 
                 longitude: -0.183158678544458,

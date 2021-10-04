@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View, Image ,Text, Pressable} from "react-native";
+import {View, Image, Platform ,Text, Pressable} from "react-native";
 import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
@@ -28,13 +28,15 @@ const Post = (props) => {
         <Pressable onPress={goToPostPage} style={styles.container, {width: width - 60, marginHorizontal: 5}}>
             {/* Image */}
             <View style={styles.innerContainer}>
-                <FastImage style={styles.image}
+            <FastImage
+                fallback={Platform.OS === 'android' ? true : false}  
                 source={{
-                    uri: post.image,
-                    headers: { Authorization: 'token' },
-                    priority: FastImage.priority.high,
-                    
-                }}/>
+                        uri: post.image,
+                        headers: {  Authorization: 'someAuthToken' },
+                        priority: FastImage.priority.high,
+                        
+                        }}
+                        style={styles.image}/>
                 {/* Bed and Bedroom */}
                 <View style={{flex: 1, marginHorizontal: 10, marginBottom:10}}>
                         <Text style={styles.bedrooms}>

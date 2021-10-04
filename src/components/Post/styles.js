@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width : '100%',
+        height:'100%',
         aspectRatio: 3 /2,
         resizeMode: 'cover',
         borderRadius: 10, 

@@ -1,11 +1,12 @@
 import React, {useEffect, useContext,useState} from "react";
-import {View, Image , ImageBackground,Text, Pressable} from "react-native";
+import {View, Image , Platform ,ImageBackground,Text, Pressable} from "react-native";
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
+import FastImage from 'react-native-fast-image';
 const days = 1;
 
 const Post = (props) => {
@@ -164,8 +165,16 @@ const Post = (props) => {
         <Pressable onPress={goToPostPage} style={styles.container}>
             {/* Image */}
             <View >
-            <Image style={styles.image}
-                source={{uri: post.image}}/>
+            <FastImage
+                fallback={Platform.OS === 'android' ? true : false} 
+                source={{
+                        uri: post.image,
+                        headers: {  Authorization: 'someAuthToken' },
+                        priority: FastImage.priority.high,
+                        
+                        }}
+                        style={styles.image}/>
+            
                 <Pressable  style={{padding: 15, right:0, top:0, position: 'absolute'
             ,backgroundColor: 'transparent'}} onPress={handleClick}>
                             

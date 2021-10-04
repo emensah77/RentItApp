@@ -15,6 +15,16 @@
     "categories": {
       "auth": {
         "airbnbclone52f6e38c": {}
+      },
+      "function": {
+        "CreatePaymentIntent": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/CreatePaymentIntent-59385251464c664e5259-build.zip"
+        },
+        "createpaystack": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/createpaystack-4d78554d4f7641753949-build.zip"
+        }
       }
     }
   }

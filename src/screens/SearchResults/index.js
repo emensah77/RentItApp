@@ -10,14 +10,14 @@ import Feather from 'react-native-vector-icons/Feather';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import styles from '../Home/styles';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-
-const SearchResultsScreen = (props) => {
+import {useNavigation} from "@react-navigation/native";
+const SearchResultsScreen = ({guests, viewport}) => {
     
     
     const[posts, setPosts] = useState([]);
     const[loading, setLoading] =  useState(true);
    
-    const {guests, viewport} = props;
+    const navigation = useNavigation();
     
     
     const categories = [
@@ -58,8 +58,8 @@ const SearchResultsScreen = (props) => {
         }
 
     ]
+     
     
-   
     useEffect ( () => {
         const fetchPosts = async () => {
             try{
@@ -159,14 +159,48 @@ const SearchResultsScreen = (props) => {
         )
     }
     
-    
+    if (!loading && posts.length === 0){
+        return (
+            <View style={{flex:1, paddingTop:25, padding:15, backgroundColor:'white' }} >
+                    <Text 
+                    style={{
+                    fontFamily:'Montserrat-Bold',
+                    fontSize:20
+                    }}>No Homes Here</Text>
+                    <View style={{padding:10}}>
+                        <Text style={{fontSize:16, fontFamily:'Montserrat-Regular'}}>
+                            There are no homes in the area you searched. Try expanding your search to include 
+                            other towns and cities near this area.
+                        </Text>
+                    </View>
+
+                    <TouchableOpacity onPress={() => navigation.navigate
+                        ('Destination Search')}
+                    style={{
+                        
+                        alignItems:'center',
+                        justifyContent:'center',
+                        borderWidth:1, borderColor:'black',
+                        width:'40%', height:'10%',
+                        backgroundColor:'black', 
+                        
+                        borderRadius:10}}>
+                        <Text style={{
+                            fontSize:16,
+                            fontFamily:'Montserrat-Bold',
+                            color:'white'
+                        }}>Search Again</Text>
+                    </TouchableOpacity>
+                </View>
+        )
+    }
     return (
         
       
-        <View style={{paddingBottom:100, marginBottom:100}}>
+        <View style={{paddingBottom:100 ,marginBottom:100}}>
 
             
-                {posts.length > 0 ? <View>
+            {!loading ? <View>
 
             <ScrollView
             horizontal
@@ -243,13 +277,15 @@ const SearchResultsScreen = (props) => {
             </View>
                 
          : <View style={{alignItems: 'center', justifyContent:"center"}}>
-             <AnimatedEllipsis animationDelay={150} style={{
+             <AnimatedEllipsis animationDelay={100} style={{
             color: 'blue',
            fontSize: 100,
             
           letterSpacing: -15,
             
-           }}/></View>
+           }}/>
+            
+           </View>
         
         }      
         
