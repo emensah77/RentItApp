@@ -38,7 +38,8 @@ const AppStack = () => {
                             name={"Destination Search"}
                             component={DestinationSearchScreen}
                             options={{
-                                title:"Search your destination"
+                                title:"Search your destination",
+                                headerShown: false,
                             }} 
                             
                             />

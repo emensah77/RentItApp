@@ -1,20 +1,28 @@
 import React , {useState} from 'react';
-import {View, Text, TextInput, FlatList, Pressable} from 'react-native';
+import {View, Text, StatusBar,TextInput, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import searchResults from '../../../assets/data/search';
 import {useNavigation} from "@react-navigation/native";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import SuggestionRow from './SuggestionRow';
-
-
+import * as Animatable from 'react-native-animatable';
+import { faFacebook, faApple, faGoogle} from '@fortawesome/free-brands-svg-icons';
 const DestinationSearch = (props) => {
     const navigation = useNavigation();
     
     return (
         <View style={styles.container}>
-            {/* Input Component */}
-            
+            <StatusBar hidden={true} />
+            <View style={styles.header}>
+        
+          <Text style={styles.text_header}> Where do you {'\n'} want to rent? </Text>
+        </View>
+        <Animatable.View
+        animation="fadeInUpBig"
+        duration={1500} 
+          style={styles.footer}
+        >
             <GooglePlacesAutocomplete
                 placeholderTextColor='#ffffff'
                 placeholder='Type where you want to rent'
@@ -31,6 +39,8 @@ const DestinationSearch = (props) => {
                         backgroundColor: 'yellow',
                         borderRadius:15,
                         borderWidth:.4,
+                        height:40,
+                        
                         
                       },
                 }}
@@ -44,6 +54,16 @@ const DestinationSearch = (props) => {
                 suppressDefaultStyles
                 renderRow={(item) => <SuggestionRow item={item}/>}
                 />
+          
+          
+        </Animatable.View>
+
+        
+         
+      
+            {/* Input Component */}
+            
+            
             
             
             
