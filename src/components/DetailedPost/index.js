@@ -143,7 +143,7 @@ const DetailedPost = (props) => {
 
 
             <View style={{margin: 20}}>
-            <Pressable
+            {/* <Pressable
                 
                 
                 style={{
@@ -167,7 +167,7 @@ const DetailedPost = (props) => {
                         color: 'white',
                         fontWeight: 'bold',
                     }}>Pay to Rent</Text>
-            </Pressable>
+            </Pressable> */}
             <Pressable
                 title="Call to Rent Event"
                 

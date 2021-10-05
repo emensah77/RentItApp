@@ -386,7 +386,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
                 customMapStyle={mapStyle}
                 zoomEnabled={true}
                 minZoomLevel={12}
-                onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
+                //onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
                 initialRegion={{
                 latitude: 5.602028159656166, 
                 longitude: -0.183158678544458,

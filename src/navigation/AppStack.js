@@ -9,6 +9,7 @@ import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignUpScreen';
 import {createStackNavigator} from "@react-navigation/stack";
 import AboutScreen from '../screens/AboutScreen';
+import HouseTypeScreen from '../screens/HouseTypeScreen';
 
 
 
@@ -49,7 +50,16 @@ const AppStack = () => {
                         <Stack.Screen 
                             name={"Number of Guests"}
                             component={GuestsScreen} 
-                            
+                            options={{
+                                headerShown: false,
+                            }} 
+                            />
+                        <Stack.Screen 
+                            name={"House Type"}
+                            component={HouseTypeScreen} 
+                            options={{
+                                headerShown: false,
+                            }} 
                             />
 
                         <Stack.Screen 

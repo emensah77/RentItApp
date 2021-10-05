@@ -90,7 +90,7 @@ const HomeScreen =(props) => {
 
 
     const goToLocationSearch = () => {
-        navigation.navigate('Destination Search')
+        navigation.navigate('House Type')
     }
 
 
@@ -100,7 +100,7 @@ const HomeScreen =(props) => {
 
                 <Pressable 
                         style={styles.searchButton}
-                        onPress={()=> navigation.navigate('Destination Search')}>
+                        onPress={()=> navigation.navigate('House Type')}>
                         <Fontisto name="search" size={25} color={"#f15454"}/>
                         <Text adjustsFontSizeToFit={true} style={styles.searchButtonText}>Where do you want to rent?</Text>
                             
@@ -118,7 +118,7 @@ const HomeScreen =(props) => {
                     <Pressable 
                         style={styles.button}
                         onPress={()=> navigation.navigate
-                        ('Destination Search')}>
+                        ('House Type')}>
                         <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Explore nearby stays</Text>
                             
                             </Pressable>

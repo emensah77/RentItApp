@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
 
     title: {
         fontSize: 50,
-        fontWeight: 'normal',
         fontFamily: "Montserrat-Bold",
         color: 'blue',
         marginLeft: 25,
@@ -82,7 +81,6 @@ const styles = StyleSheet.create({
 
     buttonText: {
         fontSize: 16,
-        fontWeight: 'normal',
         fontFamily: 'Montserrat-Bold'
 
     },
@@ -103,7 +101,6 @@ const styles = StyleSheet.create({
 
     searchButtonText: {
         fontSize: 16,
-        fontWeight: 'normal',
         fontFamily: 'Montserrat-SemiBold'
 
     }

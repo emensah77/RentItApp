@@ -181,7 +181,7 @@ const AddressScreen = (props) => {
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Months</Text>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Service Fee</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Total</Text>
 
             
             

@@ -174,8 +174,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                         </Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => navigation.navigate
-                        ('Destination Search')}
+                    <TouchableOpacity onPress={() => navigation.goBack()}
                     style={{
                         
                         alignItems:'center',

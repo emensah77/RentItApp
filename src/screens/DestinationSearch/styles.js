@@ -9,11 +9,21 @@ const styles = StyleSheet.create({
         fontFamily:'Montserrat-Bold',
         paddingVertical:5,
         paddingHorizontal: 10,
-        color:"black"
+        
+        
        
         
         
     },
+    linearGradient: {
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        height: 200,
+        width: '100%',
+        borderBottomEndRadius:-30
+        
+      },
 
     row: {
         flexDirection: 'row',
@@ -62,63 +72,7 @@ const styles = StyleSheet.create({
         color: '#2e64e5',
         fontFamily: 'Montserrat-Bold',
       },
-      wrapper: {},
-      sliderContainer: {
-          height: 200,
-          width: '90%',
-          marginTop: 10,
-          justifyContent: 'center',
-          alignSelf: 'center',
-          borderRadius: 8,
-          marginBottom:150,
-      },
-    
-      slide1: {
-          flex: 1,
-          justifyContent: 'center',
-          backgroundColor: 'blue',
-          borderRadius: 8,
-          alignItems: 'center',
-      },
-      slide2: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: '#CC3333',
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-      slide3: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'purple',
-        borderRadius: 8,
-        alignItems: 'center',
-      },
-      slide4: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'green',
-        borderRadius: 8,
-        alignItems: 'center',
-      },
-      slide5: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'deeppink',
-        borderRadius: 8,
-        alignItems: 'center',
-      },
-      sliderImage: {
-          height: '100%',
-          width: '100%',
-          alignSelf: 'center',
-          borderRadius: 8,
-      },
-      text: {
-          color: '#fff',
-          fontSize: 40,
-          fontWeight: 'bold'
-        },
+      
         header: {
           flex: 1,
           justifyContent: 'flex-end',
@@ -126,7 +80,7 @@ const styles = StyleSheet.create({
           paddingBottom: 20
       },
       footer: {
-          flex: 5,
+          flex: 2,
           backgroundColor: '#fff',
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -136,8 +90,8 @@ const styles = StyleSheet.create({
       },
       text_header: {
           color: '#fff',
-          fontFamily:"Montserrat-Semi-Bold",
-          
+          fontFamily:"Montserrat-Bold",
+          paddingBottom:10,
           fontSize: 30
       },
       text_footer: {
@@ -180,7 +134,7 @@ const styles = StyleSheet.create({
       },
       container: {
         flex: 1, 
-        backgroundColor: 'blue'
+        backgroundColor:'blue'
       },
       title: {
         color: 'blue',
