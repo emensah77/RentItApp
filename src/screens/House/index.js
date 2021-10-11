@@ -5,82 +5,79 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
+import {  faHouseUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import LinearGradient from 'react-native-linear-gradient';
-
-const Trending = (props) => {
+const House = (props) => {
     const {user, logout} =  useContext(AuthContext);
     const navigation = useNavigation();
     const[posts, setPosts] = useState([]);
+    const[loading, setLoading] = useState(true);
+
+    const renderItem = ({ item }) => (
+        <View style={{flex:1, flexDirection:'row', 
+        marginHorizontal:20, justifyContent:'flex-start', }}> 
+            <Image
+            source={{uri:item.image}}
+            style={{width:150, height:150, borderRadius:15,
+                
+            }}
+            />
+            <View style={{marginHorizontal:15}}>
+            <Text style={{
+                fontFamily:'Montserrat-Bold'}}>{item.title}</Text>
+            <Text style={{
+                fontFamily:'Montserrat-Bold'}}>GH₵ {item.amount}</Text>
+            <Text style={{
+                fontFamily:'Montserrat-Bold'}}>{item.bed} bedrooms</Text>
+            </View>
+            
+        </View>
+      );
     
     useEffect ( () => {
-        const fetchPosts = async () => {
+        const fetchOrders = async () => {
             try{
-                const favorite = [];
+                const orders = [];
         
                 await firestore()
-                .collection('trends')
-                .orderBy('count', 'desc')
+                .collection('homeorders')
                 .get()
                 .then((querySnapshot) =>{
                     
                     querySnapshot.forEach(doc => {
                         const{
-                            
+                            userId,
+                            userName,
                             image, 
-                            type,
                             title,
-                            description,
-                            bed, 
-                            bedroom,
-                            maxGuests,
-                            wifi,
-                            kitchen,
-                            bathroom,
-                            water,
-                            toilet,
-                            images,
-                            
-                            oldPrice,
-                            newPrice,
-                            count,
-                                 
-                            
+                            bed,
+                            amount, 
                             latitude,
                             longitude,
-                            id,
                         } = doc.data();
-                        
-                        favorite.push({
-                            
+                        if (user.uid === userId && !orders.some(e => e.id === id)){
+                        orders.push({
+                            userId: userId,
+                            userName: userName,
                             image: image,
-                            type: type,
                             title: title,
-                            description: description,
                             
                             bed: bed,
-                            bedroom: bedroom,
-                            maxGuests: maxGuests,
-                            wifi: wifi,
-                            kitchen: kitchen,
-                            bathroom: bathroom,
-                            water: water,
-                            toilet: toilet,
-                            images: images,
-                            
-                            oldPrice: oldPrice,
-                            newPrice: newPrice,
-                            count: count,
-                                 
-                            
                             latitude: latitude,
                             longitude: longitude,
-                            id: id,
+                            amount: amount,
+                            
     
-                        }) 
+                        }) }
                     })
                 })
                     
-                    setPosts(favorite);
+                    setPosts(orders);
+                    if(loading){
+                        setLoading(false);
+                    }
+                    
                
 
                 
@@ -92,9 +89,11 @@ const Trending = (props) => {
             }
         }
 
-        fetchPosts();
-    })
+        fetchOrders();
+    },[])
+   
 
+    
 
     
     
@@ -110,11 +109,11 @@ const Trending = (props) => {
                 }}>
                     <StatusBar hidden={true}/>
                     <LinearGradient
-                    colors={['purple', 'deeppink' ]}
+                    colors={['#ff0084', '#33001b' ]}
                     start={{ x: 0.1, y: 0.2 }}
-                    end={{ x: 1, y: 0.5 }}
-                     style={[{
-                        
+                    end={{ x: 1, y: 0.5 }} 
+                    style={[{
+                        backgroundColor:'blue',
                         height:"25%",
                         borderBottomLeftRadius:20,
                         borderBottomRightRadius: 20,
@@ -122,7 +121,7 @@ const Trending = (props) => {
                         justifyContent:'center'
                     }]}>
                         <View style={{paddingTop:15 }}>
-                            <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Trending</Text>
+                            <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Your Home</Text>
                         </View>
                         
                         
@@ -136,7 +135,7 @@ const Trending = (props) => {
                     style={{
                     fontFamily:'Montserrat-Bold',
                     fontSize:20
-                    }}>Most Popular</Text>
+                    }}>Homes you have rented</Text>
                     
 
                 </View>
@@ -144,7 +143,7 @@ const Trending = (props) => {
                 <View>
                     <FlatList
                     data={posts}
-                    renderItem={({item}) => <Post post={item}/>}
+                    renderItem={renderItem}
                     
                     />
                 </View>
@@ -168,10 +167,10 @@ const Trending = (props) => {
         }}>
             <StatusBar hidden={true}/>
             <LinearGradient
-            colors={['purple', 'deeppink' ]}
-            start={{ x: 0.1, y: 0.2 }}
-            end={{ x: 1, y: 0.5 }}
-            style={[{
+             colors={['#ff0084', '#33001b' ]}
+             start={{ x: 0.1, y: 0.2 }}
+             end={{ x: 1, y: 0.5 }}
+             style={[{
                 backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
@@ -180,7 +179,7 @@ const Trending = (props) => {
                 justifyContent:'center'
             }]}>
                 <View style={{paddingTop:15 }}>
-                    <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Trending</Text>
+                    <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Your Home</Text>
                 </View>
                 
 
@@ -193,11 +192,12 @@ const Trending = (props) => {
                     style={{
                     fontFamily:'Montserrat-Bold',
                     fontSize:20
-                    }}>No trends yet</Text>
+                    }}>No Home yet</Text>
                     <View style={{padding:10}}>
                         <Text style={{fontSize:16, fontFamily:'Montserrat-Regular'}}>
-                            As you browse through the listings, be sure to love your Favorites
-                            and check back here to see the properties our community loves.
+                            You have not rented a house yet. If you rent a house, you should check
+                            here to receive details about the address of the house, when to move in, and 
+                            other details here.
                         </Text>
                     </View>
 
@@ -205,14 +205,16 @@ const Trending = (props) => {
                     style={{
                         alignItems:'center',
                         justifyContent:'center',
+                        alignSelf: 'center',
                         borderWidth:1, borderColor:'black',
-                        width:'50%', height:'20%', 
+                        width:'90%', height:'50%', 
                         
                         borderRadius:10}}>
+                        <FontAwesomeIcon icon={faHouseUser} size={75} color="black" />  
                         <Text style={{
                             fontSize:16,
                             fontFamily:'Montserrat-Bold'
-                        }}>Start exploring</Text>
+                        }}>Find your next Home</Text>
                     </TouchableOpacity>
                 </View>
            
@@ -235,4 +237,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default Trending;
+export default House;

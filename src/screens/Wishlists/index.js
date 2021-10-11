@@ -7,6 +7,7 @@ import Post from '../../components/Post';
 import PostDelete from '../../components/PostDelete';
 import { AuthContext } from '../../navigation/AuthProvider';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import LinearGradient from 'react-native-linear-gradient';
 const Wishlists = (props) => {
     const {user, logout} =  useContext(AuthContext);
     const navigation = useNavigation();
@@ -40,10 +41,7 @@ const Wishlists = (props) => {
                             bathroom,
                             water,
                             toilet,
-                            image2, 
-                            image3, 
-                            image4, 
-                            image5,
+                            images,
                             
                             oldPrice,
                             newPrice,
@@ -69,10 +67,7 @@ const Wishlists = (props) => {
                             bathroom: bathroom,
                             water: water,
                             toilet: toilet,
-                            image2: image2, 
-                            image3: image3, 
-                            image4: image4, 
-                            image5: image5,
+                            images: images,
                             
                             oldPrice: oldPrice,
                             newPrice: newPrice,
@@ -124,14 +119,18 @@ const Wishlists = (props) => {
         
                 }}>
                     <StatusBar hidden={true}/>
-                    <View style={{
-                        backgroundColor:'blue',
+                    <LinearGradient
+                    colors={['purple', 'deeppink' ]}
+                    start={{ x: 0.1, y: 0.2 }}
+                    end={{ x: 1, y: 0.5 }}
+                     style={[{
+                        
                         height:"25%",
                         borderBottomLeftRadius:20,
                         borderBottomRightRadius: 20,
                         paddingHorizontal:20,
                         justifyContent:'center'
-                    }}>
+                    }]}>
                         <View style={{paddingTop:15 }}>
                             <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Wishlists</Text>
                         </View>
@@ -140,7 +139,7 @@ const Wishlists = (props) => {
                         
         
         
-                    </View>
+                    </LinearGradient>
                 
             <View style={{padding:15}} >
                     <Text 
@@ -192,7 +191,7 @@ const Wishlists = (props) => {
                 <View>
                     <FlatList
                     data={posts}
-                    renderItem={({item}) => <PostDelete post={item} />}
+                    renderItem={({item}) => <Post post={item} />}
                     
                     />
                 </View>
@@ -210,14 +209,18 @@ const Wishlists = (props) => {
 
         }}>
             <StatusBar hidden={true}/>
-            <View style={{
+            <LinearGradient
+            colors={['purple', 'deeppink' ]}
+            start={{ x: 0.1, y: 0.2 }}
+            end={{ x: 1, y: 0.5 }}
+             style={[{
                 backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,
                 paddingHorizontal:20,
                 justifyContent:'center'
-            }}>
+            }]}>
                 <View style={{paddingTop:15 }}>
                     <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Wishlists</Text>
                 </View>
@@ -226,7 +229,7 @@ const Wishlists = (props) => {
                 
 
 
-            </View>
+            </LinearGradient>
             
             <View style={{padding:15}} >
                     <Text 

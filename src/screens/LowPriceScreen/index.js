@@ -8,7 +8,7 @@ import {OptimizedFlatList} from 'react-native-optimized-flatlist'
 import Post from '../../components/Post';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-
+import LinearGradient from 'react-native-linear-gradient';
 const LowPriceScreen = (props) => {
     const[posts, setPosts] = useState([]);
     const[loading, setLoading] = useState(true);
@@ -52,14 +52,18 @@ const LowPriceScreen = (props) => {
 
         }}>
             <StatusBar hidden={true}/>
-            <View style={{
+            <LinearGradient
+            colors={['#ff00cc', '#333999']}
+            start={{ x: 0.1, y: 0.2 }}
+            end={{ x: 1, y: 0.5 }} 
+            style={[{
                 backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,
                 paddingHorizontal:20,
                 justifyContent:'center'
-            }}>
+            }]}>
                 <View style={{paddingTop:15 }}>
                     <Text style={{fontSize:32, color:'white', fontFamily:'Montserrat-Bold'}}>Discount</Text>
                 </View>
@@ -68,7 +72,7 @@ const LowPriceScreen = (props) => {
                 
 
 
-            </View>
+            </LinearGradient>
         
     <View style={{padding:15}} >
             <Text 

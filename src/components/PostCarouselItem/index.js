@@ -56,10 +56,10 @@ const Post = (props) => {
                             GH₵{post.newPrice} / year
                             </Text>
                             <View  style={{paddingHorizontal: 30, paddingVertical:1}}>
-                            <Pressable onPress={handleClick}>
+                            {/* <Pressable onPress={handleClick}>
                         
                             <Fontisto name="heart" size={20} color={isLike ? colorStyle : "yellow"}/>
-                        </Pressable>
+                        </Pressable> */}
                 </View>
                         </Text>
 

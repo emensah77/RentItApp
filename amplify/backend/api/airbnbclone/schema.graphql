@@ -12,11 +12,8 @@ type PaymentIntent {
 type Post @model {
   id: ID!
 
-  image: String!
-  image2: String!
-  image3: String!
-  image4: String!
-  image5: String!
+  image: String
+  images: [String]
   type: String!
   title: String!
   description: String!

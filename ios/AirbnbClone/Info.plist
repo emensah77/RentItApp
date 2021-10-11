@@ -78,8 +78,10 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera not used</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Does not access user's location</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Black.ttf</string>

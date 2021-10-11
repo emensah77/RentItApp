@@ -9,7 +9,7 @@ import auth from '@react-native-firebase/auth';
 import {useNavigation} from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import LinearGradient from 'react-native-linear-gradient';
 const ProfileScreen = ({route}) => {
     const onShare = async () => {
       
@@ -63,13 +63,17 @@ const ProfileScreen = ({route}) => {
 
         }}>
             <StatusBar hidden={true}/>
-            <View style={{
+            <LinearGradient
+             colors={['#ee0979', '#ff6a00']}
+             start={{ x: 0.1, y: 0.2 }}
+             end={{ x: 1, y: 0.5 }}
+             style={[{
                 backgroundColor:'blue',
                 height:"25%",
                 borderBottomLeftRadius:20,
                 borderBottomRightRadius: 20,
                 paddingHorizontal:20,
-            }}>
+            }]}>
                 
                 <View style={{
                     flexDirection:'row',
@@ -104,7 +108,7 @@ const ProfileScreen = ({route}) => {
 
                 </View>
 
-            </View>
+            </LinearGradient>
 
             <View style={styles.menuWrapper}>
         <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>
@@ -136,7 +140,7 @@ const ProfileScreen = ({route}) => {
         
   
       </View>
-
+      
       <TouchableOpacity style={styles.userBtn} onPress={() => auth().signOut()}>
                   <Text style={styles.userBtnTxt}>Logout</Text>
          </TouchableOpacity>

@@ -13,9 +13,10 @@ import ProfileScreen from '../screens/Profile';
 import LowPriceScreen from "../screens/LowPriceScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons"
-import { faCoffee ,faHeart,faChartLine, faHouseUser ,faUser ,faCoins } from "@fortawesome/free-solid-svg-icons";
+import { faCoffee, faSearch ,faHeart,faChartLine, faHouseUser ,faUser ,faCoins } from "@fortawesome/free-solid-svg-icons";
 import Wishlists from "../screens/Wishlists";
 import Trending from "../screens/TrendingScreen";
+import House from "../screens/House";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,16 @@ const HomeTabNavigator = (props) => {
             <Tab.Screen
             name={"Explore"}
             component={ExploreNavigator}
+            
+            options={{
+                tabBarIcon: ({color}) => (
+                    <FontAwesomeIcon icon={faSearch} size={25} color={color} />
+                )
+            }}
+            />
+            <Tab.Screen
+            name={"House"}
+            component={House}
             
             options={{
                 tabBarIcon: ({color}) => (

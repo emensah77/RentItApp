@@ -12,6 +12,7 @@ import firebase from '@react-native-firebase/app';
 import analytics from '@react-native-firebase/analytics';
 import { useNavigation } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
+import ImageCarousel from '../../components/ImageCarousel';
 const DetailedPost = (props) => {
     const post = props.post;
     const navigation = useNavigation();
@@ -26,10 +27,12 @@ const DetailedPost = (props) => {
     }
     const payRent = () => {
         navigation.navigate('Address', {
-            price: post.newPrice, 
+            price: Math.round(post.newPrice*1.07), 
             homeimage: post.image,
             hometitle: post.title,
             homebed: post.bed,
+            homelatitude: post.latitude,
+            homelongitude: post.longitude,
             
 
         });
@@ -49,32 +52,13 @@ const DetailedPost = (props) => {
 
     
 
-    const images = [
-        {
-            image: post.image2
-        }, 
-        {
-            image: post.image3
-        },
-        {
-            image: post.image4
-        },
-        {
-            image: post.image5
-        },
-
-    ]
+    
 
     return(
         <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.container}>
                 {/* Image */}
-                <FlatListSlider 
-                    data={images} 
-                    indicatorActiveWidth={15}
-                    indicatorActiveColor={'blue'}
-                    animation
-                />
+                <ImageCarousel images={post.images}/>
                 {/* Bed and Bedroom */}
 
                 <Text style={styles.bedrooms}>
@@ -91,7 +75,7 @@ const DetailedPost = (props) => {
                     GH₵{post.oldPrice} 
                     </Text>
                     <Text style={styles.newPrice}>
-                    GH₵{post.newPrice} / year
+                    GH₵{Math.round(post.newPrice*1.07)} / year
                     </Text>
                 </Text>
                 {/* Total price */}
@@ -143,7 +127,7 @@ const DetailedPost = (props) => {
 
 
             <View style={{margin: 20}}>
-            {/* <Pressable
+            <Pressable
                 
                 
                 style={{
@@ -167,7 +151,7 @@ const DetailedPost = (props) => {
                         color: 'white',
                         fontWeight: 'bold',
                     }}>Pay to Rent</Text>
-            </Pressable> */}
+            </Pressable> 
             <Pressable
                 title="Call to Rent Event"
                 

@@ -34,6 +34,7 @@ const DestinationSearch = (props) => {
           
         
         <Animatable.View
+        useNativeDriver={true}
         animation="fadeInUpBig"
         duration={1500} 
           style={styles.footer}
@@ -46,7 +47,8 @@ const DestinationSearch = (props) => {
                     // 'details' is provided when fetchDetails = true
                     //console.log(data, details);
                     navigation.navigate('Number of Guests', {viewport: details.geometry.viewport});
-                }}
+                    console.log(details.geometry.viewport)
+                  }}
                 fetchDetails
                 styles={{
                     textInput: styles.textInput,
@@ -63,7 +65,7 @@ const DestinationSearch = (props) => {
                 query={{
                     key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
                     language: 'en',
-                    types: '(regions)',
+                    
                     components: 'country:gh',
                 }}
                 

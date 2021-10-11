@@ -11,23 +11,27 @@ import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
 const AddressScreen = (props) => {
 
     
-    
+    const prop = props;
     const [years, setYears] = useState(0);
     const [months, setMonths] =  useState(0);
     const navigation = useNavigation();
     const route = useRoute();
     const {initPaymentSheet, presentPaymentSheet} =  useStripe();
-    const amount = (route.params?.price * 100 || 0);
+    const amount = (route.params.price);
     const homeimage = route.params.homeimage;
     const homebed = route.params.homebed;
     const hometitle = route.params.hometitle;
-    console.log(homebed);
-    console.log(homeimage);
-    console.log(hometitle);
+    const homelatitude = route.params.homelatitude;
+    const homelongitude = route.params.homelongitude;
+    //console.log(homebed);
+    //console.log(homeimage);
+    //console.log(hometitle);
+    console.log(prop);
     
-    console.log(amount);
+    
+    
     const [clientSecret, setClientSecret] = useState(null);
-
+    
     
     
   
@@ -128,7 +132,7 @@ const AddressScreen = (props) => {
     
             </View>
 
-
+                    
 
             <View style={styles.row}>
                 <View style={{flex:1, justifyContent:'space-between'}}>
@@ -179,9 +183,9 @@ const AddressScreen = (props) => {
             <View style={{padding:20, flex:1}}>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Years</Text>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Months</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Service Fee</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Total</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold'}}>Total</Text>
+            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Service Fee</Text> */}
+            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Total</Text> */}
 
             
             
@@ -190,9 +194,10 @@ const AddressScreen = (props) => {
                 
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{years}</Text>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{months}</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>GH₵{amount*(years+(months/12))}</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>GH₵{amount*(years+(months/12))*.07}</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold'}}>GH₵{Math.round(amount*(years+(months/12)))}</Text>
+            
+            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>GH₵{amount*(years+(months/12))*.07}</Text> */}
+            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text> */}
             
             </View>
             
@@ -222,10 +227,18 @@ const AddressScreen = (props) => {
                 width:Dimensions.get('screen').width -150,
                 marginHorizontal: 20,
                 borderRadius: 10,
-            }} onPress={() => navigation.navigate('Payment')}>
+            }} onPress={() => navigation.navigate('Payment', {
+                channel : ["mobile_money"],
+                totalAmount: Math.round(amount*(years+(months/12))),
+                homeimage: homeimage,
+                homelatitude: homelatitude,
+                homelongitude: homelongitude,
+                hometitle: hometitle,
+                homebed: homebed,
+            })}>
                 <Text style={{
                     fontFamily:'Montserrat-Bold',
-                    color:'yellow'}}>Pay with Mobile Money</Text>
+                    color:'white'}}>Pay with Mobile Money</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={{
@@ -237,7 +250,11 @@ const AddressScreen = (props) => {
                 width:Dimensions.get('screen').width -150,
                 marginHorizontal: 20,
                 borderRadius: 10,
-            }} onPress={openPaymentSheet}>
+            }} onPress={() => navigation.navigate('Payment', {
+                channel : ["card"],
+                totalAmount: Math.round(amount*(years+(months/12))),
+                
+                })}>
                 <Text style={{
                     fontFamily:'Montserrat-Bold',
                     color:'white'}}>Pay with ATM Card</Text>

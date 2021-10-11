@@ -31,10 +31,8 @@ const Post = (props) => {
         bathroom: post.bathroom,
         water: post.water,
         toilet: post.toilet,
-        image2: post.image2, 
-        image3: post.image3, 
-        image4: post.image4, 
-        image5: post.image5,
+        images: post.images,
+        
         
         oldPrice: post.oldPrice,
         newPrice: post.newPrice,
@@ -86,10 +84,7 @@ const Post = (props) => {
         bathroom: post.bathroom,
         water: post.water,
         toilet: post.toilet,
-        image2: post.image2, 
-        image3: post.image3, 
-        image4: post.image4, 
-        image5: post.image5,
+        images: post.images,
         
         oldPrice: post.oldPrice,
         newPrice: post.newPrice,
@@ -199,7 +194,7 @@ const Post = (props) => {
                 GH₵{post.oldPrice}
                 </Text>
                 <Text style={styles.newPrice}>
-                GH₵{post.newPrice} / year
+                GH₵{Math.round(post.newPrice * 1.07)} / year
                 </Text>
                 
                 
@@ -207,7 +202,7 @@ const Post = (props) => {
             {/* Total price */}
             
                 <Text style={styles.totalPrice}>
-                        GH₵{post.newPrice * days}
+                        GH₵{Math.round(post.newPrice * 1.07)}
                     </Text>
                 
                         

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Pressable, Image,StatusBar, TouchableOpacity ,Text, Platform} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import styles from './styles.js';
@@ -6,12 +6,15 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import FastImage from 'react-native-fast-image';
+import firestore from '@react-native-firebase/firestore';
 const HouseTypeScreen = (props) => {
     const navigation = useNavigation();
     const [adults, setAdults] = useState(0);
     const [children, setChildren] = useState(0);
     const [rooms, setrooms] = useState(0);
     const route = useRoute();
+    
+
     
     return (
         <LinearGradient

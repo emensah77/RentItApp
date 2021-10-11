@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Pressable, StatusBar ,Text, Platform} from 'react-native';
+import {View, Pressable, Dimensions ,StatusBar ,Text, Platform} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import styles from './styles.js';
 import {useNavigation, useRoute} from "@react-navigation/native";
@@ -156,7 +156,7 @@ const GuestsScreen = (props) => {
             
                 }
                 style={{
-                    marginTop: Platform.OS === 'android' ? 150 : 330,
+                    //marginTop: Platform.OS === 'android' ? Dimensions.get('window').height/8 : Dimensions.get('window').height/5,
                     backgroundColor: 'blue',
                     alignItems: 'center',
                     justifyContent: 'center',
