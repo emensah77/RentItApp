@@ -23,6 +23,7 @@ const AddressScreen = (props) => {
     const hometitle = route.params.hometitle;
     const homelatitude = route.params.homelatitude;
     const homelongitude = route.params.homelongitude;
+    const homeid = route.params.postid;
     //console.log(homebed);
     //console.log(homeimage);
     //console.log(hometitle);
@@ -235,6 +236,9 @@ const AddressScreen = (props) => {
                 homelongitude: homelongitude,
                 hometitle: hometitle,
                 homebed: homebed,
+                homeid: homeid,
+                homeyears: years,
+                homemonths: months,
             })}>
                 <Text style={{
                     fontFamily:'Montserrat-Bold',
@@ -253,6 +257,14 @@ const AddressScreen = (props) => {
             }} onPress={() => navigation.navigate('Payment', {
                 channel : ["card"],
                 totalAmount: Math.round(amount*(years+(months/12))),
+                homeimage: homeimage,
+                homelatitude: homelatitude,
+                homelongitude: homelongitude,
+                hometitle: hometitle,
+                homebed: homebed,
+                homeid: homeid,
+                homeyears: years,
+                homemonths: months,
                 
                 })}>
                 <Text style={{

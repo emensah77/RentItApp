@@ -11,6 +11,7 @@ const days = 1;
 
 const Post = (props) => {
     var docRefId;
+    let docId;
     const {user, logout} =  useContext(AuthContext);
     const addToTrends = async () => {
     firestore()
@@ -52,29 +53,34 @@ const Post = (props) => {
 
 
     }
-    const updateTrendCount = async(postid) => {
+    const updateTrendCount = async(postid, val) => {
         firestore()
         .collection('trends')
         .doc(postid)
         .update({
-            count: counter + 1
+            count: firestore.FieldValue.increment (1)
         })
         .then(() => {
             console.log('User updated!');
         });
     }
-
     
     
-    const addToFavorites = async () => {
+    var rand;
+    const addToFavorites =  () => {
+    
+    var randomString = (Math.random()*1e32).toString(36);
+    rand = randomString;
     firestore()
     .collection('posts')
-    .add({
+    .doc(rand)
+    .set({
         userId: user.uid,
         image: post.image,
         type: post.type,
         title: post.title,
         description: post.description,
+        randString: randomString,
         
         bed: post.bed,
         bedroom: post.bedroom,
@@ -88,7 +94,8 @@ const Post = (props) => {
         
         oldPrice: post.oldPrice,
         newPrice: post.newPrice,
-        count: counter,   
+        count: counter,
+        liked: false,   
         
         latitude: post.latitude,
         longitude: post.longitude,
@@ -96,8 +103,10 @@ const Post = (props) => {
     })
     .then((docRef) =>{
         docRefId = docRef.id;
-        
+        docId = docRefId;
+        //console.log(docId);
         console.log('Added to Favorites');
+        
     })
     .catch((error) => {
         console.log('Something went wrong adding to Favorites', error);
@@ -119,7 +128,8 @@ const Post = (props) => {
         
         
         if (!isLike){
-            setCount(counter => counter + 1);
+            setCount(counter + 1);
+            
             
             var getDoc = trendRef.get()
                 .then(doc => {
@@ -127,8 +137,8 @@ const Post = (props) => {
                         addToTrends();
                         console.log('No such document!');
                     } else {
-                        updateTrendCount(post.id);
-                        console.log('Document data:', doc.data().image2);
+                        updateTrendCount(post.id, counter);
+                        console.log('Document data:', doc.data().image);
                     }
                 })
                 .catch(err => {
@@ -138,16 +148,16 @@ const Post = (props) => {
 
             
             
-            
+            //console.log(post.id);
             addToFavorites();
+            
             
         }
         
         
 
     }
-
-
+    
     const post = props.post;
     const navigation = useNavigation();
     const goToPostPage = () =>{

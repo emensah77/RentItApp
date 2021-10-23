@@ -34,7 +34,7 @@ const LowPriceScreen = (props) => {
         }
 
         fetchPosts();
-    }, [])
+    })
     posts.sort(function (a, b) {
         return a.newPrice - b.newPrice;
       });

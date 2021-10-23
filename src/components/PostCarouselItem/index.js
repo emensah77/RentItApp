@@ -44,7 +44,7 @@ const Post = (props) => {
                         </Text>
 
                         {/* Type and Description */}
-                        <Text style={styles.description} numberOfLines={2}>
+                        <Text style={styles.description} numberOfLines={1}>
                             {post.type}. {post.title}
                         </Text> 
                         {/* Old and new Price */}
@@ -53,7 +53,7 @@ const Post = (props) => {
                                 
                           
                             <Text style={styles.newPrice}>
-                            GH₵{post.newPrice} / year
+                            GH₵{Math.round(post.newPrice * 1.07)} / year
                             </Text>
                             <View  style={{paddingHorizontal: 30, paddingVertical:1}}>
                             {/* <Pressable onPress={handleClick}>

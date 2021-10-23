@@ -10,12 +10,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUtensils , faFan ,faFaucet, faBath, faBed, faToilet} from '@fortawesome/free-solid-svg-icons'
 import firebase from '@react-native-firebase/app';
 import analytics from '@react-native-firebase/analytics';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation , useRoute} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import ImageCarousel from '../../components/ImageCarousel';
 const DetailedPost = (props) => {
     const post = props.post;
     const navigation = useNavigation();
+    const route = useRoute();
+
+    const randString = route.params.randString;
+    console.log(randString);
 
     const logAnalyticsEvent = async () =>{
         await analytics().logEvent('calltorent', {
@@ -33,6 +37,7 @@ const DetailedPost = (props) => {
             homebed: post.bed,
             homelatitude: post.latitude,
             homelongitude: post.longitude,
+            postid: post.id,
             
 
         });

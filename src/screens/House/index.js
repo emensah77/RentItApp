@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {Share, StatusBar,View, FlatList ,SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
@@ -13,26 +13,39 @@ const House = (props) => {
     const navigation = useNavigation();
     const[posts, setPosts] = useState([]);
     const[loading, setLoading] = useState(true);
+    const route = useRoute();
+    
 
     const renderItem = ({ item }) => (
-        <View style={{flex:1, flexDirection:'row', 
-        marginHorizontal:20, justifyContent:'flex-start', }}> 
+        <Pressable 
+         onPress={() => navigation.navigate('HouseDetails', {
+             houseimage: item.image,
+             housetitle: item.title,
+             houseamount: item.amount,
+             houselatitude: item.latitude,
+             houselongitude: item.longitude,
+             houseyears: item.homeyears,
+             housemonths: item.homemonths,
+             confirmCode: item.confirmCode,
+         })}
+         style={{flex:1, flexDirection:'row', 
+        marginHorizontal:20, paddingBottom:20, justifyContent:'flex-start', }}> 
             <Image
             source={{uri:item.image}}
             style={{width:150, height:150, borderRadius:15,
                 
             }}
             />
-            <View style={{marginHorizontal:15}}>
+            <View style={{flex:1, marginHorizontal:15}}>
             <Text style={{
-                fontFamily:'Montserrat-Bold'}}>{item.title}</Text>
+                fontFamily:'Montserrat-Bold'}} numberOfLines={1}>{item.title}</Text>
             <Text style={{
                 fontFamily:'Montserrat-Bold'}}>GH₵ {item.amount}</Text>
             <Text style={{
                 fontFamily:'Montserrat-Bold'}}>{item.bed} bedrooms</Text>
             </View>
             
-        </View>
+        </Pressable>
       );
     
     useEffect ( () => {
@@ -52,17 +65,24 @@ const House = (props) => {
                             image, 
                             title,
                             bed,
+                            homeid,
+                            homeyears,
+                            homemonths,
+                            confirmCode,
                             amount, 
                             latitude,
                             longitude,
                         } = doc.data();
-                        if (user.uid === userId && !orders.some(e => e.id === id)){
+                        if (user.uid === userId && !orders.some(e => e.homeid === homeid)){
                         orders.push({
                             userId: userId,
                             userName: userName,
                             image: image,
                             title: title,
-                            
+                            homeid: homeid,
+                            homeyears: homeyears,
+                            homemonths: homemonths,
+                            confirmCode: confirmCode,
                             bed: bed,
                             latitude: latitude,
                             longitude: longitude,
@@ -90,7 +110,7 @@ const House = (props) => {
         }
 
         fetchOrders();
-    },[])
+    })
    
 
     
@@ -144,6 +164,8 @@ const House = (props) => {
                     <FlatList
                     data={posts}
                     renderItem={renderItem}
+                    
+
                     
                     />
                 </View>

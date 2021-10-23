@@ -2,6 +2,8 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
+        
+        
         height: 120,
         padding: 15,
         justifyContent: 'space-around',   
@@ -21,6 +23,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         overflow: 'hidden',
         borderRadius: 20,
+        borderColor:'black'
     },
     image: {
         height : '100%',

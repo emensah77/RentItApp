@@ -7,6 +7,8 @@ import AboutScreen from '../screens/AboutScreen';
 import LoginScreen from '../screens/LoginScreen';
 import AddressScreen from '../screens/AddressScreen';
 import PaymentScreen from '../screens/PaymentScreen';
+import House from '../screens/House';
+import HouseDetailScreen from '../screens/HouseDetailScreen';
 
 
 const Stack = createStackNavigator();
@@ -55,6 +57,20 @@ const Router = (props) => {
                     options={{
                         headerShown: true,
                         title:'Confirm and Pay'
+                    }}
+                    />
+                <Stack.Screen
+                    name={'House'}
+                    component={House}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'HouseDetails'}
+                    component={HouseDetailScreen}
+                    options={{
+                        headerShown: false,
                     }}
                     />
                 

@@ -9,6 +9,7 @@ import { AuthContext } from '../../navigation/AuthProvider';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 import LinearGradient from 'react-native-linear-gradient';
 const Wishlists = (props) => {
+    
     const {user, logout} =  useContext(AuthContext);
     const navigation = useNavigation();
     
@@ -191,7 +192,7 @@ const Wishlists = (props) => {
                 <View>
                     <FlatList
                     data={posts}
-                    renderItem={({item}) => <Post post={item} />}
+                    renderItem={({item}) => <Post post={item}/>}
                     
                     />
                 </View>
