@@ -111,7 +111,7 @@ const Wishlists = (props) => {
     
     
     
-        if (posts.length > 0){
+        if (posts){
             return (
                 <View style={{
                     backgroundColor: "#fff",
@@ -153,11 +153,11 @@ const Wishlists = (props) => {
                 </View>
 
                 {loading ?
-                <ScrollView
+                <View
          
         
                 style={{
-                    flex:1, }} contentContainerStyle={{justifyContent:'center', alignItems:'center', paddingTop:50}}>
+                    flex:1, marginVertical:20 ,paddingLeft:20, marginHorizontal:20, justifyContent:'flex-start', alignContent:"center" }}>
                     
                     <SkeletonContent
                     containerStyle={{paddingBottom:100, width: 300}}
@@ -185,7 +185,7 @@ const Wishlists = (props) => {
                         
                     
                     </SkeletonContent>
-                </ScrollView>
+                </View>
                 :
                 
                 

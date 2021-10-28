@@ -6,11 +6,13 @@ import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
 import LinearGradient from 'react-native-linear-gradient';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 const Trending = (props) => {
     const {user, logout} =  useContext(AuthContext);
     const navigation = useNavigation();
     const[posts, setPosts] = useState([]);
+    const[loading, setLoading] = useState(true);
     
     useEffect ( () => {
         const fetchPosts = async () => {
@@ -81,6 +83,9 @@ const Trending = (props) => {
                 })
                     
                     setPosts(favorite);
+                    if(loading){
+                        setLoading(false);
+                    }
                
 
                 
@@ -100,7 +105,7 @@ const Trending = (props) => {
     
     
     
-        if (posts.length > 0){
+        if (posts){
             return (
                 <View style={{
                     backgroundColor: "#fff",
@@ -140,7 +145,41 @@ const Trending = (props) => {
                     
 
                 </View>
-                
+                {loading ?
+                <View
+         
+        
+                style={{
+                    flex:1, marginVertical:20 ,paddingLeft:20, marginHorizontal:20, justifyContent:'flex-start', alignContent:"center" }}>
+                    
+                    <SkeletonContent
+                    containerStyle={{paddingBottom:100, width: 300}}
+                    animationDirection="horizontalLeft"
+                    layout={[
+                        // long line
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+        
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+        
+                        { width: 320, height: 220, marginBottom: 10, borderRadius:10},
+                        { width: 220, height: 20, marginBottom: 6 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 20 },
+                        
+                        // ...
+                    ]}
+                    >
+                        
+                    
+                    </SkeletonContent>
+                </View>
+                :
                 <View>
                     <FlatList
                     data={posts}
@@ -148,8 +187,9 @@ const Trending = (props) => {
                     
                     />
                 </View>
-
+        }
                 </View>
+        
             );
         }
 
