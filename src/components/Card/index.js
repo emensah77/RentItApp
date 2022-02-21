@@ -11,7 +11,7 @@ const Card = (props) => {
     const goToPostPage = () =>{
             navigation.navigate("Post", {postId: post.id});
     }
-    console.log(post);
+    
     return(
         <TouchableOpacity onPress={goToPostPage}
             >

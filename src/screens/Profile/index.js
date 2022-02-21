@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {Share, StatusBar,View, SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {Share, Linking,StatusBar,View, SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {Auth} from 'aws-amplify';
 import {AuthContext} from '../../navigation/AuthProvider';
 import FormButton from '../../components/FormButton';
@@ -10,7 +10,10 @@ import {useNavigation} from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
+
 const ProfileScreen = ({route}) => {
+  
+
     const onShare = async () => {
       
         try {
@@ -136,6 +139,14 @@ const ProfileScreen = ({route}) => {
           </View>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => navigation.navigate('HouseUpload')}>
+          <View style={styles.menuItem}>
+            <Icon name="home" color="blue" size={25}/>
+            <Text style={styles.menuItemText}>List your home</Text>
+          </View>
+        </TouchableOpacity>
+        <Text></Text>
+      
         
         
   

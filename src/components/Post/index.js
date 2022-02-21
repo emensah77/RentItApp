@@ -7,6 +7,7 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
 import FastImage from 'react-native-fast-image';
+import {SharedElement} from 'react-navigation-shared-element';
 const days = 1;
 
 const Post = (props) => {
@@ -104,8 +105,8 @@ const Post = (props) => {
     .then((docRef) =>{
         docRefId = docRef.id;
         docId = docRefId;
-        //console.log(docId);
-        console.log('Added to Favorites');
+        
+       
         
     })
     .catch((error) => {
@@ -117,7 +118,7 @@ const Post = (props) => {
     const [counter, setCount] = useState(0);
     const[isLike, setIsLike] = useState(false);
     
-    const colorStyle = "white"
+    const colorStyle = "deeppink"
 
     
     
@@ -135,10 +136,10 @@ const Post = (props) => {
                 .then(doc => {
                     if (!doc.exists) {
                         addToTrends();
-                        console.log('No such document!');
+                       
                     } else {
                         updateTrendCount(post.id, counter);
-                        console.log('Document data:', doc.data().image);
+                        
                     }
                 })
                 .catch(err => {
@@ -170,6 +171,7 @@ const Post = (props) => {
         <Pressable onPress={goToPostPage} style={styles.container}>
             {/* Image */}
             <View >
+            
             <FastImage
                 fallback={Platform.OS === 'android' ? true : false} 
                 source={{
@@ -179,11 +181,14 @@ const Post = (props) => {
                         
                         }}
                         style={styles.image}/>
+                
             
-                <Pressable  style={{padding: 15, right:0, top:0, position: 'absolute'
-            ,backgroundColor: 'transparent'}} onPress={handleClick}>
+                <Pressable  style={{
+                shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 8, right:0, top:5, position: 'absolute'
+                ,height:40, width:40, backgroundColor:"white",
+                borderRadius:20, justifyContent:'center', alignItems:"center"}} onPress={handleClick}>
                             
-                            <Fontisto name="heart" size={30} color={isLike ? colorStyle : "yellow"}/>
+                            <Fontisto name="heart" size={20} color={isLike ? colorStyle : "dimgrey"}/>
                         </Pressable>
             </View>
             

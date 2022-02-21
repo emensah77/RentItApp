@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from "@react-navigation/stack";
 import DestinationSearchScreen from "../screens/DestinationSearch";
@@ -14,6 +14,7 @@ import {AuthContext} from './AuthProvider';
 import { firebase } from '@react-native-firebase/auth';
 import { ActivityIndicator } from 'react-native';
 import { View } from 'react-native';
+import analytics from '@react-native-firebase/analytics';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,8 @@ const Router = () => {
   const {user, setUser} = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
   const{loading, setLoading} = useContext(AuthContext);
+  const routeNameRef = useRef();
+  const navigationRef = useRef();
 
   const onAuthStateChanged = (user) => {
     setUser(user);
@@ -47,7 +50,31 @@ const Router = () => {
   }
 
     return (
-        <NavigationContainer>
+        <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+        }}
+        onStateChange={async () => {
+          const previousRouteName = routeNameRef.current;
+          const currentRouteName = navigationRef.current.getCurrentRoute().name;
+  
+          if (previousRouteName !== currentRouteName) {
+            await analytics().logScreenView({
+              screen_name: currentRouteName.replace(/\s/g, ""),
+              screen_class: currentRouteName.replace(/\s/g, ""),
+            });
+          }
+          if (previousRouteName !== currentRouteName) {
+            await analytics().logEvent(`Page_${currentRouteName.replace(/\s/g, "")}`, {
+                userId: user.displayName,
+                item: user.uid,
+  
+            });
+          }
+          routeNameRef.current = currentRouteName;
+        }}
+        >
           <AppStack /> 
             
 

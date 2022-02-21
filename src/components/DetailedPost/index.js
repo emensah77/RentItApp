@@ -1,5 +1,5 @@
-import React from "react";
-import {View, Image ,Text, ScrollView, Platform, Linking ,Pressable} from "react-native";
+import React, {useState} from "react";
+import {View, Image ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar} from "react-native";
 import styles from './styles.js';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {FlatListSlider} from 'react-native-flatlist-slider';
@@ -13,13 +13,18 @@ import analytics from '@react-native-firebase/analytics';
 import { useNavigation , useRoute} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import ImageCarousel from '../../components/ImageCarousel';
+
+import {SharedElement} from 'react-navigation-shared-element'
+import FastImage from 'react-native-fast-image';
+
 const DetailedPost = (props) => {
     const post = props.post;
     const navigation = useNavigation();
     const route = useRoute();
+    
 
     const randString = route.params.randString;
-    console.log(randString);
+    
 
     const logAnalyticsEvent = async () =>{
         await analytics().logEvent('calltorent', {
@@ -57,13 +62,19 @@ const DetailedPost = (props) => {
 
     
 
-    
+   
 
     return(
         <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Image */}
+            <StatusBar hidden={true} />
+            
+            <ImageCarousel images={post.images}/>
+            
+            
+            
             <View style={styles.container}>
-                {/* Image */}
-                <ImageCarousel images={post.images}/>
+                
                 {/* Bed and Bedroom */}
 
                 <Text style={styles.bedrooms}>
@@ -188,5 +199,6 @@ const DetailedPost = (props) => {
     
     );
 };
+
 
 export default (DetailedPost);

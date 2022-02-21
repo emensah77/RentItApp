@@ -586,6 +586,10 @@ PODS:
   - libwebp/mux (1.2.0):
     - libwebp/demux
   - libwebp/webp (1.2.0)
+  - lottie-ios (3.2.3)
+  - lottie-react-native (5.0.1):
+    - lottie-ios (~> 3.2.3)
+    - React-Core
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -800,9 +804,13 @@ PODS:
   - react-native-fbsdk-next/Share (4.3.1):
     - FBSDKShareKit (~> 9.3)
     - React-Core
+  - react-native-geolocation-service (5.3.0-beta.4):
+    - React
   - react-native-google-maps (0.28.0):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
+    - React-Core
+  - react-native-image-picker (4.7.1):
     - React-Core
   - react-native-maps (0.28.0):
     - React-Core
@@ -815,6 +823,8 @@ PODS:
   - react-native-spinkit (1.4.1):
     - React
   - react-native-splash-screen (3.2.0):
+    - React
+  - react-native-version-check (3.4.2):
     - React
   - react-native-webview (11.13.0):
     - React-Core
@@ -946,6 +956,8 @@ PODS:
   - RNScreens (3.7.2):
     - React-Core
     - React-RCTImage
+  - RNSharedElement (0.8.4):
+    - React-Core
   - RNSVG (12.1.1):
     - React
   - RNVectorIcons (8.1.0):
@@ -995,6 +1007,7 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - GoogleSignIn (~> 5.0.2)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -1009,13 +1022,16 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
+  - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-paystack-webview (from `../node_modules/react-native-paystack-webview`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-version-check (from `../node_modules/react-native-version-check`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -1042,6 +1058,7 @@ DEPENDENCIES:
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
@@ -1084,6 +1101,7 @@ SPEC REPOS:
     - leveldb-library
     - libevent
     - libwebp
+    - lottie-ios
     - nanopb
     - OpenSSL-Universal
     - PromisesObjC
@@ -1104,6 +1122,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -1128,8 +1148,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-fbsdk-next:
     :path: "../node_modules/react-native-fbsdk-next"
+  react-native-geolocation-service:
+    :path: "../node_modules/react-native-geolocation-service"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
@@ -1142,6 +1166,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-spinkit"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
+  react-native-version-check:
+    :path: "../node_modules/react-native-version-check"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -1194,6 +1220,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSharedElement:
+    :path: "../node_modules/react-native-shared-element"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -1244,6 +1272,8 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
+  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
+  lottie-react-native: a029a86e1689c86a07169c520ae770e84348cd20
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
@@ -1259,13 +1289,16 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
   react-native-fbsdk-next: 5a8e6915d7e4191dcb2c9843ea9771e3a29def9c
+  react-native-geolocation-service: c0efb872258ed9240f1003a70fca9e9757e5c785
   react-native-google-maps: 46dea4aa4acb7300beff508f64d9f8c84e9fb106
+  react-native-image-picker: 5fe0a96bef4935bbdfb02f59b910bf40d5526109
   react-native-maps: 2d405b4e8cee0282e4c02bac434d81450dfea877
   react-native-netinfo: 92e6e4476eb8bf6fc2d7c0a6ca0a1406f663d73a
   react-native-paystack-webview: d8ed4a0300c7872673e186294cb6176cca46c696
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
+  react-native-version-check: d8b8900e6ce03ae1568cb22ef9451f2508188883
   react-native-webview: 133a6a5149f963259646e710b4545c67ef35d7c9
   React-perflogger: aad6d4b4a267936b3667260d1f649b6f6069a675
   React-RCTActionSheet: fc376be462c9c8d6ad82c0905442fd77f82a9d2a
@@ -1292,6 +1325,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNReanimated: 241c586663f44f19a53883c63375fdd041253960
   RNScreens: 0591543e343c7444ea1756b6265d81a4295922c9
+  RNSharedElement: eb7d506733952d58634f34c82ec17e82f557e377
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
@@ -1302,6 +1336,6 @@ SPEC CHECKSUMS:
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a7adb696d56342a4dc3a7f538750f478e196124c
+PODFILE CHECKSUM: 7c9b1622aa4150740f6d7d6a0dcc9a87478fc9f7
 
 COCOAPODS: 1.10.1

@@ -9,6 +9,14 @@ import AddressScreen from '../screens/AddressScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import House from '../screens/House';
 import HouseDetailScreen from '../screens/HouseDetailScreen';
+import HouseUploadScreen from '../screens/HouseUploadScreen';
+import OnboardingScreen1 from '../screens/OnboardingScreen1';
+import OnboardingScreen2 from '../screens/OnboardingScreen2';
+import OnboardingScreen3 from '../screens/OnboardingScreen3';
+import OnboardingScreen4 from '../screens/OnboardingScreen4';
+import OnboardingScreen5 from '../screens/OnboardingScreen5';
+import OnboardingScreen6 from '../screens/OnboardingScreen6';
+import OnboardingScreen7 from '../screens/OnboardingScreen7';
 
 
 const Stack = createStackNavigator();
@@ -64,6 +72,7 @@ const Router = (props) => {
                     component={House}
                     options={{
                         headerShown: false,
+
                     }}
                     />
                 <Stack.Screen
@@ -73,6 +82,64 @@ const Router = (props) => {
                         headerShown: false,
                     }}
                     />
+                <Stack.Screen
+                    name={'OnboardingScreen1'}
+                    component={OnboardingScreen1}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen2'}
+                    component={OnboardingScreen2}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen3'}
+                    component={OnboardingScreen3}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen4'}
+                    component={OnboardingScreen4}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen5'}
+                    component={OnboardingScreen5}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen6'}
+                    component={OnboardingScreen6}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                
+                <Stack.Screen
+                    name={'OnboardingScreen7'}
+                    component={OnboardingScreen7}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'HouseUpload'}
+                    component={HouseUploadScreen}
+                    options={{
+                        headerShown: false,
+                        
+                    }}
+                    />  
                 
 
                 <Stack.Screen
@@ -86,6 +153,7 @@ const Router = (props) => {
                     <Stack.Screen
                         name={'SearchResults'}
                         component={SearchResultsTabNavigator}
+                        
                         options={{
                            title: 'Places to Rent',
                         }}

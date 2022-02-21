@@ -10,10 +10,13 @@ const CustomMarker = (props) => {
                 
                 coordinate={coordinate}
                 onPress={onPress}
+                
+                
                 >
                     <View style={{
                         backgroundColor: isSelected ? 'black': 'white', 
                         padding: isSelected? 10: 5,
+                        elevation: isSelected ? 3 : 0,
                         borderRadius: 20,
                         borderColor: 'grey',
                         borderWidth: 1,

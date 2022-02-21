@@ -10,7 +10,8 @@ import SignupScreen from '../screens/SignUpScreen';
 import {createStackNavigator} from "@react-navigation/stack";
 import AboutScreen from '../screens/AboutScreen';
 import HouseTypeScreen from '../screens/HouseTypeScreen';
-
+import SearchResultsTabNavigator from './SearchResultsTabNavigator';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 
 
 const Stack = createStackNavigator();
@@ -61,14 +62,18 @@ const AppStack = () => {
                                 headerShown: false,
                             }} 
                             />
+                        
 
                         <Stack.Screen 
                             name={"Post"}
-                            component={PostScreen} 
+                            component={PostScreen}
                             
+                            options={{
+                                headerShown: false,
+                            }}
                             />
 
-                        
+               
 
 
             

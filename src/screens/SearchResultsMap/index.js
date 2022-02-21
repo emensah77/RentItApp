@@ -397,6 +397,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
 
             {posts.map(place => (
             <CustomMarker
+                
                 isSelected={place.id === selectedPlacedId}
                 onPress={() => setSelectedPlacedId(place.id)}
                 coordinate={{latitude: place.latitude, longitude: place.longitude}}

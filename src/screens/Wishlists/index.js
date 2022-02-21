@@ -157,7 +157,7 @@ const Wishlists = (props) => {
          
         
                 style={{
-                    flex:1, marginVertical:20 ,paddingLeft:20, marginHorizontal:20, justifyContent:'flex-start', alignContent:"center" }}>
+                    marginVertical:20 ,paddingLeft:20, marginHorizontal:20, justifyContent:'flex-start', alignContent:"center" }}>
                     
                     <SkeletonContent
                     containerStyle={{paddingBottom:100, width: 300}}

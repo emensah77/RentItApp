@@ -1,5 +1,5 @@
-import React, {useState, Component} from 'react';
-import {View, Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView, ScrollView, Image ,FlatList, TouchableOpacity} from "react-native";
+import React, {useState,useEffect, Component} from 'react';
+import {View, Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
 import styles from './styles';
 import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -10,11 +10,12 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
 import {OptimizedFlatList} from 'react-native-optimized-flatlist';
 import FastImage from 'react-native-fast-image';
-
-
+import VersionCheck from 'react-native-version-check';
 
 
 const HomeScreen =(props) => {
+    const [updateNeeded, setUpdateNeeded] = useState(false);
+    const [updateUrl, setUpdateUrl] = useState('');
 
     const makeCall = () => {
 
@@ -33,7 +34,10 @@ const HomeScreen =(props) => {
         }
         
       };
+      
+      
     
+      
 
     const [images, setimages] = useState([
         {
@@ -81,10 +85,26 @@ const HomeScreen =(props) => {
 
 
 
+       useEffect (() => {
+
+        VersionCheck.needUpdate()
+        .then(async res => {
+          //console.log(res.isNeeded);    // true
+          if (res.isNeeded) {
+              setUpdateNeeded(true);
+              setUpdateUrl(res.storeUrl);
+              console.log(res.storeUrl === updateUrl);
+            //Linking.openURL(res.storeUrl);  // open store if update is needed.
+          }
+        });
 
 
+       }, [])
+       
 
-
+    const updateApp = () => {
+        Linking.openURL(updateUrl);
+    }
 
     const navigation = useNavigation();
 
@@ -97,11 +117,14 @@ const HomeScreen =(props) => {
     return (
         <ScrollView style={{backgroundColor:"#fff"}}>
             <View>
-
+                {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center', }}>
+                <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
+            </TouchableOpacity>: null}
+            
                 <Pressable 
                         style={styles.searchButton}
                         onPress={()=> navigation.navigate('House Type')}>
-                        <Fontisto name="search" size={25} color={"#f15454"}/>
+                        <Fontisto name="search" size={20} color={"deeppink"}/>
                         <Text adjustsFontSizeToFit={true} style={styles.searchButtonText}>Where do you want to rent?</Text>
                             
                             </Pressable>
@@ -115,13 +138,13 @@ const HomeScreen =(props) => {
 
                     </Text>
 
-                    <Pressable 
+                    {/* <Pressable 
                         style={styles.button}
                         onPress={()=> navigation.navigate
                         ('House Type')}>
                         <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Explore nearby stays</Text>
                             
-                            </Pressable>
+                            </Pressable> */}
                 </ImageBackground>
             </View>
 

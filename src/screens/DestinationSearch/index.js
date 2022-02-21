@@ -1,5 +1,5 @@
-import React , {useState} from 'react';
-import {View, Text, StatusBar,TextInput, FlatList, Pressable} from 'react-native';
+import React , {useState,useEffect, useContext,useRef } from 'react';
+import {View, ActivityIndicator, Text, StatusBar,TextInput, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import searchResults from '../../../assets/data/search';
@@ -9,9 +9,15 @@ import SuggestionRow from './SuggestionRow';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
-
+import analytics from '@react-native-firebase/analytics';
+import {AuthContext} from '../../navigation/AuthProvider';
 const DestinationSearch = (props) => {
     const navigation = useNavigation();
+    const {user, logout} = useContext(AuthContext);
+    const ref = useRef();
+    useEffect(() => {
+      ref.current?.focus();
+    }, []);
     
     return (
         
@@ -40,14 +46,22 @@ const DestinationSearch = (props) => {
           style={styles.footer}
         >
             <GooglePlacesAutocomplete
-                placeholderTextColor='black'
+                
                 placeholder='Type where you want to rent'
-                autoFocus={true}
-                onPress={(data, details = null) => {
+                ref={ref}
+                onPress={async(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
                     //console.log(data, details);
+                    await analytics().logEvent('searchQuery', {
+                      id: user.uid,
+                      item: details.description,
+                      description:user.displayName,
+                      
+                    })
+                  
+          
                     navigation.navigate('Number of Guests', {viewport: details.geometry.viewport});
-                    console.log(details.geometry.viewport)
+                    //console.log(details.geometry.viewport)
                   }}
                 fetchDetails
                 styles={{
@@ -59,6 +73,13 @@ const DestinationSearch = (props) => {
                         height:40,
                         
                         
+                      },
+                      textInput: {
+                        height: 44,
+                        color: '#000000',
+                        fontSize: 18,
+                        fontFamily:'Montserrat-Bold',
+                        paddingHorizontal: 10
                       },
                       
                 }}
