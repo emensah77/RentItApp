@@ -1,9 +1,9 @@
-import React , {useState} from 'react';
+import React , {useState, useEffect} from 'react';
 import {View, Text,Alert, TextInput, ScrollView,ImageBackground, TouchableOpacity ,StatusBar, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUtensils , faFan ,faFaucet, faBath, faBed, faToilet, faWifi, faWater, faCamera, faUpload, faCameraRetro, faFileUpload, faCloudUploadAlt, faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons'
 import * as Animatable from 'react-native-animatable';
@@ -16,7 +16,17 @@ const OnboardingScreen5 = (props) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isSelected, setisSelected] = useState(false);
     const [homeprice, sethomeprice] = useState(1);
-    const [value, setValue] = useState('1')
+    const [value, setValue] = useState('1');
+    const route = useRoute();
+    const title = route.params?.title
+    const type = route.params?.type;
+    const description = route.params?.description;
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const imageUrls = route.params?.imageUrls;
+    const mode = route.params?.mode;
+    const amenities = route.params?.amenities;
     const hellod = (text) => {
         setValue(text);
         
@@ -25,10 +35,9 @@ const OnboardingScreen5 = (props) => {
         
       };
     
-   const goHome = () => {
-    Alert.alert("We will review your home, if approved it will be available for lease or sale",);
-    navigation.replace('Home');
-}
+      useEffect(() => {
+        console.log(title, bed, bedroom, bathroom, imageUrls);
+    })
     
     return (
         
@@ -97,42 +106,29 @@ const OnboardingScreen5 = (props) => {
                </TouchableOpacity>
 
 
-               <TouchableOpacity
-                
-                style={{
-
-                   flexDirection: 'row', 
-                   alignItems:'center',
-                   alignSelf:'center', 
-                   paddingVertical: 20,
-                   borderWidth:  1,
-                   borderColor: 'darkgray',
-                   borderRadius:10,
-                   marginVertical:20,
-                   paddingHorizontal:20,
-                   marginHorizontal: 20,
-                   
-                   width:150,
-                   
-           }}
-               >
-                   <View style={{flex:1}}>
-                       <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-                        <Text adjustsFontSizeToFit={true} style={{fontSize:30, fontWeight:'bold'}}>GH₵</Text>
-                        <TextInput
-                        adjustsFontSizeToFit={true}
-                        numberOfLines={1}    
-                        onChangeText={text => hellod(text)}
-                        style={{alignSelf:'center',fontSize:30,fontWeight: 'bold'
-                        }}>{homeprice}</TextInput>
-                       </View>
+               
+               <View style={{flex:1, flexDirection:'row', marginBottom:20, justifyContent:'center'}}>
                        
+                        <Text style={{alignSelf:'center',fontSize:24,fontWeight:'600'}}>GHS</Text>
                        
-                       <Text>per month</Text>
-                        
-                   </View>
+                       <TextInput
+                       adjustsFontSizeToFit={true}
+                       placeholder="1"
+                       
+                       autoFocus={true}
+                       maxLength={50}
+                       keyboardType={"numeric"}
+                       onChangeText={text => hellod(text)}
+                       style={{alignContent:'flex-start',width:'50%',height:70,fontSize:20,fontWeight: 'bold'
+                       ,borderWidth:  1,
+                       borderColor: 'darkgray',borderRadius:10, padding:10}}>{homeprice}</TextInput>
+                      
+                      <Text style={{alignSelf:'center', fontWeight:'500'}}>per month</Text>
+                      
+                      
+                       
+                  </View>
                    
-                   
 
                    
 
@@ -142,7 +138,7 @@ const OnboardingScreen5 = (props) => {
 
 
 
-               </TouchableOpacity>
+              
 
 
 
@@ -192,7 +188,18 @@ const OnboardingScreen5 = (props) => {
         
         
             
-            <Pressable onPress={() => navigation.navigate('OnboardingScreen6')} style={{left:250,width:100,backgroundColor:'deeppink',
+            <Pressable onPress={() => navigation.navigate('OnboardingScreen6', {
+                title: title,
+                type: type,
+                description: description,
+                bed: bed,
+                bedroom: bedroom,
+                bathroom: bathroom,
+                imageUrls: imageUrls,
+                homeprice: homeprice,
+                mode: mode,
+                amenities: amenities,
+            })} style={{left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </Pressable>

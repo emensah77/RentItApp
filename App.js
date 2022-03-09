@@ -6,7 +6,8 @@
  * @flow strict-local
  */
  import 'react-native-gesture-handler';
-import React from 'react';
+ import SplashScreen from 'react-native-splash-screen'
+import React, {useEffect} from 'react';
 
 import {
   Dimensions,
@@ -188,7 +189,9 @@ const App: () => Node = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-
+    useEffect(() => {
+      SplashScreen.hide();
+    })
   return (
     <>
     

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect,Component } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 import {useNavigation} from "@react-navigation/native";
+import SplashScreen from 'react-native-splash-screen'
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,6 +21,10 @@ const { width, height } = Dimensions.get('window');
 
 
 const Onboarding = (props) =>  {
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, [])
 
   const navigation = useNavigation();
 

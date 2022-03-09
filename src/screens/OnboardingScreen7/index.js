@@ -1,22 +1,107 @@
-import React , {useState} from 'react';
+import React , {useEffect, useContext, useState} from 'react';
 import {View, Alert,Text, ScrollView, Image, ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable, Dimensions} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus ,faFaucet, faBath, faBed, faToilet, faWifi, faWater, faCamera, faUpload, faCameraRetro, faFileUpload, faCloudUploadAlt, faArrowAltCircleUp, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {API, graphqlOperation} from 'aws-amplify';
+import {createPost} from '../../graphql/mutations'; 
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const OnboardingScreen7 = (props) => {
     const navigation = useNavigation();
     const [images, setImages] = useState([]);
+    const route = useRoute();
+    const title = route.params?.title
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const imageUrls = route.params?.imageUrls;
+    const homeprice = route.params?.homeprice;
+    const latitude = route.params?.latitude;
+    const longitude = route.params?.longitude;
+    const type = route.params?.type;
+    const description = route.params?.description;
+    const mode = route.params?.mode;
+    const amenities = route.params?.amenities;
+    const {user, logout} = useContext(AuthContext);
+    const uploadusers = ["UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1"]
+
+    useEffect(() => {
+        console.log({
+           title: title,
+           bedroom: bedroom,
+           bathroom: bathroom,
+           bed: bed,
+           type: type,
+           description: description,
+           imageUrls: imageUrls,
+           homeprice: homeprice,
+           latitude: latitude,
+           longitude: longitude,
+           mode: mode,
+           amenities: amenities,
+        })
+    })
+
+    const uploadHome = async (id) => {
+
+        try {
+          let input = {
+            image: imageUrls[0],
+            bed: bed,
+            bedroom: bedroom,
+            maxGuests: bedroom,
+            bathroomNumber: bathroom,
+            title: title,
+            type: type,
+            mode: mode,
+            images: imageUrls,
+            description: description,
+            latitude: latitude,
+            longitude:  longitude,
+            maxGuests: bedroom,
+            oldPrice: Math.round(homeprice*12),
+            newPrice: Math.round(homeprice*12),
+            aircondition: amenities.includes('Air Conditioner') ? 'Yes' : 'No',
+            wifi: amenities.includes('WiFi') ? 'Yes' : 'No',
+            kitchen: amenities.includes('Kitchen') ? 'Yes' : 'No',
+            bathroom: amenities.includes('Bathroom') ? 'Yes' : 'No',
+            water: amenities.includes('Water') ? 'Yes' : 'No',
+            toilet: amenities.includes('Toilet') ? 'Yes' : 'No',
+
+
+
+          }
+          const uploadedHome  = await API.graphql(
+            graphqlOperation(createPost, {
+    
+              input
+            } ,
+                {
+                id 
+            }) 
+    
+          );
+          console.log("Succesfully uploaded the post");
+        }
+        catch(e){
+          console.log('Error deleting post', e);
+        }
+      }
+      
 
     const goHome = () => {
-        Alert.alert("We will review your home, if approved it will be available for lease or sale",);
+        if(uploadusers.includes(user.uid)){
+            uploadHome();
+        }
+                Alert.alert("We will review your home, if approved it will be available for lease or sale",);
         navigation.replace('Home');
     }
     const openCamera = () => {

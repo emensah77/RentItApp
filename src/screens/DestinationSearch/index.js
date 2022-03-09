@@ -1,5 +1,5 @@
 import React , {useState,useEffect, useContext,useRef } from 'react';
-import {View, ActivityIndicator, Text, StatusBar,TextInput, FlatList, Pressable} from 'react-native';
+import {View, ActivityIndicator, Text, StatusBar,TextInput, FlatList, Pressable, KeyboardAvoidingView} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import searchResults from '../../../assets/data/search';
@@ -41,10 +41,15 @@ const DestinationSearch = (props) => {
         
         <Animatable.View
         useNativeDriver={true}
-        animation="fadeInUpBig"
-        duration={1500} 
+         
           style={styles.footer}
         >
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{flex:1}}
+            
+            >
+
             <GooglePlacesAutocomplete
                 
                 placeholder='Type where you want to rent'
@@ -52,9 +57,10 @@ const DestinationSearch = (props) => {
                 onPress={async(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
                     //console.log(data, details);
+                    
                     await analytics().logEvent('searchQuery', {
                       id: user.uid,
-                      item: details.description,
+                      item: details.name,
                       description:user.displayName,
                       
                     })
@@ -94,6 +100,9 @@ const DestinationSearch = (props) => {
                 renderRow={(item) => <SuggestionRow item={item}/>}
                 />
           
+
+            </KeyboardAvoidingView>
+            
           
         </Animatable.View>
 

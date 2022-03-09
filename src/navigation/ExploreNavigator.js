@@ -17,6 +17,9 @@ import OnboardingScreen4 from '../screens/OnboardingScreen4';
 import OnboardingScreen5 from '../screens/OnboardingScreen5';
 import OnboardingScreen6 from '../screens/OnboardingScreen6';
 import OnboardingScreen7 from '../screens/OnboardingScreen7';
+import OnboardingScreen8 from '../screens/OnboardingScreen8';
+import OnboardingScreen9 from '../screens/OnboardingScreen9';
+import OnboardingScreen10 from '../screens/OnboardingScreen10';
 
 
 const Stack = createStackNavigator();
@@ -122,12 +125,34 @@ const Router = (props) => {
                     component={OnboardingScreen6}
                     options={{
                         headerShown: false,
+                        
                     }}
                     />
                 
                 <Stack.Screen
                     name={'OnboardingScreen7'}
                     component={OnboardingScreen7}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen8'}
+                    component={OnboardingScreen8}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen9'}
+                    component={OnboardingScreen9}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
+                    name={'OnboardingScreen10'}
+                    component={OnboardingScreen10}
                     options={{
                         headerShown: false,
                     }}
@@ -155,7 +180,8 @@ const Router = (props) => {
                         component={SearchResultsTabNavigator}
                         
                         options={{
-                           title: 'Places to Rent',
+                           headerShown: true,
+                           title: 'Homes to Rent',
                         }}
                         />
 

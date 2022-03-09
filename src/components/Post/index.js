@@ -185,17 +185,23 @@ const Post = (props) => {
             
                 <Pressable  style={{
                 shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 8, right:0, top:5, position: 'absolute'
-                ,height:40, width:40, backgroundColor:"white",
+                ,height:40, width:40, backgroundColor:"white", elevation:90,
                 borderRadius:20, justifyContent:'center', alignItems:"center"}} onPress={handleClick}>
                             
                             <Fontisto name="heart" size={20} color={isLike ? colorStyle : "dimgrey"}/>
                         </Pressable>
+                <View style={{
+                shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 10, left:0, top:5, position: 'absolute'
+                ,height:40, width:100, backgroundColor:"white", elevation:90,
+                borderRadius:15, justifyContent:'center', alignItems:"center"}}>
+                    <Text adjustsFontSizeToFit={true} style={{fontSize:16, fontWeight:'bold'}}>{post.mode === "For Sale" ? "FOR SALE":"FOR RENT"}</Text>
+                </View>
             </View>
             
             {/* Bed and Bedroom */}
 
             <Text style={styles.bedrooms}>
-                {post.bed} bed {post.bedrooms} bedrooms
+                {post.bed} bedrooms | {post.bathroomNumber} bathrooms
             </Text>
 
             {/* Type and Description */}
@@ -205,9 +211,9 @@ const Post = (props) => {
             {/* Old and new Price */}
             
             <Text style={styles.prices}>
-                <Text style={styles.oldPrice}>
+                {/* <Text style={styles.oldPrice}>
                 GH₵{post.oldPrice}
-                </Text>
+                </Text> */}
                 <Text style={styles.newPrice}>
                 GH₵{Math.round(post.newPrice * 1.07)} / year
                 </Text>
@@ -216,9 +222,9 @@ const Post = (props) => {
             </Text>
             {/* Total price */}
             
-                <Text style={styles.totalPrice}>
+                {/* <Text style={styles.totalPrice}>
                         GH₵{Math.round(post.newPrice * 1.07)}
-                    </Text>
+                    </Text> */}
                 
                         
                   

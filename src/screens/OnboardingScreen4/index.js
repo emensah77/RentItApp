@@ -1,21 +1,116 @@
-import React , {useState} from 'react';
-import {View, Text, ScrollView, Image, ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable, Dimensions} from 'react-native';
+import React , {useState, useEffect} from 'react';
+import {View, Modal,ActivityIndicator,Text, ScrollView, Image, ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable, Dimensions, Alert} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPlus ,faFaucet, faBath, faBed, faToilet, faWifi, faWater, faCamera, faUpload, faCameraRetro, faFileUpload, faCloudUploadAlt, faArrowAltCircleUp, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import Amplify, {Storage} from 'aws-amplify';
+import uuid from 'react-native-uuid';
+import awsconfig from '../../../src/aws-exports';
+Amplify.configure(awsconfig);
 
 const OnboardingScreen4 = (props) => {
     const navigation = useNavigation();
     const [images, setImages] = useState([]);
+    const [progressText, setProgressText] = useState(0);
+    const [isLoading, setisLoading] = useState(false);
+    const [imageUrls, setImageUrls] = useState('');
+    const [urls, setUrls] = useState([]);
+    const route = useRoute();
+    const title = route.params?.title;
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const type = route.params?.type;
+    const description = route.params?.description;
+    const mode = route.params?.mode;
+    const amenities = route.params?.amenities;
+    
+
+    async function pathToImageFile(uri) {
+        try {
+          const response = await fetch(uri);
+          const blob = await response.blob();
+          await Storage.put(uuid.v4(), blob, {
+              level: 'public',
+            contentType: "image/jpeg", // contentType is optional
+          });
+        } catch (err) {
+          console.log("Error uploading file:", err);
+        }
+      }
+    
+    const fetchResourceFromURI = async (uri) => {
+        const response = await fetch(uri);
+        //console.log(response);
+        const blob = await response.blob();
+        
+        return blob;
+      };
+      
+      useEffect(() => {
+        
+        
+       
+          if (imageUrls != ""){
+            setUrls(prevImages => prevImages.concat(imageUrls))
+          }
+        
+      }, [imageUrls])
+      const uploadResource = async (image) => {
+        if (isLoading) return;
+        setisLoading(true);
+        const img = await fetchResourceFromURI(image.uri);
+        setImageUrls('https://d1mgzi0ytcdaf9.cloudfront.net/public/'+image.name);
+        
+        return Storage.put(image.name, img, {
+          level: 'public',
+          contentType: "image/jpeg",
+          progressCallback(uploadProgress) {
+              setProgressText((uploadProgress.loaded / uploadProgress.total)*100);
+            // setProgressText(
+            
+            //   `Progress: ${Math.round(
+            //     (uploadProgress.loaded / uploadProgress.total) * 100,
+            //   )} %`,
+            // );
+            // Alert.alert(`Uploading: ${Math.round(
+            //     (uploadProgress.loaded / uploadProgress.total) * 100,
+            //   )}%`);
+            
+          },
+        })
+          .then(res => {
+            
+            
+            setisLoading(false);
+            Storage.get(res.key, {
+                level:'public',
+                contentType: 'image/jpeg'
+            })
+              .then(result => {
+                  console.log(urls)
+              })
+              .catch(err => {
+                setProgressText('Upload Error');
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            setisLoading(false);
+            setProgressText('Upload Error');
+            console.log(err);
+          });
+      };
 
     
+
     const openCamera = () => {
         const options = {
             storageOptions:{
@@ -27,7 +122,7 @@ const OnboardingScreen4 = (props) => {
             }
         }
         launchCamera(options, response => {
-            console.log('Response = ', response);
+            //console.log('Response = ', response);
             if(response.didCancel){
                 
                 return;
@@ -44,11 +139,12 @@ const OnboardingScreen4 = (props) => {
             const img = {
                 uri: response.assets[0].uri,
                 type: response.assets[0].type,
-                name: response.assets[0].fileName || 'file'
+                name: uuid.v4(),
             };
-
+            
             setImages(prevImages => prevImages.concat(img));
-            console.log(images);
+            uploadResource(img);
+            
         }
         })
         
@@ -59,7 +155,7 @@ const OnboardingScreen4 = (props) => {
     const openLibrary = () => {
         
         launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
-            console.log('Response = ', response);
+            //console.log('Response = ', response);
             if(response.didCancel){
                 return;
             }
@@ -72,13 +168,15 @@ const OnboardingScreen4 = (props) => {
             }
             else{
             const img = {
-                    uri: response.assets[0].uri,
-                    type: response.assets[0].type,
-                    name: response.assets[0].fileName || 'file'
+                uri: response.assets[0].uri,
+                type: response.assets[0].type,
+                name: uuid.v4(),
                 };
-
+                // pathToImageFile(img.uri);
+                
                 setImages(prevImages => prevImages.concat(img));
-                console.log(images);
+                uploadResource(img);
+                
 
             }
         
@@ -90,7 +188,44 @@ const OnboardingScreen4 = (props) => {
     }
 
    
-    
+    if (isLoading){ 
+        
+        
+        return(
+        
+            <Modal
+            transparent={true}
+            animationType={'none'}
+            visible={isLoading}
+            style={{ zIndex: 1100 }}
+            onRequestClose={() => { }}>
+            <View style={{flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#rgba(0, 0, 0, 0.5)',
+    zIndex: 1000}}>
+              <View style={{backgroundColor: '#FFFFFF',
+    height: 150,
+    width: 150,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around'}}>
+                <Text style={{fontSize:24, fontWeight:'bold'}}>Uploading...</Text>
+              <ActivityIndicator animating={true} size="large"  color="blue" style={{opacity:1}}/>
+                
+                
+              </View>
+            </View>
+          </Modal>
+
+           
+         
+      
+         
+       
+      );}
     return (
         
         <LinearGradient
@@ -149,7 +284,17 @@ const OnboardingScreen4 = (props) => {
                 keyExtractor={(item, index) => index.toString()}
                 
                 />
-            <TouchableOpacity disabled={images.length < 5 ? true : false} onPress={() => navigation.navigate('OnboardingScreen5')} style={{left:250,width:100,backgroundColor:'deeppink',
+            <TouchableOpacity disabled={images.length < 5 ? true : false} onPress={() => navigation.navigate('OnboardingScreen5', {
+                title: title,
+                type: type,
+                description: description,
+                bed: bed,
+                bedroom: bedroom,
+                bathroom: bathroom,
+                imageUrls: urls,
+                mode: mode,
+                amenities: amenities,
+            })} style={{left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20, marginTop:15, opacity:images.length < 5 ? .2 : 1}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-Bold', fontSize:18}}>Next</Text>
             </TouchableOpacity>
@@ -247,7 +392,13 @@ const OnboardingScreen4 = (props) => {
         
         
             
-            <TouchableOpacity disabled={images.length === 0} onPress={() => navigation.navigate('OnboardingScreen5')} style={{left:250,width:100,backgroundColor:'deeppink',
+            <TouchableOpacity disabled={images.length === 0} onPress={() => navigation.navigate('OnboardingScreen5', {
+                title: title,
+                bed: bed,
+                bedroom: bedroom,
+                bathroom: bathroom,
+                imageUrls: urls,
+            })} style={{left:250,width:100,backgroundColor:'deeppink',
              opacity:images.length === 0 ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-Bold', fontSize:18}}>Next</Text>
             </TouchableOpacity>

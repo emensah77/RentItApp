@@ -76,33 +76,36 @@ const DetailedPost = (props) => {
             <View style={styles.container}>
                 
                 {/* Bed and Bedroom */}
-
-                <Text style={styles.bedrooms}>
-                    {post.bed} bed {post.bedrooms} bedrooms
-                </Text>
-
-                {/* Type and Description */}
                 <Text style={styles.description} numberOfLines={2}>
-                    {post.type}. {post.title}
+                    {post.title}
                 </Text> 
-                {/* Old and new Price */}
+                <View style={styles.hairline}/>
+                <Text style={styles.bedrooms}>
+                {post.type} | {post.bed} bedrooms | {post.bathroomNumber} bathrooms |
+                </Text>
                 <Text style={styles.prices}>
-                    <Text style={styles.oldPrice}>
+                    {/* <Text style={styles.oldPrice}>
                     GH₵{post.oldPrice} 
-                    </Text>
+                    </Text> */}
                     <Text style={styles.newPrice}>
                     GH₵{Math.round(post.newPrice*1.07)} / year
                     </Text>
                 </Text>
+                {/* Type and Description */}
+                
+                {/* Old and new Price */}
+                <View style={styles.hairline}/>
+                
                 {/* Total price */}
-                <Text style={styles.totalPrice}>
+                {/* <Text style={styles.totalPrice}>
                 GH₵{post.totalPrice}
-                </Text>
+                </Text> */}
                 
 
                 <Text style={styles.longDescription}>
                     {post.description}
                 </Text>
+                <View style={styles.hairline}/>
 
                 <Text style={{margin: 10, fontSize:20, fontFamily:"Montserrat-Bold"}}>
                     Amenities available

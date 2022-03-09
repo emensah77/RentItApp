@@ -14,12 +14,23 @@ const styles = StyleSheet.create({
     },
     bedrooms: {
         marginVertical: 10,
-        color: 'darkgray',
+        color: 'black',
+        fontWeight: '600',
+        fontSize:14
     },
     description: {
         fontSize: 18,
         lineHeight: 26,
+        fontFamily:'Montserrat-Bold'
 
+    },
+    
+    hairline:{
+        alignSelf: 'stretch',
+        borderBottomWidth: 1,
+        borderBottomColor: 'lightgrey',
+        marginTop: 10,
+        marginBottom: 10
     },
     prices: {
         fontSize: 18,

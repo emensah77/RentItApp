@@ -71,8 +71,8 @@ const ImageCarousel = ({images}) => {
       onPress={handleClick}>
       <Fontisto name="heart" size={15}  color={isLike ? "deeppink" : "dimgrey"}/> 
     </Pressable>
-    <View style={{opacity:.8,marginHorizontal:20,position:'absolute',right:0,bottom:Platform.OS === 'android' ? 25: 40,borderRadius:10,flex:1,alignItems:'center',backgroundColor:'black', width:50,}}>
-      <Text style={{margin:5,color:'white',fontSize:15, fontWeight:'600'}}>{activeIndex+1}/{images.length}</Text>
+    <View style={{opacity:.7,marginHorizontal:20,position:'absolute',right:0,bottom:Platform.OS === 'android' ? 25: 40,borderRadius:10,flex:1,alignItems:'center',backgroundColor:'black', width:60,}}>
+      <Text style={{margin:5,color:'white',fontSize:15, fontWeight:'bold'}}>{activeIndex+1}/{images.length}</Text>
     </View>
     
 
@@ -97,7 +97,7 @@ const ImageCarousel = ({images}) => {
         ))} */}
           
           <PaginationDot
-            activeDotColor={'deeppink'}
+            activeDotColor={'#FF007F'}
             curPage={activeIndex}
             maxPage={images.length}
             sizeRatio={1}

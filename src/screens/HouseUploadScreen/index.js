@@ -40,7 +40,7 @@ const HouseUploadScreen = (props) => {
         >
     
         
-        <Text style={styles.text_header}> Upload your home in  {'\n'} 7 easy steps </Text>
+        <Text style={styles.text_header}> Upload your home in  {'\n'} 10 easy steps </Text>
         <TouchableOpacity onPress={() => navigation.navigate('OnboardingScreen1')} style={{borderRadius:10, paddingHorizontal:10, 
             marginHorizontal:15, paddingVertical:20, alignItems:'center',
              backgroundColor:'deeppink'}} >

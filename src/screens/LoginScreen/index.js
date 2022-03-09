@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect,useState} from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import { AuthContext } from '../../navigation/AuthProvider';
 import Swiper from 'react-native-swiper';
 import { AppleButton } from '@invertase/react-native-apple-authentication';
 import { faFacebook, faApple, faGoogle} from '@fortawesome/free-brands-svg-icons';
+import SplashScreen from 'react-native-splash-screen'
 const { width, height } = Dimensions.get('screen');
 const ITEM_WIDTH = width * 0.76;
 const ITEM_HEIGHT = ITEM_WIDTH * 1.47;
@@ -43,7 +44,10 @@ const LoginScreen = ({navigation}) => {
   const {login, googleLogin, fbLogin, appleLogin} = useContext(AuthContext);
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
-  
+  useEffect(() => {
+    SplashScreen.hide();
+  })
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <StatusBar hidden={true} />

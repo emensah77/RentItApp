@@ -5,7 +5,7 @@ import {listPosts} from '../../graphql/queries';
 import {useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
-
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 const PostScreen = (props) =>{
     const route = useRoute();
@@ -43,6 +43,7 @@ const PostScreen = (props) =>{
                  }
              })
            }catch(e){
+               
                return;
            }
        })
@@ -67,16 +68,57 @@ const PostScreen = (props) =>{
     
     if (!post){
         return (
-            <View style={{alignItems: 'center', justifyContent:"center"}}>
-             <AnimatedEllipsis animationDelay={100} style={{
-            color: 'blue',
-           fontSize: 100,
+        //     <View style={{alignItems: 'center', justifyContent:"center"}}>
+        //      <AnimatedEllipsis animationDelay={100} style={{
+        //     color: 'blue',
+        //    fontSize: 100,
             
-          letterSpacing: -15,
+        //   letterSpacing: -15,
             
-           }}/>
+        //    }}/>
             
-           </View>
+        //    </View>
+        <View
+         
+        
+                style={{
+                     flex:1,  justifyContent:'center', alignContent:"center" }} >
+                    
+                    <SkeletonContent
+                    containerStyle={{paddingBottom:0, width: '100%'}}
+                    animationDirection="horizontalLeft"
+                    layout={[
+                        // long line
+                        { width: '100%', height: 300, marginBottom: 10, borderRadius:10 },
+                        { width: 220, height: 20, marginBottom: 10 },
+                        // short line
+                        { width: 90, height: 20, marginBottom: 10 },
+                        { width: 40, height: 20, marginBottom: 80 },
+
+                       
+                        { width: '100%', height: 150, marginBottom: 100 },
+                        
+                        { width: '100%', height: 20, marginBottom: 12, paddingHorizontal:40},
+                        { width: '100%', height: 20, marginBottom: 12 },
+                        { width: '100%', height: 20, marginBottom: 12 },
+                        { width: '100%', height: 20, marginBottom: 12},
+                        { width: '100%', height: 20, marginBottom: 12 },
+                        { width: '100%', height: 20, marginBottom: 12 },
+                        { width: '100%', height: 20, marginBottom: 12},
+                        
+                        
+                        
+                        // ...
+                    ]}
+                    >
+                        
+                    
+                    </SkeletonContent>
+
+                    
+                </View>
+
+                
         )
     }
 

@@ -1,5 +1,8 @@
 #import "AppDelegate.h"
 
+#if RCT_DEV
+#import <React/RCTDevLoadingView.h>
+#endif
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -7,6 +10,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h> // <- Add This Import
 #import <React/RCTLinkingManager.h> // <- Add This Import
 #import <Firebase.h>
+#import "RNSplashScreen.h"  // here
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -33,6 +37,8 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+  
   if ([FIRApp defaultApp] == nil) {
       [FIRApp configure];
     }
@@ -45,6 +51,9 @@ static void InitializeFlipper(UIApplication *application) {
 didFinishLaunchingWithOptions:launchOptions];
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+   #if RCT_DEV
+    [bridge moduleForClass:[RCTDevLoadingView class]];
+  #endif
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"AirbnbClone"
                                             initialProperties:nil];
@@ -60,6 +69,10 @@ didFinishLaunchingWithOptions:launchOptions];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [RNSplashScreen show];  // here
+    // or
+    //[RNSplashScreen showSplash:@"LaunchScreen" inRootView:rootView];
+    
   return YES;
 }
 

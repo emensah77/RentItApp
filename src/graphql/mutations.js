@@ -20,8 +20,10 @@ export const createPost = /* GraphQL */ `
       type
       title
       description
+      mode
       bed
       bedroom
+      bathroomNumber
       maxGuests
       wifi
       kitchen
@@ -50,8 +52,10 @@ export const updatePost = /* GraphQL */ `
       type
       title
       description
+      mode
       bed
       bedroom
+      bathroomNumber
       maxGuests
       wifi
       kitchen
@@ -80,8 +84,10 @@ export const deletePost = /* GraphQL */ `
       type
       title
       description
+      mode
       bed
       bedroom
+      bathroomNumber
       maxGuests
       wifi
       kitchen

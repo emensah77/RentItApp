@@ -10,8 +10,10 @@ export const getPost = /* GraphQL */ `
       type
       title
       description
+      mode
       bed
       bedroom
+      bathroomNumber
       maxGuests
       wifi
       kitchen
@@ -42,8 +44,10 @@ export const listPosts = /* GraphQL */ `
         type
         title
         description
+        mode
         bed
         bedroom
+        bathroomNumber
         maxGuests
         wifi
         kitchen

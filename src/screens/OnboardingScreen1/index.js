@@ -29,6 +29,23 @@ const OnboardingScreen1 = (props) => {
             title: 'Entire Flat',
             key: '3'
         },
+        {
+            image: 'https://i.insider.com/5ed812183ad861312272b2f5?width=700',
+            title: 'Self-Contained',
+            key: '4'
+        },
+
+        {
+            image: 'https://pbs.twimg.com/media/CTbpP-AVEAARjVx.jpg',
+            title: 'Mansion',
+            key: '5'
+        },
+
+        {
+            image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
+            title: 'Single Room',
+            key: '6'
+        },
         
     ]
     
@@ -68,7 +85,9 @@ const OnboardingScreen1 = (props) => {
         renderItem={({item}) => {
             return (
                 <TouchableOpacity style={styles.row}
-                onPress={() => navigation.navigate('OnboardingScreen2')
+                onPress={() => navigation.navigate('OnboardingScreen10', {
+                    type: item.title
+                })
                 }>
                     <View style={{justifyContent:'center'}}>
                         <Text style={{fontWeight: 'bold'}}>{item.title}</Text>

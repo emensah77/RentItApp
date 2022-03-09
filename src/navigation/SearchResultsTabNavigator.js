@@ -13,12 +13,15 @@ const SearchResultsTabNavigator = (props) => {
     const {guests, viewport } = route.params; 
     
     return (
+        
         <Tab.Navigator tabBarOptions={{
                 activeTintColor: 'blue',
                 indicatorStyle: {
                     backgroundColor: 'blue'
                 }
+                
         }}>
+            
             <Tab.Screen 
                 name={"list"}
                > 

@@ -1,9 +1,9 @@
-import React , {useState} from 'react';
+import React , {useEffect, useState} from 'react';
 import {View, Text, ScrollView,ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,6 +14,9 @@ const OnboardingScreen2 = (props) => {
     const [bed, setbed] = useState(0);
     const [bedroom, setbedroom] = useState(0);
     const [bathroom, setbathroom] = useState(0);
+    const route = useRoute();
+    const type = route.params?.type;
+    const mode = route.params?.mode;
 
     const items = [
         {
@@ -164,10 +167,16 @@ const OnboardingScreen2 = (props) => {
 
             </View>
 
-            <Pressable onPress={() => navigation.navigate('OnboardingScreen3')} style={{left:250,width:100,backgroundColor:'deeppink',
-             borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
+            <TouchableOpacity disabled={bedroom === 0} onPress={() => navigation.navigate('OnboardingScreen9', {
+                type: type,
+                mode: mode,
+                bed: bed,
+                bedroom: bedroom,
+                bathroom: bathroom,
+            })} style={{left:250,width:100,backgroundColor:'deeppink',
+             borderRadius:20, opacity: bedroom === 0 ? .4 : 1,alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-Bold', fontSize:18}}>Next</Text>
-            </Pressable>
+            </TouchableOpacity>
            
                
             </ScrollView>

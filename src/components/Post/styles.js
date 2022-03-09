@@ -11,12 +11,17 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderRadius: 10, 
         flex:1,
+        shadowOpacity:1,
+        shadowRadius:10,
+        
+        backgroundColor:'transparent',
+        shadowOffset: { width: 10, height: 10 },
 
 
     },
     bedrooms: {
         marginVertical: 10,
-        color: 'darkgray',
+        color: 'black',
     },
     description: {
         fontSize: 18,

@@ -1,24 +1,36 @@
-import React , {useState} from 'react';
-import {View, Text, ScrollView,ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable} from 'react-native';
+import React , {useEffect, useState} from 'react';
+import {View, Text, Dimensions,ScrollView,ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUtensils , faFan ,faFaucet, faBath, faBed, faToilet, faWifi, faWater} from '@fortawesome/free-solid-svg-icons'
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const OnboardingScreen3 = (props) => {
     const navigation = useNavigation();
     const [selectedItem, setSelectedItem] = useState(null);
     const [isSelected, setisSelected] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const route = useRoute();
+    const type = route.params?.type;
+    const description = route.params?.description;
+    const title = route.params?.title;
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const mode = route.params?.mode;
     const increment = a => !a ;
     const onPressHandler = (id, isSelect) => {
         
         setSelectedItem(id);
         setisSelected(!isSelect);
+
         console.log(id, isSelect, isSelected);
         
   
@@ -26,43 +38,52 @@ const OnboardingScreen3 = (props) => {
 
     const items = [
         {
-            icon: faFan,
-            title: 'Air Conditioner',
-            id: '1',
-            isSelected: isSelected,
+            
+            name: 'Air Conditioner',
+            id: 'Air Conditioner',
+            
             
         },
         {
-            icon: faWifi,
-            title: 'WiFi',
-            id: '2',
-            isSelected: isSelected,
+            
+            name: 'WiFi',
+            id: 'WiFi',
+            
             
 
         },
         {
-            icon: faUtensils,
-            title: 'Kitchen',
-            id: '3',
-            isSelected: isSelected,
+            
+            name: 'Kitchen',
+            id: 'Kitchen',
+            
             
         },
         {
-            icon: faFaucet,
-            title: 'Water',
-            id: '4',
-            isSelected: isSelected,
+            
+            name: 'Water',
+            id: 'Water',
+            
             
         },
         {
-            icon: faToilet,
-            title: 'Toilet',
-            id: '5',
-            isSelected: isSelected,
+            
+            name: 'Toilet',
+            id: 'Toilet',
+            
             
         },
+
+        {
+            name: 'Bathroom',
+            id: 'Bathroom',
+        }
         
     ]
+    const onSelectedItemsChange = (selectedItems) => {
+        setSelectedItems(selectedItems);
+      };
+    
     
     return (
         
@@ -93,14 +114,85 @@ const OnboardingScreen3 = (props) => {
           style={styles.footer}
         >
         <ScrollView>
+        <SectionedMultiSelect
+          styles={{
+            chipText: {
+             maxWidth: Dimensions.get('screen').width - 90,
+         },
+            container: {
+                margin:20,
+                
+            },
+            
+            selectToggleText:{
+                fontSize:15
+            },
+            
+            selectToggle : {
+                backgroundColor: 'white',
+                borderWidth: 1,
+                borderRadius: 20,
+                margin:10,
+                padding: 10
+            },
+            chipContainer: {
+                backgroundColor:'white',
+                marginBottom: 10
+
+            },
+            
+            chipText: {
+                color:'black',
+                fontSize:16
+            },
+            
+            itemText: {
+             color: selectedItems.length ? 'black' : 'darkgrey',
+             fontSize: 18
+            },
+            
+            selectedItemText: {
+              color: 'blue',
+             },
+             
+            item: {
+              paddingHorizontal: 10,
+              margin:10,
+              
+              
+              
+            },
+            
+            selectedItem: {
+              backgroundColor: 'rgba(0,0,0,0.1)'
+            },
+            
+            
+            scrollView: { paddingHorizontal: 0 }
+          }}
+          items={items}
+          showChips={true}
+          uniqueKey="id"
+          IconRenderer={Icon}
+          selectText="Choose amenities in your home"
+          showDropDowns={true}
+          modalAnimationType="fade"
+          readOnlyHeadings={false}
+          onSelectedItemsChange={onSelectedItemsChange}
+          selectedItems={selectedItems}
+          colors={{chipColor:"black"}}
+          iconKey="icon"
+        />
         
-        
-        <FlatList
+        {/* <FlatList
         data={items}
         renderItem={({item}) => {
             return (
                 <TouchableOpacity
-                onPress={ () => onPressHandler(item.id, item.isSelected)}
+                onPress={ () => (
+                    console.log(item.id, item.isSelected)
+                    
+                    )}
                  style={{
 
                     flexDirection: 'row', 
@@ -136,12 +228,21 @@ const OnboardingScreen3 = (props) => {
                 </TouchableOpacity>
             )
         }}
-        />
+        /> */}
             
-            <Pressable onPress={() => navigation.navigate('OnboardingScreen4')} style={{left:250,width:100,backgroundColor:'deeppink',
+            <TouchableOpacity disabled={selectedItems.length === 0} onPress={() => navigation.navigate('OnboardingScreen4',{
+                type: type,
+                title: title,
+                description: description,
+                bed: bed,
+                bedroom: bedroom,
+                bathroom: bathroom,
+                mode: mode,
+                amenities: selectedItems,
+            })} style={{opacity:selectedItems.length === 0 ? .4 : 1,left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-Bold', fontSize:18}}>Next</Text>
-            </Pressable>
+            </TouchableOpacity>
                
             </ScrollView>
         </Animatable.View>

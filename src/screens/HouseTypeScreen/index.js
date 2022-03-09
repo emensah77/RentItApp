@@ -36,7 +36,7 @@ const HouseTypeScreen = (props) => {
         <View style={{justifyContent: 'space-between', height: '100%'}}>
         <Animatable.View
         animation="fadeInUpBig"
-        duration={1500} 
+        duration={50} 
           style={styles.footer}
         >
                 <TouchableOpacity style={styles.row}

@@ -1,9 +1,9 @@
 import React , {useEffect, useState, useRef} from 'react';
-import {View, Text,Alert, TextInput, ScrollView,ImageBackground, Platform,TouchableOpacity ,StatusBar, FlatList,PermissionsAndroid,ToastAndroid,Linking, Pressable} from 'react-native';
+import {View, Text,Alert, TextInput, ScrollView,ImageBackground, Platform,TouchableOpacity ,StatusBar, FlatList,PermissionsAndroid,ToastAndroid,Linking, Pressable, KeyboardAvoidingView} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUtensils ,faLocationArrow, faFan ,faFaucet, faBath, faBed, faToilet, faWifi, faWater, faCamera, faUpload, faCameraRetro, faFileUpload, faCloudUploadAlt, faArrowAltCircleUp} from '@fortawesome/free-solid-svg-icons'
 import * as Animatable from 'react-native-animatable';
@@ -240,12 +240,18 @@ const OnboardingScreen6 = (props) => {
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
     const map = useRef();
+    const route = useRoute();
+    const title = route.params?.title
+    const type = route.params?.type
+    const description = route.params?.description
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const imageUrls = route.params?.imageUrls;
+    const homeprice = route.params?.homeprice;
+    const mode = route.params?.mode;
+    const amenities = route.params?.amenities;
     
-   const goHome = () => {
-    Alert.alert("We will review your home, if approved it will be available for lease or sale",);
-    navigation.replace('Home');
-}
-
 const hasPermissionIOS = async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
@@ -425,7 +431,7 @@ const hasPermissionIOS = async () => {
                
                     
             
-        {latitude === null ?   
+        {latitude === null || longitude == null ?   
         <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}> We need  the {'\n'} address of your home </Text>
 
         :  <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}> We now have the {'\n'} address of your home </Text>  }
@@ -433,15 +439,61 @@ const hasPermissionIOS = async () => {
                 <FontAwesomeIcon icon={faLocationArrow} size={20} />
                 <Text style={{paddingHorizontal:10, fontFamily:'Montserrat-SemiBold'}}>Get my current location</Text>
             </TouchableOpacity>
+            <Text style={{fontWeight:'bold',marginBottom:8,fontSize:20,alignSelf:'center'}}>OR Enter location manually</Text>
+        
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{flex:1}}
+        >
+          
 
+        <View style={{flex:1,flexDirection:'column',marginBottom:10,justifyContent:'space-evenly'}}>
+        <TextInput
+                        adjustsFontSizeToFit={true}
+                        placeholder="Enter Latitude"
+                        multiline={true}
+                        maxLength={50}
+                        keyboardType="numeric"
+                        onChangeText={text => setLatitude(Number(text))}
+                        style={{alignContent:'flex-start',width:'100%',height:50,fontSize:14,fontWeight: 'bold'
+                        ,borderWidth:  1,
+                        borderColor: 'darkgray',borderRadius:10,marginBottom:10, padding:10}}></TextInput>
 
+              <TextInput
+                        adjustsFontSizeToFit={true}
+                        placeholder="Enter Longitude"
+                        multiline={true}
+                        maxLength={50}
+                        keyboardType="numeric"
+                        onChangeText={text => setLongitude(Number(text))}
+                        style={{alignContent:'flex-start',width:'100%',height:50,fontSize:14,fontWeight: 'bold'
+                        ,borderWidth:  1,
+                        borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+           
+        </View>
+
+        </KeyboardAvoidingView>
+                     
             <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Latitude: {latitude === null ? 'Click on get my location' : latitude}</Text>
             
             <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text>
             
             <View style={{flex:1, flexDirection:'row', marginTop:30, justifyContent:'space-between'}}>
-            <TouchableOpacity disabled={latitude === null} onPress={() => navigation.navigate('OnboardingScreen7')} style={{left:250,width:100,backgroundColor:'deeppink',
-             opacity: latitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
+            <TouchableOpacity disabled={latitude === null || longitude === null} onPress={() => navigation.navigate('OnboardingScreen7', {
+              title: title,
+              type: type,
+              description: description,
+              bed: bed,
+              bedroom: bedroom,
+              bathroom: bathroom,
+              imageUrls: imageUrls,
+              homeprice: homeprice,
+              latitude: latitude,
+              longitude: longitude,
+              mode: mode,
+              amenities: amenities,
+            })} style={{left:250,width:100,backgroundColor:'deeppink',
+             opacity: latitude === null || longitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </TouchableOpacity>
 

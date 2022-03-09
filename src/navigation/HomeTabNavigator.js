@@ -17,10 +17,13 @@ import { faCoffee, faSearch ,faHeart,faChartLine, faHouseUser ,faUser ,faCoins }
 import Wishlists from "../screens/Wishlists";
 import Trending from "../screens/TrendingScreen";
 import House from "../screens/House";
-
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 const Tab = createBottomTabNavigator();
 
 const HomeTabNavigator = (props) => {
+    const routes = ["HouseUpload", "OnboardingScreen1", "OnboardingScreen2",
+        "OnboardingScreen3", "OnboardingScreen4", "OnboardingScreen5", "OnboardingScreen6",
+        "OnboardingScreen7", "OnboardingScreen8", "OnboardingScreen9", "OnboardingScreen10"]
     return (
         <Tab.Navigator tabBarOptions={{
             activeTintColor: "blue"
@@ -33,16 +36,29 @@ const HomeTabNavigator = (props) => {
             headerTitleStyle: {
                 fontWeight: 'bold',
             },
+            
         }}>
             <Tab.Screen
             name={"Explore"}
             component={ExploreNavigator}
             
-            options={{
+            
+            options={({ route }) => ({
                 tabBarIcon: ({color}) => (
                     <FontAwesomeIcon icon={faSearch} size={25} color={color} />
-                )
-            }}
+                ),
+                tabBarVisible: ((route) => {
+                    const routeName = getFocusedRouteNameFromRoute(route) ?? ""
+        
+                    if (routes.includes(routeName)) {
+                        return false
+                    }
+        
+                    return true
+                })(route),
+
+                
+            })}
             />
             <Tab.Screen
             name={"House"}

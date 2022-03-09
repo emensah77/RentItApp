@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, FlatList, StyleSheet ,Pressable,Text, ScrollView, Platform, TouchableOpacity} from 'react-native';
+import {View, FlatList,StatusBar, StyleSheet ,Pressable,Text, ScrollView, Platform, TouchableOpacity} from 'react-native';
 import Post from '../../components/Post';
 import {API, graphqlOperation} from 'aws-amplify';
 import {listPosts} from '../../graphql/queries'; 
@@ -19,6 +19,20 @@ const SearchResultsScreen = ({guests, viewport}) => {
    
     const navigation = useNavigation();
     
+    const modes = [
+        {
+            status: 'Everything',
+            id: 1,
+        },
+        {
+            status: 'For Rent',
+            id: 2
+        },
+        {   status: 'For Sale',
+            id: 3
+
+        }
+    ]
     
     const categories = [
         {
@@ -38,7 +52,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             
         },
         {
-            status: 'Private Room',
+            status: 'Mansion',
             id: 4,
         },
         {
@@ -139,6 +153,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
     }, [])
 
     const [status, setStatus] = useState('All');
+    const [modeStatus, setModeStatus] = useState('Everything');
     
     
     const setStatusFilter = status => {
@@ -148,6 +163,15 @@ const SearchResultsScreen = ({guests, viewport}) => {
             setDatalist(posts)
         }
         setStatus(status)
+    }
+
+    const setModeFilter = modeStatus => {
+        if (modeStatus !== 'Everything'){
+            setDatalist([...posts.filter(category => category.mode === modeStatus)])
+        }else{
+            setDatalist(posts)
+        }
+        setModeStatus(modeStatus)
     }
     
     const renderItem = ({item, index}) =>{
@@ -196,7 +220,30 @@ const SearchResultsScreen = ({guests, viewport}) => {
     return (
         
       
-        <View style={{paddingBottom:100 ,marginBottom:100}}>
+        <View style={{paddingBottom:100 ,marginBottom:100, backgroundColor:'transparent'}}>
+            {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
+            {modes.map((mode) => (
+                
+
+                <TouchableOpacity onPress={() => setModeFilter(mode.status)}
+                                    style={[styless.button,
+                                    modeStatus === mode.status && styless.btnTabActive,
+                                    
+                                    ]}
+                                    
+                                    >
+                                
+                                        <Text style={styless.textTab, modeStatus === mode.status && styless.textTabActive}>{mode.status}</Text>
+                                    
+                                    
+                        </TouchableOpacity>
+
+                    
+                    
+                ))}
+                </View> */}
+            
+           
 
             
             {!loading ? <View>
@@ -214,7 +261,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 flex:1,
                 position:'absolute',
                 top:Platform.OS === 'ios' ? 90 : 80, 
-                paddingHorizontal: 10
+                paddingHorizontal: 10,
             }}
             contentInset={{ // ios only
                 top:0,
@@ -223,7 +270,8 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 right:20
             }}
             contentContainerStyle = {{
-                paddingRight: Platform.OS === 'android' ? 20 : 0
+                paddingRight: Platform.OS === 'android' ? 20 : 0,
+                
             }}
             >
                 {categories.map((category) => (
@@ -235,14 +283,14 @@ const SearchResultsScreen = ({guests, viewport}) => {
                         
                         >
                       
-                            <Text style={styless.textTab, status === category.status && styless.textTabActive}>{category.status}</Text>
+                            <Text style={[styless.textTab, status === category.status && styless.textTabActive]}>{category.status}</Text>
                         
                         
                     </TouchableOpacity>
                 ))}
             </ScrollView>
                 <View 
-                            style={{backgroundColor: '#fff',
+                            style={{backgroundColor: '#FF007F',
                             width: Dimensions.get('screen').width - 20,
                             marginHorizontal: 10,
                             height: 50,
@@ -254,8 +302,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
                             position: "relative",
                             top: 20,
                             zIndex:1,}}>
-                            <Feather name="home" size={25} color={"blue"}/>
+                            <Feather name="home" size={25} color={"white"}/>
                             <Text style={{
+                                    color:'white',
                                     fontSize: 18,
                                     fontWeight: 'bold',}}> {datalist.length} homes to rent</Text>
                                 
@@ -310,16 +359,21 @@ const styless = StyleSheet.create({
                         shadowOpacity: 0.5,
                         shadowRadius: 5,
                         elevation: 10,
+                        alignItems:'center'
     },
 
     btnTabActive: {
-        backgroundColor: 'yellow'
+        backgroundColor: 'black'
     },
     textTab: {
-        fontSize: 16
+        fontSize: 14,
+        color:'black',
+        
     },
     textTabActive: {
         fontWeight: 'bold',
+        color:'white',
+        fontSize:16
         
     }
 

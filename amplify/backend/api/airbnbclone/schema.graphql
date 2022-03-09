@@ -17,9 +17,11 @@ type Post @model {
   type: String!
   title: String!
   description: String!
+  mode: String
 
   bed: Int!
   bedroom: Int!
+  bathroomNumber: Int
   maxGuests: Int!
   wifi: String!,
   kitchen: String!,
