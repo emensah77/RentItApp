@@ -93,7 +93,7 @@ const HomeScreen =(props) => {
           if (res.isNeeded) {
               setUpdateNeeded(true);
               setUpdateUrl(res.storeUrl);
-              console.log(res.storeUrl === updateUrl);
+              //console.log(res.storeUrl === updateUrl);
             //Linking.openURL(res.storeUrl);  // open store if update is needed.
           }
         });

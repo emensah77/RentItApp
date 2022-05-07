@@ -16,7 +16,7 @@ const OnboardingScreen5 = (props) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isSelected, setisSelected] = useState(false);
     const [homeprice, sethomeprice] = useState(1);
-    const [value, setValue] = useState('1');
+    const [value, setValue] = useState();
     const route = useRoute();
     const title = route.params?.title
     const type = route.params?.type;
@@ -28,16 +28,16 @@ const OnboardingScreen5 = (props) => {
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
     const hellod = (text) => {
-        setValue(text);
+        setValue(parseInt(text));
         
-        sethomeprice(parseInt(value));
+        sethomeprice(value);
         
         
       };
     
-      useEffect(() => {
-        console.log(title, bed, bedroom, bathroom, imageUrls);
-    })
+    const setHomePrice = () => {
+        
+    }
     
     return (
         
@@ -73,7 +73,7 @@ const OnboardingScreen5 = (props) => {
             <View style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
 
             <TouchableOpacity
-                onPress={() => sethomeprice(Math.max(1, homeprice - 1))}
+                onPress={() => setValue(Math.max(1, value - 1))}
                 style={{
 
                     
@@ -113,15 +113,16 @@ const OnboardingScreen5 = (props) => {
                        
                        <TextInput
                        adjustsFontSizeToFit={true}
-                       placeholder="1"
                        
+                       placeholder="1"
+                       placeholderTextColor={"black"}
                        autoFocus={true}
                        maxLength={50}
                        keyboardType={"numeric"}
-                       onChangeText={text => hellod(text)}
+                       onChangeText={(text) => hellod(text)}
                        style={{alignContent:'flex-start',width:'50%',height:70,fontSize:20,fontWeight: 'bold'
                        ,borderWidth:  1,
-                       borderColor: 'darkgray',borderRadius:10, padding:10}}>{homeprice}</TextInput>
+                       borderColor: 'darkgray',borderRadius:10, padding:10}}>{value}</TextInput>
                       
                       <Text style={{alignSelf:'center', fontWeight:'500'}}>per month</Text>
                       
@@ -143,7 +144,7 @@ const OnboardingScreen5 = (props) => {
 
 
                <TouchableOpacity
-                 onPress={() => sethomeprice(Math.max(1, homeprice + 1))}
+                 onPress={() => setValue(Math.max(1, value + 1))}
                  style={{
 
                     
@@ -196,7 +197,7 @@ const OnboardingScreen5 = (props) => {
                 bedroom: bedroom,
                 bathroom: bathroom,
                 imageUrls: imageUrls,
-                homeprice: homeprice,
+                homeprice: value,
                 mode: mode,
                 amenities: amenities,
             })} style={{left:250,width:100,backgroundColor:'deeppink',

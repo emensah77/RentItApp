@@ -82,7 +82,7 @@ export const AuthProvider = ({children}) => {
             }
           
             // Create a Firebase credential from the response
-            const { identityToken, nonce, email, user } = appleAuthRequestResponse;
+            const { identityToken, nonce, email, user} = appleAuthRequestResponse;
             const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce, email, user);
           
             // Sign the user in with the credential

@@ -16,7 +16,11 @@ const SearchResultsScreen = ({guests, viewport}) => {
     
     const[posts, setPosts] = useState([]);
     const[loading, setLoading] =  useState(true);
-   
+    const [datalist, setDatalist] = useState([]);
+
+
+    const [status, setStatus] = useState('All');
+    const [modeStatus, setModeStatus] = useState('Everything');
     const navigation = useNavigation();
     
     const modes = [
@@ -73,87 +77,56 @@ const SearchResultsScreen = ({guests, viewport}) => {
 
     ]
      
-    
-    useEffect ( () => {
-        const fetchPosts = async () => {
-            try{
-                const postsResult = await API.graphql(
-                    graphqlOperation(listPosts, {
-                    filter: {
-                        and: {
-                            maxGuests: {
-                                ge: guests
-                            },
-                            latitude: {
-                                between: [
-                                    viewport.southwest.lat,
-                                    viewport.northeast.lat,
-                                ],
-                            },
-                            longitude: {
-                                between: [
-                                    viewport.southwest.lng,
-                                    viewport.northeast.lng,
-                                ],
-                            }
-                        }
-                        
-                    }
-                })
-                )
+    const fetchPosts = async () => {
+        try{
+            const postsResult = await API.graphql(
+                graphqlOperation(listPosts,  {
 
-                setPosts(postsResult.data.listPosts.items);
-                if(loading){
-                    setLoading(false);
-                }
-            } catch (e){
-                console.log(e);
-            }
-        }
-
-        fetchPosts();
-    }, [])
-    const [datalist, setDatalist] = useState([]);
-    useEffect ( () => {
-        const fetchPosts = async () => {
-            try{
-                const postsResult = await API.graphql(
-                    graphqlOperation(listPosts, {
-                    filter: {
-                        and: {
-                            maxGuests: {
-                                ge: guests
-                            },
-                            latitude: {
-                                between: [
-                                    viewport.southwest.lat,
-                                    viewport.northeast.lat,
-                                ],
-                            },
-                            longitude: {
-                                between: [
-                                    viewport.southwest.lng,
-                                    viewport.northeast.lng,
-                                ],
-                            }
-                        }
-                        
-                    }
-                })
-                )
-
-                setDatalist(postsResult.data.listPosts.items);
                 
-            } catch (e){
-                console.log(e);
+               
+                limit: 1000000,
+                filter: {
+                    and: {
+                        maxGuests: {
+                            ge: guests
+                        },
+                        latitude: {
+                            between: [
+                                viewport.southwest.lat,
+                                viewport.northeast.lat,
+                            ],
+                        },
+                        longitude: {
+                            between: [
+                                viewport.southwest.lng,
+                                viewport.northeast.lng,
+                            ],
+                        }
+                    }
+                    
+                },
+                
+                
+            })
+            )
+            
+            setPosts(postsResult.data.listPosts.items);
+            setDatalist(postsResult.data.listPosts.items);
+            if(loading){
+                setLoading(false);
             }
+        } catch (e){
+            console.log(e);
         }
-
+    }
+    useEffect ( () => {
+        
+        
+        
         fetchPosts();
+        console.log(viewport);
     }, [])
-
-    const [status, setStatus] = useState('All');
-    const [modeStatus, setModeStatus] = useState('Everything');
+    
     
     
     const setStatusFilter = status => {
@@ -319,6 +292,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                       data={datalist}
                       keyExtractor={(status, i) => i.toString()}
                       renderItem={renderItem}
+                     
                       //renderItem={({item}) => <Post post={item}/>}
                 />
                   </View>  

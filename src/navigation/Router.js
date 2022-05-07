@@ -13,11 +13,23 @@ import AppStack from './AppStack';
 import {AuthContext} from './AuthProvider';
 import { firebase } from '@react-native-firebase/auth';
 import { ActivityIndicator } from 'react-native';
-import { View } from 'react-native';
 import analytics from '@react-native-firebase/analytics';
+import {View,Image, Text} from 'react-native';
 
 const Stack = createStackNavigator();
 
+const config = {
+  initialRouteName: 'Home',
+  screens: {
+    Home: 'home',
+    Post: 'post/:id?',
+  },
+};
+
+const linking = {
+  prefixes: ['https://rentit.com', 'rentit://'],
+  config,
+};
 
 const usertyu = firebase.auth().currentUser;
 const Router = () => {
@@ -74,6 +86,7 @@ const Router = () => {
           }
           routeNameRef.current = currentRouteName;
         }}
+        linking={linking} fallback={<ActivityIndicator color="blue" size="large" />}
         >
           <AppStack /> 
             

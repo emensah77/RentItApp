@@ -7,50 +7,64 @@ import {API, graphqlOperation} from 'aws-amplify';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
-const PostScreen = (props) =>{
-    const route = useRoute();
+const PostScreen = ({ route }) =>{
+    
+    const params = route.params || {};
+    const { postId, id } = params;
     const [post, setPosts] = useState(null);
     
     
+    const fetchPosts = async () => {
+        try{
+            const postsResult = await API.graphql(
+                graphqlOperation(listPosts, {
+                    limit:1000000
+                })
+            )
+            if(id){
+                setPosts(postsResult.data.listPosts.items.find(place => place.id === id));
+            }
+            else{
+            setPosts(postsResult.data.listPosts.items.find(place => (place.id === postId)));
+            }
+        } catch (e){
+            console.log(e);
+        }
+    }
 
+    const preloadImages = async (urlOfImages) => {
+        let preFetchTasks = [];
+        urlOfImages.forEach((url)=>{
+           preFetchTasks.push(Image.prefetch(url));
+       });
+   
+       Promise.all(preFetchTasks).then((results)=>{
+       try {
+         let downloadedAll = true;
+         results.forEach((result)=>{
+             if(!result){
+                 //error occurred downloading a pic
+                 downloadedAll = false;
+             }
+             //console.log(downloadedAll);
+         })
+       }catch(e){
+           
+           return;
+       }
+   })
+   
+   }
 
 
     useEffect ( () => {
-        const fetchPosts = async () => {
-            try{
-                const postsResult = await API.graphql(
-                    graphqlOperation(listPosts)
-                )
-
-                setPosts(postsResult.data.listPosts.items.find(place => place.id === route.params.postId));
-            } catch (e){
-                console.log(e);
-            }
-        }
-        const preloadImages = async (urlOfImages) => {
-            let preFetchTasks = [];
-            urlOfImages.forEach((url)=>{
-               preFetchTasks.push(Image.prefetch(url));
-           });
-       
-           Promise.all(preFetchTasks).then((results)=>{
-           try {
-             let downloadedAll = true;
-             results.forEach((result)=>{
-                 if(!result){
-                     //error occurred downloading a pic
-                     downloadedAll = false;
-                 }
-             })
-           }catch(e){
-               
-               return;
-           }
-       })
-       
-       }
+        
+        
+        
+        
 
         fetchPosts();
+        console.log(postId, id, post);
         if(post){
         preloadImages(post.images)}
         

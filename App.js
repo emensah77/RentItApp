@@ -8,6 +8,14 @@
  import 'react-native-gesture-handler';
  import SplashScreen from 'react-native-splash-screen'
 import React, {useEffect} from 'react';
+import * as Sentry from "@sentry/react-native";
+
+Sentry.init({
+  dsn: "https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972",
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 0.8,
+});
 
 import {
   Dimensions,
@@ -159,8 +167,12 @@ const myTheme = StyleSheet.create({
 const post1 = feed[0];
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
+  throw new Error("My first Sentry error!");
   return (
+    
+   
     <View style={styles.sectionContainer}>
+      
       <Text
         style={[
           styles.sectionTitle,
@@ -185,7 +197,7 @@ const Section = ({children, title}) => {
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
-
+  
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -194,7 +206,7 @@ const App: () => Node = () => {
     })
   return (
     <>
-    
+      
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       
       {/*<ActivityLoader/>*/}        
@@ -212,5 +224,5 @@ const App: () => Node = () => {
 };
 
 
-export default (App);
+export default Sentry.wrap(App);
 

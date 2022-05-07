@@ -956,6 +956,9 @@ PODS:
   - RNScreens (3.7.2):
     - React-Core
     - React-RCTImage
+  - RNSentry (3.4.1):
+    - React-Core
+    - Sentry (= 7.11.0)
   - RNSharedElement (0.8.4):
     - React-Core
   - RNSVG (12.1.1):
@@ -968,6 +971,9 @@ PODS:
   - SDWebImageWebPCoder (0.8.4):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
+  - Sentry (7.11.0):
+    - Sentry/Core (= 7.11.0)
+  - Sentry/Core (7.11.0)
   - Stripe (21.8.1):
     - Stripe/Stripe3DS2 (= 21.8.1)
     - StripeCore (= 21.8.1)
@@ -1058,6 +1064,7 @@ DEPENDENCIES:
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSharedElement (from `../node_modules/react-native-shared-element`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -1107,6 +1114,7 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
+    - Sentry
     - Stripe
     - StripeCore
     - YogaKit
@@ -1220,6 +1228,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSentry:
+    :path: "../node_modules/@sentry/react-native"
   RNSharedElement:
     :path: "../node_modules/react-native-shared-element"
   RNSVG:
@@ -1325,17 +1335,19 @@ SPEC CHECKSUMS:
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNReanimated: 241c586663f44f19a53883c63375fdd041253960
   RNScreens: 0591543e343c7444ea1756b6265d81a4295922c9
+  RNSentry: fbbdcd7213058e3de5fbaa452b25a06a16b4b382
   RNSharedElement: eb7d506733952d58634f34c82ec17e82f557e377
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
+  Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341
   Stripe: 57c6997c64042a3f5aedae9b76e331942f8b75d2
   stripe-react-native: ae53a97cc9ab084cc6228f2250da56b0e53da276
   StripeCore: a6e50d58119a0c7601773b56f274db2d394dcdac
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 7c9b1622aa4150740f6d7d6a0dcc9a87478fc9f7
+PODFILE CHECKSUM: e2c23d20f7665d075fd6ed2cb822437d23e51584
 
 COCOAPODS: 1.10.1

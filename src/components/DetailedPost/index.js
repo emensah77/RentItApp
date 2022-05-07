@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {View, Image ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar} from "react-native";
 import styles from './styles.js';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -13,7 +13,6 @@ import analytics from '@react-native-firebase/analytics';
 import { useNavigation , useRoute} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import ImageCarousel from '../../components/ImageCarousel';
-
 import {SharedElement} from 'react-navigation-shared-element'
 import FastImage from 'react-native-fast-image';
 
@@ -34,6 +33,9 @@ const DetailedPost = (props) => {
             
         })
     }
+    useEffect(() => {
+        console.log(post);
+    },[])
     const payRent = () => {
         navigation.navigate('Address', {
             price: Math.round(post.newPrice*1.07), 
@@ -69,7 +71,7 @@ const DetailedPost = (props) => {
             {/* Image */}
             <StatusBar hidden={true} />
             
-            <ImageCarousel images={post.images}/>
+            <ImageCarousel postId={post.id} images={post.images}/>
             
             
             
@@ -88,7 +90,7 @@ const DetailedPost = (props) => {
                     GH₵{post.oldPrice} 
                     </Text> */}
                     <Text style={styles.newPrice}>
-                    GH₵{Math.round(post.newPrice*1.07)} / year
+                    GH₵{(Math.round(post.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} / year
                     </Text>
                 </Text>
                 {/* Type and Description */}

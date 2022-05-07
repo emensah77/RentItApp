@@ -464,7 +464,7 @@ const hasPermissionIOS = async () => {
                         placeholder="Enter Longitude"
                         multiline={true}
                         maxLength={50}
-                        keyboardType="numeric"
+                        keyboardType="default"
                         onChangeText={text => setLongitude(Number(text))}
                         style={{alignContent:'flex-start',width:'100%',height:50,fontSize:14,fontWeight: 'bold'
                         ,borderWidth:  1,

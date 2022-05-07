@@ -24,6 +24,8 @@ target 'AirbnbClone' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'RNSentry', :path => '../node_modules/@sentry/react-native'
+
   target 'AirbnbCloneTests' do
     inherit! :complete
     # Pods for testing

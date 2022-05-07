@@ -36,6 +36,12 @@
 				<string>com.googleusercontent.apps.953170635360-she4b80b8s5td2eu2rqqdiuo632ubllj</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>rentit</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>

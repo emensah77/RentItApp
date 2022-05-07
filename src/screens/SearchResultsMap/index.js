@@ -296,6 +296,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
             try{
                 const postsResult = await API.graphql(
                     graphqlOperation(listPosts, {
+                      limit: 1000000,
                         filter: {
                             and: {
                                 maxGuests: {
@@ -360,10 +361,10 @@ const SearchResultsMaps = ({guests, viewport}) => {
     return (
         <View style={{width: '100%', height: '100%'}}>
                <View 
-                        style={{backgroundColor: '#fff',
+                        style={{backgroundColor: '#FF007F',
                         width: Dimensions.get('screen').width - 20,
                         marginHorizontal: 10,
-                        height: 60,
+                        height: 50,
                         borderRadius: 30,
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -372,14 +373,15 @@ const SearchResultsMaps = ({guests, viewport}) => {
                         position: "absolute",
                         top: 20,
                         zIndex:1,}}>
-                        <Feather name="home" size={25} color={"blue"}/>
+                        <Feather name="home" size={25} color={"white"}/>
                         <Text style={{
                               fontSize: 18,
+                              color:'white',
                               fontWeight: 'bold',}}> {posts.length} homes to rent</Text>
                             
                       </View>
             
-            <MapView
+            <MapView.Animated
                 ref={map}
                 style={{width:'100%', height: '100%', backgroundColor:"white"}}
                 provider={PROVIDER_GOOGLE}
@@ -406,7 +408,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
                 )}
             
 
-            </MapView>
+            </MapView.Animated>
 
             <View style={{position: 'absolute', bottom: 10}}>
                 <FlatList 
@@ -420,7 +422,13 @@ const SearchResultsMaps = ({guests, viewport}) => {
                     decelerationRate={"fast"}
                     viewabilityConfig={viewConfig.current}
                     onViewableItemsChanged={onViewChanged.current}
-                    
+                    onScrollToIndexFailed={info => {
+                      
+                      const wait = new Promise(resolve => setTimeout(resolve, 500));
+                      wait.then(() => {
+                        flatlist.current?.scrollToIndex({ index: info.index, animated: true });
+                      });
+                    }}
                 />
             </View>
         </View>

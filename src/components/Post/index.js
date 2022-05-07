@@ -188,7 +188,7 @@ const Post = (props) => {
                 ,height:40, width:40, backgroundColor:"white", elevation:90,
                 borderRadius:20, justifyContent:'center', alignItems:"center"}} onPress={handleClick}>
                             
-                            <Fontisto name="heart" size={20} color={isLike ? colorStyle : "dimgrey"}/>
+                            <Fontisto name="heart" size={20} color={isLike ? colorStyle : "black"}/>
                         </Pressable>
                 <View style={{
                 shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 10, left:0, top:5, position: 'absolute'
@@ -215,7 +215,7 @@ const Post = (props) => {
                 GH₵{post.oldPrice}
                 </Text> */}
                 <Text style={styles.newPrice}>
-                GH₵{Math.round(post.newPrice * 1.07)} / year
+                GH₵{(Math.round(post.newPrice * 1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} / year
                 </Text>
                 
                 
