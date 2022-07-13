@@ -87,11 +87,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>RentIt would like to access camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>RentIt requires access to your location</string>
+	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>RentIt requires access to your location</string>
+	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>RentIt requires access to your location</string>
+	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>RentIt would like to access your photo library</string>
 	<key>UIAppFonts</key>

@@ -76,6 +76,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
         }
 
     ]
+    
      
     const fetchPosts = async () => {
         try{
@@ -102,6 +103,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                                 viewport.northeast.lng,
                             ],
                         }
+                       
                     }
                     
                 },
@@ -193,7 +195,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
     return (
         
       
-        <View style={{paddingBottom:100 ,marginBottom:100, backgroundColor:'transparent'}}>
+        <View style={{paddingBottom:100 ,marginBottom:100, backgroundColor:'white'}}>
             {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
             {modes.map((mode) => (
                 
@@ -235,6 +237,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 position:'absolute',
                 top:Platform.OS === 'ios' ? 90 : 80, 
                 paddingHorizontal: 10,
+                backgroundColor:'white'
             }}
             contentInset={{ // ios only
                 top:0,
@@ -244,6 +247,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             }}
             contentContainerStyle = {{
                 paddingRight: Platform.OS === 'android' ? 20 : 0,
+                backgroundColor:'white'
                 
             }}
             >
@@ -284,7 +288,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                             </View>
                         
                 
-                <View style={{marginBottom:10, top:80}}>
+                <View style={{marginBottom:10, top:80, backgroundColor:'white'}}>
                     
                         
             
@@ -328,12 +332,15 @@ const styless = StyleSheet.create({
                         paddingHorizontal:20,
                         marginHorizontal:10,
                         height:35,
-                        shadowColor: '#ccc',
-                        shadowOffset: { width: 0, height: 3 },
-                        shadowOpacity: 0.5,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 10, height: 10 },
+                        shadowOpacity: .2,
                         shadowRadius: 5,
-                        elevation: 10,
-                        alignItems:'center'
+                        elevation: 30,
+                        alignItems:'center',
+                        borderWidth:.1,
+                        borderColor:'black'
+
     },
 
     btnTabActive: {

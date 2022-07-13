@@ -308,7 +308,7 @@ const OnboardingScreen4 = (props) => {
 
            
 
-        
+        <Text style={{fontSize:18,fontWeight:"600", marginBottom:10}}>The first picture should be of the house or the living room, not the bathroom!</Text>
                 <TouchableOpacity
                 onPress={() => openLibrary()}
                 

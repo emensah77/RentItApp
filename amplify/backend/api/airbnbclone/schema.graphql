@@ -18,6 +18,7 @@ type Post @model {
   title: String!
   description: String!
   mode: String
+  phoneNumbers: [String]
 
   bed: Int!
   bedroom: Int!
@@ -29,6 +30,8 @@ type Post @model {
   water: String!,
   toilet: String!,
   aircondition: String!,
+  locality: String,
+  sublocality: String,
 
   oldPrice: Float
   newPrice: Float!

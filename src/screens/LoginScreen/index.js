@@ -75,13 +75,13 @@ const LoginScreen = ({navigation}) => {
           {Platform.OS === 'ios' ? (
         <View>
 
-          <SocialButton
+          {/* <SocialButton
             buttonTitle="Continue with Facebook"
             btnType={faFacebook}
             color="blue"
             backgroundColor="white"
             onPress={() => fbLogin()}
-          />
+          /> */}
 
           <SocialButton
             buttonTitle="Continue with Apple"
@@ -101,13 +101,13 @@ const LoginScreen = ({navigation}) => {
         </View> ): 
         <View>
 
-        <SocialButton
+        {/* <SocialButton
           buttonTitle="Continue with Facebook"
           btnType={faFacebook}
           color="blue"
           backgroundColor="white"
           onPress={() => fbLogin()}
-        />
+        /> */}
         <SocialButton
             buttonTitle="Continue with Google"
             btnType={faGoogle}

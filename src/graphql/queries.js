@@ -11,6 +11,7 @@ export const getPost = /* GraphQL */ `
       title
       description
       mode
+      phoneNumbers
       bed
       bedroom
       bathroomNumber
@@ -21,6 +22,8 @@ export const getPost = /* GraphQL */ `
       water
       toilet
       aircondition
+      locality
+      sublocality
       oldPrice
       newPrice
       latitude
@@ -45,6 +48,7 @@ export const listPosts = /* GraphQL */ `
         title
         description
         mode
+        phoneNumbers
         bed
         bedroom
         bathroomNumber
@@ -55,6 +59,8 @@ export const listPosts = /* GraphQL */ `
         water
         toilet
         aircondition
+        locality
+        sublocality
         oldPrice
         newPrice
         latitude

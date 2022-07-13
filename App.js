@@ -9,6 +9,7 @@
  import SplashScreen from 'react-native-splash-screen'
 import React, {useEffect} from 'react';
 import * as Sentry from "@sentry/react-native";
+import { Settings } from 'react-native-fbsdk-next';
 
 Sentry.init({
   dsn: "https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972",
@@ -49,11 +50,11 @@ import Amplify from '@aws-amplify/core';
 import Onboarding from './src/screens/Onboarding';
 import Providers from './src/navigation/Providers';
 import ActivityLoader from './src/components/ActivityLoader';
-
+import Geocoder from 'react-native-geocoding';
 import { AmplifyTheme } from "aws-amplify-react-native";
 Amplify.configure(awsconfig);
+Geocoder.init("AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys");
 
-import { StripeProvider } from '@stripe/stripe-react-native';
 
 const myTheme = StyleSheet.create({
   container: {
@@ -210,9 +211,9 @@ const App: () => Node = () => {
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       
       {/*<ActivityLoader/>*/}        
-      <StripeProvider publishableKey="pk_test_51JdytaJGNsvkOPNSU9AdMc51lk0C0OY3RtnXSSEZ2cGT0AXJ6AD3ckQJHcn2VKoUgTELzjnnQgqDx4kbqDJRw8Il00VIB5vmvs">
+      
         <Providers/>
-      </StripeProvider>
+      
       
       
       {/*<Router />*/}

@@ -128,21 +128,21 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+   
 
     defaultConfig {
         applicationId "com.rentitghana"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 36
-        versionName "4.4"
+        versionCode 45
+        versionName "5.3"
         multiDexEnabled true
+        configurations.all {
+            resolutionStrategy { force 'androidx.sqlite:sqlite-framework:2.1.0' }
+        }
     }
     dexOptions {
-      javaMaxHeapSize= "4g"
+      javaMaxHeapSize "4g"
    }
     signingConfigs {
         release {
@@ -208,9 +208,11 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
-    implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
+    implementation 'com.facebook.android:facebook-login:latest.release'
+    
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
 
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:multidex:2.0.1'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
@@ -237,7 +239,7 @@ dependencies {
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
-    from configurations.compile
+    from configurations.implementation
     into 'libs'
 }
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

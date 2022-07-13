@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RentIt</string>
     <string name="facebook_app_id">238888164818214</string>
+    <string name="facebook_client_token">b42041fa82ca0989d9897db43053b85a</string>
 </resources>

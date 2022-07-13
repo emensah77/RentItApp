@@ -11,6 +11,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
+import SuggestionRow from '../../screens/DestinationSearch/SuggestionRow'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 const mapStyle = [
     {
@@ -229,6 +231,7 @@ const mapStyle = [
 
 
 const OnboardingScreen6 = (props) => {
+  const ref = useRef();
     const navigation = useNavigation();
     const [forceLocation, setForceLocation] = useState(true);
     const [highAccuracy, setHighAccuracy] = useState(true);
@@ -239,6 +242,8 @@ const OnboardingScreen6 = (props) => {
     const [useLocationManager, setUseLocationManager] = useState(false);
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
+    const [locality, setLocality] = useState('');
+    const [sublocality, setSubLocality] = useState('');
     const map = useRef();
     const route = useRoute();
     const title = route.params?.title
@@ -379,7 +384,7 @@ const hasPermissionIOS = async () => {
           <MapView
                         
                         ref={map}
-                        style={{flex:1, width:'100%', height: '100%', backgroundColor:"white",}}
+                        style={{width:'100%', height:'25%', backgroundColor:"white",}}
                         provider={PROVIDER_GOOGLE}
                         customMapStyle={mapStyle}
                         zoomEnabled={true}
@@ -423,7 +428,7 @@ const hasPermissionIOS = async () => {
           style={styles.footer}
         >
          
-        <ScrollView>
+        
         
         
             
@@ -432,16 +437,98 @@ const hasPermissionIOS = async () => {
                     
             
         {latitude === null || longitude == null ?   
-        <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}> We need  the {'\n'} address of your home </Text>
+        <Text style={{fontSize:18,paddingBottom:10, fontFamily:'Montserrat-Bold'}}> We need  the {'\n'} address of your home </Text>
 
         :  <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}> We now have the {'\n'} address of your home </Text>  }
+           
+
+           
+           <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{flex:1,}}
+            
+            >
+
+            <GooglePlacesAutocomplete
+                
+                placeholder='Type where your home is located'
+                ref={ref}
+                onPress={async(data, details = null) => {
+                    // 'details' is provided when fetchDetails = true
+                    console.log('1',details.address_components[0].short_name);
+                    console.log('2',details.address_components[1].short_name);
+      
+                    setLatitude(details.geometry.location.lat);
+                    setLongitude(details.geometry.location.lng);
+                    setLocality(details.address_components[0].short_name)
+                    setSubLocality(details.address_components[1].short_name);
+                    
+                  
+          
+                    // navigation.navigate('OnboardingScreen11', {
+                    //   title: title,
+                    //   type: type,
+                    //   description: description,
+                    //   bed: bed,
+                    //   bedroom: bedroom,
+                    //   bathroom: bathroom,
+                    //   imageUrls: imageUrls,
+                    //   homeprice: homeprice,
+                    //   latitude: latitude,
+                    //   longitude: longitude,
+                    //   mode: mode,
+                    //   amenities: amenities,
+                    //   locality: locality,
+                    //   sublocality: sublocality,
+                    // });
+                    //console.log(details.geometry.viewport)
+                  }}
+                fetchDetails
+                styles={{
+                    textInput: styles.textInput,
+                    textInputContainer: {
+                        backgroundColor: 'white',
+                        borderRadius:15,
+                        borderWidth:.5,
+                        height:40,
+                        
+                        
+                      },
+                      textInput: {
+                        height: 44,
+                        color: '#000000',
+                        fontSize: 18,
+                        fontFamily:'Montserrat-Bold',
+                        paddingHorizontal: 10
+                      },
+                      
+                }}
+                query={{
+                    key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
+                    language: 'en',
+                    
+                    components: 'country:gh',
+                }}
+                
+                suppressDefaultStyles
+                renderRow={(item) => <SuggestionRow item={item}/>}
+                />
+          
+
+            </KeyboardAvoidingView>
+   
+            {/* <Text style={{fontWeight:'bold',marginBottom:8,fontSize:20,marginTop:10,alignSelf:'center'}}>OR</Text>
+           
             <TouchableOpacity onPress={getLocation} style={{flex:1, borderWidth:1, borderRadius:20, marginVertical:20,padding:5, flexDirection:'row', justifyContent:'center'}}>
                 <FontAwesomeIcon icon={faLocationArrow} size={20} />
                 <Text style={{paddingHorizontal:10, fontFamily:'Montserrat-SemiBold'}}>Get my current location</Text>
-            </TouchableOpacity>
-            <Text style={{fontWeight:'bold',marginBottom:8,fontSize:20,alignSelf:'center'}}>OR Enter location manually</Text>
-        
-        <KeyboardAvoidingView 
+            </TouchableOpacity> */}
+
+
+           
+                     
+          
+        {/* <KeyboardAvoidingView 
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{flex:1}}
         >
@@ -474,12 +561,12 @@ const hasPermissionIOS = async () => {
 
         </KeyboardAvoidingView>
                      
-            <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Latitude: {latitude === null ? 'Click on get my location' : latitude}</Text>
+            <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Latitude: {latitude === null ? 'Click on get my location' : latitude}</Text> */}
             
-            <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text>
+            {/* <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text> */}
             
             <View style={{flex:1, flexDirection:'row', marginTop:30, justifyContent:'space-between'}}>
-            <TouchableOpacity disabled={latitude === null || longitude === null} onPress={() => navigation.navigate('OnboardingScreen7', {
+            <TouchableOpacity disabled={latitude === null || longitude === null} onPress={() => navigation.navigate('OnboardingScreen11', {
               title: title,
               type: type,
               description: description,
@@ -492,12 +579,14 @@ const hasPermissionIOS = async () => {
               longitude: longitude,
               mode: mode,
               amenities: amenities,
-            })} style={{left:250,width:100,backgroundColor:'deeppink',
+              locality: locality,
+              sublocality: sublocality,
+            })} style={{left:250,height:60,width:100,backgroundColor:'deeppink',
              opacity: latitude === null || longitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </TouchableOpacity>
 
-            <Pressable onPress={() => navigation.goBack()} style={{right:250,width:100,backgroundColor:'deeppink',
+            <Pressable onPress={() => navigation.goBack()} style={{right:250,height:60,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Back</Text>
             </Pressable>
@@ -505,7 +594,7 @@ const hasPermissionIOS = async () => {
 
             </View>
                
-            </ScrollView>
+            
         </Animatable.View>
         
         

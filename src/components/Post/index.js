@@ -8,6 +8,7 @@ import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider';
 import FastImage from 'react-native-fast-image';
 import {SharedElement} from 'react-navigation-shared-element';
+import Geocoder from 'react-native-geocoding';
 const days = 1;
 
 const Post = (props) => {
@@ -120,7 +121,14 @@ const Post = (props) => {
     
     const colorStyle = "deeppink"
 
-    
+    const geocod = (lat, long) => {
+        
+       console.log(Geocoder.from(lat, long));
+		
+        
+        
+
+    }
     
     const handleClick = () => {
         var trendRef = firestore().collection('trends').doc(post.id);
@@ -185,29 +193,36 @@ const Post = (props) => {
             
                 <Pressable  style={{
                 shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 8, right:0, top:5, position: 'absolute'
-                ,height:40, width:40, backgroundColor:"white", elevation:90,
+                ,height:35, width:35, backgroundColor:"white", elevation:90,
                 borderRadius:20, justifyContent:'center', alignItems:"center"}} onPress={handleClick}>
                             
-                            <Fontisto name="heart" size={20} color={isLike ? colorStyle : "black"}/>
+                            <Fontisto name="heart" size={15} color={isLike ? colorStyle : "black"}/>
                         </Pressable>
                 <View style={{
                 shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 10, left:0, top:5, position: 'absolute'
-                ,height:40, width:100, backgroundColor:"white", elevation:90,
-                borderRadius:15, justifyContent:'center', alignItems:"center"}}>
-                    <Text adjustsFontSizeToFit={true} style={{fontSize:16, fontWeight:'bold'}}>{post.mode === "For Sale" ? "FOR SALE":"FOR RENT"}</Text>
+                ,height:30, width:80, backgroundColor:"white", elevation:90,
+                borderRadius:10, justifyContent:'center', alignItems:"center"}}>
+                    <Text adjustsFontSizeToFit={true} style={{fontSize:14, fontWeight:'bold'}}>{post.mode === "For Sale" ? "FOR SALE":"FOR RENT"}</Text>
                 </View>
             </View>
             
             {/* Bed and Bedroom */}
 
-            <Text style={styles.bedrooms}>
-                {post.bed} bedrooms | {post.bathroomNumber} bathrooms
-            </Text>
+            
 
             {/* Type and Description */}
-            <Text style={styles.description} numberOfLines={2}>
-                {post.type}. {post.title}
+            {
+                post.locality != null ?
+                <Text style={{marginTop:5,fontWeight:'400', fontSize:14}}>{post.type} in {post.locality}</Text>
+                :
+                <Text style={{marginTop:5,fontWeight:'400', fontSize:14}} numberOfLines={2}>
+                {post.type} | {post.title}
             </Text> 
+            }
+            <Text style={styles.bedrooms}>
+                {post.bedroom} bedrooms | {post.bathroomNumber} bathrooms
+            </Text>
+           
             {/* Old and new Price */}
             
             <Text style={styles.prices}>

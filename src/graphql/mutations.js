@@ -21,6 +21,7 @@ export const createPost = /* GraphQL */ `
       title
       description
       mode
+      phoneNumbers
       bed
       bedroom
       bathroomNumber
@@ -31,6 +32,8 @@ export const createPost = /* GraphQL */ `
       water
       toilet
       aircondition
+      locality
+      sublocality
       oldPrice
       newPrice
       latitude
@@ -53,6 +56,7 @@ export const updatePost = /* GraphQL */ `
       title
       description
       mode
+      phoneNumbers
       bed
       bedroom
       bathroomNumber
@@ -63,6 +67,8 @@ export const updatePost = /* GraphQL */ `
       water
       toilet
       aircondition
+      locality
+      sublocality
       oldPrice
       newPrice
       latitude
@@ -85,6 +91,7 @@ export const deletePost = /* GraphQL */ `
       title
       description
       mode
+      phoneNumbers
       bed
       bedroom
       bathroomNumber
@@ -95,6 +102,8 @@ export const deletePost = /* GraphQL */ `
       water
       toilet
       aircondition
+      locality
+      sublocality
       oldPrice
       newPrice
       latitude

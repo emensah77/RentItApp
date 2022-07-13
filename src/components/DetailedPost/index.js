@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect,useContext, useState} from "react";
 import {View, Image ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar} from "react-native";
 import styles from './styles.js';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -15,12 +15,13 @@ import Swiper from 'react-native-swiper';
 import ImageCarousel from '../../components/ImageCarousel';
 import {SharedElement} from 'react-navigation-shared-element'
 import FastImage from 'react-native-fast-image';
-
+import {AuthContext} from '../../navigation/AuthProvider';
+const uploadusers = ["UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1"]
 const DetailedPost = (props) => {
     const post = props.post;
     const navigation = useNavigation();
     const route = useRoute();
-    
+    const {user, logout} = useContext(AuthContext);
 
     const randString = route.params.randString;
     
@@ -34,7 +35,7 @@ const DetailedPost = (props) => {
         })
     }
     useEffect(() => {
-        console.log(post);
+        // console.log(post);
     },[])
     const payRent = () => {
         navigation.navigate('Address', {
@@ -50,16 +51,22 @@ const DetailedPost = (props) => {
         });
     }
     const makeCall = () => {
-
-        let phoneNumber = '';
+        const phoneNumbers = ["0552618521", "0597285059", "0597285099", "0205200706", "0579535484"]
+        
+        let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
     
         if (Platform.OS === 'android') {
-          phoneNumber = 'tel:${0552618521}';
+          phoneNumber = `tel:${phoneNumber}`;
         } else {
-          phoneNumber = 'telprompt:${0552618521}';
+          phoneNumber = `telprompt:${phoneNumber}`;
         }
-    
-        Linking.openURL(phoneNumber);
+        try{
+            Linking.openURL(phoneNumber);
+        }
+        catch(e){
+            //console.log(e)
+        }
+        
       };
 
     
@@ -83,8 +90,9 @@ const DetailedPost = (props) => {
                 </Text> 
                 <View style={styles.hairline}/>
                 <Text style={styles.bedrooms}>
-                {post.type} | {post.bed} bedrooms | {post.bathroomNumber} bathrooms |
+                {post.type} | {post.bedroom} bedrooms | {post.bathroomNumber} bathrooms |
                 </Text>
+                {uploadusers.includes(user.uid) ? <Text>{post.phoneNumbers}</Text> : null}
                 <Text style={styles.prices}>
                     {/* <Text style={styles.oldPrice}>
                     GH₵{post.oldPrice} 

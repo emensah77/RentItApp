@@ -20,6 +20,8 @@ import OnboardingScreen7 from '../screens/OnboardingScreen7';
 import OnboardingScreen8 from '../screens/OnboardingScreen8';
 import OnboardingScreen9 from '../screens/OnboardingScreen9';
 import OnboardingScreen10 from '../screens/OnboardingScreen10';
+import OnboardingScreen11 from '../screens/OnboardingScreen11';
+import AccountManageScreen from '../screens/AccountManageScreen';
 
 
 const Stack = createStackNavigator();
@@ -158,8 +160,23 @@ const Router = (props) => {
                     }}
                     />
                 <Stack.Screen
+                    name={'OnboardingScreen11'}
+                    component={OnboardingScreen11}
+                    options={{
+                        headerShown: false,
+                    }}
+                    />
+                <Stack.Screen
                     name={'HouseUpload'}
                     component={HouseUploadScreen}
+                    options={{
+                        headerShown: false,
+                        
+                    }}
+                    />  
+                <Stack.Screen
+                    name={'AccountManage'}
+                    component={AccountManageScreen}
                     options={{
                         headerShown: false,
                         

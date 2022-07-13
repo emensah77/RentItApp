@@ -7,25 +7,38 @@ const styles = StyleSheet.create({
     image: {
         width : '100%',
         height:'100%',
-        aspectRatio: 3 /2,
-        resizeMode: 'cover',
+        aspectRatio: 1.1,
+        resizeMode: 'contain',
         borderRadius: 10, 
         flex:1,
         shadowOpacity:1,
         shadowRadius:10,
+        elevation:30,
+        shadowColor: "white",
+        shadowOffset: {
+            width: 10,
+            height: 10,
+        },
         
-        backgroundColor:'transparent',
-        shadowOffset: { width: 10, height: 10 },
+        
+        
+        
+        
+        backgroundColor:'white',
+       
 
 
     },
     bedrooms: {
         marginVertical: 10,
         color: 'black',
+        fontWeight:'bold'
     },
     description: {
         fontSize: 18,
         lineHeight: 26,
+        color:'grey',
+        fontWeight:'normal'
 
     },
     prices: {

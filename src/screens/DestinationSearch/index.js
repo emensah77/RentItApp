@@ -56,7 +56,7 @@ const DestinationSearch = (props) => {
                 ref={ref}
                 onPress={async(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
-                    //console.log(data, details);
+                    //console.log(data, details.address_components[2].short_name);
                     
                     await analytics().logEvent('searchQuery', {
                       id: user.uid,

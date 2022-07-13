@@ -111,7 +111,7 @@ const Wishlists = (props) => {
     
     
     
-        if (posts){
+        if (posts.length > 0){
             return (
                 <View style={{
                     backgroundColor: "#fff",
@@ -239,9 +239,9 @@ const Wishlists = (props) => {
                     fontSize:20
                     }}>No saves yet</Text>
                     <View style={{padding:10}}>
-                        <Text style={{fontSize:16, fontFamily:'Montserrat-Regular'}}>Start planning what's next: As you search, tap the 
-                            heart icon to save your favorite places to stay or things 
-                            to do here.
+                        <Text style={{fontSize:16, fontFamily:'Montserrat-Regular'}}>Start looking for homes to rent or buy: As you search, tap the 
+                            heart icon to save your favorite homes to rent 
+                            or buy.
                         </Text>
                     </View>
 

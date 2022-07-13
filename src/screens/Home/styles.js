@@ -3,9 +3,11 @@ import { StyleSheet , Dimensions, Platform} from "react-native";
 const styles = StyleSheet.create({
         image: {
             width: '100%',
-            height: 400,
+            height: 500,
             resizeMode: 'cover',
             justifyContent: 'center',
+            backgroundColor:'black'
+            
             
         },
 
@@ -16,15 +18,16 @@ const styles = StyleSheet.create({
             justifyContent: 'center',
             borderRadius: 5,
             
+            
         },
 
     title: {
         fontSize: 30,
         fontFamily: "Montserrat-Bold",
-        color: 'blue',
+        color: 'white',
         marginLeft: 25,
         top: 10,
-        alignSelf:'center'
+        alignSelf:'center',
         
     },
 

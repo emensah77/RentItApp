@@ -1,30 +1,169 @@
-import React, {useState,useEffect, Component} from 'react';
-import {View, Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
+import React, {useState,useEffect,useRef, Component} from 'react';
+import {View, Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
 import styles from './styles';
 import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from "@react-navigation/native";
-const image = {uri : "https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg"};
+import {useNavigation, useRoute} from "@react-navigation/native";
+const image = {uri : "https://d5w4alzj7ppu4.cloudfront.net/cities/night.jpeg"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
 import {OptimizedFlatList} from 'react-native-optimized-flatlist';
 import FastImage from 'react-native-fast-image';
 import VersionCheck from 'react-native-version-check';
-
+import Geolocation from 'react-native-geolocation-service';
+import {API, graphqlOperation} from 'aws-amplify';
+import {listPosts} from '../../graphql/queries'; 
+import Geocoder from 'react-native-geocoding';
+const colors = ["magenta","lime","fuchsia","crimson", "aqua", "blue", "red", "yellow", "green", "white", "deeppink"]
 
 const HomeScreen =(props) => {
+
+
+
     const [updateNeeded, setUpdateNeeded] = useState(false);
     const [updateUrl, setUpdateUrl] = useState('');
+    const[posts, setPosts] = useState([]);
+    const [postLatest, setLatest] = useState([]);
+    const [addresss, setaddress] = useState('');
+    const [forceLocation, setForceLocation] = useState(true);
+    const [highAccuracy, setHighAccuracy] = useState(true);
+    const [locationDialog, setLocationDialog] = useState(true);
+    const [significantChanges, setSignificantChanges] = useState(false);
+    const [observing, setObserving] = useState(false);
+    const [foregroundService, setForegroundService] = useState(false);
+    const [useLocationManager, setUseLocationManager] = useState(false);
+    const [latitude, setLatitude] = useState(null);
+    const [longitude, setLongitude] = useState(null);
+    const [color, setcolor]  =  useState('white');
+    const map = useRef();
+    const route = useRoute();
+    const title = route.params?.title
+    const type = route.params?.type
+    const description = route.params?.description
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const imageUrls = route.params?.imageUrls;
+    const homeprice = route.params?.homeprice;
+    const mode = route.params?.mode;
+    const amenities = route.params?.amenities;
+    
+    
+        const hasPermissionIOS = async () => {
+            const openSetting = () => {
+            Linking.openSettings().catch(() => {
+                Alert.alert('Unable to open settings');
+            });
+            };
+            const status = await Geolocation.requestAuthorization('whenInUse');
+
+            if (status === 'granted') {
+            return true;
+            }
+
+            if (status === 'denied') {
+            Alert.alert('Location permission denied');
+            }
+
+            if (status === 'disabled') {
+            Alert.alert(
+                `Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`,
+                '',
+                [
+                { text: 'Go to Settings', onPress: openSetting },
+                { text: "Don't Use Location", onPress: () => {} },
+                ],
+            );
+            }
+
+            return false;
+        };
+
+        const hasLocationPermission = async () => {
+            if (Platform.OS === 'ios') {
+            const hasPermission = await hasPermissionIOS();
+            return hasPermission;
+            }
+
+            if (Platform.OS === 'android' && Platform.Version < 23) {
+            return true;
+            }
+
+            const hasPermission = await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            );
+
+            if (hasPermission) {
+            return true;
+            }
+
+            const status = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            );
+
+            if (status === PermissionsAndroid.RESULTS.GRANTED) {
+            return true;
+            }
+
+            if (status === PermissionsAndroid.RESULTS.DENIED) {
+            ToastAndroid.show(
+                'Location permission denied by user.',
+                ToastAndroid.LONG,
+            );
+            } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+            ToastAndroid.show(
+                'Location permission revoked by user.',
+                ToastAndroid.LONG,
+            );
+            }
+
+            return false;
+        };
+
+        const getLocation = async () => {
+            const hasPermission = await hasLocationPermission();
+
+            if (!hasPermission) {
+            return;
+            }
+
+            Geolocation.getCurrentPosition(
+            (position) => {
+                setLatitude(position.coords.latitude);
+                setLongitude(position.coords.longitude);
+                
+            },
+            (error) => {
+                Alert.alert(`Code ${error.code}`, error.message);
+                setLocation(null);
+                console.log(error);
+            },
+            {
+                accuracy: {
+                android: 'high',
+                ios: 'best',
+                },
+                enableHighAccuracy: highAccuracy,
+                timeout: 15000,
+                maximumAge: 10000,
+                distanceFilter: 0,
+                forceRequestLocation: forceLocation,
+                forceLocationManager: useLocationManager,
+                showLocationDialog: locationDialog,
+            },
+            );
+        };
 
     const makeCall = () => {
-
-        let phoneNumber = '';
+        const phoneNumbers = ["0552618521", "0597285059", "0597285099", "0205200706", "0579535484"]
+        
+        let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
     
         if (Platform.OS === 'android') {
-          phoneNumber = 'tel:${0552618521}';
+          phoneNumber = `tel:${phoneNumber}`;
         } else {
-          phoneNumber = 'telprompt:${0552618521}';
+          phoneNumber = `telprompt:${phoneNumber}`;
         }
         try{
             Linking.openURL(phoneNumber);
@@ -35,10 +174,16 @@ const HomeScreen =(props) => {
         
       };
       
-      
     
-      
-
+    
+   
+    
+    
+    function selectColor  () {
+        
+       setcolor(colors[Math.floor(Math.random() * colors.length)]);
+        
+    }
     const [images, setimages] = useState([
         {
          image:  'https://d5w4alzj7ppu4.cloudfront.net/cities/Kejetia_Kumasi.jpeg',
@@ -82,11 +227,68 @@ const HomeScreen =(props) => {
         
        ]);
 
+       const fetchPosts = async () => {
+        try{
+            const postsResult = await API.graphql(
+                graphqlOperation(listPosts,  {
+
+                
+               
+                limit: 1000000,
+                filter: {
+                    and: {
+                        
+                        latitude: {
+                        
+                            between: [
+                                latitude - (.8/2),
+                                latitude + (.8/2),
+                            ],
+                        },
+                        longitude: {
+                            between: [
+                                longitude - (.8/2),
+                                longitude + (.8/2),
+                            ],
+                        }
+                    }
+                    
+                },
+                
+                
+            })
+            )
+            
+            setPosts(postsResult.data.listPosts.items);
+           
+            
+        } catch (e){
+            console.log(e);
+        }
+    }
+    
+    const getLatestPost = async () => {
+        try{
+            const postsResult = await API.graphql(
+                graphqlOperation(listPosts,  {
+                    limit:1000000
+                    
+                })
+            )
+            
+            setLatest(postsResult.data.listPosts.items);
+            
+            
+        } catch (e){
+            console.log(e);
+        }
+    }
 
 
 
        useEffect (() => {
-
+        
+        setInterval(selectColor, 2000);
         VersionCheck.needUpdate()
         .then(async res => {
           //console.log(res.isNeeded);    // true
@@ -97,9 +299,20 @@ const HomeScreen =(props) => {
             //Linking.openURL(res.storeUrl);  // open store if update is needed.
           }
         });
-
-
+        
+        
+        getLocation();
+        fetchPosts();
+        getLatestPost();
+        
+        //console.log('This is latest',postLatest.map(item => (item.createdAt)));
+        clearInterval(selectColor);
        }, [])
+       if (postLatest){
+        postLatest.sort(function (a, b) {
+            return Date.parse(b.createdAt) - Date.parse(a.createdAt);
+          });
+       }
        
 
     const updateApp = () => {
@@ -130,12 +343,18 @@ const HomeScreen =(props) => {
                             </Pressable>
                 {/* Search bar */}
                 <ImageBackground 
-                source={image} 
+                 
                 style={styles.image}>
                     
-                    <Text adjustsFontSizeToFit={true} style={styles.title}>
-                        Find your Next Home
-
+                    <Text adjustsFontSizeToFit={true} style={{marginTop:-20,
+                        fontSize:30,
+                        alignSelf:'center',
+                        zIndex:1,
+                        fontFamily:'Montserrat-Bold',
+                        color: color}}>
+                       
+                            A home for everyone
+                        
                     </Text>
 
                     {/* <Pressable 
@@ -146,9 +365,158 @@ const HomeScreen =(props) => {
                             
                             </Pressable> */}
                 </ImageBackground>
+                <View>
+                    
+                    <Image
+
+                        
+                    style={{height:500, width:Dimensions.get('screen').width - 20, top:-150, borderRadius:25, marginHorizontal:10}}
+                        source={image}
+
+                    />
+                    
+                    
+                </View>
             </View>
 
             <ScrollView style={{marginBottom: 40, backgroundColor: 'white'}}>
+            <View style={{padding: 5, margin: 10}}>
+                <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
+                    New Homes
+
+                    
+                
+                </Text>
+                <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
+                        Browse homes you will love</Text>
+
+                </View>
+
+                <OptimizedFlatList
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        decelerationRate={"fast"}
+                        snapToInterval={Dimensions.get("window").width - 60}
+                        snapToAlignment={"center"}
+                        initialNumToRender={10}
+                        horizontal={true} 
+                           data={postLatest} 
+                           renderItem={({item}) => {
+                               return (
+                                   <View style={{paddingVertical:20, paddingLeft: 16 }}>
+                                       <TouchableOpacity onPress={() => {navigation.navigate("Post", {postId: item.id})}}>
+                                        
+                                           <FastImage 
+                                           source={{
+                                               uri: item.image,
+                                               headers: { Authorization: 'token' },
+                                               priority: FastImage.priority.high,
+                                            }}
+                                           style={{flex:1, width: Dimensions.get("window").width - 60, marginRight: 8, height: 250, borderRadius:10, resizeMode:'cover'}}/>
+                                           
+                                            <View style={{width: Dimensions.get("window").width - 60,
+                                                            height: 250,
+                                                            marginRight: 8,
+                                                            borderRadius: 10,
+                                                            position: 'absolute',
+                                                            backgroundColor: '#000',
+                                                            opacity: .4}}></View>
+                                            <View style={{
+                                shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 10, left:0, top:5, position: 'absolute'
+                                ,height:30, width:80, backgroundColor:"white", elevation:90,
+                                borderRadius:10, justifyContent:'center', alignItems:"center"}}>
+                                    <Text adjustsFontSizeToFit={true} style={{fontSize:14, fontWeight:'bold'}}>{item.mode === "For Sale" ? "FOR SALE":"FOR RENT"}</Text>
+                </View>
+                                            <Text style={{ position: 'absolute',
+                                                            color: 'white',
+                                                            marginTop: 4,
+                                                            fontSize: 14,
+                                                            fontWeight: 'bold',
+                                                            left: 25,
+                                                            bottom: 15}}>GH₵ {(Math.round(item.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} |  {item.bedroom} bedrooms</Text>
+                                        </TouchableOpacity>
+                                        
+                                        {/* <Text>{geocod(item.latitude, item.longitude)}</Text> */}
+                                        {/* <Text style={{fontSize:32}}>This {resiul}</Text> */}
+                                       {
+                                        
+                                        item.locality != null ?
+                                            <View style={{flex:1, marginHorizontal:10,
+                                            flexDirection:'row' }}>
+                                             {/* <Feather style={{paddingTop:9, marginHorizontal:1}}  name='map-pin' size={20}/>    */}
+                                            <Text style={{fontWeight:'bold', paddingTop:10, fontSize:14}}>
+                                                 {item.type} in {item.locality}, {item.sublocality}
+                                                
+                                                
+                                                </Text> 
+                                                </View>
+                                                :
+                                           
+                                           
+                                           <Text style={{fontSize:14, paddingTop:10, fontWeight:'bold'}}>{item.type}</Text>
+                                       }
+                                       </View>
+                               )
+                           }}
+                        />
+                {posts.length === 0 ? 
+                
+                null :
+                <View style={{padding: 5, margin: 10}}>
+                <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
+                    Nearby Homes
+                    
+                </Text>
+                <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
+                        Find homes near you</Text>
+
+            </View>
+                
+                }
+                    
+                    <OptimizedFlatList
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        decelerationRate={"fast"}
+                        snapToInterval={Dimensions.get("window").width - 60}
+                        snapToAlignment={"center"}
+                        initialNumToRender={10}
+                        horizontal={true} 
+                           data={posts} 
+                           renderItem={({item}) => {
+                               return (
+                                   <View style={{paddingVertical:20, paddingLeft: 16 }}>
+                                       <TouchableOpacity onPress={() => {navigation.navigate("Post", {postId: item.id})}}>
+                                           <FastImage 
+                                           source={{
+                                               uri: item.image,
+                                               headers: { Authorization: 'token' },
+                                               priority: FastImage.priority.high,
+                                            }}
+                                           style={{flex:1, width: Dimensions.get("window").width - 60, marginRight: 8, height: 250, borderRadius:10, resizeMode:'cover'}}/>
+                                            <View style={{width: Dimensions.get("window").width - 60,
+                                                            height: 250,
+                                                            marginRight: 8,
+                                                            borderRadius: 10,
+                                                            position: 'absolute',
+                                                            backgroundColor: '#000',
+                                                            opacity: .4}}></View>
+                                            
+                                            <Text style={{ position: 'absolute',
+                                                            color: 'white',
+                                                            marginTop: 4,
+                                                            fontSize: 14,
+                                                            fontWeight: 'bold',
+                                                            left: 25,
+                                                            bottom: 15}}>GH₵ {(Math.round(item.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} |  {item.bed} bedrooms</Text>
+                                        </TouchableOpacity>
+                                       </View>
+                               )
+                           }}
+                        />
+
+
+
                     <View style={{padding: 5, margin: 10}}>
                         <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
                             Live anywhere

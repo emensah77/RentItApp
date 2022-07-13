@@ -14,6 +14,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {createPost} from '../../graphql/mutations'; 
 import {AuthContext} from '../../navigation/AuthProvider';
 
+
 const OnboardingScreen7 = (props) => {
     const navigation = useNavigation();
     const [images, setImages] = useState([]);
@@ -30,6 +31,9 @@ const OnboardingScreen7 = (props) => {
     const description = route.params?.description;
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
+    const phoneNumber = route.params?.phoneNumber;
+    const locality = route.params?.locality;
+    const sublocality = route.params?.sublocality;
     const {user, logout} = useContext(AuthContext);
     const uploadusers = ["UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1"]
 
@@ -47,8 +51,12 @@ const OnboardingScreen7 = (props) => {
            longitude: longitude,
            mode: mode,
            amenities: amenities,
+           phoneNumber: phoneNumber,
+           locality: locality,
+           sublocality: sublocality,
         })
     })
+    
 
     const uploadHome = async (id) => {
 
@@ -62,8 +70,11 @@ const OnboardingScreen7 = (props) => {
             title: title,
             type: type,
             mode: mode,
+            phoneNumbers: [phoneNumber],
             images: imageUrls,
             description: description,
+            locality: locality,
+            sublocality: sublocality,
             latitude: latitude,
             longitude:  longitude,
             maxGuests: bedroom,
@@ -89,18 +100,18 @@ const OnboardingScreen7 = (props) => {
             }) 
     
           );
-          console.log("Succesfully uploaded the post");
+          console.log("Succesfully uploaded the home");
         }
         catch(e){
-          console.log('Error deleting post', e);
+          console.log('Error deleting home', e);
         }
       }
       
 
     const goHome = () => {
-        if(uploadusers.includes(user.uid)){
-            uploadHome();
-        }
+        
+        uploadHome();
+        
                 Alert.alert("We will review your home, if approved it will be available for lease or sale",);
         navigation.replace('Home');
     }

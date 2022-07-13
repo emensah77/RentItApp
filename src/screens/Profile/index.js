@@ -145,6 +145,13 @@ const ProfileScreen = ({route}) => {
             <Text style={styles.menuItemText}>List your home</Text>
           </View>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('AccountManage')}>
+          <View style={styles.menuItem}>
+            <Icon name="account" color="blue" size={25}/>
+            <Text style={styles.menuItemText}>Manage your account</Text>
+          </View>
+        </TouchableOpacity>
         <Text></Text>
       
         

@@ -3,7 +3,6 @@ import {View,Image, TouchableOpacity,Pressable ,ScrollView,StyleSheet, Text, Ale
 import {API, graphqlOperation} from 'aws-amplify';
 import {createPaymentIntent} from '../../graphql/mutations';
 import {useNavigation, useRoute} from '@react-navigation/native'
-import {useStripe} from '@stripe/stripe-react-native';
 import FastImage from 'react-native-fast-image';
 import { Dimensions} from "react-native";
 import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
@@ -16,7 +15,7 @@ const AddressScreen = (props) => {
     const [months, setMonths] =  useState(0);
     const navigation = useNavigation();
     const route = useRoute();
-    const {initPaymentSheet, presentPaymentSheet} =  useStripe();
+    
     const amount = (route.params.price);
     const homeimage = route.params.homeimage;
     const homebed = route.params.homebed;
@@ -36,49 +35,49 @@ const AddressScreen = (props) => {
     
     
   
-    useEffect(() => {
-      fetchPaymentIntent();
-    }, []);
+    // useEffect(() => {
+    //   fetchPaymentIntent();
+    // }, []);
   
-    useEffect(() => {
-      if (clientSecret) {
-        initializePaymentSheet();
-      }
-    }, [clientSecret !== null]);
+    // useEffect(() => {
+    //   if (clientSecret) {
+    //     initializePaymentSheet();
+    //   }
+    // }, [clientSecret !== null]);
   
-    const fetchPaymentIntent = async () => {
-      const response = await API.graphql(
-        graphqlOperation(createPaymentIntent, {amount}),
-      );
-      setClientSecret(response.data.createPaymentIntent.clientSecret);
-    };
+    // const fetchPaymentIntent = async () => {
+    //   const response = await API.graphql(
+    //     graphqlOperation(createPaymentIntent, {amount}),
+    //   );
+    //   setClientSecret(response.data.createPaymentIntent.clientSecret);
+    // };
   
-    const initializePaymentSheet = async () => {
-      if (!clientSecret) {
-        return;
-      }
-      const {error} = await initPaymentSheet({
-        paymentIntentClientSecret: clientSecret,
-      });
-      console.log('success');
-      if (error) {
-        Alert.alert(error);
-      }
-    };
+    // const initializePaymentSheet = async () => {
+    //   if (!clientSecret) {
+    //     return;
+    //   }
+    //   const {error} = await initPaymentSheet({
+    //     paymentIntentClientSecret: clientSecret,
+    //   });
+    //   console.log('success');
+    //   if (error) {
+    //     Alert.alert(error);
+    //   }
+    // };
   
-    const openPaymentSheet = async () => {
-      if (!clientSecret) {
-        return;
-      }
-      const {error} = await presentPaymentSheet({clientSecret});
+    // const openPaymentSheet = async () => {
+    //   if (!clientSecret) {
+    //     return;
+    //   }
+    //   const {error} = await presentPaymentSheet({clientSecret});
   
-      if (error) {
-        Alert.alert(`Error code: ${error.code}`, error.message);
-      } else {
+    //   if (error) {
+    //     Alert.alert(`Error code: ${error.code}`, error.message);
+    //   } else {
         
-        Alert.alert('Success', 'Your payment is confirmed!');
-      }
-    };
+    //     Alert.alert('Success', 'Your payment is confirmed!');
+    //   }
+    // };
     return (
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent:'center', alignItems:'center'}}>
             
