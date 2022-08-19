@@ -1,5 +1,5 @@
-import React, {useState,useEffect,useRef, Component} from 'react';
-import {View, Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
+import React, {useState,useContext,useEffect,useRef, Component} from 'react';
+import {View,Modal, Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
 import styles from './styles';
 import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -16,11 +16,20 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {listPosts} from '../../graphql/queries'; 
 import Geocoder from 'react-native-geocoding';
 const colors = ["magenta","lime","fuchsia","crimson", "aqua", "blue", "red", "yellow", "green", "white", "deeppink"]
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PaymentScreen from '../PaymentScreen';
+import  { Paystack }  from 'react-native-paystack-webview';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const HomeScreen =(props) => {
 
+    
 
-
+ 
+    const {user, logout} = useContext(AuthContext);
+    const userEmail = user.email;
     const [updateNeeded, setUpdateNeeded] = useState(false);
     const [updateUrl, setUpdateUrl] = useState('');
     const[posts, setPosts] = useState([]);
@@ -35,6 +44,7 @@ const HomeScreen =(props) => {
     const [useLocationManager, setUseLocationManager] = useState(false);
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
+    const [alreadyPaid, setalreadyPaid] = useState(null);
     const [color, setcolor]  =  useState('white');
     const map = useRef();
     const route = useRoute();
@@ -48,7 +58,11 @@ const HomeScreen =(props) => {
     const homeprice = route.params?.homeprice;
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
+    const [modalvisible, setmodalvisible] = useState(false)
+   
+
     
+
     
         const hasPermissionIOS = async () => {
             const openSetting = () => {
@@ -154,7 +168,24 @@ const HomeScreen =(props) => {
             },
             );
         };
-
+        const makeCall1 = () => {
+            const phoneNumbers = [ "0256744112"]
+            
+            let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
+        
+            if (Platform.OS === 'android') {
+              phoneNumber = `tel:${phoneNumber}`;
+            } else {
+              phoneNumber = `telprompt:${phoneNumber}`;
+            }
+            try{
+                Linking.openURL(phoneNumber);
+            }
+            catch(e){
+                console.log(e)
+            }
+            
+          };
     const makeCall = () => {
         const phoneNumbers = ["0552618521", "0597285059", "0597285099", "0205200706", "0579535484"]
         
@@ -283,10 +314,79 @@ const HomeScreen =(props) => {
             console.log(e);
         }
     }
+      
+    
+    const createTwoButtonAlert = () => {
+       
+       setmodalvisible(true);
+            
+        // Alert.alert(
+        // "Service fee",
+        // "RentIt charges GHS 1 service fee. This is a one-time payment for using RentIt to search for homes all over Ghana",
+        // [
+            
+        //     { text: "OK", onPress: () => {
+        //         navigation.navigate('Payment', {
+        //             channel : ["card", "mobile_money"],
+        //             totalAmount: 1,
+        //             homeimage: null,
+        //             homelatitude: null,
+        //             homelongitude: null,
+        //             hometitle: null,
+        //             homebed: null,
+        //             homeid: null,
+        //             homeyears: null,
+        //             homemonths: null,
+                    
+        //             })
+                    
+        //         }
+              
+              
+        // }
+        // ]
+        // );
+        // setTimeout(createTwoButtonAlert, 100000);
 
-
-
-       useEffect (() => {
+    }
+       
+       useEffect (async() => {
+       
+        // AsyncStorage.getItem('alreadyPaid').then((value) => {
+        //     if (value == null) {
+        //         createTwoButtonAlert();
+              
+               
+        //     } else {
+        //       navigation.navigate('Welcome')
+        //     }
+        //   }); // Add
+          
+          
+        
+        var user = await firestore().collection('users').doc(auth().currentUser.uid);
+        console.log('user', (await user.get()).data())
+            
+              user.get()
+                .then(doc => {
+                   
+                if(doc.exists){
+                    if(doc.data().phoneNumber === null){
+                        
+                        navigation.navigate('WelcomeScreen')
+                      }
+                       
+                 else {
+                        console.log('User already has phone number', doc.data().phoneNumber);
+                        
+                    }
+                }  
+                
+              
+            })
+       
+        
+        
         
         setInterval(selectColor, 2000);
         VersionCheck.needUpdate()
@@ -328,7 +428,106 @@ const HomeScreen =(props) => {
 
 
     return (
+        
         <ScrollView style={{backgroundColor:"#fff"}}>
+            <View style={{alignItems:"center"}}>
+            <Modal animationType = {"slide"} transparent = {false}
+              visible = {modalvisible}
+             onRequestClose = {() => { 
+                navigation.goBack();
+                console.log("Modal has been closed.") 
+                } }
+            >
+              
+              <View style = {{flex: 1,
+      alignItems: 'center',
+      backgroundColor: 'white',
+      padding: 10}}>
+                 <Text style = {{color: 'black',
+      marginTop: 10, fontWeight:'bold', fontSize:22}}>Service Charge!</Text>
+                <Text style={{marginBottom:20}}>We began RentIt to help people like you. 
+                    In order to continue doing that, we are now charging a GHS 2 service fee. This payment is one-time. You will not pay
+                    anything again for using RentIt</Text>
+                    <View style={{paddingBottom:10}}>
+                    <Pressable 
+                                                      style={{ width: 300, backgroundColor: 'black',
+                                                       justifyContent: 'center', flexDirection: 'row',
+                                                      alignItems: 'center', borderRadius: 50,
+                                                        zIndex:1, alignSelf:"center", 
+                                                      
+                                                    }}
+                                                        onPress={makeCall1}>
+                                                        <Fontisto name="phone" size={15} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
+                                                        
+                                                        <Text adjustsFontSizeToFit={true} style={{justifyContent: 'center', alignItems: 'center', fontSize: 10,
+                                                         fontFamily:'Montserrat-SemiBold', color:"white"}}>Call if you have any problems or you need help</Text>
+                                                            
+                                                            </Pressable>
+                
+                    </View>
+                    <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
+                    <TouchableOpacity
+                    onPress={() => {
+
+                        
+                        
+                                    navigation.navigate('Payment', {
+                                        channel : ["mobile_money"],
+                                        totalAmount: 2,
+                                        homeimage: null,
+                                        homelatitude: null,
+                                        homelongitude: null,
+                                        hometitle: null,
+                                        homebed: null,
+                                        homeid: null,
+                                        homeyears: null,
+                                        homemonths: null,
+
+                                    })
+                                        
+                            
+                    }}
+                    style={{marginHorizontal:10,alignItems:"center",padding:10,borderRadius:10,backgroundColor:"deeppink", height:40}}
+                    >
+                    
+                    
+                  <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
+                    Pay with Mobile Money
+                  </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+              onPress={() => {
+                        
+                navigation.navigate('Payment', {
+                    channel : ["card"],
+                    totalAmount: 2,
+                    homeimage: null,
+                    homelatitude: null,
+                    homelongitude: null,
+                    hometitle: null,
+                    homebed: null,
+                    homeid: null,
+                    homeyears: null,
+                    homemonths: null,
+
+                })
+                    
+        
+}}
+              
+              style={{marginHorizontal:10,alignItems:"center",borderRadius:10,backgroundColor:"blue", padding:10, height:40}}>
+                  <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
+                    Pay with Debit Card
+                  </Text>
+              </TouchableOpacity>
+
+        
+                    </View>     
+                    
+              </View>
+              
+           </Modal>
+       </View>
             <View>
                 {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center', }}>
                 <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
@@ -346,7 +545,7 @@ const HomeScreen =(props) => {
                  
                 style={styles.image}>
                     
-                    <Text adjustsFontSizeToFit={true} style={{marginTop:-20,
+                    {/* <Text adjustsFontSizeToFit={true} style={{marginTop:-20,
                         fontSize:30,
                         alignSelf:'center',
                         zIndex:1,
@@ -355,7 +554,7 @@ const HomeScreen =(props) => {
                        
                             A home for everyone
                         
-                    </Text>
+                    </Text> */}
 
                     {/* <Pressable 
                         style={styles.button}
@@ -370,10 +569,26 @@ const HomeScreen =(props) => {
                     <Image
 
                         
-                    style={{height:500, width:Dimensions.get('screen').width - 20, top:-150, borderRadius:25, marginHorizontal:10}}
+                    style={{height:500, width:Dimensions.get('screen').width - 20, top:-250, borderRadius:25, marginHorizontal:10}}
                         source={image}
 
                     />
+
+                    {/* <Text style={{top:-250, color:'white', position:'absolute', 
+                    alignSelf:'center', fontWeight:'bold', fontSize:25}}>
+                        What are you looking for?</Text>
+
+
+                        <View style={{flex:1, top:-700, alignSelf:'center',flexDirection:'row', justifyContent:'space-between'}}>
+                        <TouchableOpacity style={{borderRadius:50,alignItems:'center',width:100,backgroundColor:'white', marginHorizontal:10}}>
+                            <Text style={{padding:10,fontWeight:'bold', fontSize:20, color:'purple'}}>Rent</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{borderRadius:50,alignItems:'center',width:100,backgroundColor:'white', marginHorizontal:10}}>
+                            <Text style={{color:'purple',padding:10,fontWeight:'bold', fontSize:20}}>Buy</Text>
+                        </TouchableOpacity>
+                        </View> */}
+                        
                     
                     
                 </View>
@@ -554,14 +769,14 @@ const HomeScreen =(props) => {
                            }}
                         />
 
-                    <View style={{padding: 5, margin: 10}}>
+                    {/* <View style={{padding: 5, margin: 10}}>
                         <Text style={{fontSize: 22, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
                             Explore
 
                         </Text>
                         <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>We have rooms for everyone</Text>
-                    </View>
-                    <OptimizedFlatList
+                    </View> */}
+                    {/* <OptimizedFlatList
                     showsHorizontalScrollIndicator={false}
                     showsVerticalScrollIndicator={false}
                         horizontal={true}
@@ -585,20 +800,20 @@ const HomeScreen =(props) => {
                                        </View>
                                )
                            }}
-                        />
+                        /> */}
 
                     
                     
-                                   <View style={{margin: 20, padding: 16 }}>
+                                   <View style={{margin: 0, padding: 6 }}>
                                        
                                         <Image 
                                                 source={image} 
-                                                style={{borderRadius: 20, height: 500, width: '100%', alignSelf:"center"}}/>
+                                                style={{borderRadius: 20, height: 600, width: '100%', alignSelf:"center"}}/>
                                                  <View style={styles.ImageOverlay1}></View>   
                                                     <Text adjustsFontSizeToFit={true} style={{flex:1, alignItems: "center", color:"white",
-                                                      marginLeft: Dimensions.get('screen').width/3.5, width:"100%",
+                                                      marginLeft: Dimensions.get('screen').width/4.5, width:"100%",
                                                       top: 10, position: 'absolute', zIndex:1, fontWeight:"bold",
-                                                       fontSize:16, fontFamily:'Montserrat-ExtraBold',
+                                                       fontSize:26, fontFamily:'Montserrat-ExtraBold',
                                                       
                                                     }}>
                                                         Become a Partner

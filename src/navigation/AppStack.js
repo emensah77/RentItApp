@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import DestinationSearchScreen from "../screens/DestinationSearch";
 import GuestsScreen from "../screens/GuestsScreen";
 import HomeTabNavigator from "./HomeTabNavigator";
@@ -12,24 +12,37 @@ import AboutScreen from '../screens/AboutScreen';
 import HouseTypeScreen from '../screens/HouseTypeScreen';
 import SearchResultsTabNavigator from './SearchResultsTabNavigator';
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
-
+import WelcomeScreen from '../screens/WelcomeScreen';
+import CheckoutScreen from '../screens/CheckoutScreen';
 
 const Stack = createStackNavigator();
 
 const AppStack = () => {
-    
+   
   
     return (
         <Stack.Navigator>
-                    <Stack.Screen 
+
+                    
+                    
+                        
+
+                        <Stack.Screen 
                         name={"Home"}
                         component={HomeTabNavigator} 
                         options={{
                             headerShown: false,
                         }}
                             />
-                        
 
+                    <Stack.Screen 
+                        name={"WelcomeScreen"}
+                        component={WelcomeScreen} 
+                        options={{
+                            headerShown: false,
+                        }}
+                            />
+                        
 
                         
 

@@ -3,7 +3,7 @@ import {View, ActivityIndicator, Text, StatusBar,TextInput, FlatList, Pressable,
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import searchResults from '../../../assets/data/search';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import SuggestionRow from './SuggestionRow';
 import * as Animatable from 'react-native-animatable';
@@ -15,8 +15,11 @@ const DestinationSearch = (props) => {
     const navigation = useNavigation();
     const {user, logout} = useContext(AuthContext);
     const ref = useRef();
+    const route = useRoute();
+    const hometype = route.params?.type;
     useEffect(() => {
       ref.current?.focus();
+      console.log(hometype)
     }, []);
     
     return (
@@ -56,7 +59,7 @@ const DestinationSearch = (props) => {
                 ref={ref}
                 onPress={async(data, details = null) => {
                     // 'details' is provided when fetchDetails = true
-                    //console.log(data, details.address_components[2].short_name);
+                    //console.log(data, details.geometry);
                     
                     await analytics().logEvent('searchQuery', {
                       id: user.uid,
@@ -66,7 +69,10 @@ const DestinationSearch = (props) => {
                     })
                   
           
-                    navigation.navigate('Number of Guests', {viewport: details.geometry.viewport});
+                    navigation.navigate('Number of Guests', {
+                      viewport: details.geometry.viewport,
+                      hometype: hometype,
+                    });
                     //console.log(details.geometry.viewport)
                   }}
                 fetchDetails
@@ -92,7 +98,7 @@ const DestinationSearch = (props) => {
                 query={{
                     key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
                     language: 'en',
-                    
+                    fields:'geometry',
                     components: 'country:gh',
                 }}
                 

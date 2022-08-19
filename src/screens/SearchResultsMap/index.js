@@ -296,7 +296,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
             try{
                 const postsResult = await API.graphql(
                     graphqlOperation(listPosts, {
-                      limit: 1000000,
+                      limit: 300,
                         filter: {
                             and: {
                                 maxGuests: {
@@ -411,8 +411,9 @@ const SearchResultsMaps = ({guests, viewport}) => {
             </MapView.Animated>
 
             <View style={{position: 'absolute', bottom: 10}}>
-                <FlatList 
+                <OptimizedFlatList 
                     ref={flatlist}
+                    keyExtractor={(item) => item.id.toString()}
                     data={posts}
                     renderItem={({item}) => <PostCarouselItem post={item}/>}
                     horizontal

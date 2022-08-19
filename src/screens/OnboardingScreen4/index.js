@@ -1,5 +1,5 @@
 import React , {useState, useEffect} from 'react';
-import {View, Modal,ActivityIndicator,Text, ScrollView, Image, ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable, Dimensions, Alert} from 'react-native';
+import {View, Modal,ActivityIndicator,Text, ScrollView, Image, ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable, Dimensions, Alert, Platform} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
@@ -14,6 +14,7 @@ import Amplify, {Storage} from 'aws-amplify';
 import uuid from 'react-native-uuid';
 import awsconfig from '../../../src/aws-exports';
 Amplify.configure(awsconfig);
+import ImagePicker from 'react-native-image-crop-picker';
 
 const OnboardingScreen4 = (props) => {
     const navigation = useNavigation();
@@ -111,81 +112,137 @@ const OnboardingScreen4 = (props) => {
 
     
 
+    // const launchCamera = () => {
+    //     const options = {
+    //         storageOptions:{
+    //             path: 'images',
+    //             maxWidth: 1024,
+    //             maxHeight: 683,
+                
+
+    //         }
+    //     }
+    //     launchCamera(options, response => {
+    //         //console.log('Response = ', response);
+    //         if(response.didCancel){
+                
+    //             return;
+    //         }
+    //         else if(response.errorCode === 'camera_unavailable'){
+                
+    //             return;
+    //         }
+    //         else if(response.customButton){
+                
+    //             return;
+    //         }
+    //         else {
+    //         const img = {
+    //             uri: response.assets[0].uri,
+    //             type: response.assets[0].type,
+    //             name: uuid.v4(),
+    //         };
+            
+    //         setImages(prevImages => prevImages.concat(img));
+    //         uploadResource(img);
+            
+    //     }
+    //     })
+        
+        
+        
+  
+    // }
     const openCamera = () => {
-        const options = {
-            storageOptions:{
-                path: 'images',
-                maxWidth: 1024,
-                maxHeight: 683,
+        ImagePicker.openCamera({
+            width: 1024,
+            height: 683,
+          }).then(image => {
+                console.log(image);
+                const img = {
+                        uri: image.path,
+                        type: image.mime,
+                        name: uuid.v4(),
+                  };
+                  uploadResource(img);
+                        
+                  setImages(prevImages => prevImages.concat(img));
+                         
+                // image.map(item => {
+                //     let img = {
+                //         uri: item.sourceURL,
+                //         type: item.mime,
+                //         name: uuid.v4(),
+                //         };
+                //         uploadResource(img);
+                        
+                //         setImages(prevImages => prevImages.concat(img));
+                       
+                // })
+                
+                    
+            
+            
+          });
+    }
+    const openPicker = () => {
+        ImagePicker.openPicker({
+            width: 1024,
+            height: 683,
+            multiple: true,
+            maxFiles: Platform.OS === 'ios' ? 10 : null,
+          }).then(image => {
+                image.map(item => {
+                    let img = {
+                        uri: item.path,
+                        type: item.mime,
+                        name: uuid.v4(),
+                        };
+                        uploadResource(img);
+                        
+                        setImages(prevImages => prevImages.concat(img));
+                        
+                })
+                
+                    
+            
+            
+          });
+    }
+    // const openLibrary = () => {
+        
+    //     launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
+    //         //console.log('Response = ', response);
+    //         if(response.didCancel){
+    //             return;
+    //         }
+    //         else if(response.error){
+    //             return;
+    //         }
+    //         else if(response.customButton){
+                
+    //             return;
+    //         }
+    //         else{
+    //         const img = {
+    //             uri: response.assets[0].uri,
+    //             type: response.assets[0].type,
+    //             name: uuid.v4(),
+    //             };
+    //             // pathToImageFile(img.uri);
+                
+    //             setImages(prevImages => prevImages.concat(img));
+    //             uploadResource(img);
                 
 
-            }
-        }
-        launchCamera(options, response => {
-            //console.log('Response = ', response);
-            if(response.didCancel){
-                
-                return;
-            }
-            else if(response.errorCode === 'camera_unavailable'){
-                
-                return;
-            }
-            else if(response.customButton){
-                
-                return;
-            }
-            else {
-            const img = {
-                uri: response.assets[0].uri,
-                type: response.assets[0].type,
-                name: uuid.v4(),
-            };
-            
-            setImages(prevImages => prevImages.concat(img));
-            uploadResource(img);
-            
-        }
-        })
+    //         }
+        
+    //     })
         
         
         
   
-    }
-    const openLibrary = () => {
-        
-        launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
-            //console.log('Response = ', response);
-            if(response.didCancel){
-                return;
-            }
-            else if(response.error){
-                return;
-            }
-            else if(response.customButton){
-                
-                return;
-            }
-            else{
-            const img = {
-                uri: response.assets[0].uri,
-                type: response.assets[0].type,
-                name: uuid.v4(),
-                };
-                // pathToImageFile(img.uri);
-                
-                setImages(prevImages => prevImages.concat(img));
-                uploadResource(img);
-                
-
-            }
-        
-        })
-        
-        
-        
-  
-    }
+    // }
 
    
     if (isLoading){ 
@@ -259,11 +316,11 @@ const OnboardingScreen4 = (props) => {
         {images.length != 0 ? 
             <View style={{flex:1,}}>
                 <TouchableOpacity
-                onPress={() => openLibrary()}
+                onPress={() => openPicker()}
                  style={{padding:10,borderColor:'black',borderWidth:1,borderRadius:10,flexDirection:'row', justifyContent:'space-between'}}>
                 <Text style={{fontSize:18,fontFamily:'Montserrat-Bold'}}>Add {images.length >= 5 ? 'more' : 'at least 5'} photos</Text>
                 <TouchableOpacity
-                onPress={() => openLibrary()}
+                onPress={() => openPicker()}
                 >
 
                 <FontAwesomeIcon icon={faPlusCircle}  size={25} color={'black'}/>
@@ -310,7 +367,7 @@ const OnboardingScreen4 = (props) => {
 
         <Text style={{fontSize:18,fontWeight:"600", marginBottom:10}}>The first picture should be of the house or the living room, not the bathroom!</Text>
                 <TouchableOpacity
-                onPress={() => openLibrary()}
+                onPress={() => openPicker()}
                 
                  style={{
 

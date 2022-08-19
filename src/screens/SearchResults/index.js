@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, FlatList,StatusBar, StyleSheet ,Pressable,Text, ScrollView, Platform, TouchableOpacity} from 'react-native';
+import {View, FlatList,StatusBar, StyleSheet ,Pressable,Text, ScrollView, Platform, TouchableOpacity, ActivityIndicator} from 'react-native';
 import Post from '../../components/Post';
 import {API, graphqlOperation} from 'aws-amplify';
 import {listPosts} from '../../graphql/queries'; 
@@ -11,12 +11,18 @@ import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import styles from '../Home/styles';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 import {useNavigation} from "@react-navigation/native";
+import uuid from 'react-native-uuid';
+
+
 const SearchResultsScreen = ({guests, viewport}) => {
     
     
     const[posts, setPosts] = useState([]);
     const[loading, setLoading] =  useState(true);
     const [datalist, setDatalist] = useState([]);
+    const [page, setPage] =  useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    
 
 
     const [status, setStatus] = useState('All');
@@ -111,9 +117,11 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 
             })
             )
-            
+            //console.log('postsResult',postsResult.data.listPosts.items)
             setPosts(postsResult.data.listPosts.items);
             setDatalist(postsResult.data.listPosts.items);
+            
+
             if(loading){
                 setLoading(false);
             }
@@ -121,16 +129,34 @@ const SearchResultsScreen = ({guests, viewport}) => {
             console.log(e);
         }
     }
-    useEffect ( () => {
+    useEffect ( async() => {
         
         
         
         fetchPosts();
-        console.log(viewport);
-    }, [])
+        
+       
+    }, [posts])
     
     
-    
+    const renderLoader = () => {
+        return(
+            isLoading ? 
+            <View style={{marginVertical:16, alignItems:'center'}}>
+                <ActivityIndicator size={"large"} color="blue"/>
+            </View>
+            :
+            null
+
+            
+        )
+    }
+    const loadMore = () => {
+        console.log('pagenumber', page)
+        setIsLoading(true);
+        setPage( page + 10);
+        setIsLoading(false);
+    }
     const setStatusFilter = status => {
         if (status !== 'All'){
             setDatalist([...posts.filter(category => category.type === status)])
@@ -150,9 +176,12 @@ const SearchResultsScreen = ({guests, viewport}) => {
     }
     
     const renderItem = ({item, index}) =>{
+        
         return (
-            <View key={index}>
+            
+            <View key={item}>
                 <Post post={item}/>
+            
 
             </View>
         )
@@ -222,7 +251,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
 
             
             {!loading ? <View>
-
+                
             <ScrollView
             horizontal
             scrollEventThrottle={1}
@@ -292,11 +321,20 @@ const SearchResultsScreen = ({guests, viewport}) => {
                     
                         
             
-                  <OptimizedFlatList
+                  <FlatList
+                      removeClippedSubviews={true}
                       data={datalist}
-                      keyExtractor={(status, i) => i.toString()}
-                      renderItem={renderItem}
-                     
+                      maxToRenderPerBatch={5}
+                      initialNumToRender={1}
+                      onEndReachedThreshold={0}
+                      onEndReached={loadMore}
+                      keyExtractor={(item, index) => {
+                        
+                        return uuid.v4().toString();
+                      }}
+                      renderItem={renderItem} 
+                      ListFooterComponent={renderLoader}
+                       
                       //renderItem={({item}) => <Post post={item}/>}
                 />
                   </View>  

@@ -1,5 +1,5 @@
 import React, {useEffect,useContext, useState} from "react";
-import {View, Image ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar} from "react-native";
+import {View,Image ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar, Alert} from "react-native";
 import styles from './styles.js';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {FlatListSlider} from 'react-native-flatlist-slider';
@@ -16,7 +16,12 @@ import ImageCarousel from '../../components/ImageCarousel';
 import {SharedElement} from 'react-navigation-shared-element'
 import FastImage from 'react-native-fast-image';
 import {AuthContext} from '../../navigation/AuthProvider';
-const uploadusers = ["UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1"]
+//const uploadusers = ["17Kx04gVyJXkO8kZsIxUxRu4uJw1","Ye7iz2KN5Fbk5Y0Z91IEmzywNPh1","UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1", "JleriGZuTqXkAyO3xCiDsey1CCb2"]
+import firestore from '@react-native-firebase/firestore'
+import { TouchableOpacity } from "react-native-gesture-handler";
+import {API, graphqlOperation} from 'aws-amplify';
+import {deletePost} from '../../graphql/mutations';
+
 const DetailedPost = (props) => {
     const post = props.post;
     const navigation = useNavigation();
@@ -24,18 +29,47 @@ const DetailedPost = (props) => {
     const {user, logout} = useContext(AuthContext);
 
     const randString = route.params.randString;
-    
+    const [phoneNumbers, setphones] = useState([]);
+    const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
 
     const logAnalyticsEvent = async () =>{
         await analytics().logEvent('calltorent', {
-            id: 3745092,
-            item: 'Call to Rent Button Click',
+            id: user.displayName,
+            item: user.phoneNumber,
             description: 'Clicked on the call to rent button'
             
         })
     }
+    const getPhoneNumbers = async () => {
+        const callers = await firebase.firestore().collection('callers')
+        callers.get().then((querySnapshot) => {
+            
+            querySnapshot.forEach((doc) => {
+                
+                setphones(prev => [...prev, doc.data().number])
+                })
+            
+            //console.log('phoneNumbers',phoneNumbers)
+         })
+    }
+
+    const getUsersWithPrivileges = async () => {
+        const callers = await firebase.firestore().collection('usersWithPrivileges')
+        callers.get().then((querySnapshot) => {
+            
+            querySnapshot.forEach((doc) => {
+                
+                setUsersWithPrivileges(prev => [...prev, doc.data().userId])
+                })
+            
+            //console.log('phoneNumbers',phoneNumbers)
+         })
+    }
+
+
     useEffect(() => {
-        // console.log(post);
+        getPhoneNumbers();
+        getUsersWithPrivileges();
     },[])
     const payRent = () => {
         navigation.navigate('Address', {
@@ -51,10 +85,10 @@ const DetailedPost = (props) => {
         });
     }
     const makeCall = () => {
-        const phoneNumbers = ["0552618521", "0597285059", "0597285099", "0205200706", "0579535484"]
+        
         
         let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
-    
+        //console.log('rand',phoneNumber, phoneNumbers)
         if (Platform.OS === 'android') {
           phoneNumber = `tel:${phoneNumber}`;
         } else {
@@ -69,12 +103,64 @@ const DetailedPost = (props) => {
         
       };
 
+      const deleteFromFavorites = async (id) => {
+        const ref = firestore().collection('posts');
+        ref.where("id", '==', id)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              firestore()
+              .collection('posts')
+              .doc(doc.id)
+              .delete()
+              .then(() => {
+                console.log('Deleted from favorite posts!');
+              });
+              //console.log(doc.id);
+              //console.log(doc.id, "=>", doc.data());
+            });
+          });
+        
+      }
+      const deleteFromTrends = async (id) => {
+      
+        await firestore()
+        .collection('trends')
+        .doc(id)
+        .delete();
     
+      }
+      const deleteHome = async (id) => {
+    
+        try {
+          let input = {
+            id
+          }
+          const deletedTodo  = await API.graphql(
+            graphqlOperation(deletePost, {
+    
+              input
+            })
+    
+          );
+          console.log("Succesfully deleted the post");
+        }
+        catch(e){
+          console.log('Error deleting post', e);
+        }
+      }
+
+      const deleteListing = async (id) =>{
+              deleteHome(id);
+              deleteFromTrends(id);
+              deleteFromFavorites(id);
+      }
 
    
 
     return(
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{backgroundColor:'white'}}>
+        <ScrollView contentContainerStyle={{paddingBottom:150}} showsVerticalScrollIndicator={false}>
             {/* Image */}
             <StatusBar hidden={true} />
             
@@ -85,14 +171,50 @@ const DetailedPost = (props) => {
             <View style={styles.container}>
                 
                 {/* Bed and Bedroom */}
+                <View style={{flex:1, flexDirection:"row", justifyContent:"space-between"}}>
                 <Text style={styles.description} numberOfLines={2}>
                     {post.title}
-                </Text> 
+                </Text>
+                {usersWithPrivileges.includes(user.uid) ? 
+                 <TouchableOpacity onPress={() => {
+                    Alert.alert(
+                     "Are you sure you want to delete?",
+                     "This is irreversible and cannot be undone",
+                     [
+                         
+                         { text: "OK", onPress: () => {
+                             
+                             deleteListing(post.id)
+                             navigation.goBack();
+                             
+                         }
+                          
+                         
+                     },
+                     { text: "Cancel",  style: 'cancel'
+                     
+                     
+                 }
+                     ],
+                     { cancelable: true }
+                     );
+                     }
+                     }>
+                     <Fontisto name="trash" size={25} color={"blue"} />
+                 </TouchableOpacity>
+                  
+                 : 
+                 null
+                 
+                 }
+                
+                </View>
+                
                 <View style={styles.hairline}/>
                 <Text style={styles.bedrooms}>
                 {post.type} | {post.bedroom} bedrooms | {post.bathroomNumber} bathrooms |
                 </Text>
-                {uploadusers.includes(user.uid) ? <Text>{post.phoneNumbers}</Text> : null}
+                {usersWithPrivileges.includes(user.uid) ? <Text>{post.phoneNumbers}</Text> : null}
                 <Text style={styles.prices}>
                     {/* <Text style={styles.oldPrice}>
                     GH₵{post.oldPrice} 
@@ -155,7 +277,21 @@ const DetailedPost = (props) => {
             </View>
 
 
-            <View style={{margin: 20}}>
+            
+        </ScrollView>
+
+       
+
+            <View style={{ flex:1, borderTopColor:'lightgrey',borderTopWidth:1,
+            flexDirection:'row',backgroundColor: "white",
+             position: 'absolute', height:150,
+             width:'100%' ,bottom:0, alignItems:'center', justifyContent:'space-between'}}>
+            <View>
+            <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
+                    GH₵{(Math.round(post.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"} / year
+                    </Text>
+            </View>
+            <View style={{flex:1, flexDirection:'column', marginTop:10,}}>
             <Pressable
                 
                 
@@ -166,9 +302,10 @@ const DetailedPost = (props) => {
                     backgroundColor: 'deeppink',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: 50,
+                    height: '100%',
+                    width:'80%',
                     marginHorizontal: 20,
-                    borderRadius: 25,
+                    borderRadius: 5,
                     justifyContent: 'center'
                 }}  onPress={() => {
                     payRent();
@@ -191,9 +328,10 @@ const DetailedPost = (props) => {
                     backgroundColor: 'blue',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: 50,
+                    height: '50%',
+                    width:'80%',
                     marginHorizontal: 20,
-                    borderRadius: 25,
+                    borderRadius: 5,
                     justifyContent: 'center'
                 }}  onPress={() => {
                     makeCall();
@@ -206,9 +344,10 @@ const DetailedPost = (props) => {
                         fontWeight: 'bold',
                     }}>Call to Rent</Text>
                 </Pressable>
-            </View>
-        </ScrollView>
 
+            </View>
+                        </View>
+            </View>
     
     );
 };

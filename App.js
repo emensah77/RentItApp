@@ -8,15 +8,10 @@
  import 'react-native-gesture-handler';
  import SplashScreen from 'react-native-splash-screen'
 import React, {useEffect} from 'react';
-import * as Sentry from "@sentry/react-native";
+
 import { Settings } from 'react-native-fbsdk-next';
 
-Sentry.init({
-  dsn: "https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972",
-  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-  // We recommend adjusting this value in production.
-  tracesSampleRate: 0.8,
-});
+
 
 import {
   Dimensions,
@@ -225,5 +220,5 @@ const App: () => Node = () => {
 };
 
 
-export default Sentry.wrap(App);
+export default App;
 

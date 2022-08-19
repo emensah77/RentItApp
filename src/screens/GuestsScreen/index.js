@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
-import {View, Pressable, Dimensions ,StatusBar ,Text, Platform} from 'react-native';
+import {View, Pressable,ScrollView, Dimensions ,StatusBar ,Text, Platform} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import styles from './styles.js';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+
 
 const GuestsScreen = (props) => {
     const navigation = useNavigation();
@@ -12,6 +14,7 @@ const GuestsScreen = (props) => {
     const [children, setChildren] = useState(0);
     const [rooms, setrooms] = useState(0);
     const route = useRoute();
+
     
     return (
         <LinearGradient
@@ -132,9 +135,21 @@ const GuestsScreen = (props) => {
 
 
 
-
+                
 
             </View>
+            <View>
+                    
+            </View>
+             {/* <ScrollView style={{marginHorizontal:10}} scrollEnabled={true}>
+      <MultiSlider
+        
+        min={1}
+        max={1000000}
+        onValuesChangeStart={() => console.log('ok')}
+        onValuesChangeFinish={() => console.log('ok')}
+      />
+    </ScrollView>  */}
 
             <Pressable 
                 onPress={() => 
@@ -146,6 +161,7 @@ const GuestsScreen = (props) => {
                             params:{
                                 guests: rooms,
                                 viewport: route.params.viewport,
+                                
                             }
                             
                         },

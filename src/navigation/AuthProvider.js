@@ -1,14 +1,18 @@
-import React, {createContext, useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState, useContext} from 'react';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { ActivityIndicator, View } from 'react-native';
 export const AuthContext = createContext();
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false);
 
   if (loading){ return(
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
@@ -40,8 +44,40 @@ export const AuthProvider = ({children}) => {
             
             // Sign-in the user with the credential
             setLoading(true);
-            await auth().signInWithCredential(googleCredential);
+            await auth().signInWithCredential(googleCredential)
+            
+            var trendRef = firestore().collection('users').doc(auth().currentUser.uid);
+            
+              var getDoc = trendRef.get()
+                .then(doc => {
+                    if (!doc.exists) {
+                      firestore().collection('users').doc(auth().currentUser.uid)
+                      .set({
+                          fname: auth().currentUser.displayName,
+                          lname: auth().currentUser.displayName,
+                          email: auth().currentUser.email,
+                          createdAt: firestore.Timestamp.fromDate(new Date()),
+                          userImg: auth().currentUser.photoURL,
+                          phoneNumber: auth().currentUser.phoneNumber,
+                      })
+                      console.log('User successfully added');
+                       
+                    } else {
+                        console.log('User already exists');
+                        
+                    }
+              
+            })
             setLoading(false);
+            
+           
+            
+              //Once the user creation has happened successfully, we can add the currentUser into firestore
+              //with the appropriate details.
+              //console.log('current User', auth().currentUser)
+              
+              //ensure we catch any errors at this stage to advise us if something does go wrong
+             
             
             // Use it only when user Sign's up, 
             // so create different social signup function
@@ -87,7 +123,38 @@ export const AuthProvider = ({children}) => {
           
             // Sign the user in with the credential
             setLoading(true);
-            await auth().signInWithCredential(appleCredential);
+            await auth().signInWithCredential(appleCredential)
+            var trendRef = firestore().collection('users').doc(auth().currentUser.uid);
+            
+              var getDoc = trendRef.get()
+                .then(doc => {
+                    if (!doc.exists) {
+                      firestore().collection('users').doc(auth().currentUser.uid)
+                      .set({
+                          fname: auth().currentUser.displayName,
+                          lname: auth().currentUser.displayName,
+                          email: auth().currentUser.email,
+                          createdAt: firestore.Timestamp.fromDate(new Date()),
+                          userImg: auth().currentUser.photoURL,
+                          phoneNumber: auth().currentUser.phoneNumber,
+                      })
+                      console.log('User successfully added');
+                       
+                    } else {
+                        console.log('User already exists');
+                        
+                    }
+              
+            })
+            await AsyncStorage.getItem('alreadyOpened').then((value) => {
+              if (value == null) {
+                AsyncStorage.setItem('alreadyOpened', 'true'); // No need to wait for `setItem` to finish, although you might want to handle errors
+                setIsFirstLaunch(true);
+              } else {
+                setIsFirstLaunch(false);
+              }
+            }); // A
+
             setLoading(false);
           }
           catch(error){
@@ -159,7 +226,7 @@ export const AuthProvider = ({children}) => {
               })
               //ensure we catch any errors at this stage to advise us if something does go wrong
               .catch(error => {
-                  console.log('Something went wrong with added user to firestore: ', error);
+                  console.log('Something went wrong with adding user to firestore: ', error);
               })
             })
             //we need to catch the whole sign up process if it fails too.

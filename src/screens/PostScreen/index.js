@@ -1,19 +1,44 @@
 import React, {useEffect, useState} from 'react';
-import {View,Image, Text} from 'react-native';
+import {View,ScrollView,Image, Modal,TouchableOpacity, Pressable,Text} from 'react-native';
 import DetailedPost from '../../components/DetailedPost';
 import {listPosts} from '../../graphql/queries';
-import {useRoute} from '@react-navigation/native';
+import {useRoute, useNavigation} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Fontisto from "react-native-vector-icons/Fontisto";
 
 const PostScreen = ({ route }) =>{
     
+    const navigation = useNavigation();
     const params = route.params || {};
     const { postId, id } = params;
     const [post, setPosts] = useState(null);
+    const [modalvisible, setmodalvisible] = useState(false)
+    const createTwoButtonAlert = () => {
+       
+        setmodalvisible(true);
     
+    }
+    const makeCall1 = () => {
+        const phoneNumbers = [ "0256744112"]
+        
+        let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
     
+        if (Platform.OS === 'android') {
+          phoneNumber = `tel:${phoneNumber}`;
+        } else {
+          phoneNumber = `telprompt:${phoneNumber}`;
+        }
+        try{
+            Linking.openURL(phoneNumber);
+        }
+        catch(e){
+            console.log(e)
+        }
+        
+      };
     const fetchPosts = async () => {
         try{
             const postsResult = await API.graphql(
@@ -67,6 +92,15 @@ const PostScreen = ({ route }) =>{
         console.log(postId, id, post);
         if(post){
         preloadImages(post.images)}
+        AsyncStorage.getItem('alreadyPaid').then((value) => {
+                if (value == null) {
+                    createTwoButtonAlert();
+                  
+                   
+                } else {
+                  return;
+                }
+              }); // Add
         
     })
     
@@ -143,9 +177,108 @@ const PostScreen = ({ route }) =>{
 
 
     return (
-        <View style={{backgroundColor: 'white'}}>
+        <ScrollView style={{backgroundColor: 'white',}}>
+                        <View style={{alignItems:"center"}}>
+            <Modal 
+            animationType = {"slide"} transparent = {false}
+              visible = {modalvisible}
+             onRequestClose = {() => { 
+                
+                console.log("Modal has been closed.") 
+                } }
+            >
+              
+              <View style = {{flex: 1,
+      alignItems: 'center',
+      backgroundColor: 'white',
+      padding: 10}}>
+                 <Text style = {{color: 'black',
+      marginTop: 10, fontWeight:'bold', fontSize:22}}>Service Charge!</Text>
+                <Text style={{marginBottom:20}}>We began RentIt to help people like you. 
+                    In order to continue doing that, we are now charging a GHS 20 service fee. This payment is one-time. You will not pay
+                    anything again for using RentIt. You can browse thousands of homes and speak to homeowners directly. No agents and walking and moving fees</Text>
+                    <View style={{paddingBottom:10}}>
+                    <Pressable 
+                                                      style={{ width: 300, backgroundColor: 'black',
+                                                       justifyContent: 'center', flexDirection: 'row',
+                                                      alignItems: 'center', borderRadius: 50,
+                                                        zIndex:1, alignSelf:"center", 
+                                                      
+                                                    }}
+                                                        onPress={makeCall1}>
+                                                        <Fontisto name="phone" size={15} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
+                                                        
+                                                        <Text adjustsFontSizeToFit={true} style={{justifyContent: 'center', alignItems: 'center', fontSize: 10,
+                                                         fontFamily:'Montserrat-SemiBold', color:"white"}}>Call if you have any problems or you need help</Text>
+                                                            
+                                                            </Pressable>
+                
+                    </View>
+                    <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
+                    <TouchableOpacity
+                    onPress={() => {
+
+                        
+                        
+                                    navigation.navigate('Payment', {
+                                        channel : ["mobile_money"],
+                                        totalAmount: 20,
+                                        homeimage: null,
+                                        homelatitude: null,
+                                        homelongitude: null,
+                                        hometitle: null,
+                                        homebed: null,
+                                        homeid: null,
+                                        homeyears: null,
+                                        homemonths: null,
+
+                                    })
+                                        
+                            
+                    }}
+                    style={{marginHorizontal:10,alignItems:"center",padding:10,borderRadius:10,backgroundColor:"deeppink", height:40}}
+                    >
+                    
+                    
+                  <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
+                    Pay with Mobile Money
+                  </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+              onPress={() => {
+                        
+                navigation.navigate('Payment', {
+                    channel : ["card"],
+                    totalAmount: 20,
+                    homeimage: null,
+                    homelatitude: null,
+                    homelongitude: null,
+                    hometitle: null,
+                    homebed: null,
+                    homeid: null,
+                    homeyears: null,
+                    homemonths: null,
+
+                })
+                    
+        
+}}
+              
+              style={{marginHorizontal:10,alignItems:"center",borderRadius:10,backgroundColor:"blue", padding:10, height:40}}>
+                  <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
+                    Pay with Debit Card
+                  </Text>
+              </TouchableOpacity>
+
+        
+                    </View>     
+                    
+              </View>
+              
+           </Modal>
+       </View>
             <DetailedPost post={post}/>
-        </View>
+        </ScrollView>
     );
 
 

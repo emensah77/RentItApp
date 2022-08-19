@@ -7,6 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 import * as mutations from '../../graphql/mutations';
 import {API, graphqlOperation} from 'aws-amplify';
 import {deletePost} from '../../graphql/mutations'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PaymentScreen = (props) => {
   const {user, logout} = useContext(AuthContext);
@@ -124,22 +125,40 @@ const PaymentScreen = (props) => {
             channels={channel}
             billingEmail={userEmail}
             activityIndicatorColor="blue"
+            showCancelButton={false}
             onCancel={(e) => {
               // handle response here
-              
-              console.log(e);
+              if (route.name === "Address"){
+                Alert.alert("Payment cancelled", e.message)
               navigation.goBack();
-              Alert.alert("Payment cancelled", e.message)
+              console.log(e);
+              } 
+              else{
+                navigation.replace('Home')
+                Alert.alert("Payment cancelled", e.message)
+              }
+              
+              
+              
             }}
             onSuccess={(res) => {
-              Alert.alert("Payment successful. You will be redirected to your new home",);
-              addHomeOrder();
+              console.log(res);
+              if (route.name === "Address"){
+                Alert.alert("Payment successful. You will be redirected to your new home",);
+                addHomeOrder();
               deleteHome(homeid);
               deleteFromTrends(homeid);
               deleteFromFavorites(homeid);
               navigation.replace('House');
+              } 
+              else{
+                Alert.alert("Payment successful. Enjoy using RentIt to find your next home",);
+                AsyncStorage.setItem('alreadyPaid', 'true');
+                navigation.replace('Home');
+              }
               
-              console.log(res);
+              
+             
             }}
             autoStart={true}
           />

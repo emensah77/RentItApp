@@ -22,6 +22,7 @@ import OnboardingScreen9 from '../screens/OnboardingScreen9';
 import OnboardingScreen10 from '../screens/OnboardingScreen10';
 import OnboardingScreen11 from '../screens/OnboardingScreen11';
 import AccountManageScreen from '../screens/AccountManageScreen';
+import CheckoutScreen from '../screens/CheckoutScreen';
 
 
 const Stack = createStackNavigator();
@@ -70,6 +71,14 @@ const Router = (props) => {
                     options={{
                         headerShown: true,
                         title:'Confirm and Pay'
+                    }}
+                    />
+                <Stack.Screen
+                    name={'Checkout'}
+                    component={CheckoutScreen}
+                    options={{
+                        headerShown: true,
+                        title:'Checkout'
                     }}
                     />
                 <Stack.Screen

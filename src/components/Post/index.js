@@ -121,14 +121,7 @@ const Post = (props) => {
     
     const colorStyle = "deeppink"
 
-    const geocod = (lat, long) => {
-        
-       console.log(Geocoder.from(lat, long));
-		
-        
-        
-
-    }
+    
     
     const handleClick = () => {
         var trendRef = firestore().collection('trends').doc(post.id);
