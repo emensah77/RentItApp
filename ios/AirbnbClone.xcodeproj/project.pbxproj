@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* AirbnbCloneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* AirbnbCloneTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		0C80B921A6F3F58F76C31292 /* libPods-AirbnbClone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-AirbnbClone.a */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		270F4AFA293CC2AEE616B044 /* libPods-AirbnbClone-AirbnbCloneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 655CDF6A3B0E50C14130BE45 /* libPods-AirbnbClone-AirbnbCloneTests.a */; };
 		D23F394927D8C8EE00A0B2F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D23F394827D8C8EE00A0B2F5 /* LaunchScreen.storyboard */; };
