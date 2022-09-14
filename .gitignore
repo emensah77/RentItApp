@@ -59,10 +59,6 @@ buck-out/
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
-#android hprof
-android/
-
-*.hprof
 
 #amplify
 amplify/\#current-cloud-backend
