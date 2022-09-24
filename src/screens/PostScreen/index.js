@@ -92,15 +92,15 @@ const PostScreen = ({ route }) =>{
         console.log(postId, id, post);
         if(post){
         preloadImages(post.images)}
-        AsyncStorage.getItem('alreadyPaid').then((value) => {
-                if (value == null) {
-                    createTwoButtonAlert();
+        // AsyncStorage.getItem('alreadyPaid').then((value) => {
+        //         if (value == null) {
+        //             createTwoButtonAlert();
                   
                    
-                } else {
-                  return;
-                }
-              }); // Add
+        //         } else {
+        //           return;
+        //         }
+        //       }); // Add
         
     })
     

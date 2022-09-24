@@ -1,0 +1,11 @@
+{
+  "httpMethod": "GET",
+  "path": "/tingg/rate",
+  "queryStringParameters": {
+    "limit": "10"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"msg\":\"Hello from the event.json body\"}"
+}
