@@ -118,6 +118,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             })
             )
             //console.log('postsResult',postsResult.data.listPosts.items)
+            
             setPosts(postsResult.data.listPosts.items);
             setDatalist(postsResult.data.listPosts.items);
             
@@ -129,14 +130,14 @@ const SearchResultsScreen = ({guests, viewport}) => {
             console.log(e);
         }
     }
-    useEffect ( async() => {
+    useEffect ( () => {
         
         
         
         fetchPosts();
         
        
-    }, [posts])
+    }, [])
     
     
     const renderLoader = () => {
@@ -321,7 +322,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                     
                         
             
-                  <FlatList
+                  <OptimizedFlatList
                       removeClippedSubviews={true}
                       data={datalist}
                       maxToRenderPerBatch={5}

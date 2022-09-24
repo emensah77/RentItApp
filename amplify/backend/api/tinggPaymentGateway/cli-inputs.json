@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/tingg": {
+      "name": "/tingg",
+      "lambdaFunction": "tinggPaymentGateway",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

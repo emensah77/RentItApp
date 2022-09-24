@@ -270,6 +270,7 @@ const OnboardingScreen4 = (props) => {
     alignItems: 'center',
     justifyContent: 'space-around'}}>
                 <Text style={{fontSize:24, fontWeight:'bold'}}>Uploading...</Text>
+               
               <ActivityIndicator animating={true} size="large"  color="blue" style={{opacity:1}}/>
                 
                 

@@ -238,7 +238,10 @@ const DetailedPost = (props) => {
                     {post.description}
                 </Text>
                 <View style={styles.hairline}/>
-
+                <Text style={styles.longDescription}>
+                    {post.createdAt} | now
+                </Text>
+                <View style={styles.hairline}/>
                 <Text style={{margin: 10, fontSize:20, fontFamily:"Montserrat-Bold"}}>
                     Amenities available
                 </Text>

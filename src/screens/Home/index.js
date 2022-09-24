@@ -401,7 +401,7 @@ const HomeScreen =(props) => {
         });
         
         
-        getLocation();
+        //getLocation();
         fetchPosts();
         getLatestPost();
         
@@ -677,19 +677,20 @@ const HomeScreen =(props) => {
                 {posts.length === 0 ? 
                 
                 null :
-                <View style={{padding: 5, margin: 10}}>
-                <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
-                    Nearby Homes
+            //     <View style={{padding: 5, margin: 10}}>
+            //     <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
+            //         Nearby Homes
                     
-                </Text>
-                <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
-                        Find homes near you</Text>
+            //     </Text>
+            //     <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
+            //             Find homes near you</Text>
 
-            </View>
+            // </View>
+            null
                 
                 }
                     
-                    <OptimizedFlatList
+                    {/* <OptimizedFlatList
                         showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
                         decelerationRate={"fast"}
@@ -729,7 +730,7 @@ const HomeScreen =(props) => {
                                )
                            }}
                         />
-
+ */}
 
 
                     <View style={{padding: 5, margin: 10}}>

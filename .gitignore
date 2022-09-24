@@ -28,6 +28,7 @@ build/
 .gradle
 local.properties
 *.iml
+*.hprof
 
 # node.js
 #
@@ -55,20 +56,16 @@ buck-out/
 # Bundle artifact
 *.jsbundle
 
-# CocoaPods
+# Ruby / CocoaPods
 /ios/Pods/
-#android hprof
-android/
+/vendor/bundle/
 
-*.hprof
-
-#amplify
+#amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/logs
 amplify/mock-data
 amplify/backend/amplify-meta.json
-amplify/backend/awscloudformation
 amplify/backend/.temp
 build/
 dist/
@@ -81,3 +78,5 @@ amplify-build-config.json
 amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
+**.sample
+#amplify-do-not-edit-end

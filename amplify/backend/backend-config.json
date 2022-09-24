@@ -23,6 +23,20 @@
           "additionalAuthenticationProviders": []
         }
       }
+    },
+    "tinggPaymentGateway": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "tinggPaymentGateway",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ]
     }
   },
   "analytics": {
@@ -38,6 +52,11 @@
       "service": "Lambda"
     },
     "createpaystack": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "tinggPaymentGateway": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
