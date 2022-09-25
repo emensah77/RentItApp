@@ -37,13 +37,12 @@ const DestinationSearch = (props) => {
             
             <View style={styles.header}>
    
-          <Text style={styles.text_header}> Where do you {'\n'} want to rent? </Text>
+          <Text style={styles.text_header}>abc Where do you {'\n'} want to rent? </Text>
         </View>
         
           
         
         <Animatable.View
-        useNativeDriver={true}
          
           style={styles.footer}
         >

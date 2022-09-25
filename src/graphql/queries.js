@@ -72,3 +72,18 @@ export const listPosts = /* GraphQL */ `
     }
   }
 `;
+
+export const listPostsCount = /* GraphQL */ `
+  query ListPosts(
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+      }
+      nextToken
+    }
+  }
+`;
