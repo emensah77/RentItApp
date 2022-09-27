@@ -1,5 +1,5 @@
 {
-  "name": "airbnbclone",
+  "name": "AirbnbClone",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -92,7 +92,8 @@
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.67.0",
-    "react-test-renderer": "17.0.2"
+    "react-test-renderer": "17.0.2",
+    "reactotron-react-native": "^5.0.2"
   },
   "jest": {
     "preset": "react-native"
