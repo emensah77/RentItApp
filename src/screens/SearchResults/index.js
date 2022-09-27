@@ -29,7 +29,6 @@ const SearchResultsScreen = ({guests, viewport}) => {
   const [nextToken, setNextToken] = useState(null);
   const [homeCountState, setHomeCountState] = useState(0);
   const homeCount = useRef(0);
-  
 
   const navigation = useNavigation();
 
@@ -77,7 +76,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
     },
   ];
 
-  const fetchCount = async (nextToken) => {
+  const fetchCount = async nextToken => {
     try {
       let query = {
         limit: 100000,
@@ -97,7 +96,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             },
           },
         },
-        nextToken
+        nextToken,
       };
       if (status === 'All') {
         delete query.filter.and.type;
@@ -105,18 +104,20 @@ const SearchResultsScreen = ({guests, viewport}) => {
       if (nextToken === null) {
         delete query.nextToken;
       }
-      const postsResult = await API.graphql(graphqlOperation(listPostsCount, query));
+      const postsResult = await API.graphql(
+        graphqlOperation(listPostsCount, query),
+      );
       homeCount.current = (homeCount.current + postsResult?.data?.listPosts?.items?.length);
-      if(postsResult?.data?.listPosts?.nextToken !== null){
+      if (postsResult?.data?.listPosts?.nextToken !== null) {
         console.log(postsResult?.data?.listPosts?.items?.length, 'homeCount');
         fetchCount(postsResult.data.listPosts.nextToken);
-      }else {
+      } else {
         setHomeCountState(homeCount.current);
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const fetchPosts = async isReset => {
     if (isEnd) {
@@ -149,16 +150,14 @@ const SearchResultsScreen = ({guests, viewport}) => {
       }
       let previousList = datalist;
       if (isReset) {
-        reactotron.log('isReset', isReset);
         delete query.nextToken;
-        previousList = []
+        previousList = [];
       }
       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-
       setDatalist([...previousList, ...postsResult.data.listPosts.items]);
       setNextToken(postsResult.data.listPosts.nextToken);
-      if(!postsResult.data.listPosts.items.length){
-        setEnd(true)
+      if (!postsResult.data.listPosts.items.length) {
+        setEnd(true);
         setNextToken(null);
       }
       hideAllLoader();
@@ -178,7 +177,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
   };
 
   const renderLoader = () => {
-    return isLoading ? (
+    return isLoading && datalist.length !== 0 ? (
       <View style={{marginVertical: 16, alignItems: 'center'}}>
         <ActivityIndicator size={'large'} color="blue" />
       </View>
@@ -222,40 +221,51 @@ const SearchResultsScreen = ({guests, viewport}) => {
     );
   };
 
-//   if (!loading && dataList.length === 0){
-//     return (
-//         <View style={{flex:1, paddingTop:25, padding:15, backgroundColor:'white' }} >
-//                 <Text 
-//                 style={{
-//                 fontFamily:'Montserrat-Bold',
-//                 fontSize:20
-//                 }}>No Homes Here</Text>
-//                 <View style={{padding:10}}>
-//                     <Text style={{fontSize:16, fontFamily:'Montserrat-Regular'}}>
-//                         There are no homes in the area you searched. Try expanding your search to include 
-//                         other towns and cities near this area.
-//                     </Text>
-//                 </View>
+  const renderNoHome = () => {
+    return (<View
+      style={{
+        flex: 1,
+        paddingTop: 25,
+        padding: 15,
+        backgroundColor: 'white',
+      }}>
+      <Text
+        style={{
+          fontFamily: 'Montserrat-Bold',
+          fontSize: 20,
+        }}>
+        No Homes Here
+      </Text>
+      <View style={{paddingVertical: 10}}>
+        <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+          There are no homes in the area you searched. Try expanding your
+          search to include other towns and cities near this area.
+        </Text>
+      </View>
 
-//                 <TouchableOpacity onPress={() => navigation.goBack()}
-//                 style={{
-                    
-//                     alignItems:'center',
-//                     justifyContent:'center',
-//                     borderWidth:1, borderColor:'black',
-//                     width:'40%', height:'10%',
-//                     backgroundColor:'black', 
-                    
-//                     borderRadius:10}}>
-//                     <Text style={{
-//                         fontSize:16,
-//                         fontFamily:'Montserrat-Bold',
-//                         color:'white'
-//                     }}>Search Again</Text>
-//                 </TouchableOpacity>
-//             </View>
-//     )
-// }
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderWidth: 1,
+          borderColor: 'black',
+          width: '40%',
+          backgroundColor: 'black',
+          paddingVertical: 13,
+          borderRadius: 10,
+        }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: 'Montserrat-Bold',
+            color: 'white',
+          }}>
+          Search Again
+        </Text>
+      </TouchableOpacity>
+    </View>)
+  }
 
   return (
     <View
@@ -289,7 +299,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             scrollEventThrottle={1}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
-            snapToInterval={100}
+            // snapToInterval={100}
             snapToAlignment="center"
             decelerationRate="fast"
             height={50}
@@ -351,8 +361,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 fontSize: 18,
                 fontWeight: 'bold',
               }}>
-              {' '}
-              {homeCount.current  === 0 ? 'Loading...' : homeCount.current + ' homes to rent' }
+              {homeCount.current === 0
+                ? 'Loading...'
+                : homeCount.current + ' homes to rent'}
             </Text>
           </View>
           <View style={{marginBottom: 10, top: 80, backgroundColor: 'white'}}>
@@ -368,9 +379,12 @@ const SearchResultsScreen = ({guests, viewport}) => {
               keyExtractor={(item, index) => {
                 return index.toString();
               }}
-              getItemLayout={(data, index) => (
-                {length: 380, offset: 380 * index, index}
-              )}
+              getItemLayout={(data, index) => ({
+                length: 380,
+                offset: 380 * index,
+                index,
+              })}
+              ListEmptyComponent={renderNoHome()}
               renderItem={renderItem}
               ListFooterComponent={renderLoader}
               // getItemCount={data => data.length}
