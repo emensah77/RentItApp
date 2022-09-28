@@ -29,6 +29,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
   const [nextToken, setNextToken] = useState(null);
   const [homeCountState, setHomeCountState] = useState(0);
   const homeCount = useRef(0);
+  const callOnScrollEnd = useRef(false);
 
   const navigation = useNavigation();
 
@@ -156,7 +157,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
       setDatalist([...previousList, ...postsResult.data.listPosts.items]);
       setNextToken(postsResult.data.listPosts.nextToken);
-      if (!postsResult.data.listPosts.items.length) {
+      if (!postsResult.data.listPosts.items.length || !postsResult.data.listPosts.nextToken) {
         setEnd(true);
         setNextToken(null);
       }
@@ -190,6 +191,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
 
   const setStatusFilter = status => {
     setEnd(false);
+    callOnScrollEnd.current = false;
     setNextToken(null);
     setStatus(status);
   };
@@ -370,12 +372,15 @@ const SearchResultsScreen = ({guests, viewport}) => {
             <FlatList
               removeClippedSubviews={true}
               data={datalist}
-              maxToRenderPerBatch={3}
-              initialNumToRender={3}
-              onEndReached={({distanceFromEnd}) => {
-                reactotron.log(distanceFromEnd);
-                loadMore(false);
+              maxToRenderPerBatch={1}
+              initialNumToRender={1}
+              onEndReached={() => callOnScrollEnd.current = true}
+              onMomentumScrollEnd={() => {
+                callOnScrollEnd.current && loadMore(false);
+                callOnScrollEnd.current = false
               }}
+              // onEndReached={({distanceFromEnd}) => {
+              // }}
               keyExtractor={(item, index) => {
                 return index.toString();
               }}
