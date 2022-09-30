@@ -122,6 +122,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
 
   const fetchPosts = async isReset => {
     if (isEnd) {
+      hideAllLoader();
       return;
     }
     setIsLoading(true);
@@ -374,6 +375,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
               data={datalist}
               maxToRenderPerBatch={1}
               initialNumToRender={1}
+              contentContainerStyle={{paddingBottom: 40}}
               onEndReached={() => callOnScrollEnd.current = true}
               onMomentumScrollEnd={() => {
                 callOnScrollEnd.current && loadMore(false);
