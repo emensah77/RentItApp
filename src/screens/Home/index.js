@@ -349,21 +349,7 @@ const HomeScreen =(props) => {
         // setTimeout(createTwoButtonAlert, 100000);
 
     }
-       
-       useEffect (async() => {
-       
-        // AsyncStorage.getItem('alreadyPaid').then((value) => {
-        //     if (value == null) {
-        //         createTwoButtonAlert();
-              
-               
-        //     } else {
-        //       navigation.navigate('Welcome')
-        //     }
-        //   }); // Add
-          
-          
-        
+       const userDetails = async () => {
         var user = await firestore().collection('users').doc(auth().currentUser.uid);
         console.log('user', (await user.get()).data())
             
@@ -384,10 +370,26 @@ const HomeScreen =(props) => {
                 
               
             })
+       }
+       useEffect (() => {
+       
+        // AsyncStorage.getItem('alreadyPaid').then((value) => {
+        //     if (value == null) {
+        //         createTwoButtonAlert();
+              
+               
+        //     } else {
+        //       navigation.navigate('Welcome')
+        //     }
+        //   }); // Add
+          
+          
+        
+        
        
         
         
-        
+        userDetails();
         setInterval(selectColor, 2000);
         VersionCheck.needUpdate()
         .then(async res => {
@@ -603,7 +605,7 @@ const HomeScreen =(props) => {
                 
                 </Text>
                 <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
-                        Browse homes you will love</Text>
+                        Browse homes you will lovee</Text>
 
                 </View>
 

@@ -127,7 +127,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
     setIsLoading(true);
     try {
       let query = {
-        limit: 20,
+        limit: 100000,
         filter: {
           and: {
             maxGuests: {
@@ -185,9 +185,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
     ) : null;
   };
 
-  const loadMore = _.debounce(isReset => {
+  const loadMore = (isReset => {
     fetchPosts(isReset);
-  }, 1000);
+  });
 
   const setStatusFilter = status => {
     setEnd(false);
