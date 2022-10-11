@@ -103,7 +103,7 @@ const OnboardingScreen7 = (props) => {
           console.log("Succesfully uploaded the home");
         }
         catch(e){
-          console.log('Error deleting home', e);
+          console.log('Error uploading home', e);
         }
       }
       

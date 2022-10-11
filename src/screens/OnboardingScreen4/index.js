@@ -191,7 +191,7 @@ const OnboardingScreen4 = (props) => {
             height: 683,
             multiple: true,
             maxFiles: Platform.OS === 'ios' ? 10 : null,
-          }).then(image => {
+          }).then(async image => {
                 image.map(item => {
                     let img = {
                         uri: item.path,
@@ -203,6 +203,8 @@ const OnboardingScreen4 = (props) => {
                         setImages(prevImages => prevImages.concat(img));
                         
                 })
+
+                
                 
                     
             

@@ -47,6 +47,11 @@ const OnboardingScreen1 = (props) => {
             key: '6'
         },
         
+        {
+            image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
+            title: 'Chamber and Hall',
+            key: '7'
+        },
     ]
     
     return (

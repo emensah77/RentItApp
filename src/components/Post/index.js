@@ -233,13 +233,24 @@ const Post = props => {
         {/* <Text style={styles.oldPrice}>
                 GH₵{post.oldPrice}
                 </Text> */}
+                {post.mode === "For Sale" ? 
+                <Text style={styles.newPrice}>
+                GH₵
+                 
+                {Math.round((post.newPrice * 1.07))
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+                
+              </Text> :
         <Text style={styles.newPrice}>
           GH₵
-          {Math.round(post.newPrice * 1.07)
+           
+          {Math.round((post.newPrice * 1.07)/12)
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-          / year
-        </Text>
+          / month
+        </Text>}
+              
       </Text>
       {/* Total price */}
 

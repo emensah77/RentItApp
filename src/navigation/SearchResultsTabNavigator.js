@@ -31,14 +31,14 @@ const SearchResultsTabNavigator = (props) => {
                     
                </Tab.Screen>
 
-            <Tab.Screen 
+            {/* <Tab.Screen 
                 name={"map"}
                 >
                     {() => (
                         <SearchResultsMaps guests={guests} viewport={viewport} />
                     )}
                     
-                    </Tab.Screen>
+                    </Tab.Screen> */}
         </Tab.Navigator>
     );
 };

@@ -72,7 +72,7 @@ const DestinationSearch = (props) => {
                       viewport: details.geometry.viewport,
                       hometype: hometype,
                     });
-                    //console.log(details.geometry.viewport)
+                    console.log(details.geometry.viewport)
                   }}
                 fetchDetails
                 styles={{

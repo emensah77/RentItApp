@@ -186,9 +186,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
     ) : null;
   };
 
-  const loadMore = (isReset => {
+  const loadMore = _.debounce(isReset => {
     fetchPosts(isReset);
-  });
+  }, 1000);
 
   const setStatusFilter = status => {
     setEnd(false);
