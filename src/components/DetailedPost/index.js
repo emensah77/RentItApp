@@ -1,5 +1,5 @@
 import React, {useEffect,useContext, useState} from "react";
-import {View,Image ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar, Alert} from "react-native";
+import {View,Image,FlatList,TextInput, TouchableOpacity ,Modal ,Text, ScrollView, Platform, Linking ,Pressable, StatusBar, Alert} from "react-native";
 import styles from './styles.js';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {FlatListSlider} from 'react-native-flatlist-slider';
@@ -7,7 +7,7 @@ import { withAuthenticator } from 'aws-amplify-react-native';
 import Amplify from '@aws-amplify/core';
 import Feather from 'react-native-vector-icons/Feather';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUtensils , faFan ,faFaucet, faBath, faBed, faToilet} from '@fortawesome/free-solid-svg-icons'
+import { faUtensils , faFan, faPencilAlt ,faFaucet, faBath, faBed, faToilet, faBackward, faTimes} from '@fortawesome/free-solid-svg-icons'
 import firebase from '@react-native-firebase/app';
 import analytics from '@react-native-firebase/analytics';
 import { useNavigation , useRoute} from '@react-navigation/native';
@@ -18,19 +18,23 @@ import FastImage from 'react-native-fast-image';
 import {AuthContext} from '../../navigation/AuthProvider';
 //const uploadusers = ["17Kx04gVyJXkO8kZsIxUxRu4uJw1","Ye7iz2KN5Fbk5Y0Z91IEmzywNPh1","UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1", "JleriGZuTqXkAyO3xCiDsey1CCb2"]
 import firestore from '@react-native-firebase/firestore'
-import { TouchableOpacity } from "react-native-gesture-handler";
+
 import {API, graphqlOperation} from 'aws-amplify';
-import {deletePost} from '../../graphql/mutations';
+import {deletePost, updatePost} from '../../graphql/mutations';
 
 const DetailedPost = (props) => {
     const post = props.post;
     const navigation = useNavigation();
     const route = useRoute();
     const {user, logout} = useContext(AuthContext);
-
+    const [modalvisible, setmodalvisible] = useState(false);
     const randString = route.params.randString;
     const [phoneNumbers, setphones] = useState([]);
     const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
+    const [value, setValue] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [homeprice, sethomeprice] = useState(1);
 
     const logAnalyticsEvent = async () =>{
         await analytics().logEvent('calltorent', {
@@ -52,6 +56,28 @@ const DetailedPost = (props) => {
             //console.log('phoneNumbers',phoneNumbers)
          })
     }
+    const hellod1 = (text) => {
+        setValue(parseInt(text));
+        
+        sethomeprice(value);
+        console.log(value);
+        
+      };
+    const helloTitle = (text) => {
+        setTitle(text);
+        console.log(title);
+        
+        
+        
+      };
+      const helloDescrip = (text) => {
+        setDescription(text);
+        console.log(description);
+        
+        
+        
+      };
+    
 
     const getUsersWithPrivileges = async () => {
         const callers = await firebase.firestore().collection('usersWithPrivileges')
@@ -72,7 +98,9 @@ const DetailedPost = (props) => {
         getUsersWithPrivileges();
     },[])
     const payRent = () => {
+        
         navigation.navigate('Address', {
+            post: post,
             price: Math.round(post.newPrice*1.07), 
             homeimage: post.image,
             hometitle: post.title,
@@ -84,10 +112,10 @@ const DetailedPost = (props) => {
 
         });
     }
-    const makeCall = () => {
+    const makeCall = (number) => {
         
         
-        let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
+        let phoneNumber = number;
         //console.log('rand',phoneNumber, phoneNumbers)
         if (Platform.OS === 'android') {
           phoneNumber = `tel:${phoneNumber}`;
@@ -102,7 +130,29 @@ const DetailedPost = (props) => {
         }
         
       };
-
+      const updateHome = async (id) => {
+        try {
+            let input = {
+              id: id,
+              title: title,
+              description: description,
+              newPrice: value,
+            }
+            const deletedTodo  = await API.graphql(
+              graphqlOperation(updatePost, {
+      
+                input
+              })
+      
+            );
+            console.log("Succesfully updated the home");
+            setmodalvisible(false);
+          }
+          catch(e){
+            console.log('Error updating home', e);
+          }
+        }
+      
       const deleteFromFavorites = async (id) => {
         const ref = firestore().collection('posts');
         ref.where("id", '==', id)
@@ -155,11 +205,116 @@ const DetailedPost = (props) => {
               deleteFromTrends(id);
               deleteFromFavorites(id);
       }
-
+      const sendWhatsApp = () => {
+        let msg = "I am interested in this home " + `${post.title}` + " which is located in " + `${post.locality}` + " , " + `${post.sublocality}` + " and the price is " + `${Math.round(post.newPrice / 12)}` + " per month";
+        let phoneWithCountryCode =  '+233' + phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
+        let mobile =
+          Platform.OS == "ios" ? phoneWithCountryCode : "+" + phoneWithCountryCode;
+        if (mobile) {
+          if (msg) {
+            let url = "whatsapp://send?text=" + msg + "&phone=" + mobile;
+            Linking.openURL(url)
+              .then(data => {
+                console.log("WhatsApp Opened");
+              })
+              .catch(() => {
+                alert("Make sure WhatsApp installed on your device");
+              });
+          } else {
+            alert("Please insert message to send");
+          }
+        } else {
+          alert("Please insert mobile no");
+        }
+      };
    
 
     return(
         <View style={{backgroundColor:'white'}}>
+
+            <Modal style = {{flex: 1,
+                        alignItems: 'center',
+                        backgroundColor: 'white',
+                        padding: 20, }} animationType = {"slide"} transparent = {false}
+                        visible = {modalvisible}
+                        onRequestClose = {() => { 
+                            navigation.goBack();
+                            console.log("Modal has been closed.") 
+                            } }
+                        >
+                            
+                        
+                            <ScrollView contentContainerStyle={{flex:1, flexDirection:"column", justifyContent:"space-evenly"}}>
+                                
+                                <View style={{padding:10}}>
+                                    <Text>Title</Text>
+                                    <TextInput
+                                    adjustsFontSizeToFit={true}
+                                    placeholder={post.title}
+                                    multiline={true}
+                                    maxLength={50}
+                                    onChangeText={text => helloTitle(text)}
+                                    style={{alignContent:'flex-start',width:'100%',height:40,fontSize:18,fontWeight: 'bold'
+                                    ,borderWidth:  1,
+                                    borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+                                
+                                   
+                                </View>
+
+                                <View style={{padding:10}}>
+                                    <Text>Price</Text>
+                                    <TextInput
+                                    adjustsFontSizeToFit={true}
+                                    placeholder={JSON.stringify(post.newPrice)}
+                                    multiline={true}
+                                    maxLength={50}
+                                    onChangeText={text => hellod1(text)}
+                                    style={{alignContent:'flex-start',width:'100%',height:40,fontSize:18,fontWeight: 'bold'
+                                    ,borderWidth:  1,
+                                    borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+                                
+                       
+                                   
+                                </View>
+
+
+                                <View style={{padding:10}}>
+                                    <Text>Description</Text>
+                                    <TextInput
+                                    adjustsFontSizeToFit={true}
+                                    placeholder={post.description}
+                                    multiline={true}
+                                    //maxLength={50}
+                                    onChangeText={text => helloDescrip(text)}
+                                    style={{alignContent:'flex-start',width:'100%',height:80,fontSize:18,fontWeight: 'bold'
+                                    ,borderWidth:  1,
+                                    borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+                                
+                                   
+                                </View>
+                                
+
+                                
+                            
+                            
+                            
+                              
+                            <TouchableOpacity onPress={() => updateHome(post.id)} style={{height:40,margin:20,borderRadius:10,alignItems:"center",backgroundColor:"black"}}>
+                                    <Text style={{paddingTop:10,color:"white"}}>Update</Text>
+                                </TouchableOpacity>
+  
+                            
+                            
+                            
+                            </ScrollView>
+
+
+                           
+                        
+                        
+            </Modal>
+
+
         <ScrollView contentContainerStyle={{paddingBottom:150}} showsVerticalScrollIndicator={false}>
             {/* Image */}
             <StatusBar hidden={true} />
@@ -214,15 +369,52 @@ const DetailedPost = (props) => {
                 <Text style={styles.bedrooms}>
                 {post.type} | {post.bedroom} bedrooms | {post.bathroomNumber} bathrooms |
                 </Text>
-                {usersWithPrivileges.includes(user.uid) ? <Text>{post.phoneNumbers}</Text> : null}
-                <Text style={styles.prices}>
+                
+                {usersWithPrivileges.includes(user.uid) ? 
+                <Pressable onPress={() => makeCall(post.phoneNumbers)} style={{paddingRight:5,alignItems:"center",flexDirection:"row",justifyContent:"space-evenly",width:"40%",backgroundColor:"blue",borderRadius:5}}>
+                     <Fontisto name="phone" size={15} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} ></Fontisto>
+                     <Text style={{color:"white"}}>Call Homeowner</Text>
+                     
+                     </Pressable>
+                      : null}
+                    
+                <View style={{flex:1, flexDirection:"row",
+                 justifyContent:"space-between"}}>
+                    <View>
+                    <Text style={styles.prices}>
                     {/* <Text style={styles.oldPrice}>
                     GH₵{post.oldPrice} 
                     </Text> */}
-                    <Text style={styles.newPrice}>
-                    GH₵{(Math.round(post.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} / year
-                    </Text>
+                    {post.mode === "For Sale" ? 
+                <Text style={styles.newPrice}>
+                GH₵
+                 
+                {Math.round((post.newPrice * 1.07))
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+                
+              </Text> :
+                <Text style={styles.newPrice}>
+                GH₵
+                
+                {Math.round((post.newPrice * 1.07)/12)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+                / month
+                </Text>}
+                <View style={styles.hairline}/>
                 </Text>
+                    </View>
+                    <Pressable onPress={sendWhatsApp}  style={{flexDirection:"row",alignItems:"center",
+                    width:"40%",borderRadius:5,
+                    padding:5,backgroundColor:"limegreen",
+                    margin:10, justifyContent:"space-evenly"}}>
+                        <Fontisto name="whatsapp" size={20}/>
+                        <Text>Chat to Rent</Text>
+                        
+                    </Pressable>
+                </View>
+                
                 {/* Type and Description */}
                 
                 {/* Old and new Price */}
@@ -238,9 +430,17 @@ const DetailedPost = (props) => {
                     {post.description}
                 </Text>
                 <View style={styles.hairline}/>
+                <View style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
                 <Text style={styles.longDescription}>
-                    {post.createdAt} | now
+                    {post.createdAt} 
                 </Text>
+                {usersWithPrivileges.includes(user.uid) ?
+                <Pressable onPress={() => setmodalvisible(true)} style={{padding:15}}>
+                <FontAwesomeIcon icon={faPencilAlt} size={25}/>
+                </Pressable> : null}
+                
+                </View>
+                
                 <View style={styles.hairline}/>
                 <Text style={{margin: 10, fontSize:20, fontFamily:"Montserrat-Bold"}}>
                     Amenities available
@@ -285,28 +485,34 @@ const DetailedPost = (props) => {
 
        
 
-            <View style={{ flex:1, borderTopColor:'lightgrey',borderTopWidth:1,
+            <View style={{flex:1,borderTopColor:'lightgrey',borderTopWidth:1,
             flexDirection:'row',backgroundColor: "white",
-             position: 'absolute', height:150,
+             position: 'absolute', height:80,
              width:'100%' ,bottom:0, alignItems:'center', justifyContent:'space-between'}}>
             <View>
+                {post.mode === "For Sale" ? 
+                <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
+                    GH₵{(Math.round((post.newPrice*1.07))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"}
+                    </Text> : 
             <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
-                    GH₵{(Math.round(post.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"} / year
+                    GH₵{(Math.round((post.newPrice*1.07)/12)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"} / month
                     </Text>
+                    }
             </View>
-            <View style={{flex:1, flexDirection:'column', marginTop:10,}}>
+            <View style={{marginTop:10,marginHorizontal:40}}>
             <Pressable
                 
                 
                 style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    marginBottom: 20,
+                    
+                    
+                    marginBottom: 10,
                     backgroundColor: 'deeppink',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: '100%',
-                    width:'80%',
+                    height: 50,
+                    width:"100%",
+                    
                     marginHorizontal: 20,
                     borderRadius: 5,
                     justifyContent: 'center'
@@ -314,14 +520,14 @@ const DetailedPost = (props) => {
                     payRent();
                     logAnalyticsEvent();
                 }}>
-                    <Fontisto name="credit-card" size={25} style={{color: 'white' , margin: 10 ,}} />
+                    {/* <Fontisto name="credit-card" size={25} style={{color: 'white' , margin: 10 ,}} /> */}
                     <Text style={{
                         fontSize: 20,
                         color: 'white',
                         fontWeight: 'bold',
                     }}>Pay to Rent</Text>
             </Pressable> 
-            <Pressable
+            {/* <Pressable
                 title="Call to Rent Event"
                 
                 style={{
@@ -346,7 +552,7 @@ const DetailedPost = (props) => {
                         color: 'white',
                         fontWeight: 'bold',
                     }}>Call to Rent</Text>
-                </Pressable>
+                </Pressable> */}
 
             </View>
                         </View>

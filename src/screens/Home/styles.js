@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
 
     },
     searchButton: {
-        backgroundColor: '#fff',
+        backgroundColor: 'white',
         width: Dimensions.get('screen').width -20,
         marginHorizontal: 10,
         height: 50,
@@ -99,17 +99,60 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         position: "absolute",
-        top: Platform.OS === 'android' ? 55 : 100,
-        zIndex:1,
+        top: Platform.OS === 'android' ? 20 : 50,
+        zIndex:10,
         shadowOpacity:1,
         shadowColor:'transparent',
-        elevation:3
+        elevation:30,
+        borderWidth:1,
+        borderColor:"lightgrey",
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        elevation: 30,
+        shadowColor: 'white',
+        shadowOffset: {
+        width: 10,
+        height: 10,
+        },
     }, 
 
     searchButtonText: {
         fontSize: 16,
         fontFamily: 'Montserrat-SemiBold'
 
-    }
+    },
+    button1: {
+        flexDirection: 'column',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 8,
+        paddingHorizontal: 20,
+        marginHorizontal: 10,
+        height: 40,
+        shadowColor: 'white',
+        shadowOffset: {width: 10, height: 10},
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 30,
+        alignItems: 'center',
+        borderWidth: 0.1,
+        borderColor: 'white',
+        justifyContent:'space-evenly'
+      },
+    
+      btnTabActive: {
+        backgroundColor: 'black',
+      },
+      textTab: {
+        fontSize: 11,
+        color: 'black',
+      },
+      textTabActive: {
+        fontWeight: 'bold',
+        color: 'white',
+        fontSize: 14,
+        
+        
+      },
 });
 export default styles;

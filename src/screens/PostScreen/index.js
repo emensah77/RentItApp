@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View,ScrollView,Image, Modal,TouchableOpacity, Pressable,Text} from 'react-native';
 import DetailedPost from '../../components/DetailedPost';
-import {listPosts} from '../../graphql/queries';
+import {listPosts, getPost} from '../../graphql/queries';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
@@ -14,8 +14,11 @@ const PostScreen = ({ route }) =>{
     const navigation = useNavigation();
     const params = route.params || {};
     const { postId, id } = params;
-    const [post, setPosts] = useState(null);
+    const [post, setPosts] = useState([]);
+    const [newPost, setNewPost] = useState(null);
     const [modalvisible, setmodalvisible] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [nextToken, setNextToken] = useState(null);
     const createTwoButtonAlert = () => {
        
         setmodalvisible(true);
@@ -39,23 +42,10 @@ const PostScreen = ({ route }) =>{
         }
         
       };
-    const fetchPosts = async () => {
-        try{
-            const postsResult = await API.graphql(
-                graphqlOperation(listPosts, {
-                    limit:1000000
-                })
-            )
-            if(id){
-                setPosts(postsResult.data.listPosts.items.find(place => place.id === id));
-            }
-            else{
-            setPosts(postsResult.data.listPosts.items.find(place => (place.id === postId)));
-            }
-        } catch (e){
-            console.log(e);
-        }
-    }
+
+      
+    
+    
 
     const preloadImages = async (urlOfImages) => {
         let preFetchTasks = [];
@@ -81,17 +71,44 @@ const PostScreen = ({ route }) =>{
    
    }
 
-
+   
     useEffect ( () => {
         
+        const fetchPosts = async (id, postId) => {
+            try{
+                const postsResult = await API.graphql(
+                    graphqlOperation(getPost, {
+                        id : postId,
+                    })
+                )
+                //console.log('this is postsresult',postsResult.data.getPost);
+                setNewPost(postsResult.data.getPost);
+                // setPosts(postsResult.data.listPosts.items);
+                // // if (postsResult.data.listPosts.nextToken){
+                // //     setNextToken(postsResult.data.listPosts.nextToken);
+                // //     fetchMorePosts(nextToken);
+                // // }
+                // if(id){
+                //     setNewPost(post.find(place => place.id === id));
+                // }
+                // else{
+                // setNewPost(post.find(place => (place.id === postId)));
+                // }
+                
+                
+            } catch (e){
+                console.log(e);
+            }
+        }
         
         
+        setLoading(true);
+        fetchPosts(id, postId);
+        setLoading(false);
+        console.log('ID', id, postId);
         
-
-        fetchPosts();
-        console.log(postId, id, post);
-        if(post){
-        preloadImages(post.images)}
+        if(newPost){
+        preloadImages(newPost.images)}
         // AsyncStorage.getItem('alreadyPaid').then((value) => {
         //         if (value == null) {
         //             createTwoButtonAlert();
@@ -102,9 +119,9 @@ const PostScreen = ({ route }) =>{
         //         }
         //       }); // Add
         
-    })
+    }, [])
     
-    if(post === undefined){
+    if(newPost === undefined){
         return null;
     
     }
@@ -114,7 +131,7 @@ const PostScreen = ({ route }) =>{
    
     
     
-    if (!post){
+    if (!newPost){
         return (
         //     <View style={{alignItems: 'center', justifyContent:"center"}}>
         //      <AnimatedEllipsis animationDelay={100} style={{
@@ -277,7 +294,7 @@ const PostScreen = ({ route }) =>{
               
            </Modal>
        </View>
-            <DetailedPost post={post}/>
+            <DetailedPost post={newPost}/>
         </ScrollView>
     );
 

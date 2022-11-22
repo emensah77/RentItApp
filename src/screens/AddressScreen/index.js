@@ -1,38 +1,254 @@
-import React, {useEffect, useState} from 'react';
-import {View,Image, TouchableOpacity,Pressable ,ScrollView,StyleSheet, Text, Alert} from 'react-native';
+import React, {useEffect, useContext, useState} from 'react';
+import {View,Image, ActivityIndicator,TextInput,TouchableOpacity,Modal,Pressable ,ScrollView,StyleSheet, Text, Alert} from 'react-native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {createPaymentIntent} from '../../graphql/mutations';
 import {useNavigation, useRoute} from '@react-navigation/native'
 import FastImage from 'react-native-fast-image';
 import { Dimensions} from "react-native";
 import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
+import Amplify, {Storage} from 'aws-amplify';
+import uuid from 'react-native-uuid';
+import ImagePicker from 'react-native-image-crop-picker';
+import {AuthContext} from '../../navigation/AuthProvider';
+import firestore from '@react-native-firebase/firestore';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon, } from '@fortawesome/react-native-fontawesome';
+
 
 const AddressScreen = (props) => {
 
-    
-    const prop = props;
+    const {user, logout} = useContext(AuthContext);
+    const [progressText, setProgressText] = useState(0);
+    const [isLoading, setisLoading] = useState(false);
+    const [imageUrls, setImageUrls] = useState('');
+    const [urls, setUrls] = useState([]);
+    const [images, setImages] = useState([]);
     const [years, setYears] = useState(0);
     const [months, setMonths] =  useState(0);
     const navigation = useNavigation();
     const route = useRoute();
-    
+    const [modalvisible, setmodalvisible] = useState(false);
     const amount = (route.params.price);
     const homeimage = route.params.homeimage;
     const homebed = route.params.homebed;
     const hometitle = route.params.hometitle;
     const homelatitude = route.params.homelatitude;
     const homelongitude = route.params.homelongitude;
+    const post = route.params.post;
     const homeid = route.params.postid;
+    const [homeprice, sethomeprice] = useState(1);
+    const [value, setValue] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     //console.log(homebed);
     //console.log(homeimage);
     //console.log(hometitle);
-    console.log(prop);
+
+    console.log(post);
     
+    const hellod1 = (text) => {
+        setValue(parseInt(text));
+        
+        sethomeprice(value);
+        console.log(value);
+        
+      };
+    const helloTitle = (text) => {
+        setTitle(text);
+        console.log(title);
+        
+        
+        
+      };
+      const helloDescrip = (text) => {
+        setDescription(text);
+        console.log(description);
+        
+        
+        
+      };
+
+      const fetchResourceFromURI = async (uri) => {
+        const response = await fetch(uri);
+        //console.log(response);
+        const blob = await response.blob();
+        
+        return blob;
+      };
+
+
+
+      const uploadResource = async (image) => {
+        if (isLoading) return;
+        setisLoading(true);
+        const img = await fetchResourceFromURI(image.uri);
+        setImageUrls('https://d1mgzi0ytcdaf9.cloudfront.net/public/'+image.name);
+        
+        return Storage.put(image.name, img, {
+          level: 'public',
+          contentType: "image/jpeg",
+          progressCallback(uploadProgress) {
+              setProgressText((uploadProgress.loaded / uploadProgress.total)*100);
+            // setProgressText(
+            
+            //   `Progress: ${Math.round(
+            //     (uploadProgress.loaded / uploadProgress.total) * 100,
+            //   )} %`,
+            // );
+            // Alert.alert(`Uploading: ${Math.round(
+            //     (uploadProgress.loaded / uploadProgress.total) * 100,
+            //   )}%`);
+            
+          },
+        })
+          .then(res => {
+            
+            
+            setisLoading(false);
+            Storage.get(res.key, {
+                level:'public',
+                contentType: 'image/jpeg'
+            })
+              .then(result => {
+                  console.log(urls)
+              })
+              .catch(err => {
+                setProgressText('Upload Error');
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            setisLoading(false);
+            setProgressText('Upload Error');
+            console.log(err);
+          });
+      };
     
+      const openCamera = () => {
+        ImagePicker.openCamera({
+            width: 1024,
+            height: 683,
+          }).then(image => {
+                console.log(image);
+                const img = {
+                        uri: image.path,
+                        type: image.mime,
+                        name: uuid.v4(),
+                  };
+                  uploadResource(img);
+                        
+                  setImages(prevImages => prevImages.concat(img));
+                         
+                // image.map(item => {
+                //     let img = {
+                //         uri: item.sourceURL,
+                //         type: item.mime,
+                //         name: uuid.v4(),
+                //         };
+                //         uploadResource(img);
+                        
+                //         setImages(prevImages => prevImages.concat(img));
+                       
+                // })
+                
+                    
+            
+            
+          });
+    }
+
+    var rand;
+  const addFinancingApplicant = () => {
+    var randomString = ((Math.random() * 1e32).toString(36)).toUpperCase();
+    rand = randomString;
+    firestore()
+      .collection('financingApplicants')
+      .doc(rand)
+      .set({
+        userId: user.uid,
+        imageID: imageUrls,
+        income: value,
+        fullName: title,
+        phoneNumber: user.phoneNumber,
+        
+      })
+      .then(docRef => {
+        docRefId = docRef.id;
+        docId = docRefId;
+      })
+      .catch(error => {
+        console.log('Something went wrong adding to Loan Applicants', error);
+      });
+  };
+
+
     
+
+    const submitFinancing = () => {
+        
+        if(Math.round((post.newPrice*1.07)/12) > Math.round(1/3*value)){
+            Alert.alert(
+                 "You don't qualify! Please try again another time",
+            )
+        }
+        else{
+            addFinancingApplicant();
+            Alert.alert(
+                "Congratulations!! You qualify.", 
+                "Please call 0552618521 or 0201167537 to complete your application. Keep the application code: " + `${rand}` + " safe. We will ask you when you call us!"
+           )
+        }
+    }
+    useEffect(() => {
+        
+        
+       
+        if (imageUrls != ""){
+          setUrls(prevImages => prevImages.concat(imageUrls))
+        }
+        console.log(urls)
+    }, [imageUrls])
     const [clientSecret, setClientSecret] = useState(null);
     
-    
+    if (isLoading){ 
+        
+        
+        return(
+        
+            <Modal
+            transparent={true}
+            animationType={'none'}
+            visible={isLoading}
+            style={{ zIndex: 1100 }}
+            onRequestClose={() => { }}>
+            <View style={{flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#rgba(0, 0, 0, 0.5)',
+    zIndex: 1000}}>
+              <View style={{backgroundColor: '#FFFFFF',
+    height: 150,
+    width: 150,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around'}}>
+                <Text style={{fontSize:24, fontWeight:'bold'}}>Uploading...</Text>
+               
+              <ActivityIndicator animating={true} size="large"  color="blue" style={{opacity:1}}/>
+                
+                
+              </View>
+            </View>
+          </Modal>
+
+           
+         
+      
+         
+       
+      );}
     
   
     // useEffect(() => {
@@ -80,7 +296,103 @@ const AddressScreen = (props) => {
     // };
     return (
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent:'center', alignItems:'center'}}>
-            
+
+<Modal style = {{flex: 1,
+                        alignItems: 'center',
+                        backgroundColor: 'white',
+                        padding: 20, }} animationType = {"slide"} transparent = {false}
+                        visible = {modalvisible}
+                        onRequestClose = {() => { 
+                            navigation.goBack();
+                            console.log("Modal has been closed.") 
+                            } }
+                        >
+                            <View style={{flex:1}}>
+                        
+                            <ScrollView contentContainerStyle={{flexGrow:1,flexDirection:"column", justifyContent:"space-evenly"}}>
+                                <View>
+                                    <Pressable onPress={() => navigation.goBack()} style={{margin:10}}>
+                                    <FontAwesomeIcon icon={faArrowLeft} size={20}/>
+                                    </Pressable>
+                                    
+                                    <Text style={{fontWeight:"bold", paddingBottom:5,marginLeft:10}}>Ready to Apply?</Text>
+                                    <Text style={{fontWeight:"normal", marginLeft:10}}>Enter your contact details and we will let you know if you qualify</Text>
+                                </View>
+
+
+
+                                <Pressable
+                                onPress={ () => openCamera()} 
+                                style={{backgroundColor:"blue",
+                                borderRadius:5, alignSelf:"center",width:250,height:35}}>
+                                    <Text style={{marginVertical:5,alignSelf:"center", fontSize:14, fontWeight:"bold", color:"white"}}>Take a picture of your ID Card</Text>
+                                </Pressable>
+
+
+                                <View style={{padding:10}}>
+                                    <Text style={{fontWeight:"bold", padding:5}}>Full Name</Text>
+                                    <TextInput
+                                    adjustsFontSizeToFit={true}
+                                    placeholder={"This should be the same name as on your ID Card"}
+                                    multiline={true}
+                                    maxLength={50}
+                                    onChangeText={text => helloTitle(text)}
+                                    style={{alignContent:'flex-start',width:'100%',height:40,fontSize:12,fontWeight: 'bold'
+                                    ,borderWidth:  1,
+                                    borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+                                
+                                   
+                                </View>
+
+                                <View style={{padding:10}}>
+                                    <Text style={{fontWeight:"bold", padding:5}}>Monthly Income</Text>
+                                    <TextInput
+                                    adjustsFontSizeToFit={true}
+                                    keyboardType="numeric"
+                                    placeholder={"How much money do you make from your job every month?"}
+                                    multiline={true}
+                                    maxLength={50}
+                                    onChangeText={text => hellod1(text)}
+                                    style={{alignContent:'flex-start',width:'100%',height:40,fontSize:12,fontWeight: 'bold'
+                                    ,borderWidth:  1,
+                                    borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+                                
+                       
+                                   
+                                </View>
+
+
+                                
+
+                                
+
+                                
+                                
+
+                                
+                            
+                            
+                            
+                              
+                            <TouchableOpacity disabled={value === '' || title === '' || urls.length === 0 ? true : false} onPress={() => submitFinancing()} style={{opacity: value === '' || title === ''  || urls.length === 0 ? .5 : 1,height:40,margin:20,borderRadius:10,alignItems:"center",backgroundColor:"black"}}>
+                                    <Text style={{paddingTop:10,color:"white"}}>Submit</Text>
+                                </TouchableOpacity>
+  
+                            
+                            
+                            
+                            </ScrollView>
+
+
+                            </View>
+                        
+                        
+            </Modal>
+
+
+
+
+
                 <View style={styles.innerContainer}>
                     <FastImage style={styles.image}
                     source={{
@@ -171,6 +483,13 @@ const AddressScreen = (props) => {
             <View style={styles.hairline}/>
             <View>
             <Text style={{marginBottom: 10, fontFamily:'Montserrat-Bold'}}>Choose how to pay</Text>
+            
+            </View>
+            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                <Text style={{marginLeft:10}}>RentIt Financing</Text>
+                <Pressable onPress={() => setmodalvisible(true)} style={{backgroundColor:"deeppink", padding:2, borderRadius:2 ,marginHorizontal:50}}>
+                    <Text style={{color:"white"}}>Apply Now</Text>
+                </Pressable>
             </View>
 
             <View style={styles.hairline}/>
