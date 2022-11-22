@@ -390,6 +390,11 @@ PODS:
   - Firebase/Firestore (8.8.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.8.0)
+  - Firebase/InAppMessaging (8.8.0):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessaging (~> 8.8.0-beta)
+  - FirebaseABTesting (8.15.0):
+    - FirebaseCore (~> 8.0)
   - FirebaseAnalytics (8.8.0):
     - FirebaseAnalytics/AdIdSupport (= 8.8.0)
     - FirebaseCore (~> 8.0)
@@ -434,6 +439,12 @@ PODS:
     - FirebaseCore (~> 8.0)
     - "gRPC-C++ (~> 1.28.0)"
     - leveldb-library (~> 1.22)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInAppMessaging (8.8.0-beta):
+    - FirebaseABTesting (~> 8.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.4)
     - nanopb (~> 2.30908.0)
   - FirebaseInstallations (8.15.0):
     - FirebaseCore (~> 8.0)
@@ -958,6 +969,10 @@ PODS:
     - Firebase/Firestore (= 8.8.0)
     - React-Core
     - RNFBApp
+  - RNFBInAppMessaging (16.4.0):
+    - Firebase/InAppMessaging (= 8.8.0)
+    - React-Core
+    - RNFBApp
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNGoogleSignin (5.0.0):
@@ -1103,6 +1118,7 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
+  - "RNFBInAppMessaging (from `../node_modules/@react-native-firebase/in-app-messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
@@ -1126,11 +1142,13 @@ SPEC REPOS:
     - FBSDKLoginKit
     - FBSDKShareKit
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseFirestore
+    - FirebaseInAppMessaging
     - FirebaseInstallations
     - Flipper
     - Flipper-Boost-iOSX
@@ -1273,6 +1291,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/auth"
   RNFBFirestore:
     :path: "../node_modules/@react-native-firebase/firestore"
+  RNFBInAppMessaging:
+    :path: "../node_modules/@react-native-firebase/in-app-messaging"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
@@ -1309,11 +1329,13 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: 19e2a878556c2ee4f20486dc406e582783cd7578
   FBSDKShareKit: 079497bb0cfeb049dc8ff6aee2702698680a2806
   Firebase: 629510f1a9ddb235f3a7c5c8ceb23ba887f0f814
+  FirebaseABTesting: 10cbce8db9985ae2e3847ea44e9947dd18f94e10
   FirebaseAnalytics: 5506ea8b867d8423485a84b4cd612d279f7b0b8a
   FirebaseAuth: bcf0adeff88bda5dcb3beeabe5760f1226ab7b2f
   FirebaseCore: 98b29e3828f0a53651c363937a7f7d92a19f1ba2
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
   FirebaseFirestore: 29baf05d5e7e0d5003eb34e5805d92b9858b36d4
+  FirebaseInAppMessaging: 9c4417ef987ca961a6e337f7eba57bbdb9f81885
   FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
   Flipper: 2d507b2c31fb31b0757982ee1525478c75192a82
   Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
@@ -1390,6 +1412,7 @@ SPEC CHECKSUMS:
   RNFBApp: 729c0666395b1953198dc4a1ec6deb8fbe1c302e
   RNFBAuth: 7718be1152f5d1d0bb970a8d33094d010f1ac21c
   RNFBFirestore: eef5fd4cfbe35316af559631db06a34b8391628a
+  RNFBInAppMessaging: 62907da60490682ca8081ca3c401d7d9c76ce8a1
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNImageCropPicker: ffbba608264885c241cbf3a8f78eb7aeeb978241

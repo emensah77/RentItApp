@@ -96,7 +96,7 @@ const OnboardingScreen4 = (props) => {
                 contentType: 'image/jpeg'
             })
               .then(result => {
-                  console.log(urls)
+                  console.log(result)
               })
               .catch(err => {
                 setProgressText('Upload Error');

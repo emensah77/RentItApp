@@ -1,5 +1,5 @@
 import React, {useState,useContext,useEffect,useRef, Component} from 'react';
-import {View,Modal, ActivityIndicator,Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
+import {View,Modal,TextInput, ActivityIndicator,Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
 import styles from './styles';
 import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -23,15 +23,24 @@ import PaymentScreen from '../PaymentScreen';
 import  { Paystack }  from 'react-native-paystack-webview';
 import {AuthContext} from '../../navigation/AuthProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faBuilding, faStore, faMountain, faCity, faDoorClosed, faCaravan,faLandmark, faArchway, faHotel,faIgloo ,faWarehouse,faBed, faToilet, faCampground} from '@fortawesome/free-solid-svg-icons'
+import { faBuilding, faArrowLeft , faFilter, faBars ,faStore, faMountain, faCity, faDoorClosed, faCaravan,faLandmark, faArchway, faHotel,faIgloo ,faWarehouse,faBed, faToilet, faCampground, faBinoculars} from '@fortawesome/free-solid-svg-icons'
 import Post from '../../components/Post';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import CheckBox from '@react-native-community/checkbox';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
+
 const HomeScreen =(props) => {
 
     
 
- 
+  
     const {user, logout} = useContext(AuthContext);
     const userEmail = user.email;
+    const [selectedButton, setSelectedButton] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
     const [updateNeeded, setUpdateNeeded] = useState(false);
     const [updateUrl, setUpdateUrl] = useState('');
     const[posts, setPosts] = useState([]);
@@ -63,9 +72,60 @@ const HomeScreen =(props) => {
     const homeprice = route.params?.homeprice;
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
-    const [modalvisible, setmodalvisible] = useState(false)
+    const [modalvisible, setmodalvisible] = useState(false);
+    const [minimumvalue, setMinimumValue] = useState(1);
+    const [maximumvalue, setMaximumValue] = useState(100000);
+    const [minvalue, setminValue] = useState('');
+    const [maxvalue, setmaxValue] = useState('')
     const [nextToken, setNextToken] = useState(null);
     const [loading, setIsLoading] = useState(false);
+    
+
+    const items = [
+      {
+          
+          name: 'Air Conditioner',
+          id: 'Air Conditioner',
+          
+          
+      },
+      {
+          
+          name: 'WiFi',
+          id: 'WiFi',
+          
+          
+
+      },
+      {
+          
+          name: 'Kitchen',
+          id: 'Kitchen',
+          
+          
+      },
+      {
+          
+          name: 'Water',
+          id: 'Water',
+          
+          
+      },
+      {
+          
+          name: 'Toilet',
+          id: 'Toilet',
+          
+          
+      },
+
+      {
+          name: 'Bathroom',
+          id: 'Bathroom',
+      }
+      
+  ]
+
     const categories = [
         {
         //   status: 'All',
@@ -111,7 +171,23 @@ const HomeScreen =(props) => {
       ];
 
     
-
+      const shuffle = (array) => {
+        var m = array.length, t, i;
+      
+        // While there remain elements to shuffle…
+        while (m) {
+      
+          // Pick a remaining element…
+          i = Math.floor(Math.random() * m--);
+      
+          // And swap it with the current element.
+          t = array[m];
+          array[m] = array[i];
+          array[i] = t;
+        }
+      
+        return array;
+      }
       const setStatusFilter = (status) => {
         //setObserving(true);
         //setIsLoadingType(true);
@@ -124,6 +200,12 @@ const HomeScreen =(props) => {
         //setObserving(false);
         //setIsLoadingType(false);
       };
+
+      const onSelectedItemsChange = (selectedItems) => {
+        setSelectedItems(selectedItems);
+        filterPosts(status);
+      };
+    
 
      
         const hasPermissionIOS = async () => {
@@ -399,7 +481,8 @@ const HomeScreen =(props) => {
               graphqlOperation(listPosts, query),
             );
             //console.log('previouslist',previousList.length)
-            setPosts(postsResult.data.listPosts.items);
+            setPosts(shuffle(postsResult.data.listPosts.items));
+            //setPosts(shuffle(posts));
             if (postsResult?.data?.listPosts?.nextToken !== null) {
                 setNextToken(postsResult.data.listPosts.nextToken);
             } else {
@@ -578,14 +661,354 @@ const HomeScreen =(props) => {
     const goToLocationSearch = () => {
         navigation.navigate('House Type')
     }
-    
+    const hellod1 = (text) => {
+      setminValue(parseInt(text));
+      
+      
+      
+      
+    };
+    const hellod2 = (text) => {
+      
+      setmaxValue(parseInt(text));
+      
+      
+      
+    };
+    const handle = () => {
+      setSelectedButton('For Rent')
+        filterPosts(status);
+        console.log(selectedButton)
+    }
+    const handle1 = () => {
+      setSelectedButton('For Sale')
+        filterPosts(status);
+        console.log(selectedButton)
+    }
+    const filterPosts = async (status) => {
+       console.log(maximumvalue)
+      try {
+        let query = {
+          limit: 100000,
+          filter: {
+            and: {
+              
+              type: {
+                eq: status,
+              },
+              mode: {
+                eq: selectedButton
+              },
+              newPrice: {
+                le: maximumvalue
+              },
+              wifi:{
+                eq: selectedItems.includes("WiFi") ? "Yes" : "No"
+              },
+              kitchen:{
+                eq: selectedItems.includes("Kitchen") ? "Yes" : "No"
+              },
+              toilet:{
+                eq: selectedItems.includes("Toilet") ? "Yes" : "No"
+              },
+              water:{
+                eq: selectedItems.includes("Water") ? "Yes" : "No"
+              },
+              aircondition:{
+                eq: selectedItems.includes("Air Conditioner") ? "Yes" : "No"
+              },
+              bathroom:{
+                eq: selectedItems.includes("Bathroom") ? "Yes" : "No"
+              },
+              latitude: {
+                between: [4.633900069140816, 11.17503079077031],
+              },
+              longitude: {
+                between: [-3.26078589558366, 1.199972025476763],
+              },
+            },
+          },
+          
+        };
+        
+        
+        if (!selectedItems.includes("WiFi")) {
+          delete query.filter.and.wifi;
+        }
+        if (!selectedItems.includes("Water")) {
+          delete query.filter.and.water;
+        }
+        if (!selectedItems.includes("Kitchen")) {
+          delete query.filter.and.kitchen;
+        }
+        if (!selectedItems.includes("Toilet")) {
+          delete query.filter.and.toilet;
+        }
+        if (!selectedItems.includes("Bathroom")) {
+          delete query.filter.and.bathroom;
+        }
+        if (!selectedItems.includes("Air Conditioner")) {
+          delete query.filter.and.aircondition;
+        }
+        if(selectedButton === ''){
+          delete query.filter.and.mode;
+        }
+
+        const postsResult = await API.graphql(
+          graphqlOperation(listPosts, query),
+        );
+        //console.log('previouslist',previousList.length)
+        
+        setPosts(postsResult.data.listPosts.items);
+        //setPosts(shuffle(posts));
+        if (postsResult?.data?.listPosts?.nextToken !== null) {
+            setNextToken(postsResult.data.listPosts.nextToken);
+        } else {
+          return;
+        }
+      } catch (error) {
+        console.log('error1',error);
+      }
+    }
 
     return (
         <ScrollView style={{backgroundColor:"white"}} contentContainerStyle={{backgroundColor:"white", flex:1}}>
                
                 
+  
+<Modal style = {{flex: 1,
+                        alignItems: 'center',
+                        backgroundColor: 'white',
+                        padding: 20, }} animationType = {"slide"} transparent = {false}
+                        visible = {modalvisible}
+                        onRequestClose = {() => { 
+                            setmodalvisible(false);
+                            console.log("Modal has been closed.") 
+                            } }
+                        >
+                            <View style={{paddingTop:10}}>
+                        
+                            <ScrollView contentContainerStyle={{flexGrow:1,flexDirection:"column", justifyContent:"space-evenly"}}>
+                                
+                                <View style={{marginTop:20}}>
+                                    <Pressable onPress={() => setmodalvisible(false)} style={{margin:10}}>
+                                    <FontAwesomeIcon icon={faArrowLeft} size={20}/>
+                                    </Pressable>
+                                    <View style={{flex:1, alignSelf:"center"}}>
+                                      <Text style={{fontWeight:"bold", fontSize:20}}>Price range</Text>
+                                    <MultiSlider
+                                      min={minimumvalue}
+                                      max={maximumvalue}
+                                      step={100}
+                                      sliderLength={310}
+                                      
+                               
+                                onValuesChange={(value) => {
+                                  setMaximumValue(value[0])
+                                  filterPosts(status);
+                                }}
+                                
+                                
+                              />
+                                    </View>
+
+                                    <View style={{paddingHorizontal:20,flexDirection:"row", justifyContent:"space-between"}}>
+                                      
+                                      <View style={{alignItems:"center",width:50,padding:5,borderWidth:1, borderColor:"black"}}>
+                                      <TextInput
+                                      keyboardType='numeric'
+                                      onChangeText={text => hellod1(text)}
+                                      placeholder={minimumvalue.toLocaleString()}
+                                      
+                                      >
+                                      
+                                      </TextInput>
+                                      </View>
+                                      <View style={{alignItems:"center",width:100,padding:5, borderWidth:1, borderColor:"black"}}>
+                                      <TextInput
+                                      keyboardType='numeric'
+                                      onChangeText={text => hellod2(text)}
+                                      placeholder={maximumvalue.toLocaleString()}
+                                      >
+
+                                      </TextInput>
+                                      </View>
+                                      
+                                    </View>
+                                    
+                                </View>
+
+
+
+                                
+
+                                <View style={{padding:15}}>
+                                  <Text style={{fontWeight:"bold", fontSize:20}}>Status of Home</Text>
+                                  
+                                  
+                                  
+
+                                  <Pressable style={{
+
+                                    flexDirection: 'row', 
+                                    justifyContent: 'space-between', 
+                                    paddingVertical: 20,
+                                    borderWidth: selectedButton === 'For Rent' ? 2 : 1,
+                                    borderColor: 'black',
+                                    borderRadius:10,
+                                    marginVertical:20,
+                                    paddingHorizontal:20,
+                                    marginHorizontal: 20,
+                                    flex:1,
+                                    backgroundColor: selectedButton === 'For Rent' ? 'lightgray' : 'white',
+
+                                    }} onPress={
+                                        handle
+                                    }>
+                                      <View style={{flexDirection:"column"}}>
+                                      <Text style={{fontSize:15, fontWeight:"600"}}>For Rent</Text>
+                                    <Text style={{fontSize:12, paddingTop:5}}>You are looking for homes that are available for rent only</Text>
+                                      </View>
+                                    
+                                  </Pressable >
+
+                                  <Pressable style={{
+
+                                    flexDirection: 'row', 
+                                    justifyContent: 'space-between', 
+                                    paddingVertical: 20,
+                                    borderWidth: selectedButton === 'For Sale' ? 2 : 1,
+                                    borderColor: 'black',
+                                    borderRadius:10,
+                                    marginVertical:20,
+                                    paddingHorizontal:20,
+                                    marginHorizontal: 20,
+                                    flex:1,
+                                    backgroundColor: selectedButton === 'For Sale' ? 'lightgray' : 'white',
+
+                                    }} onPress={
+                                      handle1
+                                    }>
+                                    <View style={{flexDirection:"column"}}>
+                                      <Text style={{fontSize:15, fontWeight:"600"}}>For Sale</Text>
+                                    <Text style={{fontSize:12, paddingTop:5}}>You are looking for homes that are available for sale only</Text>
+                                      </View>
+                                  </Pressable>
+
+                                </View>
+                                <View style={{marginBottom:40,padding:15}}>
+                                  <Text style={{fontSize:18, fontWeight:"bold"}}>Amenities</Text>
+
+                                  
+                                  
+                                    
+                                  <SectionedMultiSelect
+                                    styles={{
+                                      chipText: {
+                                      maxWidth: Dimensions.get('screen').width - 90,
+                                  },
+                                      container: {
+                                          margin:20,
+                                          
+                                      },
+                                      
+                                      selectToggleText:{
+                                          fontSize:15
+                                      },
+                                      
+                                      selectToggle : {
+                                          backgroundColor: 'white',
+                                          borderWidth: 1,
+                                          borderRadius: 20,
+                                          margin:10,
+                                          padding: 10
+                                      },
+                                      chipContainer: {
+                                          backgroundColor:'white',
+                                          marginBottom: 10
+
+                                      },
+                                      
+                                      chipText: {
+                                          color:'black',
+                                          fontSize:16
+                                      },
+                                      
+                                      itemText: {
+                                      color: selectedItems.length ? 'black' : 'darkgrey',
+                                      fontSize: 18
+                                      },
+                                      
+                                      selectedItemText: {
+                                        color: 'blue',
+                                      },
+                                      
+                                      item: {
+                                        paddingHorizontal: 10,
+                                        margin:10,
+                                        
+                                        
+                                        
+                                      },
+                                      
+                                      selectedItem: {
+                                        backgroundColor: 'rgba(0,0,0,0.1)'
+                                      },
+                                      
+                                      
+                                      scrollView: { paddingHorizontal: 0 }
+                                    }}
+                                    items={items}
+                                    showChips={true}
+                                    uniqueKey="id"
+                                    IconRenderer={Icon}
+                                    selectText="Choose amenities you want"
+                                    showDropDowns={true}
+                                    modalAnimationType="fade"
+                                    readOnlyHeadings={false}
+                                    onSelectedItemsChange={onSelectedItemsChange}
+                                    selectedItems={selectedItems}
+                                    colors={{chipColor:"black"}}
+                                    iconKey="icon"
+                                  />
+                                  
+                                </View>
+
+
+
+                                
+
+                                
+
+                                
+                                
+
+                                
+                            
+                            
+                            
+                              
+                            
+   
+                            
+                            
+                            
+                            </ScrollView>
+
+                            <TouchableOpacity onPress={() => filterPosts(status)} style={{flex:1,alignSelf:"center",borderRadius:20,alignItems:"center",borderColor:"white",borderWidth:1,width:"90%",backgroundColor:"black",position:"absolute", bottom:0, height:50}}>
+                                    <Text style={{alignSelf:"center",color:"white"}}>Show {posts.length} homes</Text>
+                                </TouchableOpacity>
+
+
+                            </View>
+                        
+                        
+            </Modal>
              
                  <View>
+                 {/* {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center',}}>
+                <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
+            </TouchableOpacity>: null} */}
                  <Pressable 
                         style={styles.searchButton}
                      onPress={()=> navigation.navigate('House Type')}>
@@ -621,6 +1044,32 @@ const HomeScreen =(props) => {
               paddingRight: Platform.OS === 'android' ? 20 : 0,
               backgroundColor: 'white',
             }}>
+            <TouchableOpacity 
+            onPress={() => setmodalvisible(true)}
+            style={{
+              flexDirection: 'column',
+              backgroundColor: 'white',
+              borderRadius: 20,
+              padding: 8,
+              paddingHorizontal: 20,
+              marginHorizontal: 10,
+              height: 40,
+              shadowColor: 'white',
+              shadowOffset: {width: 10, height: 10},
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 30,
+              alignItems: 'center',
+              borderWidth: .8,
+              borderColor: 'black',
+              justifyContent:'space-evenly'
+            }}>
+              
+              <FontAwesomeIcon icon={faFilter} />
+              <Text style={{fontWeight:"600",paddingTop:5}}>
+                Filter
+              </Text>
+            </TouchableOpacity>
             {categories.map((category, index) => (
               <TouchableOpacity
                 key={index.toString()}

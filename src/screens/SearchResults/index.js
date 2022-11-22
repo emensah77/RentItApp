@@ -128,7 +128,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
     setIsLoading(true);
     try {
       let query = {
-        limit: 100000,
+        limit: 1000,
         filter: {
           and: {
             maxGuests: {
