@@ -589,7 +589,7 @@ const HomeScreen =(props) => {
                       }
                        
                  else {
-                        console.log('User already has phone number', doc.data().phoneNumber);
+                        console.log('User already has phone number');
                         
                     }
                 }  
