@@ -13,12 +13,13 @@ async function requestUserPermission() {
   }
 }
 
-const getFcmToken = async () => {
+export const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('fcmToken');
   console.log('old Token', fcmToken);
   if (!fcmToken) {
     try {
       const fcmToken = await messaging().getToken();
+      // logic for the new installed app on device
       if (fcmToken) {
         await AsyncStorage.setItem('fcmToken', fcmToken);
         console.log('The new token', fcmToken);
