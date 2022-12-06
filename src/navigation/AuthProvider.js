@@ -67,7 +67,8 @@ export const AuthProvider = ({children}) => {
                         
                     }
                     firestore().collection('deviceFcms').doc(auth().currentUser.uid).set({
-                      deviceToken: fcmToken
+                      deviceToken: fcmToken,
+                      userId: auth().currentUser.uid
                     })
               
             })
