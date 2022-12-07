@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import { navigate } from '../navigation/Router';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -31,12 +32,12 @@ export const getFcmToken = async () => {
 };
 
 export const notificationListener = async () => {
-  console.log('notification listener me agya hia ');
   messaging().onNotificationOpenedApp(remoteMessage => {
     console.log(
       'Notification caused app to open from background state:',
       remoteMessage,
     );
+    navigate('Post', remoteMessage.data)
   });
   messaging().onMessage(async remoteMessage =>
     console.log('received in foreground', remoteMessage),
@@ -48,8 +49,9 @@ export const notificationListener = async () => {
       if (remoteMessage) {
         console.log(
           'Notification caused app to open from quit state:',
-          remoteMessage.notification,
+          remoteMessage,
         );
+        navigate('Post', remoteMessage.data)
       }
     });
 };
