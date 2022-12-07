@@ -31,6 +31,7 @@ const PaymentScreen = props => {
   const [paymentUrl, setPaymentUrl] = useState(null);
   useEffect(() => {
     generatePaymentUrl();
+    console.log(paymentUrl)
   }, []);
 
   const deleteFromFavorites = async id => {
@@ -112,12 +113,14 @@ const PaymentScreen = props => {
           `https://i08fhhbxwk.execute-api.us-east-2.amazonaws.com/dev/tingg/checkout-encryption`,
           {
             // requestAmount: amount,
-            requestAmount: 20,
+            
+            requestAmount: JSON.stringify(amount/100),
             currencyCode: 'GHS',
             requestDescription: 'Test merchant transaction',
             countryCode: 'GH',
             languageCode: 'en',
-            MSISDN: '233240000000',
+            serviceCode: "RENDEV5770",
+            MSISDN: user?.phoneNumber,
             customerFirstName: user?.displayName ?? ' ',
             customerLastName: ' ',
             customerEmail: userEmail,

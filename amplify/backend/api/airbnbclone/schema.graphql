@@ -1,15 +1,44 @@
 type Mutation {
   createPaymentIntent(amount: Int!): PaymentIntent! @function(name: "CreatePaymentIntent-${env}")
-  
 }
-
 
 type PaymentIntent {
   clientSecret: String!
 }
 
-
 type Post @model {
+  id: ID!
+  
+  userID: String!
+  image: String
+  images: [String]
+  type: String!
+  title: String!
+  description: String!
+  mode: String
+  phoneNumbers: [String]
+
+  bed: Int!
+  bedroom: Int!
+  bathroomNumber: Int
+  maxGuests: Int!
+  wifi: String!,
+  kitchen: String!,
+  bathroom: String!,
+  water: String!,
+  toilet: String!,
+  aircondition: String!,
+  locality: String,
+  sublocality: String,
+
+  oldPrice: Float
+  newPrice: Float!
+
+  latitude: Float!
+  longitude: Float!
+}
+
+type PostNew @model @key(fields: ["latitude", "longitude"]) {
   id: ID!
 
   image: String
@@ -38,7 +67,11 @@ type Post @model {
 
   latitude: Float!
   longitude: Float!
-  
-  
 }
-  
+
+type ModelPostNewConnection {
+  items: [PostNew]!
+  nextToken: String
+  scannedCount: Int
+  count: Int
+}
