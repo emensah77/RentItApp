@@ -47,6 +47,7 @@ import Providers from './src/navigation/Providers';
 import ActivityLoader from './src/components/ActivityLoader';
 import Geocoder from 'react-native-geocoding';
 import { AmplifyTheme } from "aws-amplify-react-native";
+import requestUserPermission, { notificationListener } from './src/utils/notificationService';
 Amplify.configure(awsconfig);
 Geocoder.init("AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys");
 
@@ -198,6 +199,8 @@ const App: () => Node = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
     useEffect(() => {
+      requestUserPermission()
+      notificationListener()
       SplashScreen.hide();
     })
   return (
