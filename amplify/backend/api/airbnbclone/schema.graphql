@@ -5,11 +5,19 @@ type Mutation {
 type PaymentIntent {
   clientSecret: String!
 }
+type User @model {
+  id: String!
+  username: String
+  email: String
+  imageuri: String
+  posts: [Post] @connection(keyName: "byUser" , fields: ["id"])
+}
 
-type Post @model {
+type Post @model @key(name: "byUser", fields: ["userID"]){
   id: ID!
   
-  userID: String!
+  userID: String
+  user: User @connection(fields: ["userID"])
   image: String
   images: [String]
   type: String!

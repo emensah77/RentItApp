@@ -7,12 +7,42 @@ import { ActivityIndicator, View } from 'react-native';
 export const AuthContext = createContext();
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createUser} from '../../graphql/mutations';
+import { getUser } from '../graphql/queries';
 
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+
+
+  const addUser = async () => {
+    let input = {
+      email: auth().currentUser.email,
+      id: "",
+      imageuri: auth().currentUser.photoURL,
+      username: auth().currentUser.displayName,
+    }
+    try{
+      const createdUser  = await API.graphql(
+        graphqlOperation(createUser, {
+
+          input
+        } ,
+            {
+            id 
+        }) 
+
+      );
+      console.log("Succesfully uploaded the home");
+    }
+    
+    catch(e){
+      console.log('Error uploading home', e);
+    }
+    
+  }
 
   if (loading){ return(
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
@@ -64,6 +94,7 @@ export const AuthProvider = ({children}) => {
                        
                     } else {
                         console.log('User already exists');
+                        
                         
                     }
               

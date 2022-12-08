@@ -78,7 +78,7 @@ class TinggService {
       accountNumber: "10092019",
       serviceCode: this.serviceCode, // '<SERVICE_CODE>',
       // dueDate: '2019-06-01 23:59:59', //Must be a future date
-      dueDate: dayjs().add(5, 'minute').format('YYYY-MM-DD HH:mm:ss'), // '2019-06-01 23:59:59', //Must be a future date
+      // dueDate: dayjs().add(5, 'minute').format('YYYY-MM-DD HH:mm:ss'), // '2019-06-01 23:59:59', //Must be a future date
       requestDescription: "Dummy merchant transaction",
       countryCode: "GH",
       // languageCode: 'en',
