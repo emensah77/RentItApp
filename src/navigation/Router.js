@@ -18,6 +18,8 @@ import {View,Image, Text} from 'react-native';
 
 const Stack = createStackNavigator();
 
+export const navigationRef = React.createRef();
+
 const config = {
   initialRouteName: 'Home',
   screens: {
@@ -37,7 +39,6 @@ const Router = () => {
   const [initializing, setInitializing] = useState(true);
   const{loading, setLoading} = useContext(AuthContext);
   const routeNameRef = useRef();
-  const navigationRef = useRef();
 
   const onAuthStateChanged = (user) => {
     setUser(user);
@@ -52,7 +53,7 @@ const Router = () => {
   
   if (!user) {
     return (
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
            <AuthStack />
             
 
@@ -95,5 +96,9 @@ const Router = () => {
         </NavigationContainer>
     );
 };
+
+export function navigate(name, params) {
+  navigationRef.current?.navigate(name, params);
+}
 
 export default Router;

@@ -74,7 +74,7 @@ const PostScreen = ({ route }) =>{
    
     useEffect ( () => {
         
-        const fetchPosts = async (id, postId) => {
+        const fetchPosts = async (postId) => {
             try{
                 const postsResult = await API.graphql(
                     graphqlOperation(getPost, {
@@ -103,9 +103,8 @@ const PostScreen = ({ route }) =>{
         
         
         setLoading(true);
-        fetchPosts(id, postId);
+        fetchPosts(postId);
         setLoading(false);
-        console.log('ID', id, postId);
         
         if(newPost){
         preloadImages(newPost.images)}

@@ -65,7 +65,8 @@ export const AuthProvider = ({children}) => {
           try {
             
             // Get the users ID token
-            
+            const fcmToken = await AsyncStorage.getItem('fcmToken')
+
             const { idToken } = await GoogleSignin.signIn();
             
             // Create a Google credential with the token
@@ -91,12 +92,15 @@ export const AuthProvider = ({children}) => {
                           phoneNumber: auth().currentUser.phoneNumber,
                       })
                       console.log('User successfully added');
-                       
                     } else {
                         console.log('User already exists');
                         
                         
                     }
+                    firestore().collection('deviceFcms').doc(auth().currentUser.uid).set({
+                      deviceToken: fcmToken,
+                      userId: auth().currentUser.uid
+                    })
               
             })
             setLoading(false);
