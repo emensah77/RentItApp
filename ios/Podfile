@@ -9,7 +9,8 @@ target 'AirbnbClone' do
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
   pod 'GoogleSignIn', '~> 5.0.2'
-
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'  
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
   config = use_native_modules!
 
   # Flags change depending on the env values.
