@@ -7,7 +7,7 @@ import { ActivityIndicator, View } from 'react-native';
 export const AuthContext = createContext();
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createUser} from '../../graphql/mutations';
+import {createUser} from '../graphql/mutations';
 import { getUser } from '../graphql/queries';
 
 
