@@ -12,6 +12,7 @@ import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { navigate } from './src/navigation/Router';
+import 'react-native-gesture-handler';
 Amplify.configure(config);
 
 // Register background handler
