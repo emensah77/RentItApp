@@ -4855,8 +4855,6 @@
   "version" "1.0.0"
 
 "are-we-there-yet@^2.0.0":
-  "integrity" "sha512-Ci/qENmwHnsYo9xKIcUJN5LeDKdJ6R1Z1j9V/J5wyq8nh/mYPEpIKJbBZXtZjG04HiK7zV/p6Vs9952MrMeUIw=="
-  "resolved" "https://registry.npmjs.org/are-we-there-yet/-/are-we-there-yet-2.0.0.tgz"
   "version" "2.0.0"
   dependencies:
     "delegates" "^1.0.0"
@@ -13443,8 +13441,6 @@
     "url-parse" "^1.5.3"
 
 "tough-cookie@~2.5.0":
-  "integrity" "sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g=="
-  "resolved" "https://registry.npmjs.org/tough-cookie/-/tough-cookie-2.5.0.tgz"
   "version" "2.5.0"
   dependencies:
     "psl" "^1.1.28"
