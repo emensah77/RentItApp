@@ -5,7 +5,6 @@
  * @format
  * @flow strict-local
  */
- import 'react-native-gesture-handler';
  import SplashScreen from 'react-native-splash-screen'
 import React, {useEffect} from 'react';
 
