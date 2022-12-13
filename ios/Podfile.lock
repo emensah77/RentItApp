@@ -880,7 +880,7 @@ PODS:
     - React-Core
   - react-native-paystack-webview (4.0.3):
     - React
-  - react-native-safe-area-context (4.4.1):
+  - react-native-safe-area-context (4.3.4):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
@@ -892,7 +892,7 @@ PODS:
     - React-Core
   - react-native-version-check (3.4.3):
     - React
-  - react-native-webview (11.26.0):
+  - react-native-webview (11.25.1):
     - React-Core
   - React-perflogger (0.68.1)
   - React-RCTActionSheet (0.68.1):
@@ -1038,7 +1038,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.18.2):
+  - RNScreens (3.18.0):
     - React-Core
     - React-RCTImage
   - RNSentry (3.4.3):
@@ -1420,11 +1420,11 @@ SPEC CHECKSUMS:
   react-native-maps: 2d405b4e8cee0282e4c02bac434d81450dfea877
   react-native-netinfo: 3d3769f0d65de15c83a9bf1346f8be71de5a24bf
   react-native-paystack-webview: d8ed4a0300c7872673e186294cb6176cca46c696
-  react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
+  react-native-safe-area-context: dfe5aa13bee37a0c7e8059d14f72ffc076d120e9
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-version-check: e85c2e21d0955b7cdfd91c0ddacc3edf14b7abd7
-  react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
+  react-native-webview: 91a6bd643c6c298f6dfac309231c15d60b8e9505
   React-perflogger: 30ab8d6db10e175626069e742eead3ebe8f24fd5
   React-RCTActionSheet: 4b45da334a175b24dabe75f856b98fed3dfd6201
   React-RCTAnimation: d6237386cb04500889877845b3e9e9291146bc2e
@@ -1453,7 +1453,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: ad866d4c4af2651e36801dd3b7771d7715353499
   RNImageCropPicker: 648356d68fbf9911a1016b3e3723885d28373eda
   RNReanimated: b21b362b4b8ca921932e8b1718e88cf3a36f157e
-  RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
+  RNScreens: f3230dd008a7d0ce5c0a8bc78ff12cf2315bda24
   RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
   RNSVG: 6adc5c52d2488a476248413064b7f2832e639057
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4

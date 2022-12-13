@@ -54,6 +54,7 @@ const OnboardingScreen7 = (props) => {
            phoneNumber: phoneNumber,
            locality: locality,
            sublocality: sublocality,
+           userId: user.uid,
         })
     })
     
@@ -70,6 +71,7 @@ const OnboardingScreen7 = (props) => {
             title: title,
             type: type,
             mode: mode,
+            userID: user.uid,
             phoneNumbers: [phoneNumber],
             images: imageUrls,
             description: description,
@@ -101,6 +103,7 @@ const OnboardingScreen7 = (props) => {
     
           );
           console.log("Succesfully uploaded the home");
+          console.log("homeid", id)
         }
         catch(e){
           console.log('Error uploading home', e);

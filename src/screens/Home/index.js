@@ -685,6 +685,12 @@ const HomeScreen =(props) => {
         filterPosts(status);
         console.log(selectedButton)
     }
+    const filter = () => {
+      
+      filterPosts(status);
+      setmodalvisible(false);
+      
+    }
     const filterPosts = async (status) => {
        console.log(maximumvalue)
       try {
@@ -769,8 +775,10 @@ const HomeScreen =(props) => {
       } catch (error) {
         console.log('error1',error);
       }
+      
     }
 
+    
     return (
         <ScrollView style={{backgroundColor:"white"}} contentContainerStyle={{backgroundColor:"white", flex:1}}>
                
@@ -995,7 +1003,7 @@ const HomeScreen =(props) => {
                             
                             </ScrollView>
 
-                            <TouchableOpacity onPress={() => filterPosts(status)} style={{flex:1,alignSelf:"center",borderRadius:20,alignItems:"center",borderColor:"white",borderWidth:1,width:"90%",backgroundColor:"black",position:"absolute", bottom:0, height:50}}>
+                            <TouchableOpacity  disabled={posts.length === 0} onPress={() => filter()} style={{flex:1,alignSelf:"center",borderRadius:20,alignItems:"center",borderColor:"white",borderWidth:1,width:"90%",backgroundColor:"black",position:"absolute", bottom:0, height:50, opacity:posts.length === 0 ? .6 : 1}}>
                                     <Text style={{alignSelf:"center",color:"white"}}>Show {posts.length} homes</Text>
                                 </TouchableOpacity>
 

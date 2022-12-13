@@ -13,7 +13,7 @@ import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import SuggestionRow from '../../screens/DestinationSearch/SuggestionRow'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Marker, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 const mapStyle = [
     {
       "elementType": "geometry",
@@ -385,7 +385,7 @@ const hasPermissionIOS = async () => {
                         
                         ref={map}
                         style={{width:'100%', height:'25%', backgroundColor:"white",}}
-                        provider={PROVIDER_GOOGLE}
+                        provider={PROVIDER_DEFAULT}
                         customMapStyle={mapStyle}
                         zoomEnabled={true}
                         minZoomLevel={12}
@@ -398,7 +398,9 @@ const hasPermissionIOS = async () => {
                         }}
                         >
 
-                        <Marker coordinate = {{latitude: latitude || 5.602028159656166,longitude: longitude || -0.183158678544458}}
+                        <Marker 
+                        
+                        coordinate = {{latitude: latitude || 5.602028159656166,longitude: longitude || -0.183158678544458}}
                                 
                                 title={"Home"}
                                 description={"This is where your house is located"}>
