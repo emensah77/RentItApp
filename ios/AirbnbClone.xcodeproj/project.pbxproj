@@ -12,6 +12,7 @@
 		31FA77CDFAFDCF7AE62A8582 /* libPods-AirbnbClone-AirbnbCloneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF2674D0EB99DFC5772A1DF1 /* libPods-AirbnbClone-AirbnbCloneTests.a */; };
 		7209B02128D191E400017A37 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		B90E818DA0C7CA96E68807CE /* libPods-AirbnbClone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7C1602D7512064CE781246 /* libPods-AirbnbClone.a */; };
+		D22106D1294C98BE002441EA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D22106D0294C98BE002441EA /* GoogleService-Info.plist */; };
 		D23F394927D8C8EE00A0B2F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D23F394827D8C8EE00A0B2F5 /* LaunchScreen.storyboard */; };
 		D2828A5C26920AAA0021A943 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		D2828A8026920B750021A943 /* Montserrat-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22E72BBAF84B4954BA7659F8 /* Montserrat-Black.ttf */; };
@@ -32,7 +33,6 @@
 		D2828A8F26920B750021A943 /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57069CF364F744EBABAE5856 /* Montserrat-SemiBoldItalic.ttf */; };
 		D2828A9026920B750021A943 /* Montserrat-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D1FBA4A31ECE477D8CF904E2 /* Montserrat-Thin.ttf */; };
 		D2828A9126920B750021A943 /* Montserrat-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EA9C7BCBFBB428CA9D203D9 /* Montserrat-ThinItalic.ttf */; };
-		F7021E672948708500EA39F3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7021E662948708500EA39F3 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +73,7 @@
 		C296360DDF9C483DB93F512C /* Montserrat-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBoldItalic.ttf"; path = "../assets/fonts/Montserrat-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		C7033F1840E743F38133554E /* Montserrat-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraLight.ttf"; path = "../assets/fonts/Montserrat-ExtraLight.ttf"; sourceTree = "<group>"; };
 		D1FBA4A31ECE477D8CF904E2 /* Montserrat-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Thin.ttf"; path = "../assets/fonts/Montserrat-Thin.ttf"; sourceTree = "<group>"; };
+		D22106D0294C98BE002441EA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D23F394827D8C8EE00A0B2F5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D2939CBB2692369E00DA40A9 /* AirbnbClone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AirbnbClone.entitlements; path = AirbnbClone/AirbnbClone.entitlements; sourceTree = "<group>"; };
 		DD96ED6398C940B78C705F13 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
@@ -82,7 +83,6 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F36C3DB201A9466F88736D3A /* Montserrat-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Light.ttf"; path = "../assets/fonts/Montserrat-Light.ttf"; sourceTree = "<group>"; };
 		F61E355916A84B02B73825EE /* Montserrat-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-LightItalic.ttf"; path = "../assets/fonts/Montserrat-LightItalic.ttf"; sourceTree = "<group>"; };
-		F7021E662948708500EA39F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,7 +156,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F7021E662948708500EA39F3 /* GoogleService-Info.plist */,
+				D22106D0294C98BE002441EA /* GoogleService-Info.plist */,
 				D2939CD526924EF900DA40A9 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* AirbnbClone */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -340,7 +340,7 @@
 				D23F394927D8C8EE00A0B2F5 /* LaunchScreen.storyboard in Resources */,
 				D2828A9126920B750021A943 /* Montserrat-ThinItalic.ttf in Resources */,
 				D2828A5C26920AAA0021A943 /* Images.xcassets in Resources */,
-				F7021E672948708500EA39F3 /* GoogleService-Info.plist in Resources */,
+				D22106D1294C98BE002441EA /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,6 +645,7 @@
 				DEVELOPMENT_TEAM = 8BA24K7CWV;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FUSE_BUILD_SCRIPT_PHASES = NO;
 				INFOPLIST_FILE = AirbnbClone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -688,6 +689,7 @@
 				DEVELOPMENT_TEAM = 8BA24K7CWV;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				FUSE_BUILD_SCRIPT_PHASES = NO;
 				INFOPLIST_FILE = AirbnbClone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;

@@ -10,18 +10,17 @@ const functionPrefix = "tingg";
 const fullUrl = `${envUrl}/${functionPrefix}`;
 
 class TinggService {
-  // Prod details
   host = "http://localhost";
-  serviceCode = "RENTIZO";
+  serviceCode = "RENDEV5770";
 
   // for authentication
-  clientId = "1b23778c-fa83-4297-bb22-1537714a0505";
-  clientSecret = "BezbZ88Q3ydrLAF9w8NGN5xYUP6DvzBF2nzDEthT";
+  clientId = "ec58f9eb-c39f-40a5-90af-61ec739d87ec";
+  clientSecret = "KFTPVf6PorF11eWsp57fUw1qkvtPZDHtZtmA6PTt";
 
   // for encryption
-  accessKey = "v4JmKjXyLfuPn8Lmv66ZvdktBZQBMAr4FIKGUzGRpL4MMhJTrn8k7MgVJmKkN";
-  IVKey = "T3c892rSeWnR66cZ";
-  secretKey = "tDYSqBQs35un2Ye";
+  accessKey = "$2a$08$gdOvLEvjCLx/272Ly.ML2eibzOoZqVyqEX0pGxsWqpv4EQw3mm/3K";
+  IVKey = "87TpztX9WMLFNgHB";
+  secretKey = "yfvWm6F2rR7TYNgZ";
   algorithm = "aes-256-cbc";
 
   constructor(request, response) {
@@ -29,11 +28,13 @@ class TinggService {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getConversionRate = this.getConversionRate.bind(this);
     this.checkoutEncryption = this.checkoutEncryption.bind(this);
-    this.baseUrl =
-      process.env.TINGG_BASE_URL || "https://online.tingg.africa/v2";
+
+    const BASE_URL =
+      process.env.TINGG_BASE_URL ||
+      "https://developer.tingg.africa/checkout/v2";
 
     this.api = axios.create({
-      baseURL: this.baseUrl,
+      baseURL: BASE_URL,
       timeout: 0,
       headers: {
         "Content-Type": "application/json",
@@ -51,11 +52,9 @@ class TinggService {
         client_secret: this.clientSecret,
       });
       if (res.data.access_token) {
-        // const tokenType = res.data.token_type
-        const token = res.data.access_token
         this.api.defaults.headers.common[
           "Authorization"
-        ] = `Bearer ${token}`;
+        ] = `Bearer ${res.data.access_token}`;
       }
       return res.data;
     } catch (error) {
@@ -74,8 +73,8 @@ class TinggService {
       merchantTransactionID: short.generate(), // '<YOUR_UNIQUE_TRANSACTION_ID>',
       requestAmount: "75",
       currencyCode: "GHS",
-      accountNumber: this.generateAccountNo(), // '10092019',
-      // accountNumber: "10092019",
+      // accountNumber: this.generateAccountNo(), // '10092019',
+      accountNumber: "10092019",
       serviceCode: this.serviceCode, // '<SERVICE_CODE>',
       // dueDate: '2019-06-01 23:59:59', //Must be a future date
       // dueDate: dayjs().add(5, 'minute').format('YYYY-MM-DD HH:mm:ss'), // '2019-06-01 23:59:59', //Must be a future date
@@ -104,10 +103,11 @@ class TinggService {
     const payload = JSON.stringify(requestBody).replace(/\//g, "\\/");
 
     const params = encryption.encrypt(payload);
-    const paymentUrl = `${this.baseUrl}/express/?params=${params}&accessKey=${accessKey}&countryCode=${requestBody.countryCode}`;
+    const paymentUrl = `https://developer.tingg.africa/checkout/v2/express/?params=${params}&accessKey=${accessKey}&countryCode=${requestBody.countryCode}`;
+
     // console.log(paymentUrl);
 
-    const modalUrl = `${this.baseUrl}/modal/?params=${params}&accessKey=${accessKey}&countryCode=${requestBody.countryCode}`;
+    const modalUrl = `https://developer.tingg.africa/checkout/v2/modal/?params=${params}&accessKey=${accessKey}&countryCode=${requestBody.countryCode}`;
 
     // console.log(modalUrl);
 

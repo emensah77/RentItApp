@@ -31,7 +31,6 @@ const awsmobile = {
     "aws_appsync_region": "us-east-2",
     "aws_appsync_authenticationType": "API_KEY",
     "aws_appsync_apiKey": "da2-ceryuzsswnfgpbstxmhi37nqyu",
-    "aws_appsync_dangerously_connect_to_http_endpoint_for_testing": true,
     "aws_cloud_logic_custom": [
         {
             "name": "tinggPaymentGateway",
