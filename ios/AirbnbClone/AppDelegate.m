@@ -1,3 +1,4 @@
+#import <React/RCTLinkingManager.h>
 #import <Firebase.h>
 #import "AppDelegate.h"
 #import <React/RCTBridge.h>
@@ -5,7 +6,6 @@
 #import <React/RCTRootView.h>
 #import <React/RCTAppSetupUtils.h>
 #import <Firebase.h>
-
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -86,4 +86,11 @@
   return RCTAppSetupDefaultModuleFromClass(moduleClass);
 }
 #endif
+// Add this inside `@implementation AppDelegate` above `@end`:
+- (BOOL)application:(UIApplication *)application
+   openURL:(NSURL *)url
+   options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [RCTLinkingManager application:application openURL:url options:options];
+}
 @end

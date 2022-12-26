@@ -15,23 +15,24 @@ import { firebase } from '@react-native-firebase/auth';
 import { ActivityIndicator } from 'react-native';
 import analytics from '@react-native-firebase/analytics';
 import {View,Image, Text} from 'react-native';
+import linking from './linking';
 
 const Stack = createStackNavigator();
 
 export const navigationRef = React.createRef();
 
-const config = {
-  initialRouteName: 'Home',
-  screens: {
-    Home: 'home',
-    Post: 'post/:id?',
-  },
-};
+// const config = {
+//   initialRouteName: 'Home',
+//   screens: {
+//     Home: 'home',
+//     Post: 'rooms/room/:id?',
+//   },
+// };
 
-const linking = {
-  prefixes: ['https://rentit.com', 'rentit://'],
-  config,
-};
+// const linking = {
+//   prefixes: ['https://rentit.com', 'rentit://'],
+//   config,
+// };
 
 const usertyu = firebase.auth().currentUser;
 const Router = () => {
