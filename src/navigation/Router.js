@@ -21,19 +21,6 @@ const Stack = createStackNavigator();
 
 export const navigationRef = React.createRef();
 
-// const config = {
-//   initialRouteName: 'Home',
-//   screens: {
-//     Home: 'home',
-//     Post: 'rooms/room/:id?',
-//   },
-// };
-
-// const linking = {
-//   prefixes: ['https://rentit.com', 'rentit://'],
-//   config,
-// };
-
 const usertyu = firebase.auth().currentUser;
 const Router = () => {
   const {user, setUser} = useContext(AuthContext);
