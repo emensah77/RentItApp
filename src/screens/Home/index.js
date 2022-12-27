@@ -13,7 +13,8 @@ import FastImage from 'react-native-fast-image';
 import VersionCheck from 'react-native-version-check';
 import Geolocation from 'react-native-geolocation-service';
 import {API, graphqlOperation} from 'aws-amplify';
-import {listPosts, getUser, createUser, getPost} from '../../graphql/queries'; 
+import {listPosts, getUser} from '../../graphql/queries'; 
+import { createUser } from '../../graphql/mutations';
 import Geocoder from 'react-native-geocoding';
 const colors = ["magenta","lime","fuchsia","crimson", "aqua", "blue", "red", "yellow", "green", "white", "deeppink"]
 import auth from '@react-native-firebase/auth';
@@ -623,13 +624,41 @@ const HomeScreen =(props) => {
     const _getUserData = async(ID) => {
       try {
         const userDB = await API.graphql(
-            graphqlOperation(getPost, {
+            graphqlOperation(getUser, {
                 id: ID,
             })
 
+
             
         )
-        console.log("User", userDB.data);
+        if(userDB.data.getUser !== null){
+          console.log("User already in dynamodb")
+          //console.log("User", userDB);
+        }
+        else{
+          try{
+            let input = {
+              id: ID,
+              email: auth().currentUser.email,
+              username: auth().currentUser.displayName,
+              imageuri: auth().currentUser.photoURL,
+            }
+              const addedUser = await API.graphql(
+                
+                graphqlOperation(createUser, {
+                  input
+                })
+              )
+              //console.log("User has been added to dynamodb", addedUser)
+          }
+          catch(e){
+            console.log("Error adding User to DynamoDB", e)
+
+          }
+
+          
+        }
+        
 
 
     } catch (e) {

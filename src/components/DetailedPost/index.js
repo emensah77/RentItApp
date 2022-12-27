@@ -206,7 +206,7 @@ const DetailedPost = (props) => {
               deleteFromFavorites(id);
       }
       const sendWhatsApp = () => {
-        let msg = "I am interested in this home " + `${post.title}` + " which is located in " + `${post.locality}` + " , " + `${post.sublocality}` + " and the price is " + `${Math.round(post.newPrice / 12)}` + " per month";
+        let msg = "I am interested in this home " + `https://rentit.homes/rooms/room/${post.id}` + " " + `${post.title}` + " which is located in " + `${post.locality}` + " , " + `${post.sublocality}` + " and the price is " + `${Math.round((post.newPrice / 12)*1.07)}` + " per month";
         let phoneWithCountryCode =  '+233' + phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
         let mobile =
           Platform.OS == "ios" ? phoneWithCountryCode : "+" + phoneWithCountryCode;
