@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Paystack} from 'react-native-paystack-webview';
-import {Alert, Dimensions, View} from 'react-native';
+import {ActivityIndicator, Alert, Dimensions, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {AuthContext} from '../../navigation/AuthProvider';
 import firestore from '@react-native-firebase/firestore';
@@ -10,6 +10,7 @@ import {deletePost} from '../../graphql/mutations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {WebView} from 'react-native-webview';
+import auth from '@react-native-firebase/auth';
 const PaymentScreen = props => {
   const {user, logout} = useContext(AuthContext);
   const navigation = useNavigation();
@@ -32,6 +33,7 @@ const PaymentScreen = props => {
   useEffect(() => {
     generatePaymentUrl();
     console.log(paymentUrl)
+    console.log("routeName",route.name)
   }, []);
 
   const deleteFromFavorites = async id => {
@@ -105,7 +107,14 @@ const PaymentScreen = props => {
         console.log('Something went wrong adding to HomeOrders', error);
       });
   };
-
+  
+ const _storeData = async () => {
+    try {
+      await AsyncStorage.setItem(auth().currentUser.uid, 'true');
+    } catch (error) {
+      console.log("Error saving data", error)
+    }
+  };
   const generatePaymentUrl = async () => {
     return new Promise(function (resolve, reject) {
       axios
@@ -114,16 +123,17 @@ const PaymentScreen = props => {
           {
             // requestAmount: amount,
             
-            requestAmount: JSON.stringify(amount/100),
+            requestAmount: JSON.stringify(amount),
             currencyCode: 'GHS',
             requestDescription: 'Test merchant transaction',
             countryCode: 'GH',
             languageCode: 'en',
-            serviceCode: "RENDEV5770",
-            MSISDN: user?.phoneNumber,
+            //serviceCode: "RENDEV5770",
+            //MSISDN: user?.phoneNumber,
             customerFirstName: user?.displayName ?? ' ',
             customerLastName: ' ',
             customerEmail: userEmail,
+            
           },
         )
         .then(res => {
@@ -178,9 +188,11 @@ const PaymentScreen = props => {
           //   }
           // }}
           onMessage={event => {
-            const {title} = event.nativeEvent;
-            if (title === 'success') {
-              if (route.name === 'Address') {
+            
+            const {url} = event.nativeEvent;
+            const words = url.split('type=');
+            if (words[1] === 'success') {
+              if (navigation.canGoBack()) {
                 Alert.alert(
                   'Payment successful. You will be redirected to your new home',
                 );
@@ -190,25 +202,24 @@ const PaymentScreen = props => {
                 deleteFromFavorites(homeid);
                 navigation.replace('House');
               } else {
-                Alert.alert(
-                  'Payment successful. Enjoy using RentIt to find your next home',
-                );
-                AsyncStorage.setItem('alreadyPaid', 'true');
+                _storeData();
+                Alert.alert("Payment successful. Enjoy using RentIt to find your next home",);
+                
                 navigation.replace('Home');
               }
             } else {
               if (route.name === 'Address') {
-                Alert.alert("Payment is", title);
+                Alert.alert("Payment is", words[1]);
                 navigation.goBack();
               } else {
-                Alert.alert("Payment is", title);
+                Alert.alert("Payment is", words[1]);
                 navigation.replace('Home');
               }
             }
           }}
           javaScriptEnabled
         />
-      ) : null}
+      ) : <ActivityIndicator size={55} color="blue"/>}
       {/* <Paystack
             paystackKey="pk_live_6869737082c788c90a3ea0df0a62018c57fc6759"
             paystackSecretKey="sk_live_3c4468c7af13179692b7103e785206b6faf70b09"

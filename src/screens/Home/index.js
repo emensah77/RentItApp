@@ -4,7 +4,7 @@ import styles from './styles';
 import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute, useIsFocused} from "@react-navigation/native";
 const image = {uri : "https://d5w4alzj7ppu4.cloudfront.net/cities/night.jpeg"};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import { Dimensions} from "react-native";
@@ -35,8 +35,8 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 const HomeScreen =(props) => {
 
     
-
-  
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
     const {user, logout} = useContext(AuthContext);
     const userEmail = user.email;
     const [selectedButton, setSelectedButton] = useState('');
@@ -73,12 +73,14 @@ const HomeScreen =(props) => {
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
     const [modalvisible, setmodalvisible] = useState(false);
+    const [modalVisible, setmodalVisible] = useState(false);
     const [minimumvalue, setMinimumValue] = useState(1);
     const [maximumvalue, setMaximumValue] = useState(100000);
     const [minvalue, setminValue] = useState('');
     const [maxvalue, setmaxValue] = useState('')
     const [nextToken, setNextToken] = useState(null);
     const [loading, setIsLoading] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
     
 
     const items = [
@@ -544,7 +546,7 @@ const HomeScreen =(props) => {
     
     const createTwoButtonAlert = () => {
        
-       setmodalvisible(true);
+       setmodalVisible(true);
             
         // Alert.alert(
         // "Service fee",
@@ -597,17 +599,40 @@ const HomeScreen =(props) => {
               
             })
        }
-       useEffect (() => {
-       
-        // AsyncStorage.getItem('alreadyPaid').then((value) => {
-        //     if (value == null) {
-        //         createTwoButtonAlert();
+
+       const _retrieveData = async () => {
+        try{
+          const value = await AsyncStorage.getItem(auth().currentUser.uid);
+            console.log("value1", value)
+            if (value === null) {
+              setmodalVisible(true);
               
                
-        //     } else {
-        //       navigation.navigate('Welcome')
-        //     }
-        //   }); // Add
+            } else {
+              setmodalVisible(false);
+              //navigation.navigate('Welcome')
+                
+               
+            }
+          
+       }
+       catch(error){
+        console.log("Error fetching data", error)
+      }
+    }
+
+       useEffect (() => {
+        _retrieveData();
+        
+        
+       })
+       
+       
+      
+       
+       useEffect (() => {
+       
+        
           
           
         
@@ -655,7 +680,7 @@ const HomeScreen =(props) => {
         Linking.openURL(updateUrl);
     }
 
-    const navigation = useNavigation();
+    
 
 
     const goToLocationSearch = () => {
@@ -782,7 +807,104 @@ const HomeScreen =(props) => {
     return (
         <ScrollView style={{backgroundColor:"white"}} contentContainerStyle={{backgroundColor:"white", flex:1}}>
                
+               <Modal animationType = {"slide"} transparent = {false}
+              visible = {modalVisible}
+             onRequestClose = {() => { 
+                navigation.goBack();
+                console.log("Modal has been closed.") 
+                } }
+            >
+              
+              <View style = {{flex: 1,
+      alignItems: 'center',
+      backgroundColor: 'white',
+      padding: 10,
+      marginTop:20}}>
+                 <Text style = {{color: 'black',
+      marginTop: 10, fontWeight:'bold', fontSize:22}}>Service Charge!</Text>
+                <Text style={{marginBottom:20}}>We began RentIt to help people like you. 
+                    In order to continue doing that, we are now charging a GHS 2 service fee. This payment is one-time. You will not pay
+                    anything again for using RentIt</Text>
+                    <View style={{paddingBottom:10}}>
+                    <Pressable 
+                                                      style={{ width: 300, backgroundColor: 'black',
+                                                       justifyContent: 'center', flexDirection: 'row',
+                                                      alignItems: 'center', borderRadius: 50,
+                                                        zIndex:1, alignSelf:"center", 
+                                                      
+                                                    }}
+                                                        onPress={makeCall1}>
+                                                        <Fontisto name="phone" size={15} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
+                                                        
+                                                        <Text adjustsFontSizeToFit={true} style={{justifyContent: 'center', alignItems: 'center', fontSize: 10,
+                                                         fontFamily:'Montserrat-SemiBold', color:"white"}}>Call if you have any problems or you need help</Text>
+                                                            
+                                                            </Pressable>
                 
+                    </View>
+                    <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
+                    <TouchableOpacity
+                    onPress={() => {
+
+                        
+                                    setmodalVisible(false),
+                                    navigation.replace('Payment', {
+                                        channel : ["mobile_money"],
+                                        totalAmount: 2,
+                                        homeimage: null,
+                                        homelatitude: null,
+                                        homelongitude: null,
+                                        hometitle: null,
+                                        homebed: null,
+                                        homeid: null,
+                                        homeyears: null,
+                                        homemonths: null,
+                                        
+
+                                    })
+                                        
+                            
+                    }}
+                    style={{marginHorizontal:10,alignItems:"center",padding:10,borderRadius:10,backgroundColor:"deeppink", height:40}}
+                    >
+                    
+                    
+                  <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
+                    Pay with Mobile Money
+                  </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+              onPress={() => {
+                setmodalVisible(false),
+                navigation.replace('Payment', {
+                    channel : ["card"],
+                    totalAmount: 2,
+                    homeimage: null,
+                    homelatitude: null,
+                    homelongitude: null,
+                    hometitle: null,
+                    homebed: null,
+                    homeid: null,
+                    homeyears: null,
+                    homemonths: null,
+
+                })
+                    
+        
+}}
+              
+              style={{marginHorizontal:10,alignItems:"center",borderRadius:10,backgroundColor:"blue", padding:10, height:40}}>
+                  <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
+                    Pay with Debit Card
+                  </Text>
+              </TouchableOpacity>
+
+        
+                    </View>     
+                    
+              </View>
+              
+           </Modal>
   
 <Modal style = {{flex: 1,
                         alignItems: 'center',
