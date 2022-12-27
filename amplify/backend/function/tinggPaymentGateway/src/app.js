@@ -47,7 +47,7 @@ app.get("/tingg/success", tinggService.checkoutSuccess);
 app.get("/tingg/fail", tinggService.checkoutFail);
 app.get("/tingg/pending", tinggService.checkoutPending);
 
-app.get("/tingg/webhook", tinggService.webhook);
+app.all("/tingg/webhook", tinggService.webhook);
 
 app.get("/tingg/test", tinggService.test);
 

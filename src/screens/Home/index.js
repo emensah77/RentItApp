@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image';
 import VersionCheck from 'react-native-version-check';
 import Geolocation from 'react-native-geolocation-service';
 import {API, graphqlOperation} from 'aws-amplify';
-import {listPosts} from '../../graphql/queries'; 
+import {listPosts, getUser, createUser, getPost} from '../../graphql/queries'; 
 import Geocoder from 'react-native-geocoding';
 const colors = ["magenta","lime","fuchsia","crimson", "aqua", "blue", "red", "yellow", "green", "white", "deeppink"]
 import auth from '@react-native-firebase/auth';
@@ -511,7 +511,7 @@ const HomeScreen =(props) => {
             setPosts(postsResult.data.listPosts.items);
             if(postsResult.data.listPosts.nextToken){
                 setNextToken(postsResult.data.listPosts.nextToken);
-                console.log('nexttoken',nextToken);
+                //console.log('nexttoken',nextToken);
             }
             
         } catch (e){
@@ -536,7 +536,7 @@ const HomeScreen =(props) => {
             )
             
             setLatest(postsResult.data.listPosts.items);
-            console.log('posts',posts.length)
+            //console.log('posts',posts.length)
             
         } catch (e){
             console.log(e);
@@ -579,7 +579,7 @@ const HomeScreen =(props) => {
     }
        const userDetails = async () => {
         var user = await firestore().collection('users').doc(auth().currentUser.uid);
-        console.log('user', (await user.get()).data())
+        //console.log('user', (await user.get()).data())
             
               user.get()
                 .then(doc => {
@@ -620,19 +620,31 @@ const HomeScreen =(props) => {
         console.log("Error fetching data", error)
       }
     }
+    const _getUserData = async(ID) => {
+      try {
+        const userDB = await API.graphql(
+            graphqlOperation(getPost, {
+                id: ID,
+            })
 
-       useEffect (() => {
-        _retrieveData();
-        
-        
-       })
+            
+        )
+        console.log("User", userDB.data);
+
+
+    } catch (e) {
+        console.log(e);
+    }
+       
+    }
+       
        
        
       
        
        useEffect (() => {
        
-        
+        _getUserData(auth().currentUser.uid);
           
           
         

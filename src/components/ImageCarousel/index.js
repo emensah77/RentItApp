@@ -37,7 +37,8 @@ const ImageCarousel = ({images, postId}) => {
     try {
       const result = await Share.share({
        title: 'Check this home on RentIt',
-        message: `rentit://post/${postId}`
+       message: `https://rentit.homes/rooms/room/${postId}`,
+        //message: `rentit://post/${postId}`
 
       });
       if (result.action === Share.sharedAction) {

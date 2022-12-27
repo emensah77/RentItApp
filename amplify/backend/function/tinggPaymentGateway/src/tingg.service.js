@@ -163,7 +163,7 @@ class TinggService {
   async webhook(request, response) {
     console.log("webhook");
     console.log(JSON.stringify(request.body));
-    return response.json(request.body);
+    return response.send('Ok');
   }
 
   async paymentOptions(request, response) {
