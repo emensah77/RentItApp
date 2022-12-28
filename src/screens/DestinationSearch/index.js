@@ -71,6 +71,7 @@ const DestinationSearch = (props) => {
                     navigation.navigate('Number of Guests', {
                       viewport: details.geometry.viewport,
                       hometype: hometype,
+                      location: details
                     });
                     console.log(details.geometry.viewport)
                   }}
