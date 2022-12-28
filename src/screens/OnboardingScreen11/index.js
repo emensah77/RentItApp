@@ -1,4 +1,4 @@
-import React , {useState, useEffect} from 'react';
+import React , {useState, useRef, useEffect} from 'react';
 import {View, Text,Alert, TextInput, ScrollView,ImageBackground, TouchableOpacity ,StatusBar, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -10,11 +10,15 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import PhoneInput from "react-native-phone-number-input";
+import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore'
 
 const OnboardingScreen11 = (props) => {
     const navigation = useNavigation();
     const [selectedItem, setSelectedItem] = useState(null);
     const [isSelected, setisSelected] = useState(false);
+    const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
     
     const [phoneNumber, setValue] = useState('');
     const route = useRoute();
@@ -32,6 +36,11 @@ const OnboardingScreen11 = (props) => {
     const amenities = route.params?.amenities;
     const locality = route.params?.locality;
     const sublocality =  route.params?.sublocality;
+    const [value, setPhoneValue] = useState("");
+    const [formattedValue, setFormattedValue] = useState("");
+    const [secondformattedValue, setSecondFormattedValue] = useState("");
+    const phoneInput = useRef(null);
+    
     const hellod = (text) => {
         setValue(text);
         
@@ -43,6 +52,23 @@ const OnboardingScreen11 = (props) => {
     const setHomePrice = () => {
         
     }
+    const getUsersWithPrivileges = async () => {
+      const callers = await firebase.firestore().collection('usersWithPrivileges')
+      callers.get().then((querySnapshot) => {
+          
+          querySnapshot.forEach((doc) => {
+              
+              setUsersWithPrivileges(prev => [...prev, doc.data().userId])
+              })
+          
+          //console.log('phoneNumbers',phoneNumbers)
+       })
+  }
+
+  useEffect(() => {
+   
+    getUsersWithPrivileges();
+},[])
     
     return (
         
@@ -80,7 +106,7 @@ const OnboardingScreen11 = (props) => {
 
             
                
-               <View style={{flex:1, flexDirection:'row', marginBottom:20, justifyContent:'center'}}>
+               {/* <View style={{flex:1, flexDirection:'row', marginBottom:20, justifyContent:'center'}}>
                        
                        
                        
@@ -101,7 +127,7 @@ const OnboardingScreen11 = (props) => {
                       
                       
                        
-                  </View>
+                  </View> */}
                    
 
                    
@@ -122,15 +148,73 @@ const OnboardingScreen11 = (props) => {
 
             
             </View>
-                
-            <Text style={{fontWeight:'600'}}>Your Phone Number: {phoneNumber}</Text>  
+
+
+
+            <View style={{alignItems:'center', padding:20}}>
+            <PhoneInput
+           ref={phoneInput}
+           defaultValue={phoneNumber}
+           defaultCode="GH"
+           layout="first"
+           onChangeText={(text) => {
+             setValue(text);
+           }}
+           onChangeFormattedText={(text) => {
+             setSecondFormattedValue(text);
+           }}
+           countryPickerProps={{ withAlphaFilter: true }}
+           withShadow
+           autoFocus
+           containerStyle={{borderRadius:5}}
+           textContainerStyle={{backgroundColor:'lightgrey'}}
+         />
+            </View>
+           {
+            usersWithPrivileges ? 
+
+            
+
+            <View style={{alignItems:'center', padding:20}}>
+              <Text style={{fontWeight:"bold", margin:10}}>Add Marketer's Number</Text>
+            <PhoneInput
+           ref={phoneInput}
+           defaultValue={value}
+           defaultCode="GH"
+           layout="first"
+           onChangeText={(text) => {
+             setPhoneValue(text);
+           }}
+           onChangeFormattedText={(text) => {
+             setFormattedValue(text);
+           }}
+           countryPickerProps={{ withAlphaFilter: true }}
+           withShadow
+           autoFocus
+           containerStyle={{borderRadius:5}}
+           textContainerStyle={{backgroundColor:'lightgrey'}}
+         />
+            </View>
+               
+            
+            :
+            null
+           }
+             
+            <Text style={{fontWeight:'600'}}>Your Phone Number: {secondformattedValue}</Text>  
                     
             
             
         
         
             
-            <TouchableOpacity disabled={phoneNumber.length < 10} onPress={() => navigation.navigate('OnboardingScreen7', {
+            <TouchableOpacity disabled={value.length < 9 && phoneNumber.length < 9} onPress={() =>
+            {
+            const checkValid = phoneInput.current?.isValidNumber(value);
+            const checkSecondValid = phoneInput.current?.isValidNumber(phoneNumber);
+            if(checkValid && checkSecondValid){
+              Alert.alert('Your phone number is correct', secondformattedValue);
+              navigation.navigate('OnboardingScreen7', {
                 title: title,
                 type: type,
                 description: description,
@@ -143,10 +227,16 @@ const OnboardingScreen11 = (props) => {
                 longitude: longitude,
                 mode: mode,
                 amenities: amenities,
-                phoneNumber: phoneNumber,
+                phoneNumber: secondformattedValue,
+                marketerNumber: usersWithPrivileges ? formattedValue : null,
                 locality: locality,
                 sublocality: sublocality,
-            })} style={{opacity:phoneNumber.length < 10 ? .2 : 1,left:250,width:100,backgroundColor:'deeppink',
+            })
+            }
+            else{
+              Alert.alert('Your phone number is not correct', formattedValue);
+            }
+             }} style={{opacity: value.length < 9 && phoneNumber.length < 9 ? .2 : 1,left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </TouchableOpacity>
