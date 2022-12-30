@@ -256,7 +256,7 @@ const OnboardingScreen6 = (props) => {
     const homeprice = route.params?.homeprice;
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
-    
+    const currency = route.params?.currency;
 const hasPermissionIOS = async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
@@ -583,6 +583,7 @@ const hasPermissionIOS = async () => {
               amenities: amenities,
               locality: locality,
               sublocality: sublocality,
+              currency: currency,
             })} style={{left:250,height:60,width:100,backgroundColor:'deeppink',
              opacity: latitude === null || longitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>

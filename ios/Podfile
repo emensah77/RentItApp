@@ -29,7 +29,9 @@ target 'AirbnbClone' do
 
 
 
+  permissions_path = '../node_modules/react-native-permissions/ios'
   
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
   # Recommended: Add the Firebase pod for Google Analytics
   pod 'Firebase/Analytics'
 

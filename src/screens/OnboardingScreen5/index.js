@@ -10,6 +10,7 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const OnboardingScreen5 = (props) => {
     const navigation = useNavigation();
@@ -27,6 +28,7 @@ const OnboardingScreen5 = (props) => {
     const imageUrls = route.params?.imageUrls;
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
+    const [currency, setCurrency] = useState('');
     const hellod = (text) => {
         setValue(parseInt(text));
         
@@ -38,6 +40,13 @@ const OnboardingScreen5 = (props) => {
     const setHomePrice = () => {
         
     }
+    const handle = () => {
+        setCurrency("usd")
+         
+      }
+      const handle1 = () => {
+        setCurrency("ghs")
+      }
     
     return (
         
@@ -69,7 +78,52 @@ const OnboardingScreen5 = (props) => {
         >
         <ScrollView>
         
-        
+            <View>
+                <Text>Choose the currency you want the price of your home in</Text>
+            
+                <View>
+                    <TouchableOpacity
+                    onPress={() => {
+                        handle();
+                    }}
+                    
+                    style={{padding:10,
+                    borderRadius:5,
+                    borderWidth: currency === "usd" ? 2.5 : .5,
+                    margin:10,
+                    flex:1, 
+                    flexDirection:'row',
+                     justifyContent:"space-between"}}>
+                    <Text style={{fontSize:20}}>
+                        US Dollar 
+                    </Text>
+                    <Text style={{fontSize:20}}>
+                        $
+                    </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                    onPress={() => {
+                        handle1();
+                    }}
+                    style={{
+                        padding:10,
+                        borderWidth: currency === "ghs" ? 2.5 : .5,
+                        borderRadius:5,
+                        margin:10,
+                        flex:1, 
+                        flexDirection:'row',
+                         justifyContent:"space-between"}}>
+                    <Text style={{fontSize:20}}>
+                        Ghana Cedis 
+                    </Text>
+                    <Text style={{fontSize:20}}>
+                        GHS
+                    </Text>
+                    </TouchableOpacity>
+                    
+                </View>
+            
+            </View>
             <View style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
 
             <TouchableOpacity
@@ -109,7 +163,7 @@ const OnboardingScreen5 = (props) => {
                
                <View style={{flex:1, flexDirection:'row', marginBottom:20, justifyContent:'center'}}>
                        
-                        <Text style={{alignSelf:'center',fontSize:24,fontWeight:'600'}}>GHS</Text>
+                        <Text style={{alignSelf:'center',fontSize:24,fontWeight:'600'}}>{currency === "usd" ? "$" : "GHS"}</Text>
                        
                        <TextInput
                        adjustsFontSizeToFit={true}
@@ -200,6 +254,7 @@ const OnboardingScreen5 = (props) => {
                 homeprice: value,
                 mode: mode,
                 amenities: amenities,
+                currency: currency,
             })} style={{left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>

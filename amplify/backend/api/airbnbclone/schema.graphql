@@ -25,6 +25,8 @@ type Post @model @key(name: "byUser", fields: ["userID"]){
   description: String!
   mode: String
   phoneNumbers: [String]
+  marketerNumber: [String]
+  currency: [String]
 
   bed: Int!
   bedroom: Int!

@@ -1,4 +1,4 @@
-import React , {useState, useRef, useEffect} from 'react';
+import React , {useState, useRef, useContext, useEffect} from 'react';
 import {View, Text,Alert, TextInput, ScrollView,ImageBackground, TouchableOpacity ,StatusBar, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -13,6 +13,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import PhoneInput from "react-native-phone-number-input";
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore'
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const OnboardingScreen11 = (props) => {
     const navigation = useNavigation();
@@ -36,10 +37,12 @@ const OnboardingScreen11 = (props) => {
     const amenities = route.params?.amenities;
     const locality = route.params?.locality;
     const sublocality =  route.params?.sublocality;
+    const currency = route.params?.currency;
     const [value, setPhoneValue] = useState("");
     const [formattedValue, setFormattedValue] = useState("");
     const [secondformattedValue, setSecondFormattedValue] = useState("");
     const phoneInput = useRef(null);
+    const {user, logout} = useContext(AuthContext);
     
     const hellod = (text) => {
         setValue(text);
@@ -171,7 +174,7 @@ const OnboardingScreen11 = (props) => {
          />
             </View>
            {
-            usersWithPrivileges ? 
+            usersWithPrivileges.includes(user.uid) ? 
 
             
 
@@ -208,11 +211,11 @@ const OnboardingScreen11 = (props) => {
         
         
             
-            <TouchableOpacity disabled={value.length < 9 && phoneNumber.length < 9} onPress={() =>
+            <TouchableOpacity disabled={phoneNumber.length < 9} onPress={() =>
             {
             const checkValid = phoneInput.current?.isValidNumber(value);
             const checkSecondValid = phoneInput.current?.isValidNumber(phoneNumber);
-            if(checkValid && checkSecondValid){
+            if(checkSecondValid){
               Alert.alert('Your phone number is correct', secondformattedValue);
               navigation.navigate('OnboardingScreen7', {
                 title: title,
@@ -228,15 +231,16 @@ const OnboardingScreen11 = (props) => {
                 mode: mode,
                 amenities: amenities,
                 phoneNumber: secondformattedValue,
-                marketerNumber: usersWithPrivileges ? formattedValue : null,
+                marketerNumber: usersWithPrivileges.includes(user.uid) ? formattedValue : null,
                 locality: locality,
                 sublocality: sublocality,
+                currency: currency,
             })
             }
             else{
-              Alert.alert('Your phone number is not correct', formattedValue);
+              Alert.alert('Your phone number is not correct', secondformattedValue);
             }
-             }} style={{opacity: value.length < 9 && phoneNumber.length < 9 ? .2 : 1,left:250,width:100,backgroundColor:'deeppink',
+             }} style={{opacity: phoneNumber.length < 9 ? .2 : 1,left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </TouchableOpacity>
