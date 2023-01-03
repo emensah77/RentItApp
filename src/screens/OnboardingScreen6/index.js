@@ -233,6 +233,7 @@ const mapStyle = [
 
 const OnboardingScreen6 = (props) => {
   const ref = useRef();
+    const {user} = useContext(AuthContext)
     const navigation = useNavigation();
     const [forceLocation, setForceLocation] = useState(true);
     const [highAccuracy, setHighAccuracy] = useState(true);
