@@ -52,6 +52,22 @@ const OnboardingScreen1 = (props) => {
             title: 'Chamber and Hall',
             key: '7'
         },
+        {
+            image: 'https://photos.zillowstatic.com/fp/fe45b984d1aca2ff57d2455ebcd8b95f-p_e.jpg',
+            title: 'Condos',
+            key: '8'
+        },
+        {
+            image: 'https://photos.zillowstatic.com/fp/f1d119d24d4c011b9e3b7b177b1a6907-p_e.jpg',
+            title: 'Villas',
+            key: '9'
+        },
+        {
+            image: 'https://photos.zillowstatic.com/fp/72a6b2bf4667a1ffa15ddccacd1ba124-p_e.jpg',
+            title: 'Townhouse',
+            key: '10'
+        },
+
     ]
     
     return (

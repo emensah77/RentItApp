@@ -235,7 +235,14 @@ const Post = props => {
                 </Text> */}
                 {post.mode === "For Sale" ? 
                 <Text style={styles.newPrice}>
-                GH₵
+                {post.currency === null ?
+                  
+                  "GH₵"
+                 : 
+                 
+                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 
+                 }
                  
                 {Math.round((post.newPrice * 1.07))
                   .toString()
@@ -243,7 +250,14 @@ const Post = props => {
                 
               </Text> :
         <Text style={styles.newPrice}>
-          GH₵
+          {post.currency === null ?
+                  
+                  "GH₵"
+                 : 
+                 
+                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 
+                 }
            
           {Math.round((post.newPrice * 1.07)/12)
             .toString()

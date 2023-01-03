@@ -94,6 +94,7 @@ const DetailedPost = (props) => {
 
 
     useEffect(() => {
+      
         getPhoneNumbers();
         getUsersWithPrivileges();
     },[])
@@ -371,9 +372,16 @@ const DetailedPost = (props) => {
                 </Text>
                 
                 {usersWithPrivileges.includes(user.uid) ? 
-                <Pressable onPress={() => makeCall(post.phoneNumbers)} style={{paddingRight:5,alignItems:"center",flexDirection:"row",justifyContent:"space-evenly",width:"40%",backgroundColor:"blue",borderRadius:5}}>
+                <Pressable onPress={() => makeCall(post.phoneNumbers)} style={{margin:5,paddingRight:5,alignItems:"center",flexDirection:"row",justifyContent:"space-evenly",width:"40%",backgroundColor:"blue",borderRadius:5}}>
                      <Fontisto name="phone" size={15} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} ></Fontisto>
                      <Text style={{color:"white"}}>Call Homeowner</Text>
+                     
+                     </Pressable>
+                      : null}
+                {usersWithPrivileges.includes(user.uid) ? 
+                <Pressable onPress={() => makeCall(post.marketerNumber)} style={{borderColor:"black",margin:5,paddingRight:5,alignItems:"center",flexDirection:"row",justifyContent:"space-evenly",width:"40%",backgroundColor:"yellow",borderRadius:5}}>
+                     <Fontisto name="phone" size={15} style={{color: 'black' , margin: 10 ,transform: [{ rotate: '90deg' }]}} ></Fontisto>
+                     <Text style={{color:"black"}}>Call Marketer</Text>
                      
                      </Pressable>
                       : null}
@@ -387,7 +395,14 @@ const DetailedPost = (props) => {
                     </Text> */}
                     {post.mode === "For Sale" ? 
                 <Text style={styles.newPrice}>
-                GH₵
+                {post.currency === null ?
+                  
+                  "GH₵"
+                 : 
+                 
+                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 
+                 }
                  
                 {Math.round((post.newPrice * 1.07))
                   .toString()
@@ -395,7 +410,15 @@ const DetailedPost = (props) => {
                 
               </Text> :
                 <Text style={styles.newPrice}>
-                GH₵
+                  {post.currency === null ?
+                  
+                   "GH₵"
+                  : 
+                  
+                    post.currency[0] === "usd" ? "$" : "GH₵"
+                  
+                  }
+                
                 
                 {Math.round((post.newPrice * 1.07)/12)
                     .toString()
@@ -492,10 +515,30 @@ const DetailedPost = (props) => {
             <View>
                 {post.mode === "For Sale" ? 
                 <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
-                    GH₵{(Math.round((post.newPrice*1.07))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"}
+                    {post.currency === null ?
+                  
+                  "GH₵"
+                 : 
+                 
+                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 
+                 }
+                    
+                    
+                    {(Math.round((post.newPrice*1.07))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"}
                     </Text> : 
             <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
-                    GH₵{(Math.round((post.newPrice*1.07)/12)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"} / month
+                    {post.currency === null ?
+                  
+                  "GH₵"
+                 : 
+                 
+                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 
+                 }
+                    
+                    
+                    {(Math.round((post.newPrice*1.07)/12)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"} / month
                     </Text>
                     }
             </View>

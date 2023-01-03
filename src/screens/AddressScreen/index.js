@@ -513,7 +513,18 @@ const AddressScreen = (props) => {
                 
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{years}</Text>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{months}</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold'}}>GH₵{(Math.round(amount*(years+(months/12)))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold'}}>
+                
+            {post.currency === null ?
+                  
+                  "GH₵"
+                 : 
+                 
+                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 
+                 }
+            
+            {(Math.round(amount*(years+(months/12)))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
             
             {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>GH₵{amount*(years+(months/12))*.07}</Text> */}
             {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text> */}

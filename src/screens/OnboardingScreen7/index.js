@@ -34,6 +34,8 @@ const OnboardingScreen7 = (props) => {
     const phoneNumber = route.params?.phoneNumber;
     const locality = route.params?.locality;
     const sublocality = route.params?.sublocality;
+    const marketerNumber = route.params?.marketerNumber;
+    const currency = route.params?.currency;
     const {user, logout} = useContext(AuthContext);
     const uploadusers = ["UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1"]
 
@@ -55,6 +57,8 @@ const OnboardingScreen7 = (props) => {
            locality: locality,
            sublocality: sublocality,
            userId: user.uid,
+           marketerNumber, marketerNumber,
+           currency: currency,
         })
     })
     
@@ -88,6 +92,8 @@ const OnboardingScreen7 = (props) => {
             bathroom: amenities.includes('Bathroom') ? 'Yes' : 'No',
             water: amenities.includes('Water') ? 'Yes' : 'No',
             toilet: amenities.includes('Toilet') ? 'Yes' : 'No',
+            marketerNumber: marketerNumber,
+            currency: [currency],
 
 
 

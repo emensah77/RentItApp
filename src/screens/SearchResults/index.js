@@ -106,7 +106,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
         delete query.nextToken;
       }
       const postsResult = await API.graphql(
-        graphqlOperation(listPostsCount, query),
+        graphqlOperation(listPosts, query),
       );
       homeCount.current = (homeCount.current + postsResult?.data?.listPosts?.items?.length);
       if (postsResult?.data?.listPosts?.nextToken !== null) {

@@ -19,6 +19,8 @@ export const getUser = /* GraphQL */ `
           description
           mode
           phoneNumbers
+          marketerNumber
+          currency
           bed
           bedroom
           bathroomNumber
@@ -90,6 +92,8 @@ export const getPost = /* GraphQL */ `
       description
       mode
       phoneNumbers
+      marketerNumber
+      currency
       bed
       bedroom
       bathroomNumber
@@ -136,6 +140,8 @@ export const listPosts = /* GraphQL */ `
         description
         mode
         phoneNumbers
+        marketerNumber
+        currency
         bed
         bedroom
         bathroomNumber
