@@ -233,33 +233,32 @@ const mapStyle = [
 
 const OnboardingScreen6 = (props) => {
   const ref = useRef();
-  const { user } = useContext(AuthContext)
-  const navigation = useNavigation();
-  const [forceLocation, setForceLocation] = useState(true);
-  const [highAccuracy, setHighAccuracy] = useState(true);
-  const [locationDialog, setLocationDialog] = useState(true);
-  const [significantChanges, setSignificantChanges] = useState(false);
-  const [observing, setObserving] = useState(false);
-  const [foregroundService, setForegroundService] = useState(false);
-  const [useLocationManager, setUseLocationManager] = useState(false);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [locality, setLocality] = useState('');
-  const [sublocality, setSubLocality] = useState('');
-  const map = useRef();
-  const route = useRoute();
-  const title = route.params?.title
-  const type = route.params?.type
-  const description = route.params?.description
-  const bed = route.params?.bed;
-  const bedroom = route.params?.bedroom;
-  const bathroom = route.params?.bathroom;
-  const imageUrls = route.params?.imageUrls;
-  const homeprice = route.params?.homeprice;
-  const mode = route.params?.mode;
-  const amenities = route.params?.amenities;
-
-  const hasPermissionIOS = async () => {
+    const navigation = useNavigation();
+    const [forceLocation, setForceLocation] = useState(true);
+    const [highAccuracy, setHighAccuracy] = useState(true);
+    const [locationDialog, setLocationDialog] = useState(true);
+    const [significantChanges, setSignificantChanges] = useState(false);
+    const [observing, setObserving] = useState(false);
+    const [foregroundService, setForegroundService] = useState(false);
+    const [useLocationManager, setUseLocationManager] = useState(false);
+    const [latitude, setLatitude] = useState(null);
+    const [longitude, setLongitude] = useState(null);
+    const [locality, setLocality] = useState('');
+    const [sublocality, setSubLocality] = useState('');
+    const map = useRef();
+    const route = useRoute();
+    const title = route.params?.title
+    const type = route.params?.type
+    const description = route.params?.description
+    const bed = route.params?.bed;
+    const bedroom = route.params?.bedroom;
+    const bathroom = route.params?.bathroom;
+    const imageUrls = route.params?.imageUrls;
+    const homeprice = route.params?.homeprice;
+    const mode = route.params?.mode;
+    const amenities = route.params?.amenities;
+    
+const hasPermissionIOS = async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
         Alert.alert('Unable to open settings');
@@ -566,31 +565,29 @@ const OnboardingScreen6 = (props) => {
         </KeyboardAvoidingView>
                      
             <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Latitude: {latitude === null ? 'Click on get my location' : latitude}</Text> */}
-
-        {/* <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text> */}
-
-        <View style={{ flex: 1, flexDirection: 'row', marginTop: 30, justifyContent: 'space-between' }}>
-          <TouchableOpacity disabled={latitude === null || longitude === null} onPress={() => navigation.navigate('OnboardingScreen11', {
-            title: title,
-            type: type,
-            description: description,
-            bed: bed,
-            bedroom: bedroom,
-            bathroom: bathroom,
-            imageUrls: imageUrls,
-            homeprice: homeprice,
-            latitude: latitude,
-            longitude: longitude,
-            mode: mode,
-            amenities: amenities,
-            locality: locality,
-            sublocality: sublocality,
-          })} style={{
-            left: 250, height: 60, width: 100, backgroundColor: 'deeppink',
-            opacity: latitude === null || longitude === null ? .4 : 1, borderRadius: 20, alignItems: 'center', paddingHorizontal: 20, paddingVertical: 20
-          }}>
-            <Text style={{ color: 'white', fontFamily: 'Montserrat-SemiBold', fontSize: 14 }}>Next</Text>
-          </TouchableOpacity>
+            
+            {/* <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text> */}
+            
+            <View style={{flex:1, flexDirection:'row', marginTop:30, justifyContent:'space-between'}}>
+            <TouchableOpacity disabled={latitude === null || longitude === null} onPress={() => navigation.navigate('OnboardingScreen11', {
+              title: title,
+              type: type,
+              description: description,
+              bed: bed,
+              bedroom: bedroom,
+              bathroom: bathroom,
+              imageUrls: imageUrls,
+              homeprice: homeprice,
+              latitude: latitude,
+              longitude: longitude,
+              mode: mode,
+              amenities: amenities,
+              locality: locality,
+              sublocality: sublocality,
+            })} style={{left:250,height:60,width:100,backgroundColor:'deeppink',
+             opacity: latitude === null || longitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
+                <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
+            </TouchableOpacity>
 
           <Pressable onPress={() => navigation.goBack()} style={{
             right: 250, height: 60, width: 100, backgroundColor: 'deeppink',
