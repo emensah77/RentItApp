@@ -3,12 +3,13 @@
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.CAMERA"/>
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:usesCleartextTraffic="true" android:allowBackup="false" android:theme="@style/AppTheme">
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:usesCleartextTraffic="true" android:allowBackup="false" android:theme="@style/AppTheme" >
     <meta-data 
     android:name="com.facebook.sdk.ApplicationId" 
     android:value="@string/facebook_app_id"/>
     <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys"/>
+    <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="2fa1b8c61f2322d5903b214783e3c6d79241b21fdd3a002ea9f4df477c417a1c" />
     <activity android:name=".MainActivity" 
     android:label="@string/app_name"
     android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
