@@ -1,5 +1,5 @@
 import React, {useState,useContext,useEffect,useRef, Component} from 'react';
-import {View,Modal,TextInput, ActivityIndicator,Text, Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
+import {View,Modal,TextInput, ActivityIndicator,Text, ToastAndroid ,Linking,  Platform ,Pressable, ImageBackground,SafeAreaView,PermissionsAndroid, ScrollView, Image ,FlatList, TouchableOpacity, Alert, BackHandler} from "react-native";
 import styles from './styles';
 import FontAwesome, { SolidIcons, phone } from 'react-native-fontawesome';
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -31,7 +31,7 @@ import CheckBox from '@react-native-community/checkbox';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-
+import firebase from '@react-native-firebase/app';
 
 const HomeScreen =(props) => {
 
@@ -42,6 +42,7 @@ const HomeScreen =(props) => {
     const userEmail = user.email;
     const [selectedButton, setSelectedButton] = useState('');
     const [selectedItems, setSelectedItems] = useState([]);
+    const [loc, setLocation] = useState([]);
     const [updateNeeded, setUpdateNeeded] = useState(false);
     const [updateUrl, setUpdateUrl] = useState('');
     const[posts, setPosts] = useState([]);
@@ -82,6 +83,8 @@ const HomeScreen =(props) => {
     const [nextToken, setNextToken] = useState(null);
     const [loading, setIsLoading] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [marketers, setMarketers] = useState([]);
+    const [seconds, setSeconds] = useState(0);
     
 
     const items = [
@@ -230,7 +233,7 @@ const HomeScreen =(props) => {
 
             if (status === 'disabled') {
             Alert.alert(
-                `Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`,
+                `Turn on Location Services to allow "RentIt" to determine your location.`,
                 '',
                 [
                 { text: 'Go to Settings', onPress: openSetting },
@@ -304,11 +307,13 @@ const HomeScreen =(props) => {
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
                 
+                
             },
             (error) => {
                 Alert.alert(`Code ${error.code}`, error.message);
                 setLocation(null);
                 console.log(error);
+                
             },
             {
                 accuracy: {
@@ -666,10 +671,111 @@ const HomeScreen =(props) => {
     }
        
     }
+
+
+
+    const addLocationData = async  (lat, long) => {
+      console.log('addLocationData called with lat:', lat, 'long:', long);
+      //console.log('user', user.uid)
+      try {
+         
+       const result = await firebase.firestore()
+          .collection('locationData')
+          .doc(user.uid)
+          
+          .set({
+            latitude: lat,
+            longitude: long,
+            phoneNum: user.phoneNumber,
+            uname: user.displayName,
+          })
+          .then((doc) => {
+            console.log('Added to location Data!', result);
+          });
+        //console.log('result', result);
+      } catch (error) {
+        console.error('Error adding location data:', error);
+      }
+    };
        
        
-       
+      const updatedLocation = async () => {
+
+        
+
+            Geolocation.watchPosition(
+            (position) => {
+                //setLatitude(position.coords.latitude);
+                //setLongitude(position.coords.longitude);
+                addLocationData(position.coords.latitude, position.coords.longitude);
+                //console.log('pos1',position.coords.latitude)
+                //console.log('pos2',position.coords.longitude)
+                
+                
+            },
+            (error) => {
+                Alert.alert(`Code ${error.code}`, error.message);
+                setLocation(null);
+                console.log(error);
+                
+            },
+            {
+                accuracy: {
+                android: 'high',
+                ios: 'best',
+                },
+                enableHighAccuracy: highAccuracy,
+                timeout: 20000,
+                maximumAge: 10000,
+                distanceFilter: 0,
+                forceRequestLocation: forceLocation,
+                forceLocationManager: useLocationManager,
+                showLocationDialog: locationDialog,
+            },
+            );
+
+      }
+
+      const getMarketers = async () => {
+        const callers = await firebase.firestore().collection('marketers')
+        callers.get().then((querySnapshot) => {
+            
+            querySnapshot.forEach((doc) => {
+                
+                setMarketers(prev => [...prev, doc.data().userID])
+                })
+
+                
+            
+            //console.log('phoneNumbers',phoneNumbers)
+         })
+    }
+
+    const checkMarketer = () => {
+     
+    }
+    if(marketers.includes(auth().currentUser.uid)){
+      const interval = setInterval(() => {
+        
+        updatedLocation()
+      }, 10000);
       
+      
+    }
+      useEffect (() => {
+        //console.log('userid',auth().currentUser.uid);
+        
+        getLocation();
+        getMarketers();
+        console.log('marketers', marketers);
+        
+        
+        //console.log(marketers);
+       
+        
+        
+        
+      }, [])
        
        useEffect (() => {
        
@@ -688,16 +794,16 @@ const HomeScreen =(props) => {
         console.log('status', status);
         console.log('nextToken', nextToken);
         //setInterval(selectColor, 2000);
-        VersionCheck.needUpdate()
-        .then(async res => {
-          //console.log(res.isNeeded);    // true
-          if (res.isNeeded) {
-              setUpdateNeeded(true);
-              setUpdateUrl(res.storeUrl);
-              //console.log(res.storeUrl === updateUrl);
-            //Linking.openURL(res.storeUrl);  // open store if update is needed.
-          }
-        });
+        // VersionCheck.needUpdate()
+        // .then(async res => {
+        //   //console.log(res.isNeeded);    // true
+        //   if (res.isNeeded) {
+        //       setUpdateNeeded(true);
+        //       setUpdateUrl(res.storeUrl);
+        //       //console.log(res.storeUrl === updateUrl);
+        //     //Linking.openURL(res.storeUrl);  // open store if update is needed.
+        //   }
+        // });
         
         
         //getLocation();

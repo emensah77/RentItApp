@@ -4116,7 +4116,7 @@
   "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-12.9.3.tgz"
   "version" "12.9.3"
 
-"@react-native-firebase/firestore@^12.7.5":
+"@react-native-firebase/firestore@^12.9.3":
   "integrity" "sha512-vz7gPbb7eFxjKTRTe/XFsFq+feL1ngg8ukKNzxs/X7dj9SZ9iuOeqzLOFBBl6xcUS2adKkp8pfIIN9JeWUZmLA=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-12.9.3.tgz"
   "version" "12.9.3"
