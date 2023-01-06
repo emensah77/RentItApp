@@ -303,15 +303,22 @@ const HomeScreen =(props) => {
             }
 
             Geolocation.getCurrentPosition(
-            (position) => {
+            async (position) => {
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
-                
+                await firestore().collection('marketers').doc(auth().currentUser.uid).set({
+                  createdAt: new Date(),
+                  uid: auth().currentUser.uid,
+                  displayName: auth().currentUser.displayName,
+                  lat: position.coords.latitude,
+                  long: position.coords.longitude
+                })
                 
             },
             (error) => {
                 Alert.alert(`Code ${error.code}`, error.message);
-                setLocation(null);
+                setLatitude(null);
+                setLongitude(null)
                 console.log(error);
                 
             },
@@ -806,7 +813,6 @@ const HomeScreen =(props) => {
         // });
         
         
-        //getLocation();
         setIsLoadingType(true);
         fetchPostsType(status);
         setIsLoadingType(false);
@@ -821,6 +827,16 @@ const HomeScreen =(props) => {
     //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
     //       });
     //    }
+
+    useEffect(() => {
+
+      const interval = setInterval(() => {
+        getLocation();
+      }, 10000);
+      return () => clearInterval(interval);
+     
+    }, [])
+    
        
 
     const updateApp = () => {
