@@ -13,6 +13,10 @@
         <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys"/>
+        <meta-data 
+        android:name="com.transistorsoft.locationmanager.license" 
+        android:value="2fa1b8c61f2322d5903b214783e3c6d79241b21fdd3a002ea9f4df477c417a1c" />
+    
 
       <!-- You will also only need to add this uses-library tag -->
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
