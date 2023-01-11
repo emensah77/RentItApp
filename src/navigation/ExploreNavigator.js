@@ -24,6 +24,7 @@ import OnboardingScreen11 from '../screens/OnboardingScreen11';
 import AccountManageScreen from '../screens/AccountManageScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import Notifications from '../screens/Notifications';
+import ManageProfile from '../screens/ManageProfile';
 
 
 const Stack = createStackNavigator();
@@ -197,7 +198,13 @@ const Router = (props) => {
                 component={Notifications}
                 options={{
                     headerShown: false,
-
+                }}
+            />
+            <Stack.Screen
+                name={'ManageProfile'}
+                component={ManageProfile}
+                options={{
+                    headerShown: false,
                 }}
             />
 
