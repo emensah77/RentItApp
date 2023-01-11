@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {Share, Linking,StatusBar,View, SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {Share, Modal, Linking,StatusBar,View, SafeAreaView ,Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {Auth} from 'aws-amplify';
 import {AuthContext} from '../../navigation/AuthProvider';
 import FormButton from '../../components/FormButton';
@@ -8,11 +8,49 @@ import { firebase } from '@react-native-firebase/auth';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Iconn from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon, } from '@fortawesome/react-native-fontawesome';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 const ProfileScreen = ({route}) => {
   
+  
+  const items = [
+    {
+        
+        name: 'Financing',
+        id: 'Financing',
+        
+        
+    },
+    {
+        
+        name: 'Rent',
+        id: 'Rent',
+        
+        
+
+    },
+    {
+        
+        name: 'Viewing Fee',
+        id: 'Viewing Fee',
+        
+        
+    },
+
+    {
+        
+      name: 'Processing Fee',
+      id: 'Processing Fee',
+      
+      
+  },
+    
+]
 
     const onShare = async () => {
       
@@ -35,12 +73,19 @@ const ProfileScreen = ({route}) => {
           alert(error.message);
         }
       };
+      
 
     const navigation = useNavigation();
     //const user = firebase.auth().currentUser;
     const {user, logout} = useContext(AuthContext);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [modalvisible, setmodalvisible] = useState(false);
+    const [value, setValue] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [homeprice, sethomeprice] = useState(1);
+    const [selectedItems, setSelectedItems] = useState([]);
     const getUser = async() => {
         await firestore()
         .collection('users')
@@ -54,8 +99,43 @@ const ProfileScreen = ({route}) => {
         })
       }
 
+      const hellod1 = (text) => {
+        setValue(parseInt(text));
+        
+        sethomeprice(value);
+        console.log(value);
+        
+      };
+    const helloTitle = (text) => {
+        setTitle(text);
+        console.log(title);
+        
+        
+        
+      };
+      const helloDescrip = (text) => {
+        setDescription(text);
+        console.log(description);
+        
+        
+        
+      };
+      const onSelectedItemsChange = (selectedItems) => {
+        setSelectedItems(selectedItems);
+        
+      };
+      const submitPayment = () => {
+        setmodalvisible(false);
+        navigation.navigate('Payment',{
+          totalAmount: value,
+          selectedType: selectedItems,
+          homeid: null,
+        })
+      }
+
     useEffect(() => {
         getUser();
+        setmodalvisible(false);
         
         navigation.addListener("focus", () => setLoading(!loading));
       }, [navigation, loading]);
@@ -65,7 +145,168 @@ const ProfileScreen = ({route}) => {
             flex: 1,
 
         }}>
+
+
             <StatusBar hidden={true}/>
+
+
+
+
+            <Modal style = {{flex: 1,
+                        alignItems: 'center',
+                        backgroundColor: 'white',
+                        padding: 20, }} animationType = {"slide"} transparent = {false}
+                        visible = {modalvisible}
+                        onRequestClose = {() => { 
+                            navigation.goBack();
+                            console.log("Modal has been closed.") 
+                            } }
+                        >
+                            <View style={{flex:1}}>
+                        
+                            <ScrollView contentContainerStyle={{flexGrow:1,flexDirection:"column", justifyContent:"space-evenly"}}>
+                                <View>
+                                    <Pressable onPress={() => 
+                                      setmodalvisible(!modalvisible)
+                                      } style={{margin:10}}>
+                                    <FontAwesomeIcon icon={faArrowLeft} size={20}/>
+                                    </Pressable>
+                                    
+                                    <Text style={{fontWeight:"bold", paddingBottom:5,marginLeft:10}}>Ready to Pay?</Text>
+                                    <Text style={{fontWeight:"normal", marginLeft:10}}>Select the type of payment and type in the amount to pay</Text>
+                                </View>
+
+
+
+                               
+
+
+                                <View style={{padding:10}}>
+                                    <Text style={{fontWeight:"bold", padding:5}}>Payment Type</Text>
+                                    <SectionedMultiSelect
+                                    styles={{
+                                      chipText: {
+                                      maxWidth: Dimensions.get('screen').width - 90,
+                                  },
+                                      container: {
+                                          margin:20,
+                                          
+                                      },
+                                      
+                                      selectToggleText:{
+                                          fontSize:15
+                                      },
+                                      
+                                      selectToggle : {
+                                          backgroundColor: 'white',
+                                          borderWidth: 1,
+                                          borderRadius: 20,
+                                          margin:10,
+                                          padding: 10
+                                      },
+                                      chipContainer: {
+                                          backgroundColor:'white',
+                                          marginBottom: 10
+
+                                      },
+                                      
+                                      chipText: {
+                                          color:'black',
+                                          fontSize:16
+                                      },
+                                      
+                                      itemText: {
+                                      color: selectedItems.length ? 'black' : 'darkgrey',
+                                      fontSize: 18
+                                      },
+                                      
+                                      selectedItemText: {
+                                        color: 'blue',
+                                      },
+                                      
+                                      item: {
+                                        paddingHorizontal: 10,
+                                        margin:10,
+                                        
+                                        
+                                        
+                                      },
+                                      
+                                      selectedItem: {
+                                        backgroundColor: 'rgba(0,0,0,0.1)'
+                                      },
+                                      
+                                      
+                                      scrollView: { paddingHorizontal: 0 }
+                                    }}
+                                    items={items}
+                                    showChips={true}
+                                    single={true}
+                                    uniqueKey="id"
+                                    IconRenderer={Iconn}
+                                    selectText="Select the type of payment"
+                                    showDropDowns={true}
+                                    modalAnimationType="fade"
+                                    readOnlyHeadings={false}
+                                    onSelectedItemsChange={onSelectedItemsChange}
+                                    selectedItems={selectedItems}
+                                    colors={{chipColor:"black"}}
+                                    iconKey="icon"
+                                  />
+                                  
+                                   
+                                </View>
+
+                                <View style={{padding:10}}>
+                                    <Text style={{fontWeight:"bold", padding:5}}>Amount</Text>
+                                    <TextInput
+                                    adjustsFontSizeToFit={true}
+                                    keyboardType="numeric"
+                                    placeholder={"Type in the payment amount?"}
+                                    multiline={true}
+                                    maxLength={50}
+                                    onChangeText={text => hellod1(text)}
+                                    style={{alignContent:'flex-start',width:'100%',height:40,fontSize:12,fontWeight: 'bold'
+                                    ,borderWidth:  1,
+                                    borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+                                
+                       
+                                   
+                                </View>
+
+
+                                
+
+                                
+
+                                
+                                
+
+                                
+                            
+                            
+                            
+                              
+                            <TouchableOpacity disabled={value === '' || selectedItems.length === 0 ? true : false} onPress={() => submitPayment()}
+                             style={{opacity: value === '' || selectedItems.length === 0  ? .5 : 1,height:40,margin:20,borderRadius:10,alignItems:"center",backgroundColor:"black"}}>
+                                    <Text style={{paddingTop:10,color:"white"}}>Submit</Text>
+                                </TouchableOpacity>
+  
+                            
+                            
+                            
+                            </ScrollView>
+
+
+                            </View>
+                        
+                        
+            </Modal>
+
+
+
+
+
             <LinearGradient
              colors={['#ee0979', '#ff6a00']}
              start={{ x: 0.1, y: 0.2 }}
@@ -120,10 +361,10 @@ const ProfileScreen = ({route}) => {
             <Text style={styles.menuItemText}>Your Favorites</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => setmodalvisible(true)}>
           <View style={styles.menuItem}>
             <Icon name="credit-card" color="blue" size={25}/>
-            <Text style={styles.menuItemText}>Payment</Text>
+            <Text style={styles.menuItemText}>RentIt Pay</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={onShare}>

@@ -15,7 +15,8 @@ import { navigate } from './src/navigation/Router';
 import 'react-native-gesture-handler';
 Amplify.configure(config);
 
-// Register background handler
+
+// 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 });

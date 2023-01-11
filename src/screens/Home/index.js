@@ -306,13 +306,19 @@ const HomeScreen =(props) => {
             async (position) => {
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
-                await firestore().collection('marketers').doc(auth().currentUser.uid).set({
-                  createdAt: new Date(),
-                  uid: auth().currentUser.uid,
-                  displayName: auth().currentUser.displayName,
-                  lat: position.coords.latitude,
-                  long: position.coords.longitude
-                })
+                
+                  await firestore().collection('marketers').doc(auth().currentUser.uid).set({
+                    createdAt: new Date(),
+                    uid: auth().currentUser.uid,
+                    displayName: auth().currentUser.displayName,
+                    lat: position.coords.latitude,
+                    long: position.coords.longitude
+                  })
+                
+                  
+
+                
+                
                 
             },
             (error) => {
@@ -743,48 +749,15 @@ const HomeScreen =(props) => {
 
       }
 
-      const getMarketers = async () => {
-        const callers = await firebase.firestore().collection('marketers')
-        callers.get().then((querySnapshot) => {
-            
-            querySnapshot.forEach((doc) => {
-                
-                setMarketers(prev => [...prev, doc.data().userID])
-                })
-
-                
-            
-            //console.log('phoneNumbers',phoneNumbers)
-         })
-    }
-
-    const checkMarketer = () => {
-     
-    }
-    if(marketers.includes(auth().currentUser.uid)){
-      const interval = setInterval(() => {
-        
-        updatedLocation()
-      }, 10000);
       
+
+    
+    
       
-    }
-      useEffect (() => {
-        //console.log('userid',auth().currentUser.uid);
-        
-        getLocation();
-        getMarketers();
-        console.log('marketers', marketers);
-        
-        
-        //console.log(marketers);
-       
-        
-        
-        
-      }, [])
        
        useEffect (() => {
+
+        
        
         _getUserData(auth().currentUser.uid);
           
@@ -798,8 +771,8 @@ const HomeScreen =(props) => {
         setStatus(status);
         setPosts([]);
         setNextToken(null);
-        console.log('status', status);
-        console.log('nextToken', nextToken);
+        //console.log('status', status);
+        //console.log('nextToken', nextToken);
         //setInterval(selectColor, 2000);
         // VersionCheck.needUpdate()
         // .then(async res => {
@@ -816,7 +789,7 @@ const HomeScreen =(props) => {
         setIsLoadingType(true);
         fetchPostsType(status);
         setIsLoadingType(false);
-        console.log('posts', posts);
+        //console.log('posts', posts);
         //getLatestPost();
         
         //console.log('This is latest',postLatest.map(item => (item.createdAt)));
@@ -829,10 +802,17 @@ const HomeScreen =(props) => {
     //    }
 
     useEffect(() => {
+      
+      
 
+    
+      
       const interval = setInterval(() => {
+        
         getLocation();
-      }, 10000);
+
+
+      }, 1000);
       return () => clearInterval(interval);
      
     }, [])

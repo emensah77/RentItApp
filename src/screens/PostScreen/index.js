@@ -135,9 +135,9 @@ const PostScreen = ({ route }) => {
         fetchPosts(postId || deepLinkUrl);
         setLoading(false);
 
-        if (newPost) {
-            preloadImages(newPost.images)
-        }
+        // if (newPost) {
+        //     preloadImages(newPost.images)
+        // }
         // AsyncStorage.getItem('alreadyPaid').then((value) => {
         //         if (value == null) {
         //             createTwoButtonAlert();
