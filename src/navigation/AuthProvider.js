@@ -92,6 +92,7 @@ export const AuthProvider = ({ children }) => {
                       createdAt: firestore.Timestamp.fromDate(new Date()),
                       userImg: auth().currentUser.photoURL,
                       phoneNumber: auth().currentUser.phoneNumber,
+                      role: 'USER'
                     })
                   console.log('User successfully added');
                 } else {
@@ -174,6 +175,7 @@ export const AuthProvider = ({ children }) => {
                       createdAt: firestore.Timestamp.fromDate(new Date()),
                       userImg: auth().currentUser.photoURL,
                       phoneNumber: auth().currentUser.phoneNumber,
+                      role: 'USER'
                     })
                   console.log('User successfully added');
 
