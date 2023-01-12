@@ -31,7 +31,7 @@ const Marketer = () => {
             })
     }
 
-    useEffect(() => 
+    useEffect(() => {
         if (!user?._user?.uid) {
             return
         }
