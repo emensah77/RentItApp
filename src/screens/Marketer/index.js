@@ -39,7 +39,7 @@ const Marketer = () => {
         getFirebaseUser()
     }, [user?._user?.uid])
 
-    console.log(firebaseUser, "FIREBASE")
+    // console.log(firebaseUser, "FIREBASE")
 
     const submitHandler = async () => {
         await updateProfile({ role: ROLE.user, marketer_status: Marketer_Status.inReview })
