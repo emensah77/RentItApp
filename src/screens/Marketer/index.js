@@ -95,10 +95,9 @@ const Marketer = () => {
                     <View style={{ marginTop: 20, margin: 20 }}>
                         <Text style={{ fontSize: 18, fontWeight: '600', paddingBottom: 15 }}>Why do you want to be a Marketer?</Text>
                         <Text>
-                            Ultimately, the more people you have going through your home,
-                            the less the risk of underselling. Real estate marketing provides
-                            peace of mind, speed of sale and it drives the maximum price.
-                            The reason you'll make your money back is that it creates competition.
+                            RentIt Marketers are at the core of the community
+                            of homeowners we are building. You will work
+                            primarily in your community to connect us with homeowners.
                         </Text>
                         {firebaseUser?.marketer_status === Marketer_Status.inReview
                             ? <Text style={{ marginTop: 10, color: 'orange' }}>
