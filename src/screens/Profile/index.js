@@ -48,7 +48,7 @@ const ProfileScreen = ({ route }) => {
       .get()
       .then((documentSnapshot) => {
         if (documentSnapshot.exists) {
-          console.log('User Data', documentSnapshot.data());
+          // console.log('User Data', documentSnapshot.data());
           setUserData(documentSnapshot.data());
         }
       })
@@ -164,7 +164,7 @@ const ProfileScreen = ({ route }) => {
               <Text style={styles.menuItemText}>Notifications</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Marketer')}>
             <View style={styles.menuItem}>
               <Icon name="home-group" color="blue" size={25} />
               <Text style={styles.menuItemText}>Become a marketer</Text>

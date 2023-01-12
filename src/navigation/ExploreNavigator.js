@@ -25,6 +25,7 @@ import AccountManageScreen from '../screens/AccountManageScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import Notifications from '../screens/Notifications';
 import ManageProfile from '../screens/ManageProfile';
+import Marketer from '../screens/Marketer';
 
 
 const Stack = createStackNavigator();
@@ -203,6 +204,13 @@ const Router = (props) => {
             <Stack.Screen
                 name={'ManageProfile'}
                 component={ManageProfile}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name={'Marketer'}
+                component={Marketer}
                 options={{
                     headerShown: false,
                 }}

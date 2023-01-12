@@ -9,7 +9,7 @@ import { AuthContext } from '../../navigation/AuthProvider';
 
 const WelcomeScreen = ({ props }) => {
     const [value, setValue] = useState("");
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const [formattedValue, setFormattedValue] = useState("");
     const [name, setName] = useState(user?._user?.displayName)
     const phoneInput = useRef(null);
@@ -121,6 +121,13 @@ const WelcomeScreen = ({ props }) => {
                                                 phoneNumber: formattedValue,
                                                 email: user?._user?.email
                                             })
+                                        setUser({
+                                            ...user, _user: {
+                                                ...user._user, displayName: name,
+                                                phoneNumber: formattedValue,
+                                                email: user?._user?.email
+                                            }
+                                        })
                                         navigation.navigate('Home')
                                         console.log('User phonenumber successfully added');
 

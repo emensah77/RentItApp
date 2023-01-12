@@ -18,7 +18,7 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth';
 
 const ManageProfile = () => {
-    const { user, logout, updateProfile } = useContext(AuthContext);
+    const { user, updateProfile } = useContext(AuthContext);
     const navigation = useNavigation();
     const [firebaseUser, setFirebaseUser] = useState();
     const profile = user?._user
@@ -45,6 +45,10 @@ const ManageProfile = () => {
     }, [user?._user?.uid])
 
     const submitHandler = async () => {
+        if (!name) {
+            Alert.alert("Enter Name");
+            return
+        }
         await updateProfile({ displayName: name, email, phoneNumber: phone })
         Alert.alert(
             "Profile Updated"
@@ -106,7 +110,7 @@ const ManageProfile = () => {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                 >
-                    <Text style={{ ...styles.label, marginTop: 60 }}>Display Name</Text>
+                    <Text style={{ ...styles.label, marginTop: 10 }}>Display Name</Text>
                     <TextInput
                         value={name}
                         style={styles.input}
@@ -117,22 +121,22 @@ const ManageProfile = () => {
                     <Text style={styles.label}>Email</Text>
                     <TextInput
                         value={email}
-                        style={styles.input}
-                        editable={true}
+                        style={[styles.input, { color: 'gray' }]}
+                        editable={false}
                         onChangeText={(text) => setEmail(text)}
                     />
 
                     <Text style={styles.label}>Role</Text>
                     <TextInput
                         value={firebaseUser?.role || 'USER'}
-                        style={styles.input}
+                        style={[styles.input, { color: 'gray' }]}
                         editable={false}
                     />
                     <Text style={styles.label}>Phone Number</Text>
                     <TextInput
                         value={phone || firebaseUser?.phoneNumber}
-                        style={styles.input}
-                        editable={true}
+                        style={[styles.input, { color: 'gray' }]}
+                        editable={false}
                         onChangeText={(text) => setPhone(text)}
                         keyboardType='numeric'
                     />
