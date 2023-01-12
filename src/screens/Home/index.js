@@ -593,7 +593,7 @@ const HomeScreen =(props) => {
                 .then(doc => {
                    
                 if(doc.exists){
-                    if(doc.data().phoneNumber === null){
+                    if(doc.data().phoneNumber === null || doc.data().phoneNumber === ""){
                         
                         navigation.navigate('WelcomeScreen')
                       }
