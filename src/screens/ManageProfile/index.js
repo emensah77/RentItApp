@@ -31,7 +31,7 @@ const ManageProfile = () => {
             .doc(user?._user?.uid).get()
             .then((documentSnapshot) => {
                 if (documentSnapshot.exists) {
-                    console.log('User Data', documentSnapshot.data());
+                    // console.log('User Data', documentSnapshot.data());
                     setFirebaseUser(documentSnapshot.data());
                 }
             })
