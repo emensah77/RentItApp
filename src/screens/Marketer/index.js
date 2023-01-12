@@ -13,14 +13,13 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../navigation/AuthProvider';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore'
+import { Marketer_Status, ROLE } from '../../variables';
 
 const Marketer = () => {
     const { user, updateProfile } = useContext(AuthContext);
     const navigation = useNavigation();
     const [firebaseUser, setFirebaseUser] = useState();
     const profile = user?._user
-    const Marketer_Status = { accepted: "ACCEPTED", inReview: "REVIEW", decline: "DECLINE" }
-    const ROLE = { user: "USER", admin: "ADMIN" }
 
     const getFirebaseUser = async () => {
         await firestore().collection('users')
@@ -32,7 +31,7 @@ const Marketer = () => {
             })
     }
 
-    useEffect(() => {
+    useEffect(() => 
         if (!user?._user?.uid) {
             return
         }
