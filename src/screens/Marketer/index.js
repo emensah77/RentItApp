@@ -31,6 +31,14 @@ const Marketer = () => {
             })
     }
 
+    const temp = {
+        [Marketer_Status.inReview]: {
+            infoText: `Your request has been submitted, once admin approves, enjoy the experience of Marketer in Rentit.`, buttonText: 'In Review', color: 'orange'
+        },
+        [Marketer_Status.accepted]: { infoText: 'Your Marketer request has been approved successfully.', buttonText: 'Approved', color: 'green' },
+        [Marketer_Status.decline]: { infoText: 'Your request has been declined', buttonText: 'Request Again', color: 'red' },
+    }
+
     useEffect(() => {
         if (!user?._user?.uid) {
             return
@@ -96,23 +104,7 @@ const Marketer = () => {
                             of homeowners we are building. You will work
                             primarily in your community to connect us with homeowners.
                         </Text>
-                        {firebaseUser?.marketer_status === Marketer_Status.inReview
-                            ? <Text style={{ marginTop: 10, color: 'orange' }}>
-                                Your request has been submitted, once admin approves,
-                                enjoy the experience of Marketer in Rentit.
-                            </Text> :
-                            firebaseUser?.marketer_status === Marketer_Status.accepted
-                                ? <Text style={{ marginTop: 10, color: 'green' }}>
-                                    Your Marketer request has been approved successfully.
-                                </Text> : firebaseUser?.marketer_status === Marketer_Status.decline ?
-                                    <Text style={{ marginTop: 10, color: 'red' }}>
-                                        Your request has been declined
-                                    </Text>
-                                    : <Text style={{ marginTop: 10, color: 'blue' }}>
-                                        You can request to admin to become a marketer, once admin approves,
-                                        enjoy the experience of Marketer in Rentit.
-                                    </Text>}
-
+                        <Text style={{ marginTop: 10, color: temp[firebaseUser?.marketer_status]?.color || 'blue' }}>{temp[firebaseUser?.marketer_status]?.infoText || `You can request to admin to become a marketer, once admin approves, enjoy the experience of Marketer in Rentit.`}</Text>
                     </View>
                     <TouchableOpacity
                         onPress={submitHandler}
@@ -135,12 +127,7 @@ const Marketer = () => {
                                 fontFamily: 'Montserrat-Bold',
                                 color: 'white',
                             }}>
-                            {firebaseUser?.marketer_status === Marketer_Status.inReview
-                                ? 'In Review' :
-                                firebaseUser?.marketer_status === Marketer_Status.accepted
-                                    ? 'Approved' :
-                                    firebaseUser?.marketer_status === Marketer_Status.decline
-                                        ? 'Request Again' : 'Submit Request'}
+                            {temp[firebaseUser?.marketer_status]?.buttonText || 'Submit'}
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
