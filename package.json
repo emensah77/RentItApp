@@ -51,6 +51,8 @@
     "react-native-animated-ellipsis": "^2.0.0",
     "react-native-animated-loader": "^0.0.9",
     "react-native-animated-pagination-dot": "^0.3.0",
+    "react-native-background-fetch": "^4.1.7",
+    "react-native-background-geolocation": "^4.9.4",
     "react-native-bouncy-checkbox": "^3.0.6",
     "react-native-fast-image": "^8.5.11",
     "react-native-fbsdk-next": "^8.0.2",

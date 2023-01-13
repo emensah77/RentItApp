@@ -28,6 +28,7 @@ type Post @model @key(name: "byUser", fields: ["userID"]){
   marketerNumber: [String]
   currency: [String]
 
+  status: String
   bed: Int!
   bedroom: Int!
   bathroomNumber: Int
