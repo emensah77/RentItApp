@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState, useContext} from 'react';
+import React, { createContext, useEffect, useState, useContext } from 'react';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
@@ -7,11 +7,11 @@ import { ActivityIndicator, View } from 'react-native';
 export const AuthContext = createContext();
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createUser} from '../graphql/mutations';
+import { createUser } from '../graphql/mutations';
 import { getUser } from '../graphql/queries';
 
 
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
@@ -24,31 +24,33 @@ export const AuthProvider = ({children}) => {
       imageuri: auth().currentUser.photoURL,
       username: auth().currentUser.displayName,
     }
-    try{
-      const createdUser  = await API.graphql(
+    try {
+      const createdUser = await API.graphql(
         graphqlOperation(createUser, {
 
           input
-        } ,
-            {
-            id 
-        }) 
+        },
+          {
+            id
+          })
 
       );
       console.log("Succesfully uploaded the home");
     }
-    
-    catch(e){
+
+    catch (e) {
       console.log('Error uploading home', e);
     }
-    
+
   }
 
-  if (loading){ return(
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-      <ActivityIndicator animating={true} size="large"  color="blue" style={{opacity:1}}/>
-    </View>
-  );}
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator animating={true} size="large" color="blue" style={{ opacity: 1 }} />
+      </View>
+    );
+  }
   return (
     <AuthContext.Provider
       value={{
@@ -63,57 +65,58 @@ export const AuthProvider = ({children}) => {
         },
         googleLogin: async () => {
           try {
-            
+
             // Get the users ID token
             const fcmToken = await AsyncStorage.getItem('fcmToken')
 
             const { idToken } = await GoogleSignin.signIn();
-            
+
             // Create a Google credential with the token
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-            
-            
+
+
             // Sign-in the user with the credential
             setLoading(true);
             await auth().signInWithCredential(googleCredential)
-            
+
             var trendRef = firestore().collection('users').doc(auth().currentUser.uid);
-            
-              var getDoc = trendRef.get()
-                .then(doc => {
-                    if (!doc.exists) {
-                      firestore().collection('users').doc(auth().currentUser.uid)
-                      .set({
-                          fname: auth().currentUser.displayName,
-                          lname: auth().currentUser.displayName,
-                          email: auth().currentUser.email,
-                          createdAt: firestore.Timestamp.fromDate(new Date()),
-                          userImg: auth().currentUser.photoURL,
-                          phoneNumber: auth().currentUser.phoneNumber,
-                      })
-                      console.log('User successfully added');
-                    } else {
-                        console.log('User already exists');
-                        
-                        
-                    }
-                    firestore().collection('deviceFcms').doc(auth().currentUser.uid).set({
-                      deviceToken: fcmToken,
-                      userId: auth().currentUser.uid
+
+            var getDoc = trendRef.get()
+              .then(doc => {
+                if (!doc.exists) {
+                  firestore().collection('users').doc(auth().currentUser.uid)
+                    .set({
+                      fname: auth().currentUser.displayName,
+                      lname: auth().currentUser.displayName,
+                      email: auth().currentUser.email,
+                      createdAt: firestore.Timestamp.fromDate(new Date()),
+                      userImg: auth().currentUser.photoURL,
+                      phoneNumber: auth().currentUser.phoneNumber,
+                      role: 'USER'
                     })
-              
-            })
+                  console.log('User successfully added');
+                } else {
+                  console.log('User already exists');
+
+
+                }
+                firestore().collection('deviceFcms').doc(auth().currentUser.uid).set({
+                  deviceToken: fcmToken,
+                  userId: auth().currentUser.uid
+                })
+
+              })
             setLoading(false);
-            
-           
-            
-              //Once the user creation has happened successfully, we can add the currentUser into firestore
-              //with the appropriate details.
-              //console.log('current User', auth().currentUser)
-              
-              //ensure we catch any errors at this stage to advise us if something does go wrong
-             
-            
+
+
+
+            //Once the user creation has happened successfully, we can add the currentUser into firestore
+            //with the appropriate details.
+            //console.log('current User', auth().currentUser)
+
+            //ensure we catch any errors at this stage to advise us if something does go wrong
+
+
             // Use it only when user Sign's up, 
             // so create different social signup function
             // .then(() => {
@@ -134,53 +137,54 @@ export const AuthProvider = ({children}) => {
             //   })
             // })
             //we need to catch the whole sign up process if it fails too.
-            
-          } catch(error) {
-            console.log({error});
+
+          } catch (error) {
+            console.log({ error });
           }
         },
         appleLogin: async () => {
-          try{
+          try {
 
             const appleAuthRequestResponse = await appleAuth.performRequest({
               requestedOperation: appleAuth.Operation.LOGIN,
               requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
             });
-          
+
             // Ensure Apple returned a user identityToken
             if (!appleAuthRequestResponse.identityToken) {
               throw 'Apple Sign-In failed - no identify token returned';
             }
-          
+
             // Create a Firebase credential from the response
-            const { identityToken, nonce, email, user} = appleAuthRequestResponse;
+            const { identityToken, nonce, email, user } = appleAuthRequestResponse;
             const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce, email, user);
-          
+
             // Sign the user in with the credential
             setLoading(true);
             await auth().signInWithCredential(appleCredential)
             var trendRef = firestore().collection('users').doc(auth().currentUser.uid);
-            
-              var getDoc = trendRef.get()
-                .then(doc => {
-                    if (!doc.exists) {
-                      firestore().collection('users').doc(auth().currentUser.uid)
-                      .set({
-                          fname: auth().currentUser.displayName,
-                          lname: auth().currentUser.displayName,
-                          email: auth().currentUser.email,
-                          createdAt: firestore.Timestamp.fromDate(new Date()),
-                          userImg: auth().currentUser.photoURL,
-                          phoneNumber: auth().currentUser.phoneNumber,
-                      })
-                      console.log('User successfully added');
-                       
-                    } else {
-                        console.log('User already exists');
-                        
-                    }
-              
-            })
+
+            var getDoc = trendRef.get()
+              .then(doc => {
+                if (!doc.exists) {
+                  firestore().collection('users').doc(auth().currentUser.uid)
+                    .set({
+                      fname: auth().currentUser.displayName,
+                      lname: auth().currentUser.displayName,
+                      email: auth().currentUser.email,
+                      createdAt: firestore.Timestamp.fromDate(new Date()),
+                      userImg: auth().currentUser.photoURL,
+                      phoneNumber: auth().currentUser.phoneNumber,
+                      role: 'USER'
+                    })
+                  console.log('User successfully added');
+
+                } else {
+                  console.log('User already exists');
+
+                }
+
+              })
             await AsyncStorage.getItem('alreadyOpened').then((value) => {
               if (value == null) {
                 AsyncStorage.setItem('alreadyOpened', 'true'); // No need to wait for `setItem` to finish, although you might want to handle errors
@@ -192,7 +196,7 @@ export const AuthProvider = ({children}) => {
 
             setLoading(false);
           }
-          catch(error){
+          catch (error) {
             console.log(error);
           }
 
@@ -240,34 +244,34 @@ export const AuthProvider = ({children}) => {
             //   })
             // })
             //we need to catch the whole sign up process if it fails too.
-            
-          } catch(error) {
-            console.log({error});
+
+          } catch (error) {
+            console.log({ error });
           }
         },
         register: async (email, password) => {
           try {
             await auth().createUserWithEmailAndPassword(email, password)
-            .then(() => {
-              //Once the user creation has happened successfully, we can add the currentUser into firestore
-              //with the appropriate details.
-              firestore().collection('users').doc(auth().currentUser.uid)
-              .set({
-                  fname: '',
-                  lname: '',
-                  email: email,
-                  createdAt: firestore.Timestamp.fromDate(new Date()),
-                  userImg: null,
+              .then(() => {
+                //Once the user creation has happened successfully, we can add the currentUser into firestore
+                //with the appropriate details.
+                firestore().collection('users').doc(auth().currentUser.uid)
+                  .set({
+                    fname: '',
+                    lname: '',
+                    email: email,
+                    createdAt: firestore.Timestamp.fromDate(new Date()),
+                    userImg: null,
+                  })
+                  //ensure we catch any errors at this stage to advise us if something does go wrong
+                  .catch(error => {
+                    console.log('Something went wrong with adding user to firestore: ', error);
+                  })
               })
-              //ensure we catch any errors at this stage to advise us if something does go wrong
+              //we need to catch the whole sign up process if it fails too.
               .catch(error => {
-                  console.log('Something went wrong with adding user to firestore: ', error);
-              })
-            })
-            //we need to catch the whole sign up process if it fails too.
-            .catch(error => {
                 console.log('Something went wrong with sign up: ', error);
-            });
+              });
           } catch (e) {
             console.log(e);
           }
@@ -275,11 +279,16 @@ export const AuthProvider = ({children}) => {
         logout: async () => {
           try {
             await auth().signOut();
-            
+
           } catch (e) {
             console.log(e);
           }
         },
+        updateProfile: async (data) => {
+          setUser({ ...user, _user: { ...user._user, ...data } })
+          await auth().currentUser.updateProfile({ ...data });
+          firestore().collection('users').doc(user?._user?.uid).update({ ...data })
+        }
       }}>
       {children}
     </AuthContext.Provider>
