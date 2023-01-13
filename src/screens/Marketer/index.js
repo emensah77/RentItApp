@@ -38,8 +38,6 @@ const Marketer = () => {
         getFirebaseUser()
     }, [user?._user?.uid])
 
-    // console.log(firebaseUser, "FIREBASE")
-
     const submitHandler = async () => {
         await updateProfile({ role: ROLE.user, marketer_status: Marketer_Status.inReview })
         Alert.alert(
@@ -119,7 +117,6 @@ const Marketer = () => {
                     <TouchableOpacity
                         onPress={submitHandler}
                         disabled={firebaseUser?.marketer_status === Marketer_Status.accepted
-                            || firebaseUser?.marketer_status === Marketer_Status.decline
                             || firebaseUser?.marketer_status === Marketer_Status.inReview}
                         style={{
                             alignItems: 'center',
@@ -143,7 +140,7 @@ const Marketer = () => {
                                 firebaseUser?.marketer_status === Marketer_Status.accepted
                                     ? 'Approved' :
                                     firebaseUser?.marketer_status === Marketer_Status.decline
-                                        ? 'Declined' : 'Submit Request'}
+                                        ? 'Request Again' : 'Submit Request'}
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
