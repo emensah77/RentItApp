@@ -47,7 +47,7 @@ const Marketer = () => {
     }, [user?._user?.uid])
 
     const submitHandler = async () => {
-        await updateProfile({ role: ROLE.user, marketer_status: Marketer_Status.inReview })
+        await updateProfile({ marketer_status: Marketer_Status.inReview })
         Alert.alert(
             "Requested Successfully"
         )

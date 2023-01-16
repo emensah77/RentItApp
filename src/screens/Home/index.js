@@ -214,7 +214,14 @@ const HomeScreen = (props) => {
       notification: {
         title: "",
         text: 'Thank you for choosing us.'
-      }
+      },
+      backgroundPermissionRationale: {
+        title: "{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.",
+        message:
+          "If you will like to receive these recommendations and notifications, choose Allow all the time.",
+        positiveAction: '{backgroundPermissionOptionLabel}',
+        negativeAction: 'Cancel',
+      },
     })
 
 
