@@ -361,31 +361,8 @@ const ProfileScreen = ({route}) => {
               <Text style={styles.menuItemText}>Profile</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>
-            <View style={styles.menuItem}>
-              <Icon name="heart-outline" color="blue" size={25} />
-              <Text style={styles.menuItemText}>Your Favorites</Text>
+          
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { }}>
-            <View style={styles.menuItem}>
-              <Icon name="credit-card" color="blue" size={25} />
-              <Text style={styles.menuItemText}>Payment</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onShare}>
-            <View style={styles.menuItem}>
-              <Icon name="share-outline" color="blue" size={25} />
-              <Text style={styles.menuItemText}>Tell Your Friends</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { }}>
-            <View style={styles.menuItem}>
-              <Icon name="account-check-outline" color="blue" size={25} />
-              <Text style={styles.menuItemText}>Support</Text>
-            </View>
-          </TouchableOpacity>
-            </LinearGradient>
 
             <View style={styles.menuWrapper}>
         <TouchableOpacity onPress={() => navigation.navigate('Wishlists')}>

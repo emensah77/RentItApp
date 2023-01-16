@@ -96,6 +96,7 @@ const Marketer = () => {
             <View style={{ padding: 0, flex: 1 }}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom:50}}
                 >
                     <View style={{ marginTop: 20, margin: 20 }}>
                         <Text style={{ fontSize: 18, fontWeight: '600', paddingBottom: 15 }}>Why do you want to be a Marketer?</Text>

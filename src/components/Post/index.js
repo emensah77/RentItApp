@@ -235,12 +235,13 @@ const Post = props => {
                 </Text> */}
                 {post.mode === "For Sale" ? 
                 <Text style={styles.newPrice}>
-                {post.currency === null ?
+                {post.currency  ? 
+                post.currency[0] === "usd" ? "$" : post.currency[0] === "ghs" ? "GH₵": "GH₵"
                   
-                  "GH₵"
-                 : 
                  
-                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 : 
+                 "GH₵"
+                 
                  
                  }
                  
@@ -250,12 +251,13 @@ const Post = props => {
                 
               </Text> :
         <Text style={styles.newPrice}>
-          {post.currency === null ?
+          {post.currency  ? 
+                post.currency[0] === "usd" ? "$" : post.currency[0] === "ghs" ? "GH₵": "GH₵"
                   
-                  "GH₵"
-                 : 
                  
-                   post.currency[0] === "usd" ? "$" : "GH₵"
+                 : 
+                 "GH₵"
+                 
                  
                  }
            

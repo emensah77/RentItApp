@@ -17,7 +17,7 @@ const OnboardingScreen5 = (props) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isSelected, setisSelected] = useState(false);
     const [homeprice, sethomeprice] = useState(1);
-    const [value, setValue] = useState();
+    const [value, setValue] = useState(1);
     const route = useRoute();
     const title = route.params?.title
     const type = route.params?.type;
@@ -163,7 +163,7 @@ const OnboardingScreen5 = (props) => {
                
                <View style={{flex:1, flexDirection:'row', marginBottom:20, justifyContent:'center'}}>
                        
-                        <Text style={{alignSelf:'center',fontSize:24,fontWeight:'600'}}>{currency === "usd" ? "$" : "GHS"}</Text>
+                        <Text style={{alignSelf:'center',fontSize:24,fontWeight:'600'}}>{currency === "usd" ? "$" : currency === "ghs" ? "GHS": ""}</Text>
                        
                        <TextInput
                        adjustsFontSizeToFit={true}
@@ -243,7 +243,7 @@ const OnboardingScreen5 = (props) => {
         
         
             
-            <Pressable onPress={() => navigation.navigate('OnboardingScreen6', {
+            <Pressable disabled={currency === ""} onPress={() => navigation.navigate('OnboardingScreen6', {
                 title: title,
                 type: type,
                 description: description,
@@ -255,7 +255,7 @@ const OnboardingScreen5 = (props) => {
                 mode: mode,
                 amenities: amenities,
                 currency: currency,
-            })} style={{left:250,width:100,backgroundColor:'deeppink',
+            })} style={{opacity:currency === "" ? .4 : 1,left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </Pressable>

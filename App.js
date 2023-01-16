@@ -49,7 +49,7 @@ import Geocoder from 'react-native-geocoding';
 import { AmplifyTheme } from "aws-amplify-react-native";
 import requestUserPermission, { notificationListener } from './src/utils/notificationService';
 Amplify.configure(awsconfig);
-Geocoder.init("AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys");
+
 
 
 const myTheme = StyleSheet.create({
