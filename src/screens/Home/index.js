@@ -87,7 +87,6 @@ const HomeScreen = (props) => {
   const [maxvalue, setmaxValue] = useState('')
   const [nextToken, setNextToken] = useState(null);
   const [loading, setIsLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
 
   const bgGeoEventSubscriptions = [];
   /// State.
@@ -97,7 +96,8 @@ const HomeScreen = (props) => {
   /// Init BackgroundGeolocation when view renders.
   /// Return a function to .removeListeners() When view is removed.
   React.useEffect(() => {
-    initBackgroundFetch();  // <-- optional
+    BackgroundGeolocation.start();
+    initBackgroundFetch(); 
     initBackgroundGeolocation();
     registerTransistorAuthorizationListener(navigation);
     return () => {
@@ -173,6 +173,7 @@ const HomeScreen = (props) => {
       logLevel: BackgroundGeolocation.LOG_LEVEL_NONE,
       distanceFilter: 10,
       stopOnTerminate: false,
+<<<<<<< HEAD
       startOnBoot: true,
       locationAuthorizationRequest: 'Always',
       disableMotionActivityUpdates: true,
@@ -183,6 +184,10 @@ const HomeScreen = (props) => {
         positiveAction: 'Change to "{backgroundPermissionOptionLabel}"',
         negativeAction: 'Cancel'
       },
+=======
+      startOnBoot: false,
+      backgroundPermissionRationale: true,
+>>>>>>> 59d9ea87f0d7a228ab87f70d433b899809979121
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
       stopTimeout: 5,
       batchSync: false,
@@ -191,7 +196,6 @@ const HomeScreen = (props) => {
       locationUpdateInterval: 5000,
       locationAuthorizationRequest: true,
       reset: false,
-      stopTimeout: 5,
       notification: {
         title: "The Title",
         text: "The Text"
@@ -215,7 +219,6 @@ const HomeScreen = (props) => {
       startOnBoot: true,
     });
 
-    /// Add the current state as first item in list.
     addEvent('Current state', state);
 
     BackgroundGeolocation.setConfig({
@@ -243,12 +246,17 @@ const HomeScreen = (props) => {
           lat: position.coords.latitude,
           long: position.coords.longitude
         })
+        return position
       },
       error => console.log(error),
-      { enableHighAccuracy: true }
+      {
+        interval: 3000,
+      }
     );
     setEnabled(state.enabled);
   };
+
+
 
   const initBackgroundFetch = async () => {
     await BackgroundFetch.configure({
