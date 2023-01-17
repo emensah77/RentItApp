@@ -94,9 +94,9 @@ const Marketer = () => {
             </LinearGradient>
 
             <View style={{ padding: 0, flex: 1 }}>
-                <ScrollView
+                {/* <ScrollView
                     showsVerticalScrollIndicator={false}
-                >
+                > */}
                     <View style={{ marginTop: 20, margin: 20 }}>
                         <Text style={{ fontSize: 18, fontWeight: '600', paddingBottom: 15 }}>Why do you want to be a Marketer?</Text>
                         <Text>
@@ -116,7 +116,7 @@ const Marketer = () => {
                             borderWidth: 1,
                             borderColor: 'blue',
                             width: '50%',
-                            height: '20%',
+                            height: '8%',
                             backgroundColor: 'blue',
                             borderRadius: 10,
                             alignSelf: 'center'
@@ -138,7 +138,7 @@ const Marketer = () => {
                             borderWidth: 1,
                             borderColor: 'blue',
                             width: '50%',
-                            height: '20%',
+                            height: '8%',
                             borderRadius: 10,
                             alignSelf: 'center',
                             marginTop: 10
@@ -151,7 +151,7 @@ const Marketer = () => {
                             }}> Go Back
                         </Text>
                     </TouchableOpacity>
-                </ScrollView>
+                {/* </ScrollView> */}
             </View>
         </View>
     );

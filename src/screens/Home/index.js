@@ -87,7 +87,6 @@ const HomeScreen = (props) => {
   const [maxvalue, setmaxValue] = useState('')
   const [nextToken, setNextToken] = useState(null);
   const [loading, setIsLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
 
   const bgGeoEventSubscriptions = [];
   /// State.
@@ -97,7 +96,8 @@ const HomeScreen = (props) => {
   /// Init BackgroundGeolocation when view renders.
   /// Return a function to .removeListeners() When view is removed.
   React.useEffect(() => {
-    initBackgroundFetch();  // <-- optional
+    BackgroundGeolocation.start();
+    initBackgroundFetch(); 
     initBackgroundGeolocation();
     registerTransistorAuthorizationListener(navigation);
     return () => {
@@ -173,7 +173,7 @@ const HomeScreen = (props) => {
       logLevel: BackgroundGeolocation.LOG_LEVEL_NONE,
       distanceFilter: 10,
       stopOnTerminate: false,
-      startOnBoot: true,
+      startOnBoot: false,
       backgroundPermissionRationale: true,
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
       stopTimeout: 5,
@@ -183,7 +183,6 @@ const HomeScreen = (props) => {
       locationUpdateInterval: 5000,
       locationAuthorizationRequest: true,
       reset: false,
-      stopTimeout: 5,
       notification: {
         title: "The Title",
         text: "The Text"
@@ -207,7 +206,6 @@ const HomeScreen = (props) => {
       startOnBoot: true,
     });
 
-    /// Add the current state as first item in list.
     addEvent('Current state', state);
 
     BackgroundGeolocation.setConfig({
@@ -235,12 +233,17 @@ const HomeScreen = (props) => {
           lat: position.coords.latitude,
           long: position.coords.longitude
         })
+        return position
       },
       error => console.log(error),
-      { enableHighAccuracy: true }
+      {
+        interval: 3000,
+      }
     );
     setEnabled(state.enabled);
   };
+
+
 
   const initBackgroundFetch = async () => {
     await BackgroundFetch.configure({

@@ -151,7 +151,8 @@ const ManageProfile = () => {
                             height: '12%',
                             backgroundColor: 'blue',
                             borderRadius: 10,
-                            alignSelf: 'center'
+                            alignSelf: 'center',
+                            flex:1
                         }}>
                         <Text
                             style={{
