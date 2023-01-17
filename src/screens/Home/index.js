@@ -174,7 +174,15 @@ const HomeScreen = (props) => {
       distanceFilter: 10,
       stopOnTerminate: false,
       startOnBoot: true,
-      backgroundPermissionRationale: true,
+      locationAuthorizationRequest: 'Always',
+      disableMotionActivityUpdates: true,
+      disableLocationAuthorizationAlert: false,
+      backgroundPermissionRationale: {
+        title: "Allow {applicationName} to access this device's location even when closed or not in use.",
+        message: "This app collects location data to enable recording your trips to work and calculate distance-travelled.",
+        positiveAction: 'Change to "{backgroundPermissionOptionLabel}"',
+        negativeAction: 'Cancel'
+      },
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
       stopTimeout: 5,
       batchSync: false,
@@ -216,12 +224,12 @@ const HomeScreen = (props) => {
         text: 'Thank you for choosing us.'
       },
       backgroundPermissionRationale: {
-        title: "{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.",
-        message:
-          "If you will like to receive these recommendations and notifications, choose Allow all the time.",
-        positiveAction: '{backgroundPermissionOptionLabel}',
-        negativeAction: 'Cancel',
-      },
+        title: "Allow {applicationName} to access to this device's location in the background?",
+        message: "In order to track your activity in the background, please enable {backgroundPermissionOptionLabel} location permission",
+        positiveAction: "Change to {backgroundPermissionOptionLabel}",
+        negativeAction: "Cancel"
+      }    
+      
     })
 
 
