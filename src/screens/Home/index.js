@@ -153,8 +153,8 @@ const HomeScreen = (props) => {
     }));
 
     subscribe(BackgroundGeolocation.onLocation(location => {
-      console.log(`Latitude: ${location.coords.latitude}`);
-      console.log(`Longitude: ${location.coords.longitude}`);
+      //console.log(`Latitude: ${location.coords.latitude}`);
+      //console.log(`Longitude: ${location.coords.longitude}`);
     }))
 
     subscribe(BackgroundGeolocation.onActivityChange((event) => {
@@ -173,21 +173,17 @@ const HomeScreen = (props) => {
       logLevel: BackgroundGeolocation.LOG_LEVEL_NONE,
       distanceFilter: 10,
       stopOnTerminate: false,
-<<<<<<< HEAD
       startOnBoot: true,
-      locationAuthorizationRequest: 'Always',
       disableMotionActivityUpdates: true,
-      disableLocationAuthorizationAlert: false,
       backgroundPermissionRationale: {
-        title: "Allow {applicationName} to access this device's location even when closed or not in use.",
-        message: "This app collects location data to enable recording your trips to work and calculate distance-travelled.",
-        positiveAction: 'Change to "{backgroundPermissionOptionLabel}"',
-        negativeAction: 'Cancel'
+        title: "{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.",
+        message:
+          "If you will like to receive these recommendations and notifications, choose Allow all the time.",
+        positiveAction: '{backgroundPermissionOptionLabel}',
+        negativeAction: 'Cancel',
       },
-=======
       startOnBoot: false,
-      backgroundPermissionRationale: true,
->>>>>>> 59d9ea87f0d7a228ab87f70d433b899809979121
+      
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
       stopTimeout: 5,
       batchSync: false,
@@ -197,17 +193,19 @@ const HomeScreen = (props) => {
       locationAuthorizationRequest: true,
       reset: false,
       notification: {
-        title: "The Title",
-        text: "The Text"
+        title: "RentIt is accessing your location in background",
+        text: 'We will use this to search for homes and monitor change in home prices to provide you discounts.'
       },
       debug: false,
     }, (state) => {
       if (!state.enabled) {
+        
         BackgroundGeolocation.start(() => {
           console.log(' - Start success');
         });
       }
     });
+    
 
     BackgroundGeolocation.start({
       foregroundService: true,
@@ -217,29 +215,25 @@ const HomeScreen = (props) => {
       enableHeadless: true,
       stopOnTerminate: false,
       startOnBoot: true,
+      disableMotionActivityUpdates: true,
+      
     });
 
     addEvent('Current state', state);
 
     BackgroundGeolocation.setConfig({
       notification: {
-        title: "",
-        text: 'Thank you for choosing us.'
-      },
-      backgroundPermissionRationale: {
-        title: "Allow {applicationName} to access to this device's location in the background?",
-        message: "In order to track your activity in the background, please enable {backgroundPermissionOptionLabel} location permission",
-        positiveAction: "Change to {backgroundPermissionOptionLabel}",
-        negativeAction: "Cancel"
-      }    
+        title: "RentIt is accessing your location in background",
+        text: 'We will use this to search for homes and monitor change in home prices to provide you discounts.'
+      },  
       
     })
 
 
     BackgroundGeolocation.watchPosition(
-      position => {
+      async (position) => {
         // console.log(position.coords.latitude, position.coords.longitude, 'yushii');
-        firestore().collection('marketers').doc(auth().currentUser.uid).set({
+        await firestore().collection('marketers').doc(auth().currentUser.uid).set({
           createdAt: new Date(),
           uid: auth().currentUser.uid,
           displayName: auth().currentUser.displayName,
@@ -250,7 +244,7 @@ const HomeScreen = (props) => {
       },
       error => console.log(error),
       {
-        interval: 3000,
+        interval: 1000,
       }
     );
     setEnabled(state.enabled);

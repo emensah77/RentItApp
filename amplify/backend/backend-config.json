@@ -1,50 +1,50 @@
 {
-  "auth": {
-    "airbnbclone52f6e38c": {
-      "service": "Cognito",
+  "analytics": {
+    "rentIt": {
       "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
+      "service": "Pinpoint"
     }
   },
   "api": {
     "airbnbclone": {
-      "service": "AppSync",
-      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
       "output": {
         "authConfig": {
+          "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "authenticationType": "API_KEY",
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 365,
               "apiKeyExpirationDate": "2023-12-27T18:44:19.248Z",
+              "apiKeyExpirationDays": 365,
               "description": ""
-            }
-          },
-          "additionalAuthenticationProviders": []
+            },
+            "authenticationType": "API_KEY"
+          }
         }
       },
-      "dependsOn": []
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
     },
     "tinggPaymentGateway": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
-          "category": "function",
-          "resourceName": "tinggPaymentGateway",
           "attributes": [
             "Name",
             "Arn"
-          ]
+          ],
+          "category": "function",
+          "resourceName": "tinggPaymentGateway"
         }
-      ]
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
     }
   },
-  "analytics": {
-    "rentIt": {
-      "service": "Pinpoint",
-      "providerPlugin": "awscloudformation"
+  "auth": {
+    "airbnbclone52f6e38c": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
     }
   },
   "function": {
@@ -64,10 +64,60 @@
       "service": "Lambda"
     }
   },
+  "parameters": {
+    "AMPLIFY_function_CreatePaymentIntent_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CreatePaymentIntent"
+        }
+      ]
+    },
+    "AMPLIFY_function_CreatePaymentIntent_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CreatePaymentIntent"
+        }
+      ]
+    },
+    "AMPLIFY_function_createpaystack_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "createpaystack"
+        }
+      ]
+    },
+    "AMPLIFY_function_createpaystack_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "createpaystack"
+        }
+      ]
+    },
+    "AMPLIFY_function_tinggPaymentGateway_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "tinggPaymentGateway"
+        }
+      ]
+    },
+    "AMPLIFY_function_tinggPaymentGateway_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "tinggPaymentGateway"
+        }
+      ]
+    }
+  },
   "storage": {
     "rentitmedia": {
-      "service": "S3",
-      "providerPlugin": "awscloudformation"
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
     }
   }
 }

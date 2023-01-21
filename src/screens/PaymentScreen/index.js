@@ -29,6 +29,7 @@ const PaymentScreen = props => {
   const homemonths = route.params.homemonths;
   const homeid = route.params.homeid;
   const selectedType = route.params.selectedType;
+  const [checkoutNumber, setCheckOutNumber] = useState('+233242345678')
   
 
   const [paymentUrl, setPaymentUrl] = useState(null);
@@ -144,11 +145,11 @@ const PaymentScreen = props => {
             
             requestAmount: JSON.stringify(amount),
             currencyCode: 'GHS',
-            requestDescription: 'Test merchant transaction',
+            requestDescription: 'RentIt Payment',
             countryCode: 'GH',
             languageCode: 'en',
-            //serviceCode: "RENDEV5770",
-            //MSISDN: user?.phoneNumber,
+            serviceCode: "RENTIZO",
+            MSISDN: "233244070987",
             customerFirstName: user?.displayName ?? ' ',
             customerLastName: ' ',
             customerEmail: userEmail,
