@@ -26,7 +26,7 @@
         },
         "tinggPaymentGateway": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/tinggPaymentGateway-43656a4e35576b77775a-build.zip"
+          "s3Key": "amplify-builds/tinggPaymentGateway-5762537546504d416f6f-build.zip"
         }
       },
       "storage": {
