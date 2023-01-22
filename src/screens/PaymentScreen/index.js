@@ -33,6 +33,8 @@ const PaymentScreen = props => {
   
 
   const [paymentUrl, setPaymentUrl] = useState(null);
+  const [merchantTransactionID, setMerchantTransactionID] = useState(null);
+  
   useEffect(() => {
     generatePaymentUrl();
     console.log(paymentUrl)
@@ -89,6 +91,8 @@ const PaymentScreen = props => {
       userId: user.uid,
       userName: user.displayName,
       paymentType: selectedType,
+      merchantTransactionID: merchantTransactionID,
+      paymentStatus: 'Processing',
     })
     .then(docRef => {
       console.log('Added to payments')
@@ -97,6 +101,27 @@ const PaymentScreen = props => {
       console.log('Something went wrong adding to payments!',error);
     })
   }
+
+  const addTransaction = async () => {
+    await firestore()
+    .collection('transactions')
+    .add({
+      createdAt: new Date(),
+      amountPaid: amount,
+      userId: user.uid,
+      userName: user.displayName,
+      merchantTransactionID: merchantTransactionID,
+      orderType: homeid === null ?  'payment' : 'order',
+      paymentStatus: 'Processing',
+    })
+    .then(docRef => {
+      console.log('Added to transactions')
+    })
+    .catch(error => {
+      console.log('Something went wrong adding to payments!',error);
+    })
+  }
+
   const addHomeOrder = async () => {
     await firestore()
       .collection('homeorders')
@@ -108,7 +133,8 @@ const PaymentScreen = props => {
         homeid: homeid,
         homeyears: homeyears,
         homemonths: homemonths,
-
+        merchantTransactionID: merchantTransactionID,
+        paymentStatus: 'Processing',
         bed: homebed,
         confirmCode: (Math.random() + 1)
           .toString(36)
@@ -157,11 +183,13 @@ const PaymentScreen = props => {
           },
         )
         .then(res => {
+          setMerchantTransactionID(res.data?.requestBody?.merchantTransactionID);
           setPaymentUrl(res.data?.paymentUrl);
           resolve(res.data?.paymentUrl);
         })
         .catch(e => {
           console.log(e);
+          setMerchantTransactionID(null);
           reject(e);
         });
     });
@@ -212,6 +240,7 @@ const PaymentScreen = props => {
             const {url} = event.nativeEvent;
             const words = url.split('type=');
             if (words[1] === 'success') {
+              addTransaction();
               console.log('event',event);
               if (navigation.canGoBack()) {
                 

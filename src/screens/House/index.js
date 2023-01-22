@@ -43,6 +43,8 @@ const House = (props) => {
                 fontFamily:'Montserrat-Bold'}}>GH₵ {item.amount}</Text>
             <Text style={{
                 fontFamily:'Montserrat-Bold'}}>{item.bed} bedrooms</Text>
+            <Text style={{
+                fontFamily:'Montserrat-Bold'}}>Payment Status: {item?.paymentStatus}</Text>
             </View>
             
         </Pressable>
@@ -71,7 +73,7 @@ const House = (props) => {
                             confirmCode,
                             amount, 
                             latitude,
-                            longitude,
+                            longitude                            
                         } = doc.data();
                         if (user.uid === userId && !orders.some(e => e.homeid === homeid)){
                         orders.push({
@@ -87,8 +89,7 @@ const House = (props) => {
                             latitude: latitude,
                             longitude: longitude,
                             amount: amount,
-                            
-    
+                            paymentStatus: doc?.data()?.paymentStatus
                         }) }
                     })
                 })
