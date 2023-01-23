@@ -85,7 +85,8 @@ const PaymentScreen = props => {
   const addPayment = async () => {
     await firestore()
     .collection('payments')
-    .add({
+    .doc(merchantTransactionID)
+    .set({
       createdAt: new Date(),
       amountPaid: amount,
       userId: user.uid,
@@ -105,7 +106,8 @@ const PaymentScreen = props => {
   const addTransaction = async () => {
     await firestore()
     .collection('transactions')
-    .add({
+    .doc(merchantTransactionID)
+    .set({
       createdAt: new Date(),
       amountPaid: amount,
       userId: user.uid,
@@ -125,7 +127,8 @@ const PaymentScreen = props => {
   const addHomeOrder = async () => {
     await firestore()
       .collection('homeorders')
-      .add({
+      .doc(merchantTransactionID)
+      .set({
         userId: user.uid,
         userName: user.displayName,
         image: homeimage,
