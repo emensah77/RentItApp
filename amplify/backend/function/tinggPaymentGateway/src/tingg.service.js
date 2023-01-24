@@ -185,12 +185,16 @@ class TinggService {
         .doc(merchantTransactionID);
 
       const transactionDoc = await transactionsRef.get();
+      console.log("transaction data", transactionDoc.data());
+      console.log("verifiedInFirebase1", verifiedInFirebase);
       if (transactionDoc.exists) {
         const data = transactionDoc.data();
+        console.log("transaction data", data);
         if (data.paymentStatus === "Processing") {
           orderId = data.id;
           verifiedInFirebase = true;
           transactionDoc.ref.update("paymentStatus", "Success");
+          console.log("verifiedInfirebase2", verifiedInFirebase);
           if (data.orderType === "payment") {
             await db
               .collection("payments")
@@ -214,6 +218,7 @@ class TinggService {
             receiptNumber: orderId,
           });
         }
+        console.log("verifiedinfirebase3", verifiedInFirebase);
       }
     }
 
