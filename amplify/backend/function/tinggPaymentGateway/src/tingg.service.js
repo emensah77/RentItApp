@@ -179,6 +179,7 @@ class TinggService {
     console.log("webhook");
     console.log(JSON.stringify(request.body));
     const merchantTransactionID = request.body.merchantTransactionID;
+    console.log('merchantId', merchantTransactionID);
     if (request.body.requestStatusCode == 178) {
       const transactionsRef = db
         .collection("transactions")
