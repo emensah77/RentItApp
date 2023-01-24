@@ -37,6 +37,7 @@ const OnboardingScreen11 = (props) => {
     const amenities = route.params?.amenities;
     const locality = route.params?.locality;
     const sublocality =  route.params?.sublocality;
+    const address =  route.params?.address;
     const currency = route.params?.currency;
     const [value, setPhoneValue] = useState("");
     const [formattedValue, setFormattedValue] = useState("");
@@ -235,6 +236,7 @@ const OnboardingScreen11 = (props) => {
                 locality: locality,
                 sublocality: sublocality,
                 currency: currency,
+                address
             })
             }
             else{
