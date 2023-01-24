@@ -243,6 +243,7 @@ const OnboardingScreen6 = (props) => {
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
     const [locality, setLocality] = useState('');
+    const [address, setAddress] = useState('');
     const [sublocality, setSubLocality] = useState('');
     const map = useRef();
     const route = useRoute();
@@ -463,6 +464,7 @@ const hasPermissionIOS = async () => {
                     setLatitude(details.geometry.location.lat);
                     setLongitude(details.geometry.location.lng);
                     setLocality(details.address_components[0].short_name)
+                    setAddress(details.address_components[0].long_name)
                     setSubLocality(details.address_components[1].short_name);
                     
                   
@@ -583,6 +585,7 @@ const hasPermissionIOS = async () => {
               amenities: amenities,
               locality: locality,
               sublocality: sublocality,
+              address: address,
               currency: currency,
             })} style={{left:250,height:60,width:100,backgroundColor:'deeppink',
              opacity: latitude === null || longitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>

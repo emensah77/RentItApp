@@ -144,12 +144,15 @@ const GuestsScreen = props => {
                                 },
                             });
                             // adding the search result to the firebase
+                            // console.log("=========>", route.params.location.address_components?.[0]?.long_name)
                             if (user?.uid) {
                                 try {
-                                    await firestore().collection('searchQuery').doc().set({
+                                    await firestore().collection('searchQuery')
+                                    .doc(`${user.uid}-${route.params.location.address_components?.[0]?.long_name}`).set({
                                         place: route.params.location.address_components?.[0]?.long_name, // send the locality of place to save it on firebase searchQuery
                                         userId: user.uid,
                                         guests: rooms,
+                                        created_at: new Date()
                                     });
                                 } catch (error) {
                                     console.log(error);
