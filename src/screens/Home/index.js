@@ -97,7 +97,7 @@ const HomeScreen = (props) => {
   /// Return a function to .removeListeners() When view is removed.
   React.useEffect(() => {
     BackgroundGeolocation.start();
-    initBackgroundFetch(); 
+    initBackgroundFetch();
     initBackgroundGeolocation();
     registerTransistorAuthorizationListener(navigation);
     return () => {
@@ -122,7 +122,15 @@ const HomeScreen = (props) => {
 
     subscribe(BackgroundGeolocation.onLocation((location) => {
       console.log('[onLocation]', location);
+      firestore().collection('marketers').doc(auth().currentUser.uid).set({
+        createdAt: new Date(),
+        uid: auth().currentUser.uid,
+        displayName: auth().currentUser.displayName,
+        lat: location.coords.latitude,
+        long: location.coords.longitude
+      })
       addEvent('onLocation', location);
+      return location
     }, (error) => {
       console.warn('[onLocation] ERROR: ', error);
     }));
@@ -223,23 +231,13 @@ const HomeScreen = (props) => {
     })
 
 
-    BackgroundGeolocation.watchPosition(
-      position => {
-        // console.log(position.coords.latitude, position.coords.longitude, 'yushii');
-        firestore().collection('marketers').doc(auth().currentUser.uid).set({
-          createdAt: new Date(),
-          uid: auth().currentUser.uid,
-          displayName: auth().currentUser.displayName,
-          lat: position.coords.latitude,
-          long: position.coords.longitude
-        })
-        return position
-      },
+    subscribe(BackgroundGeolocation.watchPosition(
+      position => { },
       error => console.log(error),
       {
         interval: 3000,
       }
-    );
+    ))
     setEnabled(state.enabled);
   };
 
