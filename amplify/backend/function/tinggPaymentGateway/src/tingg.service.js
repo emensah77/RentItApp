@@ -64,10 +64,8 @@ class TinggService {
       });
       if (res.data.access_token) {
         // const tokenType = res.data.token_type
-        const token = res.data.access_token
-        this.api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${token}`;
+        const token = res.data.access_token;
+        this.api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
       return res.data;
     } catch (error) {
@@ -172,23 +170,59 @@ class TinggService {
     });
   }
 
-
   async webhook(request, response) {
     // console.log("webhook");
     // console.log(JSON.stringify(request.body));
     // return response.send('Ok');
+    let verifiedInFirebase = false;
+    let orderId;
     console.log("webhook");
     console.log(JSON.stringify(request.body));
-    if (functionThatCheckPaymentIsValid(request.body)) {
-      // payment valid, acknowledge
-      return response.json({
-        checkoutRequestID: request.body.checkoutRequestID,
-        merchantTransactionID: request.body.merchantTransactionID,
-        statusCode: "183",
-        statusDescription: "Payment processed successfully",
-        receiptNumber: "yourreceivevalue",
-      });
+    const merchantTransactionID = request.body.merchantTransactionID;
+    console.log('merchantId', merchantTransactionID);
+    if (request.body.requestStatusCode == 178) {
+      const transactionsRef = db
+        .collection("transactions")
+        .doc(merchantTransactionID);
+
+      const transactionDoc = await transactionsRef.get();
+      console.log("transaction data", transactionDoc.data());
+      console.log("verifiedInFirebase1", verifiedInFirebase);
+      if (transactionDoc.exists) {
+        const data = transactionDoc.data();
+        console.log("transaction data", data);
+        if (data.paymentStatus === "Processing") {
+          orderId = data.id;
+          verifiedInFirebase = true;
+          transactionDoc.ref.update("paymentStatus", "Success");
+          console.log("verifiedInfirebase2", verifiedInFirebase);
+          if (data.orderType === "payment") {
+            await db
+              .collection("payments")
+              .doc(merchantTransactionID)
+              .update({ paymentStatus: "Success" });
+          } else {
+            await db
+              .collection("homeorders")
+              .doc(merchantTransactionID)
+              .update({ paymentStatus: "Success" });
+          }
+        }
+        if (verifiedInFirebase) {
+          // if (functionThatCheckPaymentIsValid(request.body)) {
+          // payment valid, acknowledge
+          return response.json({
+            checkoutRequestID: request.body.checkoutRequestID,
+            merchantTransactionID: request.body.merchantTransactionID,
+            statusCode: "183",
+            statusDescription: "Payment processed successfully",
+            receiptNumber: orderId,
+          });
+        }
+        console.log("verifiedinfirebase3", verifiedInFirebase);
+      }
     }
+
     // payment failed, refund user
     return response.json({
       checkoutRequestID: request.body.checkoutRequestID,
