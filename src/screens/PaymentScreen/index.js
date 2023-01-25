@@ -44,6 +44,14 @@ const PaymentScreen = props => {
     })();
   }, []);
 
+  useEffect(() => {
+    if(!paymentUrl) {
+      return
+    }
+    addTransaction()
+  }, [paymentUrl])
+  
+
   const deleteFromFavorites = async id => {
     const ref = firestore().collection('posts');
     ref
