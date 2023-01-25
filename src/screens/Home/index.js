@@ -37,6 +37,7 @@ import BackgroundGeolocation, {
 } from "react-native-background-geolocation";
 import BackgroundFetch from "react-native-background-fetch";
 import { registerTransistorAuthorizationListener } from './Authorization';
+import { HOME_STATUS } from '../../variables';
 
 
 const HomeScreen = (props) => {
@@ -191,7 +192,7 @@ const HomeScreen = (props) => {
         negativeAction: 'Cancel',
       },
       startOnBoot: false,
-      
+
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
       stopTimeout: 5,
       batchSync: false,
@@ -207,13 +208,13 @@ const HomeScreen = (props) => {
       debug: false,
     }, (state) => {
       if (!state.enabled) {
-        
+
         BackgroundGeolocation.start(() => {
           console.log(' - Start success');
         });
       }
     });
-    
+
 
     BackgroundGeolocation.start({
       foregroundService: true,
@@ -224,7 +225,7 @@ const HomeScreen = (props) => {
       stopOnTerminate: false,
       startOnBoot: true,
       disableMotionActivityUpdates: true,
-      
+
     });
 
     addEvent('Current state', state);
@@ -233,8 +234,8 @@ const HomeScreen = (props) => {
       notification: {
         title: "RentIt is accessing your location in background",
         text: 'We will use this to search for homes and monitor change in home prices to provide you discounts.'
-      },  
-      
+      },
+
     })
 
 
@@ -579,6 +580,7 @@ const HomeScreen = (props) => {
             longitude: {
               between: [-3.26078589558366, 1.199972025476763],
             },
+            status: { ne: [HOME_STATUS.PENDING, HOME_STATUS.REJECTED] }
           },
         },
         nextToken: token

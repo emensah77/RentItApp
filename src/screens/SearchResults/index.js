@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   FlatList,
@@ -10,15 +10,16 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Post from '../../components/Post';
-import {API, graphqlOperation} from 'aws-amplify';
-import {listPosts, listPostsCount} from '../../graphql/queries';
-import {Dimensions} from 'react-native';
+import { API, graphqlOperation } from 'aws-amplify';
+import { listPosts, listPostsCount } from '../../graphql/queries';
+import { Dimensions } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import reactotron from 'reactotron-react-native';
 import _ from 'lodash';
-const SearchResultsScreen = ({guests, viewport}) => {
+import { HOME_STATUS } from '../../variables';
+const SearchResultsScreen = ({ guests, viewport }) => {
   const [loading, setLoading] = useState(true);
   const [datalist, setDatalist] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +43,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
       status: 'For Rent',
       id: 2,
     },
-    {status: 'For Sale', id: 3},
+    { status: 'For Sale', id: 3 },
   ];
 
   const categories = [
@@ -95,6 +96,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             longitude: {
               between: [viewport.southwest.lng, viewport.northeast.lng],
             },
+            status: { ne: [HOME_STATUS.PENDING, HOME_STATUS.REJECTED] }
           },
         },
         nextToken,
@@ -180,7 +182,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
 
   const renderLoader = () => {
     return isLoading && datalist.length !== 0 ? (
-      <View style={{marginVertical: 16, alignItems: 'center'}}>
+      <View style={{ marginVertical: 16, alignItems: 'center' }}>
         <ActivityIndicator size={'large'} color="blue" />
       </View>
     ) : null;
@@ -216,7 +218,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
     setModeStatus(modeStatus);
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <View key={item}>
         <Post post={item} />
@@ -239,8 +241,8 @@ const SearchResultsScreen = ({guests, viewport}) => {
         }}>
         No Homes Here
       </Text>
-      <View style={{paddingVertical: 10}}>
-        <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+      <View style={{ paddingVertical: 10 }}>
+        <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
           There are no homes in the area you searched. Try expanding your
           search to include other towns and cities near this area.
         </Text>
@@ -272,7 +274,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
 
   return (
     <View
-      style={{paddingBottom: 100, marginBottom: 100, backgroundColor: 'white'}}>
+      style={{ paddingBottom: 100, marginBottom: 100, backgroundColor: 'white' }}>
       {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
             {modes.map((mode) => (
                 
@@ -369,13 +371,13 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 : homeCount.current + ' homes to rent'}
             </Text>
           </View>
-          <View style={{marginBottom: 10, top: 80, backgroundColor: 'white'}}>
+          <View style={{ marginBottom: 10, top: 80, backgroundColor: 'white' }}>
             <FlatList
               removeClippedSubviews={true}
               data={datalist}
               maxToRenderPerBatch={1}
               initialNumToRender={1}
-              contentContainerStyle={{paddingBottom: 40}}
+              contentContainerStyle={{ paddingBottom: 40 }}
               onEndReached={() => callOnScrollEnd.current = true}
               onMomentumScrollEnd={() => {
                 callOnScrollEnd.current && loadMore(false);
@@ -397,12 +399,12 @@ const SearchResultsScreen = ({guests, viewport}) => {
               // getItemCount={data => data.length}
               windowSize={3}
               updateCellsBatchingPeriod={100}
-              //renderItem={({item}) => <Post post={item}/>}
+            //renderItem={({item}) => <Post post={item}/>}
             />
           </View>
         </View>
       ) : (
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
           <AnimatedEllipsis
             animationDelay={100}
             style={{
@@ -428,7 +430,7 @@ const styless = StyleSheet.create({
     marginHorizontal: 10,
     height: 35,
     shadowColor: '#000',
-    shadowOffset: {width: 10, height: 10},
+    shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 30,
