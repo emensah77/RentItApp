@@ -36,9 +36,12 @@ const PaymentScreen = props => {
   const [merchantTransactionID, setMerchantTransactionID] = useState(null);
   
   useEffect(() => {
-    generatePaymentUrl();
-    console.log(paymentUrl)
-    console.log("HomeID",homeid)
+    (async () => {
+      await generatePaymentUrl();
+
+      
+      
+    })();
   }, []);
 
   const deleteFromFavorites = async id => {
@@ -189,7 +192,10 @@ const PaymentScreen = props => {
           setMerchantTransactionID(res.data?.requestBody?.merchantTransactionID);
           setPaymentUrl(res.data?.paymentUrl);
           resolve(res.data?.paymentUrl);
+          
+          
         })
+        
         .catch(e => {
           console.log(e);
           setMerchantTransactionID(null);
@@ -243,7 +249,7 @@ const PaymentScreen = props => {
             const {url} = event.nativeEvent;
             const words = url.split('type=');
             if (words[1] === 'success') {
-              addTransaction();
+              
               console.log('event',event);
               if (navigation.canGoBack()) {
                 
@@ -287,7 +293,11 @@ const PaymentScreen = props => {
           }}
           javaScriptEnabled
         />
-      ) : <ActivityIndicator size={55} color="blue"/>}
+      ) : 
+      
+      <ActivityIndicator size={55} color="blue"/>
+      
+      }
       {/* <Paystack
             paystackKey="pk_live_6869737082c788c90a3ea0df0a62018c57fc6759"
             paystackSecretKey="sk_live_3c4468c7af13179692b7103e785206b6faf70b09"
