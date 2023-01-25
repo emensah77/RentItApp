@@ -21,6 +21,7 @@ export const onCreateUser = /* GraphQL */ `
           phoneNumbers
           marketerNumber
           currency
+          status
           bed
           bedroom
           bathroomNumber
@@ -67,6 +68,7 @@ export const onUpdateUser = /* GraphQL */ `
           phoneNumbers
           marketerNumber
           currency
+          status
           bed
           bedroom
           bathroomNumber
@@ -113,6 +115,7 @@ export const onDeleteUser = /* GraphQL */ `
           phoneNumbers
           marketerNumber
           currency
+          status
           bed
           bedroom
           bathroomNumber
@@ -164,6 +167,7 @@ export const onCreatePost = /* GraphQL */ `
       phoneNumbers
       marketerNumber
       currency
+      status
       bed
       bedroom
       bathroomNumber
@@ -210,6 +214,7 @@ export const onUpdatePost = /* GraphQL */ `
       phoneNumbers
       marketerNumber
       currency
+      status
       bed
       bedroom
       bathroomNumber
@@ -256,6 +261,7 @@ export const onDeletePost = /* GraphQL */ `
       phoneNumbers
       marketerNumber
       currency
+      status
       bed
       bedroom
       bathroomNumber

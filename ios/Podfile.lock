@@ -897,7 +897,7 @@ PODS:
     - React-Core
   - react-native-version-check (3.4.3):
     - React
-  - react-native-webview (11.25.1):
+  - react-native-webview (11.26.0):
     - React-Core
   - React-perflogger (0.68.1)
   - React-RCTActionSheet (0.68.1):
@@ -1053,9 +1053,9 @@ PODS:
   - RNScreens (3.18.0):
     - React-Core
     - React-RCTImage
-  - RNSentry (3.4.3):
+  - RNSentry (4.12.0):
     - React-Core
-    - Sentry (= 7.11.0)
+    - Sentry/HybridSDK (= 7.31.3)
   - RNSVG (12.5.0):
     - React-Core
   - RNVectorIcons (8.1.0):
@@ -1066,9 +1066,7 @@ PODS:
   - SDWebImageWebPCoder (0.8.5):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - Sentry (7.11.0):
-    - Sentry/Core (= 7.11.0)
-  - Sentry/Core (7.11.0)
+  - Sentry/HybridSDK (7.31.3)
   - SocketRocket (0.6.0)
   - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
@@ -1452,7 +1450,7 @@ SPEC CHECKSUMS:
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-version-check: e85c2e21d0955b7cdfd91c0ddacc3edf14b7abd7
-  react-native-webview: 91a6bd643c6c298f6dfac309231c15d60b8e9505
+  react-native-webview: 994b9f8fbb504d6314dc40d83f94f27c6831b3bf
   React-perflogger: 30ab8d6db10e175626069e742eead3ebe8f24fd5
   React-RCTActionSheet: 4b45da334a175b24dabe75f856b98fed3dfd6201
   React-RCTAnimation: d6237386cb04500889877845b3e9e9291146bc2e
@@ -1485,12 +1483,12 @@ SPEC CHECKSUMS:
   RNPermissions: dcdb7b99796bbeda6975a6e79ad519c41b251b1c
   RNReanimated: b21b362b4b8ca921932e8b1718e88cf3a36f157e
   RNScreens: f3230dd008a7d0ce5c0a8bc78ff12cf2315bda24
-  RNSentry: 85f6525b5fe8d2ada065858026b338605b3c09da
+  RNSentry: 4c09f4dd9740cb9b33e94303de5b6d0dbeb0737d
   RNSVG: 6adc5c52d2488a476248413064b7f2832e639057
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
-  Sentry: 0c5cd63d714187b4a39c331c1f0eb04ba7868341
+  Sentry: 08884c523575ec0f6690d94ed3ccb0246a1600bf
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 17cd9a50243093b547c1e539c749928dd68152da

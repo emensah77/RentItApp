@@ -17,6 +17,8 @@ const WelcomeScreen = ({ props }) => {
 
     return (
         <View style={{ flex: 1, top: 100, padding: 10, backgroundColor: 'white' }}>
+            <ScrollView>
+
             <Text style={{ fontSize: 22, fontWeight: 'bold', padding: 10 }}>Welcome {user?._user?.displayName}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, padding: 10 }}>We are glad you are here. We began RentIt to make it easier for people like you
                 to find homes they love!
@@ -157,7 +159,10 @@ const WelcomeScreen = ({ props }) => {
                 }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'white' }}>Agree and Continue</Text>
             </TouchableOpacity>
-        </View>
+
+
+            </ScrollView>
+                    </View>
     )
 
 }

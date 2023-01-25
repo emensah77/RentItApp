@@ -106,10 +106,12 @@ const ManageProfile = () => {
                 </View>
             </LinearGradient>
 
-            <View style={{ padding: 15, flex: 1 }}>
+            <View style={{padding: 15, flex: 1 }}>
                 <ScrollView
+                contentContainerStyle={{paddingBottom:20}}
                     showsVerticalScrollIndicator={false}
                 >
+                    
                     <Text style={{ ...styles.label, marginTop: 10 }}>Display Name</Text>
                     <TextInput
                         value={name}

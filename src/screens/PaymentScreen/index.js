@@ -28,12 +28,15 @@ const PaymentScreen = props => {
   const homeyears = route.params.homeyears;
   const homemonths = route.params.homemonths;
   const homeid = route.params.homeid;
+  const selectedType = route.params.selectedType;
+  const [checkoutNumber, setCheckOutNumber] = useState('+233242345678')
+  
 
   const [paymentUrl, setPaymentUrl] = useState(null);
   useEffect(() => {
     generatePaymentUrl();
     console.log(paymentUrl)
-    console.log("routeName",route.name)
+    console.log("HomeID",homeid)
   }, []);
 
   const deleteFromFavorites = async id => {
@@ -77,8 +80,25 @@ const PaymentScreen = props => {
   //console.log({homemonths, homeyears, homebed, homelatitude, homeimage, hometitle, homelongitude});
   //console.log(channel);
   //console.log(homeid);
+  const addPayment = async () => {
+    await firestore()
+    .collection('payments')
+    .add({
+      createdAt: new Date(),
+      amountPaid: amount,
+      userId: user.uid,
+      userName: user.displayName,
+      paymentType: selectedType,
+    })
+    .then(docRef => {
+      console.log('Added to payments')
+    })
+    .catch(error => {
+      console.log('Something went wrong adding to payments!',error);
+    })
+  }
   const addHomeOrder = async () => {
-    firestore()
+    await firestore()
       .collection('homeorders')
       .add({
         userId: user.uid,
@@ -125,11 +145,11 @@ const PaymentScreen = props => {
             
             requestAmount: JSON.stringify(amount),
             currencyCode: 'GHS',
-            requestDescription: 'Test merchant transaction',
+            requestDescription: 'RentIt Payment',
             countryCode: 'GH',
             languageCode: 'en',
-            //serviceCode: "RENDEV5770",
-            //MSISDN: user?.phoneNumber,
+            serviceCode: "RENTIZO",
+            MSISDN: "233244070987",
             customerFirstName: user?.displayName ?? ' ',
             customerLastName: ' ',
             customerEmail: userEmail,
@@ -192,15 +212,31 @@ const PaymentScreen = props => {
             const {url} = event.nativeEvent;
             const words = url.split('type=');
             if (words[1] === 'success') {
+              console.log('event',event);
               if (navigation.canGoBack()) {
-                Alert.alert(
-                  'Payment successful. You will be redirected to your new home',
-                );
-                addHomeOrder();
-                deleteHome(homeid);
-                deleteFromTrends(homeid);
-                deleteFromFavorites(homeid);
-                navigation.replace('House');
+                
+                if(homeid === null){
+                  Alert.alert(
+                  'Payment Confirmation!',
+                  'Keep your confirmation code: ' + `${auth().currentUser.uid}`,
+                  [
+                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                  ], 
+                  { cancelable: false })
+                  addPayment();
+                  navigation.replace('Home');
+                }
+                else{
+                  Alert.alert(
+                    'Payment successful. You will be redirected to your new home',
+                  );
+                  addHomeOrder();
+                  deleteHome(homeid);
+                  deleteFromTrends(homeid);
+                  deleteFromFavorites(homeid);
+                  navigation.replace('House');
+                }
+                
               } else {
                 _storeData();
                 Alert.alert("Payment successful. Enjoy using RentIt to find your next home",);

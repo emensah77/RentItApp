@@ -1,8 +1,20 @@
-const Encryption = require("./Encryption");
 const axios = require("axios");
 const short = require("short-uuid");
 const fs = require("fs");
 const path = require("path");
+const admin = require("firebase-admin");
+
+var serviceAccount = require("./rentitapp-8fc19-firebase-adminsdk-ewhh3-d58d4d8eba.json");
+const Encryption = require("./Encryption");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+const db = admin.firestore();
+
+function functionThatCheckPaymentIsValid(body) {
+  return true;
+}
 
 const envUrl = `https://i08fhhbxwk.execute-api.us-east-2.amazonaws.com/dev`;
 const functionPrefix = "tingg";
@@ -160,10 +172,31 @@ class TinggService {
     });
   }
 
+
   async webhook(request, response) {
+    // console.log("webhook");
+    // console.log(JSON.stringify(request.body));
+    // return response.send('Ok');
     console.log("webhook");
     console.log(JSON.stringify(request.body));
-    return response.send('Ok');
+    if (functionThatCheckPaymentIsValid(request.body)) {
+      // payment valid, acknowledge
+      return response.json({
+        checkoutRequestID: request.body.checkoutRequestID,
+        merchantTransactionID: request.body.merchantTransactionID,
+        statusCode: "183",
+        statusDescription: "Payment processed successfully",
+        receiptNumber: "yourreceivevalue",
+      });
+    }
+    // payment failed, refund user
+    return response.json({
+      checkoutRequestID: request.body.checkoutRequestID,
+      merchantTransactionID: request.body.merchantTransactionID,
+      statusCode: "180",
+      statusDescription: "Payment was not processed successfully",
+      receiptNumber: "",
+    });
   }
 
   async paymentOptions(request, response) {
@@ -365,6 +398,7 @@ class TinggService {
 
   async test(request, response) {
     // console.log(JSON.stringify(request.body))
+    await db.collection("test").add({ testNumber: short.generate() });
     return response.json(JSON.stringify(request.requestContext));
   }
 }

@@ -161,8 +161,8 @@ const HomeScreen = (props) => {
     }));
 
     subscribe(BackgroundGeolocation.onLocation(location => {
-      console.log(`Latitude: ${location.coords.latitude}`);
-      console.log(`Longitude: ${location.coords.longitude}`);
+      //console.log(`Latitude: ${location.coords.latitude}`);
+      //console.log(`Longitude: ${location.coords.longitude}`);
     }))
 
     subscribe(BackgroundGeolocation.onActivityChange((event) => {
@@ -181,8 +181,17 @@ const HomeScreen = (props) => {
       logLevel: BackgroundGeolocation.LOG_LEVEL_NONE,
       distanceFilter: 10,
       stopOnTerminate: false,
+      startOnBoot: true,
+      disableMotionActivityUpdates: true,
+      backgroundPermissionRationale: {
+        title: "{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.",
+        message:
+          "If you will like to receive these recommendations and notifications, choose Allow all the time.",
+        positiveAction: '{backgroundPermissionOptionLabel}',
+        negativeAction: 'Cancel',
+      },
       startOnBoot: false,
-      backgroundPermissionRationale: true,
+      
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
       stopTimeout: 5,
       batchSync: false,
@@ -192,17 +201,19 @@ const HomeScreen = (props) => {
       locationAuthorizationRequest: true,
       reset: false,
       notification: {
-        title: "The Title",
-        text: "The Text"
+        title: "RentIt is accessing your location in background",
+        text: 'We will use this to search for homes and monitor change in home prices to provide you discounts.'
       },
       debug: false,
     }, (state) => {
       if (!state.enabled) {
+        
         BackgroundGeolocation.start(() => {
           console.log(' - Start success');
         });
       }
     });
+    
 
     BackgroundGeolocation.start({
       foregroundService: true,
@@ -212,22 +223,18 @@ const HomeScreen = (props) => {
       enableHeadless: true,
       stopOnTerminate: false,
       startOnBoot: true,
+      disableMotionActivityUpdates: true,
+      
     });
 
     addEvent('Current state', state);
 
     BackgroundGeolocation.setConfig({
       notification: {
-        title: "",
-        text: 'Thank you for choosing us.'
-      },
-      backgroundPermissionRationale: {
-        title: "{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.",
-        message:
-          "If you will like to receive these recommendations and notifications, choose Allow all the time.",
-        positiveAction: '{backgroundPermissionOptionLabel}',
-        negativeAction: 'Cancel',
-      },
+        title: "RentIt is accessing your location in background",
+        text: 'We will use this to search for homes and monitor change in home prices to provide you discounts.'
+      },  
+      
     })
 
 
@@ -235,7 +242,7 @@ const HomeScreen = (props) => {
       position => { },
       error => console.log(error),
       {
-        interval: 3000,
+        interval: 1000,
       }
     ))
     setEnabled(state.enabled);
@@ -415,7 +422,7 @@ const HomeScreen = (props) => {
 
     if (status === 'disabled') {
       Alert.alert(
-        `Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`,
+        `Turn on Location Services to allow "RentIt" to determine your location.`,
         '',
         [
           { text: 'Go to Settings', onPress: openSetting },
@@ -912,7 +919,7 @@ const HomeScreen = (props) => {
 
     const interval = setInterval(() => {
       getLocation();
-    }, 10000);
+    }, 1000);
     return () => clearInterval(interval);
 
   }, [])
@@ -2009,5 +2016,3 @@ const HomeScreen = (props) => {
 };
 
 export default HomeScreen;
-
-

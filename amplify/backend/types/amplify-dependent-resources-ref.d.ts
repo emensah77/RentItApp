@@ -33,19 +33,22 @@ export type AmplifyDependentResourcesAttributes = {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
-            "LambdaExecutionRole": "string"
+            "LambdaExecutionRole": "string",
+            "LambdaExecutionRoleArn": "string"
         },
         "createpaystack": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
-            "LambdaExecutionRole": "string"
+            "LambdaExecutionRole": "string",
+            "LambdaExecutionRoleArn": "string"
         },
         "tinggPaymentGateway": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
-            "LambdaExecutionRole": "string"
+            "LambdaExecutionRole": "string",
+            "LambdaExecutionRoleArn": "string"
         }
     },
     "storage": {
