@@ -107,11 +107,11 @@ const HomeScreen = (props) => {
   }, []);
 
   const subscribe = (subscription) => {
-    bgGeoEventSubscriptions.push(subscription);
+    bgGeoEventSubscriptions?.push(subscription);
   }
 
   const unsubscribe = () => {
-    bgGeoEventSubscriptions.forEach((subscription) => subscription.remove());
+    bgGeoEventSubscriptions?.forEach((subscription) => subscription?.remove());
   }
 
   /// Configure the BackgroundGeolocation plugin.
