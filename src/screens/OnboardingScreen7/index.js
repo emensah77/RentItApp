@@ -43,6 +43,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import { createPost } from '../../graphql/mutations';
 import { AuthContext } from '../../navigation/AuthProvider';
 import axios from 'axios';
+import { HOME_STATUS } from '../../variables.js';
 
 const OnboardingScreen7 = props => {
     const navigation = useNavigation();
@@ -135,6 +136,7 @@ const OnboardingScreen7 = props => {
                 toilet: amenities.includes('Toilet') ? 'Yes' : 'No',
                 marketerNumber: marketerNumber,
                 currency: [currency],
+                status: HOME_STATUS.PENDING
             };
             const uploadedHome = await API.graphql(
                 graphqlOperation(
@@ -159,7 +161,7 @@ const OnboardingScreen7 = props => {
                 address,
                 uploadedHome.data.createPost.id,
             );
-            //   console.log("Succesfully uploaded the home");
+            // console.log("Succesfully uploaded the home", uploadHome);
             //   console.log("homeid", id)
         } catch (e) {
             console.log('Error uploading home', e);

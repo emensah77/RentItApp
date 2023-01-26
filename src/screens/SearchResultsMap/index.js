@@ -10,6 +10,7 @@ import {listPosts} from '../../graphql/queries';
 import { Dimensions} from "react-native";
 import Feather from 'react-native-vector-icons/Feather';
 import {OptimizedFlatList} from 'react-native-optimized-flatlist'
+import { HOME_STATUS } from '../../variables';
 const mapStyle = [
     {
       "elementType": "geometry",
@@ -277,7 +278,8 @@ const SearchResultsMaps = ({guests, viewport}) => {
                                   //viewport.southwest.lng,
                                   //viewport.northeast.lng,
                               ],
-                          }
+                          },
+                          status: { ne: [HOME_STATUS.PENDING, HOME_STATUS.REJECTED] }
                       }
                       
                   }
