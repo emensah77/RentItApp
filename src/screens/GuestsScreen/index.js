@@ -16,6 +16,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const GuestsScreen = props => {
     const navigation = useNavigation();
@@ -145,6 +146,8 @@ const GuestsScreen = props => {
                             });
                             // adding the search result to the firebase
                             // console.log("=========>", route.params.location.address_components?.[0]?.long_name)
+                            const fcmToken = await AsyncStorage.getItem('fcmToken')
+                            // console.log('=====> FCM', fcmToken)
                             if (user?.uid) {
                                 try {
                                     await firestore().collection('searchQuery')
@@ -152,7 +155,8 @@ const GuestsScreen = props => {
                                         place: route.params.location.address_components?.[0]?.long_name, // send the locality of place to save it on firebase searchQuery
                                         userId: user.uid,
                                         guests: rooms,
-                                        created_at: new Date()
+                                        created_at: new Date(),
+                                        userFcm: fcmToken
                                     });
                                 } catch (error) {
                                     console.log(error);

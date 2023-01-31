@@ -101,7 +101,7 @@ const OnboardingScreen7 = props => {
 
     const searchApi = async (data) => {
         await axios
-            .post('https://rentit.homes/api/rentit/search/', data)
+            .post('https://dev.rentit.homes/api/rentit/search/', data)
             .then((data) => data)
             .catch((error) => console.log(error));
     };
