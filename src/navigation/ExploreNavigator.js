@@ -195,13 +195,6 @@ const Router = (props) => {
                 }}
             />
             <Stack.Screen
-                name={'Notifications'}
-                component={Notifications}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
                 name={'ManageProfile'}
                 component={ManageProfile}
                 options={{

@@ -403,12 +403,6 @@ const ProfileScreen = ({route}) => {
               <Text style={styles.menuItemText}>Manage your account</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
-            <View style={styles.menuItem}>
-              <Icon name="bell" color="blue" size={25} />
-              <Text style={styles.menuItemText}>Notifications</Text>
-            </View>
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Marketer')}>
             <View style={styles.menuItem}>
               <Icon name="home-group" color="blue" size={25} />
