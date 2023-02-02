@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { useState, useEffect } from 'react';
+import { View } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
 import SignupScreen from '../screens/SignUpScreen';
 import LoginScreen from '../screens/LoginScreen';
 import OnboardingScreen from '../screens/Onboarding';
@@ -8,6 +8,8 @@ import HomeTabNavigator from "./HomeTabNavigator"
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-community/google-signin';
+import LocationPermissions from '../screens/LocationPermissions';
+import Notifications from '../screens/Notifications';
 
 const Stack = createStackNavigator();
 
@@ -24,11 +26,11 @@ const AuthStack = () => {
         setIsFirstLaunch(false);
       }
     }); // Add some error handling, also you can simply do setIsFirstLaunch(null)
-  
+
     GoogleSignin.configure({
       webClientId: '953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com',
     });
-  
+
   }, []);
 
   if (isFirstLaunch === null) {
@@ -39,28 +41,40 @@ const AuthStack = () => {
     routeName = 'Login';
   }
 
- 
 
-  
+
+
   return (
-<Stack.Navigator initialRouteName={routeName}>
+    <Stack.Navigator initialRouteName={routeName}>
       <Stack.Screen
         name="Onboarding"
         component={OnboardingScreen}
-        options={{header: () => null}}
+        options={{ header: () => null }}
       />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{header: () => null}}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name={'LocationPermissions'}
+        component={LocationPermissions}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={'Notifications'}
+        component={Notifications}
+        options={{
+          headerShown: false,
+        }}
       />
 
-      
-      
       <Stack.Screen
         name="Signup"
         component={SignupScreen}
-        options={({navigation}) => ({
+        options={({ navigation }) => ({
           title: '',
           headerStyle: {
             backgroundColor: '#f9fafd',
@@ -68,8 +82,8 @@ const AuthStack = () => {
             elevation: 0,
           },
           headerLeft: () => (
-            <View style={{marginLeft: 10}}>
-              <FontAwesome.Button 
+            <View style={{ marginLeft: 10 }}>
+              <FontAwesome.Button
                 name="long-arrow-left"
                 size={25}
                 backgroundColor="#f9fafd"

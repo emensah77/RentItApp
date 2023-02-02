@@ -1,4 +1,4 @@
-import React, {useContext, useEffect,useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import SocialButton from '../../components/SocialButton';
 import { AuthContext } from '../../navigation/AuthProvider';
 import Swiper from 'react-native-swiper';
 import { AppleButton } from '@invertase/react-native-apple-authentication';
-import { faFacebook, faApple, faGoogle} from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faApple, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import SplashScreen from 'react-native-splash-screen'
 const { width, height } = Dimensions.get('screen');
 const ITEM_WIDTH = width * 0.76;
@@ -35,13 +35,13 @@ const images = [
 const data = images.map((image, index) => ({
   key: String(index),
   photo: image,
-  
+
 }));
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const {login, googleLogin, fbLogin, appleLogin} = useContext(AuthContext);
+  const { login, googleLogin, fbLogin, appleLogin } = useContext(AuthContext);
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -52,30 +52,31 @@ const LoginScreen = ({navigation}) => {
     <ScrollView contentContainerStyle={styles.container}>
       <StatusBar hidden={true} />
       <View style={styles.container}>
-        
+
         <View style={styles.header}>
-        <Animatable.Image 
-                animation="fadeInDownBig"
-                duraton={1500}
-              source={require('../../../assets/data/images/rentitpic1.png')}
-              style={{height:200, width:200, justifyContent:'center', alignSelf:"center"}}
-              resizeMode="contain"
-            />
+          <Animatable.Image
+            animation="fadeInDownBig"
+            duraton={1500}
+            source={require('../../../assets/data/images/rentitpic1.png')}
+            style={{ height: 200, width: 200, justifyContent: 'center', alignSelf: "center" }}
+            resizeMode="contain"
+          />
           <Text style={styles.text_header}> Welcome </Text>
         </View>
         <Animatable.View
-        animation="fadeInUpBig"
-        duration={1500} 
+          animation="fadeInUpBig"
+          duration={1500}
           style={styles.footer}
         >
           <Text style={styles.title}>Find your next home</Text>
-          
+
           <View style={styles.button}>
+            <Image source={require('../../../assets/data/images/home.png')} style={{ width: 300, height: 150 }} />
 
-          {Platform.OS === 'ios' ? (
-        <View>
+            {Platform.OS === 'ios' ? (
+              <View>
 
-          {/* <SocialButton
+                {/* <SocialButton
             buttonTitle="Continue with Facebook"
             btnType={faFacebook}
             color="blue"
@@ -83,47 +84,47 @@ const LoginScreen = ({navigation}) => {
             onPress={() => fbLogin()}
           /> */}
 
-          <SocialButton
-            buttonTitle="Continue with Apple"
-            btnType={faApple}
-            color="black"
-            backgroundColor="white"
-            onPress={() => appleLogin()}
-          />
+                <SocialButton
+                  buttonTitle="Continue with Apple"
+                  btnType={faApple}
+                  color="black"
+                  backgroundColor="white"
+                  onPress={() => appleLogin()}
+                />
 
-          <SocialButton
-            buttonTitle="Continue with Google"
-            btnType={faGoogle}
-            color="deeppink"
-            backgroundColor="white"
-            onPress={() => googleLogin()}
-          />
-        </View> ): 
-        <View>
+                <SocialButton
+                  buttonTitle="Continue with Google"
+                  btnType={faGoogle}
+                  color="deeppink"
+                  backgroundColor="white"
+                  onPress={() => googleLogin()}
+                />
+              </View>) :
+              <View>
 
-        {/* <SocialButton
+                {/* <SocialButton
           buttonTitle="Continue with Facebook"
           btnType={faFacebook}
           color="blue"
           backgroundColor="white"
           onPress={() => fbLogin()}
         /> */}
-        <SocialButton
-            buttonTitle="Continue with Google"
-            btnType={faGoogle}
-            color="deeppink"
-            backgroundColor="white"
-            onPress={() => googleLogin()}
-          />
-        </View>
-        
-        }
+                <SocialButton
+                  buttonTitle="Continue with Google"
+                  btnType={faGoogle}
+                  color="deeppink"
+                  backgroundColor="white"
+                  onPress={() => googleLogin()}
+                />
+              </View>
+
+            }
 
           </View>
         </Animatable.View>
 
-        
-         
+
+
       </View>
       {/*
       <Text style={styles.text}>RN Social App</Text>
@@ -227,10 +228,10 @@ const LoginScreen = ({navigation}) => {
       //           }}
       //           />
       //     </View> */}
-                
-         
-      
-    {/*
+
+
+
+      {/*
       <TouchableOpacity
         style={styles.forgotButton}
         onPress={() => navigation.navigate('Signup')}>
@@ -253,8 +254,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
   },
-  
-  
+
+
   text: {
     fontFamily: 'Mo',
     fontSize: 28,
@@ -275,21 +276,21 @@ const styles = StyleSheet.create({
   },
   wrapper: {},
   sliderContainer: {
-      height: 200,
-      width: '90%',
-      marginTop: 10,
-      justifyContent: 'center',
-      alignSelf: 'center',
-      borderRadius: 8,
-      marginBottom:150,
+    height: 200,
+    width: '90%',
+    marginTop: 10,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 8,
+    marginBottom: 150,
   },
 
   slide1: {
-      flex: 1,
-      justifyContent: 'center',
-      backgroundColor: 'blue',
-      borderRadius: 8,
-      alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'blue',
+    borderRadius: 8,
+    alignItems: 'center',
   },
   slide2: {
     flex: 1,
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#CC3333',
     borderRadius: 8,
     alignItems: 'center',
-},
+  },
   slide3: {
     flex: 1,
     justifyContent: 'center',
@@ -320,94 +321,94 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sliderImage: {
-      height: '100%',
-      width: '100%',
-      alignSelf: 'center',
-      borderRadius: 8,
+    height: '100%',
+    width: '100%',
+    alignSelf: 'center',
+    borderRadius: 8,
   },
   text: {
-      color: '#fff',
-      fontSize: 40,
-      fontWeight: 'bold'
-    },
-    header: {
-      flex: 1,
-      justifyContent: 'flex-end',
-      paddingHorizontal: 20,
-      paddingBottom: 50
+    color: '#fff',
+    fontSize: 40,
+    fontWeight: 'bold'
+  },
+  header: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 50
   },
   footer: {
-      flex: 1.5,
-      backgroundColor: '#fff',
-      borderTopLeftRadius: 30,
-      borderTopRightRadius: 30,
-      paddingHorizontal: 20,
-      paddingVertical: 30,
-      
+    flex: 1.5,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+
   },
   text_header: {
-      color: '#fff',
-      fontFamily:"Montserrat-Bold",
-      fontSize: 30
+    color: '#fff',
+    fontFamily: "Montserrat-Bold",
+    fontSize: 30
   },
   text_footer: {
-      color: '#05375a',
-      fontSize: 18
+    color: '#05375a',
+    fontSize: 18
   },
   action: {
-      flexDirection: 'row',
-      marginTop: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#f2f2f2',
-      paddingBottom: 5
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5
   },
   actionError: {
-      flexDirection: 'row',
-      marginTop: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#FF0000',
-      paddingBottom: 5
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FF0000',
+    paddingBottom: 5
   },
   textInput: {
-      flex: 1,
-      marginTop: Platform.OS === 'ios' ? 0 : -12,
-      paddingLeft: 10,
-      color: '#05375a',
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    paddingLeft: 10,
+    color: '#05375a',
   },
   errorMsg: {
-      color: '#FF0000',
-      fontSize: 14,
+    color: '#FF0000',
+    fontSize: 14,
   },
   button: {
-      alignItems: 'center',
-      marginTop: 50
+    alignItems: 'center',
+    marginTop: 50
   },
   signIn: {
-      width: '100%',
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 10
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10
   },
   textSign: {
-      fontSize: 18,
-      fontWeight: 'bold'
+    fontSize: 18,
+    fontWeight: 'bold'
   },
   container: {
-    flex: 1, 
+    flex: 1,
     backgroundColor: 'blue'
   },
   title: {
     color: 'blue',
     fontSize: 25,
-    
-    fontFamily:'Montserrat-Bold'
-},
-text: {
-  color: 'blue',
-  marginTop:5,
-  fontSize:20,
-  fontFamily:'Montserrat-Bold'
-},
-  
+
+    fontFamily: 'Montserrat-Bold'
+  },
+  text: {
+    color: 'blue',
+    marginTop: 5,
+    fontSize: 20,
+    fontFamily: 'Montserrat-Bold'
+  },
+
 });

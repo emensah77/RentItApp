@@ -29,7 +29,7 @@ const Onboarding = (props) =>  {
   const navigation = useNavigation();
 
   const goto = () =>{
-    navigation.navigate("Login");
+    navigation.navigate("LocationPermissions");
   }
   
   
