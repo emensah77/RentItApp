@@ -96,7 +96,7 @@ const SearchResultsScreen = ({ guests, viewport }) => {
             longitude: {
               between: [viewport.southwest.lng, viewport.northeast.lng],
             },
-            status: { ne: [HOME_STATUS.PENDING, HOME_STATUS.REJECTED] }
+            status: { eq: HOME_STATUS.APPROVED }
           },
         },
         nextToken,
