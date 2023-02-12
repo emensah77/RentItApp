@@ -279,7 +279,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
                                   //viewport.northeast.lng,
                               ],
                           },
-                          status: { ne: [HOME_STATUS.PENDING, HOME_STATUS.REJECTED] }
+                          status: { eq: HOME_STATUS.APPROVED }
                       }
                       
                   }

@@ -580,7 +580,7 @@ const HomeScreen = (props) => {
             longitude: {
               between: [-3.26078589558366, 1.199972025476763],
             },
-            status: { ne: [HOME_STATUS.PENDING, HOME_STATUS.REJECTED] }
+            status: { eq: HOME_STATUS.APPROVED }
           },
         },
         nextToken: token
