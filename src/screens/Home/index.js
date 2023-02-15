@@ -99,7 +99,9 @@ const HomeScreen = (props) => {
   React.useEffect(() => {
     BackgroundGeolocation.start();
     initBackgroundFetch();
-    initBackgroundGeolocation();
+    setTimeout(() => {
+      initBackgroundGeolocation();
+    }, 5000);
     registerTransistorAuthorizationListener(navigation);
     return () => {
       unsubscribe();
@@ -123,7 +125,7 @@ const HomeScreen = (props) => {
 
     subscribe(BackgroundGeolocation.onLocation((location) => {
       console.log('[onLocation]', location);
-      firestore().collection('marketers').doc(auth().currentUser.uid).set({
+      firestore().collection('marketers').doc(auth().currentUser.uid).update({
         createdAt: new Date(),
         uid: auth().currentUser.uid,
         displayName: auth().currentUser.displayName,
@@ -243,7 +245,7 @@ const HomeScreen = (props) => {
       position => { },
       error => console.log(error),
       {
-        interval: 1000,
+        interval: 5000,
       }
     ))
     setEnabled(state.enabled);
@@ -496,7 +498,7 @@ const HomeScreen = (props) => {
       async (position) => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
-        await firestore().collection('marketers').doc(auth().currentUser.uid).set({
+        await firestore().collection('marketers').doc(auth().currentUser.uid).update({
           createdAt: new Date(),
           uid: auth().currentUser.uid,
           displayName: auth().currentUser.displayName,
@@ -921,7 +923,7 @@ const HomeScreen = (props) => {
 
     const interval = setInterval(() => {
       getLocation();
-    }, 1000);
+    }, 10000);
     return () => clearInterval(interval);
 
   }, [])
