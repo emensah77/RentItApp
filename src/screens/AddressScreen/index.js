@@ -13,10 +13,12 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import firestore from '@react-native-firebase/firestore';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon, } from '@fortawesome/react-native-fontawesome';
+import { RangeCalendar } from '@ui-kitten/components';
+import { convertDays, fCurrency } from '../../variables';
 
 
 const AddressScreen = (props) => {
-
+    const [range, setRange] = useState({});
     const {user, logout} = useContext(AuthContext);
     const [progressText, setProgressText] = useState(0);
     const [isLoading, setisLoading] = useState(false);
@@ -44,7 +46,19 @@ const AddressScreen = (props) => {
     //console.log(homeimage);
     //console.log(hometitle);
 
-    console.log(post);
+    console.log(range);
+    const noOfSelectedDays = (range?.endDate - range?.startDate) / (1000 * 60 * 60 * 24) + 1;
+
+    const calculatePrice = () => {
+        if (range?.endDate && range?.startDate) {
+          const differenceInMilliseconds = range?.endDate - range?.startDate;
+          const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24) + 1;
+          const calculatedPrice = Math.ceil(amount / 365) * differenceInDays;
+          return calculatedPrice;
+        } else {
+          return 0;
+        }
+      };
     
     const hellod1 = (text) => {
         setValue(parseInt(text));
@@ -410,13 +424,14 @@ const AddressScreen = (props) => {
             </View>
             <View style={styles.hairline}/>
             <View>
-            <Text style={{marginBottom: 10, fontFamily:'Montserrat-Bold'}}>Your Rent Details</Text>
+            <Text style={{marginBottom: 10, fontFamily:'Montserrat-Bold', alignSelf:'center'}}>Your Rent Details</Text>
+            <Text style={{marginBottom: 10, fontFamily:'Montserrat'}}>Select the dates from calendar</Text>
             </View>
               
         
             
             
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
                 <View style={{flex:1, justifyContent:'space-between'}}>
                     <Text style={{fontWeight: 'bold'}}>Years</Text>
                     <Text style={{color: 'darkgray'}}>How many years?</Text>
@@ -442,15 +457,19 @@ const AddressScreen = (props) => {
                     </Pressable>
                 </View>
     
-            </View>
+            </View> */}
 
                     
-
-            <View style={styles.row}>
+            <RangeCalendar
+                range={range}
+                onSelect={nextRange => setRange(nextRange)}
+            />
+            {/* <View style={styles.row}>
                 <View style={{flex:1, justifyContent:'space-between'}}>
                     <Text style={{fontWeight: 'bold'}}>Months</Text>
                     <Text style={{color: 'darkgray'}}>How many months?</Text>
                 </View>
+                
 
                 <View style={{flexDirection: 'row', alignItems:'center'}}>
 
@@ -468,7 +487,6 @@ const AddressScreen = (props) => {
                     style = {styles.button}
                     >
                         <Text style={{fontSize: 20, color: 'black'}}>+</Text>
-                        
                     </Pressable>
                 </View>
 
@@ -476,11 +494,11 @@ const AddressScreen = (props) => {
 
 
                 
-            </View>
+            </View> */}
 
 
 
-            <View style={styles.hairline}/>
+            {/* <View style={styles.hairline}/>
             <View>
             <Text style={{marginBottom: 10, fontFamily:'Montserrat-Bold'}}>Choose how to pay</Text>
             
@@ -495,13 +513,15 @@ const AddressScreen = (props) => {
             <View style={styles.hairline}/>
             <View>
             <Text style={{marginBottom: 10, fontFamily:'Montserrat-Bold'}}>Price Details</Text>
-            </View>
+            </View> */}
             
             
         <View style={{margin:10, flexDirection:'row', justifyContent:'space-between'}}>
             <View style={{padding:20, flex:1}}>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Years</Text>
+            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Years</Text> */}
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Months</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Weeks</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Days</Text>
             <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold'}}>Total</Text>
             {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Service Fee</Text> */}
             {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Total</Text> */}
@@ -509,11 +529,14 @@ const AddressScreen = (props) => {
             
             
             </View>
-            <View style={{padding:20}}>
+            <View style={{padding:20, alignSelf:'center'}}>
                 
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{years}</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{months}</Text>
-            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold'}}>
+            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{years}</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>{months}</Text> */}
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular', alignSelf:'center'}}>{noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : '0'}</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular', alignSelf:'center'}}>{noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).weeks : '0'}</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular', alignSelf:'center'}}>{noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).days : '0'}</Text>
+            <Text style={{paddingBottom:10, fontFamily:'Montserrat-Bold', alignSelf:'center'}}>
                 
             {post.currency === null ?
                   
@@ -524,10 +547,11 @@ const AddressScreen = (props) => {
                  
                  }
             
-            {(Math.round(amount*(years+(months/12)))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+            {/* {(Math.round(amount*(years+(months/12)))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} */}
+            {fCurrency(calculatePrice())}
+            </Text>
             
             {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>GH₵{amount*(years+(months/12))*.07}</Text> */}
-            {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Rent Fee</Text> */}
             
             </View>
             
@@ -559,7 +583,8 @@ const AddressScreen = (props) => {
                 borderRadius: 10,
             }} onPress={() => navigation.navigate('Payment', {
                 channel : ["mobile_money"],
-                totalAmount: Math.round(amount*(years+(months/12))),
+                // totalAmount: Math.round(amount*(years+(months/12))),
+                totalAmount:calculatePrice(),
                 homeimage: homeimage,
                 homelatitude: homelatitude,
                 homelongitude: homelongitude,
@@ -567,7 +592,9 @@ const AddressScreen = (props) => {
                 homebed: homebed,
                 homeid: homeid,
                 homeyears: years,
-                homemonths: months,
+                homeMonths: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : null,
+                homeWeeks: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).weeks : null,
+                homeDays: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : null
             })}>
                 <Text style={{
                     fontFamily:'Montserrat-Bold',
@@ -585,7 +612,8 @@ const AddressScreen = (props) => {
                 borderRadius: 10,
             }} onPress={() => navigation.navigate('Payment', {
                 channel : ["card"],
-                totalAmount: Math.round(amount*(years+(months/12))),
+                // totalAmount: Math.round(amount*(years+(months/12))),
+                totalAmount: calculatePrice(),
                 homeimage: homeimage,
                 homelatitude: homelatitude,
                 homelongitude: homelongitude,
@@ -593,7 +621,9 @@ const AddressScreen = (props) => {
                 homebed: homebed,
                 homeid: homeid,
                 homeyears: years,
-                homemonths: months,
+                homeMonths: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : null,
+                homeWeeks: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).weeks : null,
+                homeDays: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : null
                 
                 })}>
                 <Text style={{
