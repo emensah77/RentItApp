@@ -50,6 +50,8 @@ import { AmplifyTheme } from "aws-amplify-react-native";
 import requestUserPermission, { notificationListener } from './src/utils/notificationService';
 Amplify.configure(awsconfig);
 
+import { ApplicationProvider } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
 
 
 const myTheme = StyleSheet.create({
@@ -205,7 +207,7 @@ const App: () => Node = () => {
     })
   return (
     <>
-      
+      <ApplicationProvider {...eva} theme={eva.light}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       
       {/*<ActivityLoader/>*/}        
@@ -217,7 +219,7 @@ const App: () => Node = () => {
       {/*<Router />*/}
       
       
-      
+      </ApplicationProvider>
       </>
   );
 };

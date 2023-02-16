@@ -26,7 +26,9 @@ const PaymentScreen = props => {
   const homebed = route.params.homebed;
 
   const homeyears = route.params.homeyears;
-  const homemonths = route.params.homemonths;
+  const homeMonths = route.params.homeMonths;
+  const homeWeeks = route.params.homeWeeks;
+  const homeDays = route.params.homeDays;
   const homeid = route.params.homeid;
   const selectedType = route.params.selectedType;
   const [checkoutNumber, setCheckOutNumber] = useState('+233242345678')
@@ -146,7 +148,9 @@ const PaymentScreen = props => {
         title: hometitle,
         homeid: homeid,
         homeyears: homeyears,
-        homemonths: homemonths,
+        homeMonths: homeMonths,
+        homeWeeks: homeWeeks,
+        homeDays: homeDays,
         merchantTransactionID: merchantTransactionID,
         paymentStatus: 'Processing',
         bed: homebed,
