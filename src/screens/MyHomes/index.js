@@ -131,7 +131,7 @@ const MyHomes = () => {
             <View style={{marginVertical: 100, alignItems: 'center'}}>
               <ActivityIndicator size={'large'} color="deeppink" />
             </View>
-          ) : (
+          ) : posts?.length === 0 ? (
             <View style={{flex: 1}}>
               <FlatList
                 removeClippedSubviews={true}
@@ -153,6 +153,12 @@ const MyHomes = () => {
                 windowSize={3}
                 updateCellsBatchingPeriod={100}
               />
+            </View>
+          ) : (
+            <View style={{marginVertical: 100, alignItems: 'center'}}>
+              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>
+                No Homes Found
+              </Text>
             </View>
           )}
         </View>
