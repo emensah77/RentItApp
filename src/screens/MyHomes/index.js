@@ -131,7 +131,7 @@ const MyHomes = () => {
             <View style={{marginVertical: 100, alignItems: 'center'}}>
               <ActivityIndicator size={'large'} color="deeppink" />
             </View>
-          ) : posts?.length === 0 ? (
+          ) : posts?.length !== 0 ? (
             <View style={{flex: 1}}>
               <FlatList
                 removeClippedSubviews={true}
