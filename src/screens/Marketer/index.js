@@ -169,8 +169,8 @@ const Marketer = () => {
                   />
                 </View>
               )}
-              {firebaseUser?.marketer_status !== 'ACCEPTED' && (
-                <>
+              <>
+                {firebaseUser?.marketer_status !== 'ACCEPTED' && (
                   <TouchableOpacity
                     onPress={submitHandler}
                     disabled={
@@ -199,31 +199,31 @@ const Marketer = () => {
                         'Submit'}
                     </Text>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => navigation.goBack()}
+                )}
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderWidth: 1,
+                    borderColor: 'blue',
+                    width: '50%',
+                    height: '8%',
+                    borderRadius: 10,
+                    alignSelf: 'center',
+                    marginTop: 10,
+                  }}>
+                  <Text
                     style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderWidth: 1,
-                      borderColor: 'blue',
-                      width: '50%',
-                      height: '8%',
-                      borderRadius: 10,
-                      alignSelf: 'center',
-                      marginTop: 10,
+                      fontSize: 16,
+                      fontFamily: 'Montserrat-Bold',
+                      color: 'blue',
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: 'Montserrat-Bold',
-                        color: 'blue',
-                      }}>
-                      {' '}
-                      Go Back
-                    </Text>
-                  </TouchableOpacity>
-                </>
-              )}
+                    {' '}
+                    Go Back
+                  </Text>
+                </TouchableOpacity>
+              </>
             </View>
           ) : (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
