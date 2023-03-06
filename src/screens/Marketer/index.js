@@ -16,9 +16,16 @@ import firestore from '@react-native-firebase/firestore';
 import {Marketer_Status, ROLE} from '../../variables';
 import {API, graphqlOperation} from 'aws-amplify';
 import {getUserHomes} from '../../graphql/queries';
-import {Card, Layout, Icon} from '@ui-kitten/components';
+import {
+  Card,
+  Layout,
+  Icon,
+  RangeCalendar,
+  Text as Typography,
+} from '@ui-kitten/components';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {ActivityIndicator} from 'react-native';
+import {Button} from '@ui-kitten/components';
 
 const Marketer = () => {
   const {user, updateProfile} = useContext(AuthContext);
@@ -27,6 +34,18 @@ const Marketer = () => {
   const profile = user?._user;
 
   const [posts, setPosts] = useState();
+  const [range, setRange] = useState({});
+
+  const handleFilter = () => {
+    const filteredHomes = posts?.filter(
+      item =>
+        item?.createdAt.substring(0, 10) >
+          range?.startDate?.toISOString().substring(0, 10) &&
+        item?.createdAt.substring(0, 10) <
+          range?.endDate?.toISOString().substring(0, 10),
+    );
+    setPosts(filteredHomes);
+  };
 
   const fetchUserHome = async () => {
     try {
@@ -128,7 +147,7 @@ const Marketer = () => {
           </LinearGradient>
 
           {posts ? (
-            <View style={{padding: 0, flex: 1}}>
+            <ScrollView style={{padding: 0, flex: 1}}>
               <View style={{marginTop: 20, margin: 20}}>
                 <Text
                   style={{fontSize: 18, fontWeight: '600', paddingBottom: 15}}>
@@ -139,92 +158,111 @@ const Marketer = () => {
                   homeowners we are building. You will work primarily in your
                   community to connect us with homeowners.
                 </Text>
-                <Text
+                <Typography
+                  category="label"
                   style={{
                     marginTop: 10,
                     color: temp[firebaseUser?.marketer_status]?.color || 'blue',
+                    alignSelf: 'center',
                   }}>
                   {temp[firebaseUser?.marketer_status]?.infoText ||
                     `You can request to admin to become a marketer, once admin approves, enjoy the experience of Marketer in Rentit.`}
-                </Text>
+                </Typography>
               </View>
               {firebaseUser?.marketer_status === 'ACCEPTED' && (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    padding: 25,
-                  }}>
-                  <CardComponent
-                    icon={'home'}
-                    label={'Total Homes'}
-                    text={posts?.length}
-                    color="blue"
+                <View style={{padding: 25}}>
+                  <RangeCalendar
+                    range={range}
+                    onSelect={nextRange => setRange(nextRange)}
+                    min={new Date(2000, 0, 0)}
+                    max={new Date(2050, 0, 0)}
                   />
-                  <CardComponent
-                    icon={'money-symbol'}
-                    label={'Total Earnings'}
-                    text={`GH₵ ${(posts?.length / 60) * 600}`}
-                    color="blue"
-                  />
+                  <Layout
+                    level="1"
+                    style={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-around',
+                      marginTop: 10,
+                    }}>
+                    <Button
+                      disabled={!range?.startDate || !range?.endDate}
+                      onPress={handleFilter}
+                      appearance="outline">
+                      Apply
+                    </Button>
+                    <Button
+                      disabled={!range?.startDate || !range?.endDate}
+                      onPress={() => {
+                        setRange({});
+                        fetchUserHome();
+                      }}
+                      appearance="outline">
+                      Reset
+                    </Button>
+                  </Layout>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginTop: 10,
+                    }}>
+                    <CardComponent
+                      icon={'home'}
+                      label={'Total Homes'}
+                      text={posts?.length}
+                      color="blue"
+                    />
+                    <CardComponent
+                      icon={'money-symbol'}
+                      label={'Total Earnings'}
+                      text={`GH₵ ${(posts?.length / 60) * 600}`}
+                      color="blue"
+                    />
+                  </View>
                 </View>
               )}
               <>
                 {firebaseUser?.marketer_status !== 'ACCEPTED' && (
-                  <TouchableOpacity
-                    onPress={submitHandler}
-                    disabled={
-                      firebaseUser?.marketer_status ===
-                        Marketer_Status.accepted ||
-                      firebaseUser?.marketer_status === Marketer_Status.inReview
-                    }
+                  <Layout
+                    level="1"
                     style={{
-                      alignItems: 'center',
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
                       justifyContent: 'center',
-                      borderWidth: 1,
-                      borderColor: 'blue',
-                      width: '50%',
-                      height: '8%',
-                      backgroundColor: 'blue',
-                      borderRadius: 10,
-                      alignSelf: 'center',
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        fontFamily: 'Montserrat-Bold',
-                        color: 'white',
-                      }}>
+                    <Button
+                      onPress={submitHandler}
+                      disabled={
+                        firebaseUser?.marketer_status ===
+                          Marketer_Status.accepted ||
+                        firebaseUser?.marketer_status ===
+                          Marketer_Status.inReview
+                      }
+                      style={{width: 200}}
+                      appearance="filled">
                       {temp[firebaseUser?.marketer_status]?.buttonText ||
                         'Submit'}
-                    </Text>
-                  </TouchableOpacity>
+                    </Button>
+                  </Layout>
                 )}
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
+                <Layout
+                  level="1"
                   style={{
-                    alignItems: 'center',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
                     justifyContent: 'center',
-                    borderWidth: 1,
-                    borderColor: 'blue',
-                    width: '50%',
-                    height: '8%',
-                    borderRadius: 10,
-                    alignSelf: 'center',
-                    marginTop: 10,
+                    marginVertical: 10,
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontFamily: 'Montserrat-Bold',
-                      color: 'blue',
-                    }}>
-                    {' '}
+                  <Button
+                    onPress={() => navigation.goBack()}
+                    style={{width: 200}}
+                    appearance="outline">
                     Go Back
-                  </Text>
-                </TouchableOpacity>
+                  </Button>
+                </Layout>
               </>
-            </View>
+            </ScrollView>
           ) : (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
               <ActivityIndicator size={'large'} color="blue" />
