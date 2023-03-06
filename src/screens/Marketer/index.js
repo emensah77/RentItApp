@@ -14,8 +14,6 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
 import {Marketer_Status, ROLE} from '../../variables';
-import {API, graphqlOperation} from 'aws-amplify';
-import {getUserHomes} from '../../graphql/queries';
 import {
   Card,
   Layout,
@@ -26,6 +24,7 @@ import {
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {ActivityIndicator} from 'react-native';
 import {Button} from '@ui-kitten/components';
+import axios from 'axios';
 
 const Marketer = () => {
   const {user, updateProfile} = useContext(AuthContext);
@@ -36,27 +35,30 @@ const Marketer = () => {
   const [posts, setPosts] = useState();
   const [range, setRange] = useState({});
 
-  const handleFilter = () => {
-    const filteredHomes = posts?.filter(
-      item =>
-        item?.createdAt.substring(0, 10) >
-          range?.startDate?.toISOString().substring(0, 10) &&
-        item?.createdAt.substring(0, 10) <
-          range?.endDate?.toISOString().substring(0, 10),
-    );
-    setPosts(filteredHomes);
+  const handleFilter = async () => {
+    try {
+      const response = await axios.post(
+        `https://www.rentit.homes/api/rentit/myhomes`,
+        {
+          id: user?.uid,
+          startDate: range?.startDate,
+          endDate: range?.endDate,
+        },
+      );
+      setPosts(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchUserHome = async () => {
     try {
-      const result = await API.graphql(
-        graphqlOperation(getUserHomes, {
-          id: user?.uid,
-        }),
+      const response = await axios.get(
+        `https://www.rentit.homes/api/rentit/myhomes?id=${user?.uid}`,
       );
-      setPosts(result?.data?.getUser?.posts?.items);
-    } catch (e) {
-      console.log(e);
+      setPosts(response?.data);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -210,13 +212,13 @@ const Marketer = () => {
                     <CardComponent
                       icon={'home'}
                       label={'Total Homes'}
-                      text={posts?.length}
+                      text={posts?.numberOfHomes || 0}
                       color="blue"
                     />
                     <CardComponent
                       icon={'money-symbol'}
                       label={'Total Earnings'}
-                      text={`GH₵ ${(posts?.length / 60) * 600}`}
+                      text={`GH₵ ${posts?.earnings || 0}`}
                       color="blue"
                     />
                   </View>
