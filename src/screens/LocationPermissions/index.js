@@ -5,7 +5,8 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Image
+    Image,
+    Platform
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
@@ -127,6 +128,13 @@ const LocationPermissions = () => {
             stopOnTerminate: false,
             startOnBoot: true,
             disableMotionActivityUpdates: true,
+            backgroundPermissionRationale: {
+                title: "{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.",
+                message:
+                    "If you will like to receive these recommendations and notifications, choose Allow all the time.",
+                positiveAction: '{backgroundPermissionOptionLabel}',
+                negativeAction: 'Cancel',
+            },
 
         });
 
@@ -151,8 +159,8 @@ const LocationPermissions = () => {
             }
         ))
         setTimeout(() => {
-            navigation.navigate('Notifications')
-        }, 4000);
+             navigation.navigate('Notifications')
+         }, 4000);
     };
     const initBackgroundFetch = async () => {
         await BackgroundFetch.configure({
@@ -168,12 +176,28 @@ const LocationPermissions = () => {
     }
 
     useEffect(() => {
-        if (allow) {
-            // getLocation();
-            BackgroundGeolocation.start();
-            initBackgroundFetch();
-            initBackgroundGeolocation();
-        }
+        
+            //getLocation();
+            if (Platform.OS === 'ios') {
+                BackgroundGeolocation.start();
+                setTimeout(() => {
+                    navigation.navigate('Notifications')
+                }, 4000);
+            }
+            else{
+                BackgroundGeolocation.start();
+                initBackgroundFetch();
+                initBackgroundGeolocation();
+                setTimeout(() => {
+                    navigation.navigate('Notifications')
+                }, 4000);
+
+            }
+            if(allow){
+                navigation.navigate('Notifications')
+            }
+           
+        
         return () => {
             unsubscribe();
         }

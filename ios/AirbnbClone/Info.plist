@@ -2,18 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>Privacy - Location Always and When in Use Usage Description</key>
-	<string>Location required in background</string>
-	<key>Privacy - Location When in Use Usage Description</key>
-	<string>Location required when app is in use</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Motion permission helps detect when device in in-motion</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.transistorsoft.fetch</string>
 	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
 	<string>RentIt</string>
 	<key>CFBundleExecutable</key>
@@ -102,8 +96,14 @@
 	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>RentIt requires access to your location to show you available homes nearby</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Motion permission helps detect when device in in-motion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>RentIt would like to access your photo library</string>
+	<key>Privacy - Location Always and When in Use Usage Description</key>
+	<string>Location required in background</string>
+	<key>Privacy - Location When in Use Usage Description</key>
+	<string>Location required when app is in use</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-Black.ttf</string>

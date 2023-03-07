@@ -31,7 +31,7 @@ const PaymentScreen = props => {
   const homeDays = route.params.homeDays;
   const homeid = route.params.homeid;
   const selectedType = route.params.selectedType;
-  const [checkoutNumber, setCheckOutNumber] = useState('+233242345678')
+  const checkoutNumber = route.params.checkoutNumber;
   
 
   const [paymentUrl, setPaymentUrl] = useState(null);
@@ -50,7 +50,18 @@ const PaymentScreen = props => {
     if(!paymentUrl) {
       return
     }
-    addTransaction()
+    
+    if(homeid === null) {
+      addPayment();
+    }
+   
+    addTransaction();
+    
+
+    
+    
+  
+    
   }, [paymentUrl])
   
 
@@ -107,6 +118,7 @@ const PaymentScreen = props => {
       paymentType: selectedType,
       merchantTransactionID: merchantTransactionID,
       paymentStatus: 'Processing',
+      checkoutNumber: checkoutNumber,
     })
     .then(docRef => {
       console.log('Added to payments')
@@ -128,6 +140,7 @@ const PaymentScreen = props => {
       merchantTransactionID: merchantTransactionID,
       orderType: homeid === null ?  'payment' : 'order',
       paymentStatus: 'Processing',
+      checkoutNumber: checkoutNumber,
     })
     .then(docRef => {
       console.log('Added to transactions')
@@ -193,7 +206,7 @@ const PaymentScreen = props => {
             countryCode: 'GH',
             languageCode: 'en',
             serviceCode: "RENTIZO",
-            MSISDN: "233244070987",
+            MSISDN: checkoutNumber,
             customerFirstName: user?.displayName ?? ' ',
             customerLastName: ' ',
             customerEmail: userEmail,
@@ -268,12 +281,12 @@ const PaymentScreen = props => {
                 if(homeid === null){
                   Alert.alert(
                   'Payment Confirmation!',
-                  'Keep your confirmation code: ' + `${auth().currentUser.uid}`,
+                  'Keep your confirmation code: ' + `${merchantTransactionID}`,
                   [
                   {text: 'OK', onPress: () => console.log('OK Pressed')},
                   ], 
                   { cancelable: false })
-                  addPayment();
+                  
                   navigation.replace('Home');
                 }
                 else{
