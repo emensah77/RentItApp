@@ -93,7 +93,6 @@ const OnboardingScreen7 = props => {
       sublocality: sublocality,
       userId: user.uid,
       marketerNumber,
-      marketerNumber,
       currency: currency,
     });
   });
@@ -101,9 +100,11 @@ const OnboardingScreen7 = props => {
   const searchApi = async data => {
     const {search, postId} = data;
     await axios
-      .post('https://rentit.homes/api/rentit/search/', {search, postId})
+      .get(
+        `https://rentit.herokuapp.com/api/v1/emojis?search=${search}&homeId=${postId}`,
+      )
       .then(data => {
-        console.log(data)
+        console.log(data);
         return data;
       })
       .catch(error => console.log(error));
@@ -128,7 +129,6 @@ const OnboardingScreen7 = props => {
         sublocality: sublocality,
         latitude: latitude,
         longitude: longitude,
-        maxGuests: bedroom,
         oldPrice: Math.round(homeprice * 12),
         newPrice: Math.round(homeprice * 12),
         aircondition: amenities.includes('Air Conditioner') ? 'Yes' : 'No',
