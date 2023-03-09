@@ -318,7 +318,7 @@ const DetailedPost = (props) => {
             </Modal>
 
         <View style={{ flex: 1 }}>
-        <ScrollView style={{ flex: 1 }}  showsVerticalScrollIndicator={false}>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{paddingBottom:100}}  showsVerticalScrollIndicator={false}>
             {/* Image */}
             <StatusBar hidden={true} />
             
