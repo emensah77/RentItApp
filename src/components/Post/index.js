@@ -1,24 +1,15 @@
-import React, {useEffect, useContext, useState} from 'react';
-import {
-  View,
-  Image,
-  Platform,
-  ImageBackground,
-  Text,
-  Pressable,
-} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {View, Platform, Text, Pressable} from 'react-native';
 import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import firestore from '@react-native-firebase/firestore';
 import {AuthContext} from '../../navigation/AuthProvider';
 import FastImage from 'react-native-fast-image';
-import {SharedElement} from 'react-navigation-shared-element';
-import Geocoder from 'react-native-geocoding';
-const days = 1;
+import useWishlist from '../../hooks/useWishlist.js';
 
 const Post = props => {
+  const {checkIsFav, handleChangeFavorite} = useWishlist();
   var docRefId;
   let docId;
   const {user, logout} = useContext(AuthContext);
@@ -115,31 +106,6 @@ const Post = props => {
 
   const colorStyle = 'deeppink';
 
-  const handleClick = () => {
-    var trendRef = firestore().collection('trends').doc(post.id);
-    setIsLike(!isLike);
-
-    if (!isLike) {
-      setCount(counter + 1);
-
-      var getDoc = trendRef
-        .get()
-        .then(doc => {
-          if (!doc.exists) {
-            addToTrends();
-          } else {
-            updateTrendCount(post.id, counter);
-          }
-        })
-        .catch(err => {
-          console.log('Error getting document', err);
-        });
-
-      //console.log(post.id);
-      addToFavorites();
-    }
-  };
-
   const post = props.post;
   const navigation = useNavigation();
   const goToPostPage = () => {
@@ -177,11 +143,11 @@ const Post = props => {
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onPress={handleClick}>
+          onPress={() => handleChangeFavorite(post)}>
           <Fontisto
             name="heart"
             size={15}
-            color={isLike ? colorStyle : 'black'}
+            color={checkIsFav(post.id) ? colorStyle : 'black'}
           />
         </Pressable>
         <View
@@ -233,40 +199,34 @@ const Post = props => {
         {/* <Text style={styles.oldPrice}>
                 GH₵{post.oldPrice}
                 </Text> */}
-                {post.mode === "For Sale" ? 
-                <Text style={styles.newPrice}>
-                {post.currency  ? 
-                post.currency[0] === "usd" ? "$" : post.currency[0] === "ghs" ? "GH₵": "GH₵"
-                  
-                 
-                 : 
-                 "GH₵"
-                 
-                 
-                 }
-                 
-                {Math.round((post.newPrice * 1.07))
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-                
-              </Text> :
-        <Text style={styles.newPrice}>
-          {post.currency  ? 
-                post.currency[0] === "usd" ? "$" : post.currency[0] === "ghs" ? "GH₵": "GH₵"
-                  
-                 
-                 : 
-                 "GH₵"
-                 
-                 
-                 }
-           
-          {Math.round((post.newPrice * 1.07)/12)
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-          / month
-        </Text>}
-              
+        {post.mode === 'For Sale' ? (
+          <Text style={styles.newPrice}>
+            {post.currency
+              ? post.currency[0] === 'usd'
+                ? '$'
+                : post.currency[0] === 'ghs'
+                ? 'GH₵'
+                : 'GH₵'
+              : 'GH₵'}
+            {Math.round(post.newPrice * 1.07)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+          </Text>
+        ) : (
+          <Text style={styles.newPrice}>
+            {post.currency
+              ? post.currency[0] === 'usd'
+                ? '$'
+                : post.currency[0] === 'ghs'
+                ? 'GH₵'
+                : 'GH₵'
+              : 'GH₵'}
+            {Math.round((post.newPrice * 1.07) / 12)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+            / month
+          </Text>
+        )}
       </Text>
       {/* Total price */}
 
