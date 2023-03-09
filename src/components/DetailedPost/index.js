@@ -231,7 +231,7 @@ const DetailedPost = (props) => {
    
 
     return(
-        <View style={{backgroundColor:'white'}}>
+        <View style={{flex:1,backgroundColor:'white'}}>
 
             <Modal style = {{flex: 1,
                         alignItems: 'center',
@@ -244,6 +244,8 @@ const DetailedPost = (props) => {
                             } }
                         >
                             
+                        
+
                         
                             <ScrollView contentContainerStyle={{flex:1, flexDirection:"column", justifyContent:"space-evenly"}}>
                                 
@@ -315,8 +317,8 @@ const DetailedPost = (props) => {
                         
             </Modal>
 
-
-        <ScrollView contentContainerStyle={{paddingBottom:150}} showsVerticalScrollIndicator={false}>
+        <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }}  showsVerticalScrollIndicator={false}>
             {/* Image */}
             <StatusBar hidden={true} />
             
@@ -465,37 +467,56 @@ const DetailedPost = (props) => {
                 </View>
                 
                 <View style={styles.hairline}/>
-                <Text style={{margin: 10, fontSize:20, fontFamily:"Montserrat-Bold"}}>
-                    Amenities available
-                </Text>
-                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Air Conditioner <FontAwesomeIcon icon={faFan}  size={25} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.aircondition}</Text>
-                </View>
-                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Wifi <Feather name="wifi" size={25} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.wifi}</Text>
-                </View>
-                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Kitchen <FontAwesomeIcon icon={faUtensils} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.kitchen}</Text>
-                </View>
-                <View style={{margin:10, padding: 1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Bathroom <FontAwesomeIcon icon={faBath} size={25} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.bathroom}</Text>
-                </View>
-                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color:'blue',fontSize:18, fontWeight:'bold'}}>Bedroom <FontAwesomeIcon icon={faBed} size={25} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.bed}</Text>
-                </View>
-                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Water <FontAwesomeIcon icon={faFaucet} size={25} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.water}</Text>
-                </View>
-                <View style={{margin:10, padding:1, flex:1, flexDirection:'row', justifyContent:"space-between"}}>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>Toilet <FontAwesomeIcon icon={faToilet} size={25} color={'blue'}/></Text>
-                    <Text style={{color: 'blue', fontSize:18, fontWeight:'bold'}}>{post.toilet}</Text>
-                </View>
+<Text style={{margin: 10, fontSize:20, fontFamily:"Montserrat-Bold"}}>
+  Amenities available
+</Text>
+<View style={styles.amenitiesContainer}>
+  {post.aircondition === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <FontAwesomeIcon icon={faFan} size={25} color={'blue'} />
+      <Text style={styles.amenityText}>Air Conditioner</Text>
+    </View>
+  }
+  {post.wifi === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <Feather name="wifi" size={25} color={'blue'} />
+      <Text style={styles.amenityText}>Wifi</Text>
+    </View>
+  }
+  {post.kitchen === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <FontAwesomeIcon icon={faUtensils} color={'blue'} />
+      <Text style={styles.amenityText}>Kitchen</Text>
+    </View>
+  }
+  {post.bathroom === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <FontAwesomeIcon icon={faBath} size={25} color={'blue'} />
+      <Text style={styles.amenityText}>Bathroom</Text>
+    </View>
+  }
+  {post.bed === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <FontAwesomeIcon icon={faBed} size={25} color={'blue'} />
+      <Text style={styles.amenityText}>Bedroom</Text>
+    </View>
+  }
+  {post.water === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <FontAwesomeIcon icon={faFaucet} size={25} color={'blue'} />
+      <Text style={styles.amenityText}>Water</Text>
+    </View>
+  }
+  {post.toilet === 'Yes' &&
+    <View style={styles.amenityCard}>
+      <FontAwesomeIcon icon={faToilet} size={25} color={'blue'} />
+      <Text style={styles.amenityText}>Toilet</Text>
+    </View>
+  }
+</View>
+
+
+
 
        
                 
@@ -506,99 +527,59 @@ const DetailedPost = (props) => {
             
         </ScrollView>
 
-       
+       </View>
 
-            <View style={{flex:1,borderTopColor:'lightgrey',borderTopWidth:1,
-            flexDirection:'row',backgroundColor: "white",
-             position: 'absolute', height:80,
-             width:'100%' ,bottom:0, alignItems:'center', justifyContent:'space-between'}}>
-            <View>
-                {post.mode === "For Sale" ? 
-                <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
-                    {post.currency === null ?
-                  
-                  "GH₵"
-                 : 
-                 
-                   post.currency[0] === "usd" ? "$" : "GH₵"
-                 
-                 }
-                    
-                    
-                    {(Math.round((post.newPrice*1.07))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"}
-                    </Text> : 
-            <Text style={{fontSize:22, fontWeight:'bold', marginHorizontal:20}}>
-                    {post.currency === null ?
-                  
-                  "GH₵"
-                 : 
-                 
-                   post.currency[0] === "usd" ? "$" : "GH₵"
-                 
-                 }
-                    
-                    
-                    {(Math.round((post.newPrice*1.07)/12)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {"\n"} / month
-                    </Text>
-                    }
-            </View>
-            <View style={{marginTop:10,marginHorizontal:40}}>
-            <Pressable
-                
-                
-                style={{
-                    
-                    
-                    marginBottom: 10,
-                    backgroundColor: 'deeppink',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: 50,
-                    width:"100%",
-                    
-                    marginHorizontal: 20,
-                    borderRadius: 5,
-                    justifyContent: 'center'
-                }}  onPress={() => {
-                    payRent();
-                    logAnalyticsEvent();
-                }}>
-                    {/* <Fontisto name="credit-card" size={25} style={{color: 'white' , margin: 10 ,}} /> */}
-                    <Text style={{
-                        fontSize: 20,
-                        color: 'white',
-                        fontWeight: 'bold',
-                    }}>Pay to Rent</Text>
-            </Pressable> 
-            {/* <Pressable
-                title="Call to Rent Event"
-                
-                style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    marginBottom: 20,
-                    backgroundColor: 'blue',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '50%',
-                    width:'80%',
-                    marginHorizontal: 20,
-                    borderRadius: 5,
-                    justifyContent: 'center'
-                }}  onPress={() => {
-                    makeCall();
-                    logAnalyticsEvent();
-                }}>
-                    <Fontisto name="phone" size={25} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
-                    <Text style={{
-                        fontSize: 20,
-                        color: 'white',
-                        fontWeight: 'bold',
-                    }}>Call to Rent</Text>
-                </Pressable> */}
+        <View style={{
+  position: 'absolute',
+  bottom: 0,
+  borderTopColor: 'lightgrey',
+  borderTopWidth: 1,
+  flexDirection: 'row',
+  backgroundColor: 'white',
+  height: 80,
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'space-between'
+}}>
+  <View>
+    {post.mode === 'For Sale' ? (
+      <Text style={{ fontSize: 22, fontWeight: 'bold', marginHorizontal: 20 }}>
+        {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
+        {(Math.round(post.newPrice * 1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{'\n'}
+      </Text>
+    ) : (
+      <Text style={{ fontSize: 22, fontWeight: 'bold', marginHorizontal: 20 }}>
+        {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
+        {(Math.round(post.newPrice * 1.07 / 12)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{'\n'} / month
+      </Text>
+    )}
+  </View>
+  <View style={{ marginTop: 10, marginHorizontal: 40 }}>
+    <Pressable
+      style={{
+        marginBottom: 10,
+        backgroundColor: 'deeppink',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
+        width: '100%',
+        marginHorizontal: 20,
+        borderRadius: 5,
+        justifyContent: 'center'
+      }}
+      onPress={() => {
+        payRent();
+        logAnalyticsEvent();
+      }}>
+      <Text style={{
+        fontSize: 20,
+        color: 'white',
+        fontWeight: 'bold'
+      }}>Pay to Rent</Text>
+    </Pressable>
+  </View>
+</View>
 
-            </View>
-                        </View>
             </View>
     
     );

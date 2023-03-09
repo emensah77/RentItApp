@@ -78,6 +78,26 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 8,
       },
+      amenitiesContainer: {
+        marginVertical: 20,
+      },
+      amenityCard: {
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: '#e5e5e5',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginBottom: 10,
+      },
+      amenityText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10,
+      },
+      
 });
 
 export default styles;
