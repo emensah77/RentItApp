@@ -5,13 +5,11 @@
  * @format
  * @flow strict-local
  */
- import 'react-native-gesture-handler';
- import SplashScreen from 'react-native-splash-screen'
+import 'react-native-gesture-handler';
+import SplashScreen from 'react-native-splash-screen';
 import React, {useEffect} from 'react';
 
-import { Settings } from 'react-native-fbsdk-next';
-
-
+import {Settings} from 'react-native-fbsdk-next';
 
 import {
   Dimensions,
@@ -39,20 +37,22 @@ import SearchResultsScreen from './src/screens/SearchResults';
 import DestinationSearchScreen from './src/screens/DestinationSearch';
 import GuestsScreen from './src/screens/GuestsScreen';
 import Router from './src/navigation/Router';
-import { withAuthenticator } from 'aws-amplify-react-native';
-import { Authenticator } from 'aws-amplify-react-native/dist/Auth';
+import {withAuthenticator} from 'aws-amplify-react-native';
+import {Authenticator} from 'aws-amplify-react-native/dist/Auth';
 import Amplify from '@aws-amplify/core';
 import Onboarding from './src/screens/Onboarding';
 import Providers from './src/navigation/Providers';
 import ActivityLoader from './src/components/ActivityLoader';
 import Geocoder from 'react-native-geocoding';
-import { AmplifyTheme } from "aws-amplify-react-native";
-import requestUserPermission, { notificationListener } from './src/utils/notificationService';
+import {AmplifyTheme} from 'aws-amplify-react-native';
+import requestUserPermission, {
+  notificationListener,
+} from './src/utils/notificationService';
 Amplify.configure(awsconfig);
 
-import { ApplicationProvider } from '@ui-kitten/components';
+import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
-
+import {WishListProvider} from './src/context/WishlistContext';
 
 const myTheme = StyleSheet.create({
   container: {
@@ -65,7 +65,7 @@ const myTheme = StyleSheet.create({
     backgroundColor: '#FFF',
     padding: 10,
   },
-  
+
   section: {
     flex: 1,
     width: '100%',
@@ -76,7 +76,7 @@ const myTheme = StyleSheet.create({
     marginBottom: 32,
   },
   sectionHeaderText: {
-    color: "blue",
+    color: 'blue',
     fontSize: 20,
     fontWeight: '500',
   },
@@ -88,13 +88,13 @@ const myTheme = StyleSheet.create({
     marginTop: 1,
     marginBottom: 10,
   },
-  
+
   sectionFooterLink: {
     fontSize: 14,
     color: 'blue',
     alignItems: 'center',
     textAlign: 'center',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   navBar: {
     marginTop: 35,
@@ -106,16 +106,14 @@ const myTheme = StyleSheet.create({
   navButton: {
     marginLeft: 12,
     borderRadius: 40,
-    
   },
-  
-  
+
   button: {
     backgroundColor: 'blue',
     alignItems: 'center',
     padding: 16,
     borderRadius: 50,
-    width: "100%",
+    width: '100%',
   },
   buttonDisabled: {
     backgroundColor: 'blue',
@@ -144,7 +142,7 @@ const myTheme = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'space-between'
+    justifyContent: 'space-between',
   },
   phoneInput: {
     flex: 1,
@@ -162,16 +160,12 @@ const myTheme = StyleSheet.create({
   },
 });
 
-
 const post1 = feed[0];
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  throw new Error("My first Sentry error!");
+  throw new Error('My first Sentry error!');
   return (
-    
-   
     <View style={styles.sectionContainer}>
-      
       <Text
         style={[
           styles.sectionTitle,
@@ -196,34 +190,30 @@ const Section = ({children, title}) => {
 
 const App: () => Node = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-    useEffect(() => {
-      requestUserPermission()
-      notificationListener()
-      SplashScreen.hide();
-    })
+  useEffect(() => {
+    requestUserPermission();
+    notificationListener();
+    SplashScreen.hide();
+  });
   return (
     <>
       <ApplicationProvider {...eva} theme={eva.light}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      
-      {/*<ActivityLoader/>*/}        
-      
-        <Providers/>
-      
-      
-      
-      {/*<Router />*/}
-      
-      
+        <WishListProvider>
+          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+
+          {/*<ActivityLoader/>*/}
+
+          <Providers />
+
+          {/*<Router />*/}
+        </WishListProvider>
       </ApplicationProvider>
-      </>
+    </>
   );
 };
 
-
 export default App;
-
