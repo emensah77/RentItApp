@@ -186,11 +186,11 @@ class TinggService {
         .doc(merchantTransactionID);
 
       const transactionDoc = await transactionsRef.get();
-      console.log("transaction data", transactionDoc.data());
+      console.log("transaction data1", transactionDoc.data());
       console.log("verifiedInFirebase1", verifiedInFirebase);
       if (transactionDoc.exists) {
         const data = transactionDoc.data();
-        console.log("transaction data", data);
+        console.log("transaction2 data", data);
         if (data.paymentStatus === "Processing") {
           orderId = data.id;
           verifiedInFirebase = true;
@@ -211,6 +211,7 @@ class TinggService {
         if (verifiedInFirebase) {
           // if (functionThatCheckPaymentIsValid(request.body)) {
           // payment valid, acknowledge
+          console.log("verifiedinfirebase3", verifiedInFirebase);
           return response.json({
             checkoutRequestID: request.body.checkoutRequestID,
             merchantTransactionID: request.body.merchantTransactionID,
@@ -219,9 +220,15 @@ class TinggService {
             receiptNumber: orderId,
           });
         }
-        console.log("verifiedinfirebase3", verifiedInFirebase);
+        
       }
     }
+
+
+
+
+      
+    
 
     // payment failed, refund user
     return response.json({
@@ -231,6 +238,9 @@ class TinggService {
       statusDescription: "Payment was not processed successfully",
       receiptNumber: "",
     });
+
+    
+      
   }
 
   async paymentOptions(request, response) {

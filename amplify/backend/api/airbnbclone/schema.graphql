@@ -29,6 +29,10 @@ type Post @model @key(name: "byUser", fields: ["userID"]){
   currency: [String]
 
   status: String
+  negotiable: String
+  furnished: String
+  loyaltyProgram: String
+  verified: String
   bed: Int!
   bedroom: Int!
   bathroomNumber: Int

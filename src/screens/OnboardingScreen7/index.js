@@ -67,6 +67,9 @@ const OnboardingScreen7 = props => {
   const address = route.params?.address;
   const marketerNumber = route.params?.marketerNumber;
   const currency = route.params?.currency;
+  const loyaltyProgram = route.params?.loyaltyProgram;
+  const negotiable = route.params?.negotiable;
+  const furnished = route.params?.furnished;
   const {user, logout} = useContext(AuthContext);
   const uploadusers = [
     'UWHvpJ1XoObsFYTFR48zYe6jscJ2',
@@ -94,6 +97,10 @@ const OnboardingScreen7 = props => {
       userId: user.uid,
       marketerNumber,
       currency: currency,
+      loyaltyProgram: loyaltyProgram,
+      negotiable: negotiable,
+      furnished: furnished,
+      address: address,
     });
   });
 
@@ -140,6 +147,9 @@ const OnboardingScreen7 = props => {
         marketerNumber: marketerNumber,
         currency: [currency],
         status: HOME_STATUS.PENDING,
+        loyaltyProgram: loyaltyProgram,
+        negotiable: negotiable,
+        furnished: furnished,
       };
       const uploadedHome = await API.graphql(
         graphqlOperation(

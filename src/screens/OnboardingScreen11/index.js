@@ -14,6 +14,8 @@ import PhoneInput from "react-native-phone-number-input";
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore'
 import {AuthContext} from '../../navigation/AuthProvider';
+import auth from '@react-native-firebase/auth';
+
 
 const OnboardingScreen11 = (props) => {
     const navigation = useNavigation();
@@ -43,7 +45,7 @@ const OnboardingScreen11 = (props) => {
     const [formattedValue, setFormattedValue] = useState("");
     const [secondformattedValue, setSecondFormattedValue] = useState("");
     const phoneInput = useRef(null);
-    const {user, logout} = useContext(AuthContext);
+    const [user, setUser] = useState(null);
     
     const hellod = (text) => {
         setValue(text);
@@ -56,6 +58,20 @@ const OnboardingScreen11 = (props) => {
     const setHomePrice = () => {
         
     }
+    const userDetails = async () => {
+      const currentUser = auth().currentUser;
+      if (currentUser) {
+        const userDoc = await firestore()
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+        if (userDoc.exists) {
+          setUser(userDoc.data());
+          console.log('User data:', user);
+          // Do something with user data
+        }
+      }
+    };
     const getUsersWithPrivileges = async () => {
       const callers = await firebase.firestore().collection('usersWithPrivileges')
       callers.get().then((querySnapshot) => {
@@ -70,9 +86,9 @@ const OnboardingScreen11 = (props) => {
   }
 
   useEffect(() => {
-   
+    userDetails();
     getUsersWithPrivileges();
-},[])
+},[user])
     
     return (
         
@@ -175,7 +191,7 @@ const OnboardingScreen11 = (props) => {
          />
             </View>
            {
-            usersWithPrivileges.includes(user.uid) ? 
+            usersWithPrivileges.includes(auth().currentUser.uid) || user?.marketer_status === "ACCEPTED" ? 
 
             
 
@@ -218,7 +234,7 @@ const OnboardingScreen11 = (props) => {
             const checkSecondValid = phoneInput.current?.isValidNumber(phoneNumber);
             if(checkSecondValid){
               Alert.alert('Your phone number is correct', secondformattedValue);
-              navigation.navigate('OnboardingScreen7', {
+              navigation.navigate('OnboardingScreen12', {
                 title: title,
                 type: type,
                 description: description,
@@ -232,11 +248,11 @@ const OnboardingScreen11 = (props) => {
                 mode: mode,
                 amenities: amenities,
                 phoneNumber: secondformattedValue,
-                marketerNumber: usersWithPrivileges.includes(user.uid) ? formattedValue : null,
+                marketerNumber: usersWithPrivileges.includes(user.uid) || user?.marketer_status === "ACCEPTED" ? formattedValue : null,
                 locality: locality,
                 sublocality: sublocality,
                 currency: currency,
-                address
+                address: address,
             })
             }
             else{

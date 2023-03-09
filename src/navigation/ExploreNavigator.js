@@ -28,6 +28,7 @@ import ManageProfile from '../screens/ManageProfile';
 import Marketer from '../screens/Marketer';
 import MyHomes from '../screens/MyHomes';
 import EditHome from '../screens/EditHome';
+import OnboardingScreen12 from '../screens/OnboardingScreen12';
 
 
 const Stack = createStackNavigator();
@@ -176,6 +177,13 @@ const Router = (props) => {
             <Stack.Screen
                 name={'OnboardingScreen11'}
                 component={OnboardingScreen11}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name={'OnboardingScreen12'}
+                component={OnboardingScreen12}
                 options={{
                     headerShown: false,
                 }}
