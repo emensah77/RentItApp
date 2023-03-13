@@ -1,6 +1,228 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateReview = /* GraphQL */ `
+  subscription OnCreateReview {
+    onCreateReview {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateReview = /* GraphQL */ `
+  subscription OnUpdateReview {
+    onUpdateReview {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteReview = /* GraphQL */ `
+  subscription OnDeleteReview {
+    onDeleteReview {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser {
     onCreateUser {
@@ -22,6 +244,10 @@ export const onCreateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -38,6 +264,18 @@ export const onCreateUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -69,6 +307,10 @@ export const onUpdateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -85,6 +327,18 @@ export const onUpdateUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -116,6 +370,10 @@ export const onDeleteUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -132,6 +390,18 @@ export const onDeleteUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -155,8 +425,23 @@ export const onCreatePost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -168,6 +453,10 @@ export const onCreatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber
@@ -202,8 +491,23 @@ export const onUpdatePost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -215,6 +519,10 @@ export const onUpdatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber
@@ -249,8 +557,23 @@ export const onDeletePost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -262,6 +585,10 @@ export const onDeletePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber

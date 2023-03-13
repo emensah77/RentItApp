@@ -21,7 +21,7 @@ import {FlatListSlider} from 'react-native-flatlist-slider';
 import {withAuthenticator} from 'aws-amplify-react-native';
 import Amplify from '@aws-amplify/core';
 import Feather from 'react-native-vector-icons/Feather';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {FontAwesomeIcon, Icon} from '@fortawesome/react-native-fontawesome';
 import {
   faUtensils,
   faFan,
@@ -32,6 +32,14 @@ import {
   faToilet,
   faBackward,
   faTimes,
+  faChair, 
+  faIdBadge,  
+  faHandshake,
+  faStar, 
+  faCheckCircle,
+  faCouch,
+  faShieldAlt
+  
 } from '@fortawesome/free-solid-svg-icons';
 import firebase from '@react-native-firebase/app';
 import analytics from '@react-native-firebase/analytics';
@@ -43,6 +51,7 @@ import FastImage from 'react-native-fast-image';
 import {AuthContext} from '../../navigation/AuthProvider';
 //const uploadusers = ["17Kx04gVyJXkO8kZsIxUxRu4uJw1","Ye7iz2KN5Fbk5Y0Z91IEmzywNPh1","UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1", "JleriGZuTqXkAyO3xCiDsey1CCb2"]
 import firestore from '@react-native-firebase/firestore';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import {API, graphqlOperation} from 'aws-amplify';
 import {deletePost, updatePost} from '../../graphql/mutations';
@@ -62,6 +71,36 @@ const DetailedPost = props => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [homeprice, sethomeprice] = useState(1);
+  const [similarHomes, setSimilarHomes] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [numHomes, setNumHomes] = useState(10);
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const toggleShowMore = () => {
+    setShowMore(!showMore);
+  };
+
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  }
+
+
+  const loadMore = () => {
+    setNumHomes((prevNumHomes) =>
+      prevNumHomes + 10 > totalItems
+        ? totalItems
+        : prevNumHomes + 10
+    );
+  };
+  
+  const loadMoreButton =  (
+    <TouchableOpacity onPress={loadMore} style={styles.loadMoreButton}>
+      <Text style={styles.loadMoreText}>Load More</Text>
+    </TouchableOpacity>
+  );
 
   const logAnalyticsEvent = async () => {
     await analytics().logEvent('calltorent', {
@@ -94,7 +133,7 @@ const DetailedPost = props => {
     setDescription(text);
     console.log(description);
   };
-
+  
   const getUsersWithPrivileges = async () => {
     const callers = await firebase
       .firestore()
@@ -109,8 +148,45 @@ const DetailedPost = props => {
   };
 
   useEffect(() => {
+    async function getRecommendedHomes() {
+      try {
+        setIsLoading(true);
+        const response = await fetch('https://fwftielmqvccpnbbna45skokwe0fgeyk.lambda-url.us-east-2.on.aws/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            newPrice: post.newPrice,
+            bed: post.bedroom,
+            locality: post.locality,
+            kitchen: post.kitchen,
+            aircondition: post.aircondition,
+            water: post.water,
+            wifi: post.wifi,
+            latitude: post.latitude,
+            longitude: post.longitude,
+            bathroom: post.bathroom,
+            mode: post.mode,
+            type: post.type,
+            id: post.id,
+          })
+        });
+        const data = await response.json();
+        setSimilarHomes(data);
+        setTotalItems(data.totalItems);
+
+      } catch (error) {
+        console.error(error);
+      }
+      finally {
+        setIsLoading(false); // Set loading state to false
+      }
+    }
+    getRecommendedHomes();
     getPhoneNumbers();
     getUsersWithPrivileges();
+    console.log('similar homes', totalItems);
   }, []);
   const payRent = () => {
     navigation.navigate('Address', {
@@ -157,6 +233,7 @@ const DetailedPost = props => {
       console.log('Error updating home', e);
     }
   };
+
 
   const deleteFromFavorites = async id => {
     const ref = firestore().collection('posts');
@@ -235,105 +312,42 @@ const DetailedPost = props => {
       alert('Please insert mobile no');
     }
   };
-
+  const renderItem = ({ item }) => {
+    const monthlyPrice = item.newPrice ? Math.floor((item.newPrice * 1.07) / 12) : 0;
+    const currency = item.currency
+      ? item.currency[0] === 'usd'
+        ? '$'
+        : item.currency[0] === 'ghs'
+        ? 'GH₵'
+        : 'GH₵'
+      : 'GH₵';
+  
+    return (
+      <Pressable
+        onPress={() => {
+          //console.log('pressed', item.id);
+          navigation.navigate('Home');
+          setTimeout(() => {
+            navigation.navigate('Post', { postId: item.id });
+          }, 1); // Wait for 1 second before navigating to Post screen
+          
+        }}
+        style={styles.itemContainer}
+      >
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: item.image }} style={styles.image} />
+        </View>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.location}>{item.locality}, {item.sublocality}</Text>
+          <Text style={styles.price}>{currency} {monthlyPrice} / month</Text>
+        </View>
+      </Pressable>
+    );
+  };
   return (
     <View style={{backgroundColor: 'white'}}>
-      <Modal
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: 'white',
-          padding: 20,
-        }}
-        animationType={'slide'}
-        transparent={false}
-        visible={modalvisible}
-        onRequestClose={() => {
-          navigation.goBack();
-          console.log('Modal has been closed.');
-        }}>
-        <ScrollView
-          contentContainerStyle={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
-          }}>
-          <View style={{padding: 10}}>
-            <Text>Title</Text>
-            <TextInput
-              adjustsFontSizeToFit={true}
-              placeholder={post.title}
-              multiline={true}
-              maxLength={50}
-              onChangeText={text => helloTitle(text)}
-              style={{
-                alignContent: 'flex-start',
-                width: '100%',
-                height: 40,
-                fontSize: 18,
-                fontWeight: 'bold',
-                borderWidth: 1,
-                borderColor: 'darkgray',
-                borderRadius: 10,
-                padding: 10,
-              }}></TextInput>
-          </View>
-
-          <View style={{padding: 10}}>
-            <Text>Price</Text>
-            <TextInput
-              adjustsFontSizeToFit={true}
-              placeholder={JSON.stringify(post.newPrice)}
-              multiline={true}
-              maxLength={50}
-              onChangeText={text => hellod1(text)}
-              style={{
-                alignContent: 'flex-start',
-                width: '100%',
-                height: 40,
-                fontSize: 18,
-                fontWeight: 'bold',
-                borderWidth: 1,
-                borderColor: 'darkgray',
-                borderRadius: 10,
-                padding: 10,
-              }}></TextInput>
-          </View>
-
-          <View style={{padding: 10}}>
-            <Text>Description</Text>
-            <TextInput
-              adjustsFontSizeToFit={true}
-              placeholder={post.description}
-              multiline={true}
-              //maxLength={50}
-              onChangeText={text => helloDescrip(text)}
-              style={{
-                alignContent: 'flex-start',
-                width: '100%',
-                height: 80,
-                fontSize: 18,
-                fontWeight: 'bold',
-                borderWidth: 1,
-                borderColor: 'darkgray',
-                borderRadius: 10,
-                padding: 10,
-              }}></TextInput>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => updateHome(post.id)}
-            style={{
-              height: 40,
-              margin: 20,
-              borderRadius: 10,
-              alignItems: 'center',
-              backgroundColor: 'black',
-            }}>
-            <Text style={{paddingTop: 10, color: 'white'}}>Update</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </Modal>
+      
 
       <ScrollView
         contentContainerStyle={{paddingBottom: 150}}
@@ -503,138 +517,213 @@ const DetailedPost = props => {
           {/* <Text style={styles.totalPrice}>
                 GH₵{post.totalPrice}
                 </Text> */}
+          <View style={{ paddingBottom: 20 }}>
+      
+      <SkeletonContent
+      containerStyle={{ flex: 1, flexDirection: 'row' }}
+  isLoading={isLoading}
+  layout={[
+    { key: 'item1', width: 150, height: 150, borderRadius: 10, marginRight: 10 },
+    { key: 'item2', width: 150, height: 150, borderRadius: 10, marginRight: 10 },
+    { key: 'item3', width: 150, height: 150, borderRadius: 10, marginRight: 10 },
+    { key: 'item4', width: 150, height: 150, borderRadius: 10, marginRight: 10 },
+    { key: 'item5', width: 150, height: 150, borderRadius: 10, marginRight: 10 },
+  ]}
+>  
+{similarHomes.length > 0 ? (
+  <View>
+  <View>
+    <Text
+  style={{
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  }}>
+  Homes you may like
+  </Text>
+  </View>
+  <View
+    style={{
+      flexDirection: 'row',
+      paddingHorizontal: 1,
+      overflow: 'scroll',
+    }}
+  >
+    
+    
+      <FlatList
+        data={similarHomes}
+        renderItem={renderItem}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        
+      />
+    
+  </View>
+  </View>
+  ) : null}
+</SkeletonContent>
+<View style={styles.hairline} />
+    </View>
 
-          <Text style={styles.longDescription}>{post.description}</Text>
+
+
+          <Text style={styles.longDescription}>
+            {showFullDescription ? post.description : `${post.description.slice(0, 60)}...`}
+          </Text>
+          <TouchableOpacity style={{
+            fontWeight: 'bold',
+            
+          }} onPress={toggleDescription}>
+            <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>{showFullDescription ? 'Show Less' : 'Show More'}</Text>
+          </TouchableOpacity>
           <View style={styles.hairline} />
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={styles.longDescription}>{post.createdAt}</Text>
-            {usersWithPrivileges.includes(user.uid) ? (
-              <Pressable
-                onPress={() => setmodalvisible(true)}
-                style={{padding: 15}}>
-                <FontAwesomeIcon icon={faPencilAlt} size={25} />
-              </Pressable>
-            ) : null}
-          </View>
+
+          <View style={{ flexDirection: 'column', marginTop: 16 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+      <FontAwesomeIcon icon={faShieldAlt} size={30} color="blue" />
+      <View style={{ marginLeft: 12 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+          <Text style={{ color: 'blue' }}>RentIt</Text>
+          <Text style={{ color: 'deeppink' }}>Guarantee</Text>
+        </Text>
+        <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>
+          This property is part of a rental guarantee and protection program where tenants can receive guaranteed rent and protection against property damage.
+          {showMore ? (
+            <>
+              {'\n\n'}
+              The RentItGuarantee program includes the following benefits:
+              {'\n\n'}
+              - Guaranteed rental income for up to 12 months
+              {'\n'}
+              - Coverage for damage to the property caused by tenants
+              {'\n'}
+              - Legal assistance for eviction and recovery of unpaid rent
+              {'\n'}
+              - Unlimited claims with no excess or deductibles
+            </>
+          ) : null}
+        </Text>
+        <TouchableOpacity onPress={toggleShowMore} style={{ marginTop: 8 }}>
+          <Text style={{ color: 'blue', fontSize: 12 }}>
+            {showMore ? 'Show less' : 'Show more'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+
+
+  {post.furnished ? (
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+      <FontAwesomeIcon icon={faCouch} size={30} color="blue" />
+      <View style={{ marginLeft: 12 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Furnished</Text>
+        <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>This property comes with furniture included.</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.negotiable ? (
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+      <FontAwesomeIcon icon={faHandshake} size={30} color="blue" />
+      <View style={{ marginLeft: 12 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Negotiable</Text>
+        <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>The price of this property is open to negotiation with the owner.</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.loyaltyProgram ? (
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+      <FontAwesomeIcon icon={faStar} size={30} color="blue" />
+      <View style={{ marginLeft: 12 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Loyalty Program</Text>
+        <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>This property is part of a loyalty program where tenants can earn rewards and discounts.</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.verified ? (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <FontAwesomeIcon icon={faCheckCircle} size={30} color="blue" />
+      <View style={{ marginLeft: 12 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Verified</Text>
+        <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>This property has been verified by our team to ensure its authenticity and quality.</Text>
+      </View>
+    </View>
+  ) : null}
+</View>
+
+
+
+          
 
           <View style={styles.hairline} />
           <Text
             style={{margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'}}>
             Amenities available
           </Text>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Air Conditioner{' '}
-              <FontAwesomeIcon icon={faFan} size={25} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.aircondition}
-            </Text>
-          </View>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Wifi <Feather name="wifi" size={25} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.wifi}
-            </Text>
-          </View>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Kitchen <FontAwesomeIcon icon={faUtensils} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.kitchen}
-            </Text>
-          </View>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Bathroom{' '}
-              <FontAwesomeIcon icon={faBath} size={25} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.bathroom}
-            </Text>
-          </View>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Bedroom <FontAwesomeIcon icon={faBed} size={25} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.bed}
-            </Text>
-          </View>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Water <FontAwesomeIcon icon={faFaucet} size={25} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.water}
-            </Text>
-          </View>
-          <View
-            style={{
-              margin: 10,
-              padding: 1,
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              Toilet{' '}
-              <FontAwesomeIcon icon={faToilet} size={25} color={'blue'} />
-            </Text>
-            <Text style={{color: 'blue', fontSize: 18, fontWeight: 'bold'}}>
-              {post.toilet}
-            </Text>
-          </View>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+  {post.aircondition === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <FontAwesomeIcon icon={faFan} size={25} color={'blue'} />
+        <Text style={styles.cardText}>Air Conditioner</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.wifi === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <Feather name="wifi" size={25} color={'blue'} />
+        <Text style={styles.cardText}>Wifi</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.kitchen === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <FontAwesomeIcon icon={faUtensils} color={'blue'} />
+        <Text style={styles.cardText}>Kitchen</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.bathroom === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <FontAwesomeIcon icon={faBath} size={25} color={'blue'} />
+        <Text style={styles.cardText}>Bathroom</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.bed === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <FontAwesomeIcon icon={faBed} size={25} color={'blue'} />
+        <Text style={styles.cardText}>Bedroom</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.water === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <FontAwesomeIcon icon={faFaucet} size={25} color={'blue'} />
+        <Text style={styles.cardText}>Water</Text>
+      </View>
+    </View>
+  ) : null}
+  {post.toilet === 'Yes' ? (
+    <View style={styles.card}>
+      <View style={styles.cardItem}>
+        <FontAwesomeIcon icon={faToilet} size={25} color={'blue'} />
+        <Text style={styles.cardText}>Toilet</Text>
+      </View>
+    </View>
+  ) : null}
+</View>
+
+
+
+
+
         </View>
       </ScrollView>
 

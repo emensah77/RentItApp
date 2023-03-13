@@ -5,12 +5,22 @@ type Mutation {
 type PaymentIntent {
   clientSecret: String!
 }
+type Review @model @key(name: "byUser", fields: ["userID", "postId"]) @key(name: "byPost", fields: ["postId", "userID"]){
+  id: ID!
+  post: Post! @connection(fields: ["postId"])
+  user: User! @connection(fields: ["userID"])
+  postId: ID!
+  userID: String!
+  rating: Int!
+  review: String!
+}
 type User @model {
   id: String!
   username: String
   email: String
   imageuri: String
   posts: [Post] @connection(keyName: "byUser" , fields: ["id"])
+  reviews: [Review] @connection(keyName: "byUser" , fields: ["id"])
 }
 
 type Post @model @key(name: "byUser", fields: ["userID"]){
@@ -18,6 +28,7 @@ type Post @model @key(name: "byUser", fields: ["userID"]){
   
   userID: String
   user: User @connection(fields: ["userID"])
+  reviews: [Review] @connection(keyName: "byPost", fields: ["id"])
   image: String
   images: [String]
   type: String!

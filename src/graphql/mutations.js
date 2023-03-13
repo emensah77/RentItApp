@@ -8,6 +8,237 @@ export const createPaymentIntent = /* GraphQL */ `
     }
   }
 `;
+export const createReview = /* GraphQL */ `
+  mutation CreateReview(
+    $input: CreateReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
+    createReview(input: $input, condition: $condition) {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateReview = /* GraphQL */ `
+  mutation UpdateReview(
+    $input: UpdateReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
+    updateReview(input: $input, condition: $condition) {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteReview = /* GraphQL */ `
+  mutation DeleteReview(
+    $input: DeleteReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
+    deleteReview(input: $input, condition: $condition) {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
   mutation CreateUser(
     $input: CreateUserInput!
@@ -32,6 +263,10 @@ export const createUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -48,6 +283,18 @@ export const createUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -82,6 +329,10 @@ export const updateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -98,6 +349,18 @@ export const updateUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -132,6 +395,10 @@ export const deleteUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -148,6 +415,18 @@ export const deleteUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -174,8 +453,23 @@ export const createPost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -187,6 +481,10 @@ export const createPost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber
@@ -224,8 +522,23 @@ export const updatePost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -237,6 +550,10 @@ export const updatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber
@@ -274,8 +591,23 @@ export const deletePost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -287,6 +619,10 @@ export const deletePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber

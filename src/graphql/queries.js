@@ -1,6 +1,144 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getReview = /* GraphQL */ `
+  query GetReview($id: ID!) {
+    getReview(id: $id) {
+      id
+      post {
+        id
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      user {
+        id
+        username
+        email
+        imageuri
+        posts {
+          nextToken
+        }
+        reviews {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      postId
+      userID
+      rating
+      review
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listReviews = /* GraphQL */ `
+  query ListReviews(
+    $filter: ModelReviewFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listReviews(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        post {
+          id
+          userID
+          image
+          images
+          type
+          title
+          description
+          mode
+          phoneNumbers
+          marketerNumber
+          currency
+          status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
+          bed
+          bedroom
+          bathroomNumber
+          maxGuests
+          wifi
+          kitchen
+          bathroom
+          water
+          toilet
+          aircondition
+          locality
+          sublocality
+          oldPrice
+          newPrice
+          latitude
+          longitude
+          createdAt
+          updatedAt
+        }
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        postId
+        userID
+        rating
+        review
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
@@ -22,6 +160,10 @@ export const getUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          negotiable
+          furnished
+          loyaltyProgram
+          verified
           bed
           bedroom
           bathroomNumber
@@ -38,6 +180,18 @@ export const getUser = /* GraphQL */ `
           newPrice
           latitude
           longitude
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
           createdAt
           updatedAt
         }
@@ -63,6 +217,9 @@ export const listUsers = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -83,8 +240,23 @@ export const getPost = /* GraphQL */ `
         posts {
           nextToken
         }
+        reviews {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      reviews {
+        items {
+          id
+          postId
+          userID
+          rating
+          review
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       image
       images
@@ -96,6 +268,10 @@ export const getPost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      negotiable
+      furnished
+      loyaltyProgram
+      verified
       bed
       bedroom
       bathroomNumber
@@ -135,6 +311,9 @@ export const listPosts = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        reviews {
+          nextToken
+        }
         image
         images
         type
@@ -145,6 +324,10 @@ export const listPosts = /* GraphQL */ `
         marketerNumber
         currency
         status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
         bed
         bedroom
         bathroomNumber
@@ -249,48 +432,5 @@ export const listPostNews = /* GraphQL */ `
       scannedCount
       count
     }
-  }
-`;
-export const getUserHomes = /* GraphQL */ `
-  query getUser($id: ID!) {
-      getUser(id: $id) {
-        id
-        email
-        createdAt
-        posts(limit: 10000000) {
-          items {
-            id
-            image
-            images
-            type
-            title
-            description
-            mode
-            phoneNumbers
-            bed
-            bedroom
-            bathroomNumber
-            maxGuests
-            wifi
-            kitchen
-            bathroom
-            water
-            toilet
-            aircondition
-            locality
-            sublocality
-            status
-            oldPrice
-            newPrice
-            latitude
-            longitude
-            createdAt
-            updatedAt
-            userID
-          }
-        }
-        username
-        imageuri
-      }
   }
 `;

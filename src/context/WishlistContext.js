@@ -32,7 +32,7 @@ function WishListProvider({children}) {
   };
 
   useEffect(() => {
-    if (!user.uid) {
+    if (!user || user.uid === undefined) {
       setFavorite({});
       return;
     }
