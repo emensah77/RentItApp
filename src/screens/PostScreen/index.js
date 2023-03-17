@@ -21,31 +21,93 @@ const PostScreen = ({ route }) => {
     const [modalvisible, setmodalvisible] = useState(false)
     const [loading, setLoading] = useState(false);
     const [nextToken, setNextToken] = useState(null);
-    const [deepLinkUrl, setDeepLinkUrl] = useState()
-
-    async function getDeepLinkUrl() {
-        if (!postId) {
-                try {
-                    const url = await Linking.getInitialURL();
-                    const splitArray = url.split('rooms/room/')
-                    var n = splitArray[splitArray.length - 1].replace("/", "");
-                    setDeepLinkUrl(n)
-                    return url
-                } catch (error) {
-                    console.error(error);
-                }
-            
-        } else {
-            setDeepLinkUrl()
+    const [deepLinkUrl, setDeepLinkUrl] = useState();
+    const handleDeepLink = async (event) => {
+        const url = event.url;
+        if (url) {
+          const path = url.replace(/.*?:\/\//g, '');
+          const postIdParam = path.split('/')[2];
+          if (postIdParam !== postId) {
+            fetchPosts(postIdParam);
+          }
         }
-    }
+      };
+      
+      const fetchPosts = async (postId) => {
+        try {
+          const postsResult = await API.graphql(
+            graphqlOperation(getPost, {
+              id: postId,
+            })
+          )
+          setNewPost(postsResult.data.getPost);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    
+      async function getDeepLinkUrl() {
+        if (!postId) {
+          try {
+            const url = await Linking.getInitialURL();
+            if (url) {
+              const regex = /\/room\/([^/]+)\/?$/;
+              const match = url.match(regex);
+              if (match && match[1]) {
+                setDeepLinkUrl(match[1]);
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          setDeepLinkUrl(null);
+        }
+      }
+    
+      const handleForegroundDeepLink = (url) => {
+        if (url) {
+          const path = url.replace(/.*?:\/\//g, '');
+          const postIdParam = path.split('/')[2];
+          if (postIdParam !== postId) {
+            setDeepLinkUrl(postIdParam);
+          }
+        }
+      };
+    
+      useEffect(() => {
+        console.log('Checking deep link');
+        getDeepLinkUrl();
+    
+        const handleUrl = (event) => {
+          handleDeepLink(event);
+        };
+    
+        const subscription = Linking.addEventListener('url', handleUrl);
+    
+        return () => {
+          subscription.remove();
+        };
+      }, []);
+    
+      useEffect(() => {
+        if (deepLinkUrl) {
+          handleForegroundDeepLink(deepLinkUrl);
+        }
+      }, [deepLinkUrl]);
+    
+      useEffect(() => {
+        if (postId || deepLinkUrl) {
+          console.log('Fetching post:', postId || deepLinkUrl);
+          setLoading(true);
+          fetchPosts(postId || deepLinkUrl);
+          setLoading(false);
+        }
+      }, [postId, deepLinkUrl]);
 
-
-    useEffect(() => {
-        getDeepLinkUrl()
-    }, [])
-
-
+      if (newPost === undefined) {
+      return null;
+      }
 
 
     const createTwoButtonAlert = () => {
@@ -76,84 +138,10 @@ const PostScreen = ({ route }) => {
 
 
 
-    const preloadImages = async (urlOfImages) => {
-        let preFetchTasks = [];
-        urlOfImages.forEach((url) => {
-            preFetchTasks.push(Image.prefetch(url));
-        });
-
-        Promise.all(preFetchTasks).then((results) => {
-            try {
-                let downloadedAll = true;
-                results.forEach((result) => {
-                    if (!result) {
-                        //error occurred downloading a pic
-                        downloadedAll = false;
-                    }
-                    //console.log(downloadedAll);
-                })
-            } catch (e) {
-
-                return;
-            }
-        })
-
-    }
+    
 
 
-    useEffect(() => {
-
-        const fetchPosts = async (postId) => {
-            try {
-                const postsResult = await API.graphql(
-                    graphqlOperation(getPost, {
-                        id: postId,
-                    })
-                )
-                //console.log('this is postsresult',postsResult.data.getPost);
-                setNewPost(postsResult.data.getPost);
-                // setPosts(postsResult.data.listPosts.items);
-                // // if (postsResult.data.listPosts.nextToken){
-                // //     setNextToken(postsResult.data.listPosts.nextToken);
-                // //     fetchMorePosts(nextToken);
-                // // }
-                // if(id){
-                //     setNewPost(post.find(place => place.id === id));
-                // }
-                // else{
-                // setNewPost(post.find(place => (place.id === postId)));
-                // }
-
-
-            } catch (e) {
-                console.log(e);
-            }
-        }
-
-
-        setLoading(true);
-        fetchPosts(postId || deepLinkUrl);
-        setLoading(false);
-
-        // if (newPost) {
-        //     preloadImages(newPost.images)
-        // }
-        // AsyncStorage.getItem('alreadyPaid').then((value) => {
-        //         if (value == null) {
-        //             createTwoButtonAlert();
-
-
-        //         } else {
-        //           return;
-        //         }
-        //       }); // Add
-
-    }, [deepLinkUrl])
-
-    if (newPost === undefined) {
-        return null;
-
-    }
+    
 
 
 

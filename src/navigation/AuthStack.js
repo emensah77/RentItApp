@@ -10,11 +10,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import LocationPermissions from '../screens/LocationPermissions';
 import Notifications from '../screens/Notifications';
+import mixpanel from '../../src/MixpanelConfig';
+import useDwellTimeTracking from '../../src/hooks/useDwellTimeTracking';
+import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../navigation/AuthProvider';
 
 const Stack = createStackNavigator();
 
+const onNavigationStateChange = (state) => {
+  const currentRoute = state.routes[state.index];
+  const currentScreen = currentRoute.name;
+
+  const { user } = useContext(AuthContext);
+
+  mixpanel.track('Screen Viewed', {
+    screenName: currentScreen,
+    userId: user ? user.uid : 'guest',
+  });
+};
+
+
 const AuthStack = () => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  
+  
   let routeName;
 
   useEffect(() => {
@@ -45,7 +64,12 @@ const AuthStack = () => {
 
 
   return (
-    <Stack.Navigator initialRouteName={routeName}>
+    <Stack.Navigator 
+    initialRouteName={routeName}
+    onStateChange={(state) =>
+      onNavigationStateChange(state)
+    }
+    >
       <Stack.Screen
         name="Onboarding"
         component={OnboardingScreen}

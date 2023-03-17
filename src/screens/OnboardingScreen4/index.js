@@ -15,6 +15,7 @@ import uuid from 'react-native-uuid';
 import awsconfig from '../../../src/aws-exports';
 Amplify.configure(awsconfig);
 import ImagePicker from 'react-native-image-crop-picker';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 const OnboardingScreen4 = (props) => {
     const navigation = useNavigation();
@@ -33,7 +34,11 @@ const OnboardingScreen4 = (props) => {
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
     
-
+    async function getFileSize(uri) {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      return blob.size;
+    }
     async function pathToImageFile(uri) {
         try {
           const response = await fetch(uri);
@@ -46,6 +51,39 @@ const OnboardingScreen4 = (props) => {
           console.log("Error uploading file:", err);
         }
       }
+      const convertPathToFileURL = (path) => {
+        if (Platform.OS === 'ios') {
+          return `file://${path}`;
+        }
+        return path;
+      };
+      
+      const resizeImage = async (uri, width, height, format, quality) => {
+        console.log("Original URI:", uri); // Add this line to log the original URI
+
+        const originalSize = await getFileSize(uri);
+
+        try {
+          const resizedImage = await ImageResizer.createResizedImage(
+            uri,
+            width,
+            height,
+            format,
+            quality
+          );
+          const resizedSize = await getFileSize(resizedImage.uri);
+          console.log('Resized Size:', resizedSize, 'bytes');
+          console.log('Original Size:', originalSize, 'bytes');
+
+          const reductionPercentage = ((originalSize - resizedSize) / originalSize) * 100;
+          console.log('Size Reduction:', reductionPercentage.toFixed(2), '%');
+          return resizedImage;
+        } catch (err) {
+          console.log('Error resizing the image:', err);
+          return null;
+        }
+      };
+      
     
     const fetchResourceFromURI = async (uri) => {
         const response = await fetch(uri);
@@ -159,14 +197,23 @@ const OnboardingScreen4 = (props) => {
             height: 683,
           }).then(image => {
                 console.log(image);
-                const img = {
-                        uri: image.path,
+                const fileURL = convertPathToFileURL(image.path);
+
+                (async () => {
+                  resizeImage(fileURL, 1024, 683, 'JPEG', 80).then(resizedImage => {
+                    if (resizedImage) {                      
+                      const img = {
+                        uri: resizedImage.uri,
                         type: image.mime,
                         name: uuid.v4(),
-                  };
-                  uploadResource(img);
-                        
-                  setImages(prevImages => prevImages.concat(img));
+                      };
+                      uploadResource(img);
+                      setImages(prevImages => prevImages.concat(img));
+                    }
+                  }).catch(err => console.error('Error obtaining resized image:', err));
+
+                  })();
+
                          
                 // image.map(item => {
                 //     let img = {
@@ -193,14 +240,22 @@ const OnboardingScreen4 = (props) => {
             maxFiles: Platform.OS === 'ios' ? 10 : null,
           }).then(async image => {
                 image.map(item => {
+                  const fileURL = convertPathToFileURL(item.path);
+                  (async () => {
+                    resizeImage(fileURL, 1024, 683, 'JPEG', 80).then(resizedImage => {
+                      if (resizedImage) {
                     let img = {
-                        uri: item.path,
-                        type: item.mime,
-                        name: uuid.v4(),
-                        };
-                        uploadResource(img);
-                        
-                        setImages(prevImages => prevImages.concat(img));
+                      uri: resizedImage.uri,
+                      type: item.mime,
+                      name: uuid.v4(),
+                    }
+                    
+                    uploadResource(img);
+                    setImages(prevImages => prevImages.concat(img));
+                  }}).catch(err => console.error('Error obtaining resized image:', err));
+
+                })();
+                  
                         
                 })
 

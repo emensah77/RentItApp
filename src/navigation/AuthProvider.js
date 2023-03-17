@@ -9,12 +9,41 @@ import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createUser } from '../graphql/mutations';
 import { getUser } from '../graphql/queries';
-
+import mixpanel from '../MixpanelConfig';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFirstLaunch, setIsFirstLaunch] = useState(false);
+
+
+  useEffect(() => {
+    const authListener = auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+  
+        // Identify the user with a unique ID (e.g., user.uid)
+        mixpanel.identify(user.uid);
+  
+        // Set user properties (e.g., email, name, etc.)
+        mixpanel.people.set({
+          $email: user.email,
+          $name: user.displayName,
+          $contact: user.phoneNumber,
+
+          // Add any other user properties you want to track
+        });
+      } else {
+        setUser(null);
+      }
+    });
+  
+    return () => {
+      // Unsubscribe the listener when the component is unmounted
+      authListener();
+    };
+  }, []);
+  
 
 
   const addUser = async () => {
@@ -78,6 +107,18 @@ export const AuthProvider = ({ children }) => {
             // Sign-in the user with the credential
             setLoading(true);
             await auth().signInWithCredential(googleCredential)
+
+                          // Identify the user with a unique ID (e.g., user.uid)
+              const currentUser = auth().currentUser;
+              mixpanel.identify(currentUser.uid);
+
+              // Set user properties (e.g., email, name, etc.)
+              mixpanel.people.set({
+                $email: currentUser.email,
+                $name: currentUser.displayName,
+                //$contact: user.phoneNumber,
+                // Add any other user properties you want to track
+              });
 
             var trendRef = firestore().collection('users').doc(auth().currentUser.uid);
 
@@ -162,6 +203,18 @@ export const AuthProvider = ({ children }) => {
             // Sign the user in with the credential
             setLoading(true);
             await auth().signInWithCredential(appleCredential)
+
+            // Identify the user with a unique ID (e.g., user.uid)
+            const currentUser = auth().currentUser;
+            mixpanel.identify(currentUser.uid);
+
+            // Set user properties (e.g., email, name, etc.)
+            mixpanel.people.set({
+              $email: currentUser.email,
+              $name: currentUser.displayName,
+              //$contact: user.phoneNumber,
+              // Add any other user properties you want to track
+            });
             var trendRef = firestore().collection('users').doc(auth().currentUser.uid);
 
             var getDoc = trendRef.get()

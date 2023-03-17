@@ -13,6 +13,7 @@ type Review @model @key(name: "byUser", fields: ["userID", "postId"]) @key(name:
   userID: String!
   rating: Int!
   review: String!
+  parentReviewId: String
 }
 type User @model {
   id: String!

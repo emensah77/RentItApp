@@ -15,9 +15,13 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon, } from '@fortawesome/react-native-fontawesome';
 import { RangeCalendar } from '@ui-kitten/components';
 import { convertDays, fCurrency } from '../../variables';
+import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
+
 
 
 const AddressScreen = (props) => {
+    const { trackDwellTime } = useDwellTimeTracking();
+    useEffect(trackDwellTime, [trackDwellTime]);
     const [range, setRange] = useState({});
     const {user, logout} = useContext(AuthContext);
     const [progressText, setProgressText] = useState(0);

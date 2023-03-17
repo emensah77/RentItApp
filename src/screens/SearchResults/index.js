@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import {
   View,
   FlatList,
@@ -19,6 +19,8 @@ import { useNavigation } from '@react-navigation/native';
 import reactotron from 'reactotron-react-native';
 import _ from 'lodash';
 import { HOME_STATUS } from '../../variables';
+
+
 const SearchResultsScreen = ({ guests, viewport }) => {
   const [loading, setLoading] = useState(true);
   const [datalist, setDatalist] = useState([]);
@@ -31,6 +33,7 @@ const SearchResultsScreen = ({ guests, viewport }) => {
   const [homeCountState, setHomeCountState] = useState(0);
   const homeCount = useRef(0);
   const callOnScrollEnd = useRef(false);
+  
 
   const navigation = useNavigation();
 
@@ -77,7 +80,7 @@ const SearchResultsScreen = ({ guests, viewport }) => {
       id: 7,
     },
   ];
-
+  
   const fetchCount = async nextToken => {
     try {
       let query = {
@@ -122,15 +125,70 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     }
   };
 
-  const fetchPosts = async isReset => {
-    if (isEnd) {
+  const [currentDataIndex, setCurrentDataIndex] = useState(0);
+  const [reachedEnd, setReachedEnd] = useState(false);
+  const [filteredLoading, setFilteredLoading] = useState(false);
+
+
+  const fetchFilteredPosts = async (status, token, items = []) => {
+    setFilteredLoading(true);
+    try {
+      const query = {
+        limit: 1000,
+        nextToken: token,
+        filter: {
+          and: {
+            maxGuests: {
+              ge: guests,
+            },
+            type: {
+              eq: status,
+            },
+            latitude: {
+              between: [viewport.southwest.lat, viewport.northeast.lat],
+            },
+            longitude: {
+              between: [viewport.southwest.lng, viewport.northeast.lng],
+            },
+          },
+        },
+      };
+  
+      if (status === 'All') {
+        delete query.filter.and.type;
+      }
+  
+      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+      const newItems = items.concat(postsResult.data.listPosts.items);
+      const newNextToken = postsResult.data.listPosts.nextToken;
+  
+      if (newNextToken) {
+        fetchFilteredPosts(status, newNextToken, newItems);
+      } else {
+        setDatalist(newItems);
+        setFilteredLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setFilteredLoading(false);
+    }
+  };
+  
+  
+  
+
+
+  const fetchPosts = async (isReset) => {
+    if (reachedEnd) {
       hideAllLoader();
       return;
     }
+  
     setIsLoading(true);
+  
     try {
       let query = {
-        limit: 1000,
+        limit: 50,
         filter: {
           and: {
             maxGuests: {
@@ -149,28 +207,51 @@ const SearchResultsScreen = ({ guests, viewport }) => {
         },
         nextToken,
       };
+  
       if (status === 'All') {
         delete query.filter.and.type;
       }
+  
       let previousList = datalist;
       if (isReset) {
         delete query.nextToken;
         previousList = [];
       }
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      setDatalist([...previousList, ...postsResult.data.listPosts.items]);
-      setNextToken(postsResult.data.listPosts.nextToken);
-      if (!postsResult.data.listPosts.items.length || !postsResult.data.listPosts.nextToken) {
-        setEnd(true);
-        setNextToken(null);
+  
+      const fetchBatch = async (query, results = []) => {
+        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+        results.push(...postsResult.data.listPosts.items);
+  
+        if (postsResult.data.listPosts.nextToken) {
+          if (results.length < 20) {
+            query.nextToken = postsResult.data.listPosts.nextToken;
+            return fetchBatch(query, results);
+          }
+        }
+  
+        return { results, nextToken: postsResult.data.listPosts.nextToken };
+      };
+  
+      const { results, nextToken } = await fetchBatch(query);
+  
+      // Compare currentDataIndex to the fetched results length
+      if (currentDataIndex < results.length - 1) {
+        setDatalist([...previousList, ...results]);
+        setNextToken(nextToken);
+        setCurrentDataIndex(currentDataIndex + 1); // Increment the index
+      } else {
+        setReachedEnd(true);
       }
+  
       hideAllLoader();
+  
     } catch (e) {
       console.log(e);
       hideAllLoader();
     }
   };
-
+  
+  
   const hideAllLoader = () => {
     if (loading) {
       setLoading(false);
@@ -197,7 +278,10 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     callOnScrollEnd.current = false;
     setNextToken(null);
     setStatus(status);
+    fetchFilteredPosts(status);
   };
+  
+  
 
   useEffect(() => {
     loadMore(true);
@@ -227,51 +311,52 @@ const SearchResultsScreen = ({ guests, viewport }) => {
   };
 
   const renderNoHome = () => {
-    return (<View
-      style={{
-        flex: 1,
-        paddingTop: 25,
-        padding: 15,
-        backgroundColor: 'white',
-      }}>
-      <Text
+    return (
+      <View
         style={{
-          fontFamily: 'Montserrat-Bold',
-          fontSize: 20,
-        }}>
-        No Homes Here
-      </Text>
-      <View style={{ paddingVertical: 10 }}>
-        <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
-          There are no homes in the area you searched. Try expanding your
-          search to include other towns and cities near this area.
-        </Text>
-      </View>
-
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderWidth: 1,
-          borderColor: 'black',
-          width: '40%',
-          backgroundColor: 'black',
-          paddingVertical: 13,
-          borderRadius: 10,
+          flex: 1,
+          padding: 15,
+          backgroundColor: 'white',
         }}>
         <Text
           style={{
-            fontSize: 16,
             fontFamily: 'Montserrat-Bold',
-            color: 'white',
+            fontSize: 20,
           }}>
-          Search Again
+          No Homes Here
         </Text>
-      </TouchableOpacity>
-    </View>)
-  }
-
+        <View style={{ paddingVertical: 10 }}>
+          <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
+            There are no homes in the area you searched. Try expanding your
+            search to include other towns and cities near this area.
+          </Text>
+        </View>
+  
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderWidth: 1,
+            borderColor: 'black',
+            width: '40%',
+            backgroundColor: 'black',
+            paddingVertical: 13,
+            borderRadius: 10,
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: 'Montserrat-Bold',
+              color: 'white',
+            }}>
+            Search Again
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  
   return (
     <View
       style={{ paddingBottom: 100, marginBottom: 100, backgroundColor: 'white' }}>
@@ -296,6 +381,7 @@ const SearchResultsScreen = ({ guests, viewport }) => {
                     
                 ))}
                 </View> */}
+              
 
       {!loading ? (
         <View>
@@ -361,17 +447,21 @@ const SearchResultsScreen = ({ guests, viewport }) => {
             }}>
             <Feather name="home" size={25} color={'white'} />
             <Text
-              style={{
-                color: 'white',
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}>
-              {homeCount.current === 0
-                ? 'Loading...'
-                : homeCount.current + ' homes to rent'}
-            </Text>
+            style={{
+              color: 'white',
+              fontSize: 18,
+              fontWeight: 'bold',
+            }}>
+            {loading ? 'Loading...' : + ' ' + homeCount.current + ' homes to rent'}
+          </Text>
+
           </View>
           <View style={{ marginBottom: 10, top: 80, backgroundColor: 'white' }}>
+          {filteredLoading ? (
+  <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+    <ActivityIndicator size={'large'} color="blue" />
+  </View>
+) : (
             <FlatList
               removeClippedSubviews={true}
               data={datalist}
@@ -401,10 +491,11 @@ const SearchResultsScreen = ({ guests, viewport }) => {
               updateCellsBatchingPeriod={100}
             //renderItem={({item}) => <Post post={item}/>}
             />
+      )}
           </View>
         </View>
       ) : (
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ backgroundColor:'white',alignItems: 'center', justifyContent: 'center' }}>
           <AnimatedEllipsis
             animationDelay={100}
             style={{
@@ -421,6 +512,20 @@ const SearchResultsScreen = ({ guests, viewport }) => {
 };
 export default SearchResultsScreen;
 const styless = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: 'rgba(211, 211, 211, 0.8)', // Light grey with opacity
+    width: '80%', // Add width (you can adjust the percentage to your desired value)
+    paddingVertical: 5,
+    borderRadius: 20, // Rounded edges
+    borderWidth: 1, // Border width
+    borderColor: 'rgba(0, 0, 0, 0.2)', // Border color with opacity
+    alignSelf: 'center', // Center the container
+    marginHorizontal: 10, // Add horizontal margins
+  },
+  headerText: {
+    fontSize: 24, // Large text
+    textAlign: 'center', // Center the text
+  },
   button: {
     flexDirection: 'row',
     backgroundColor: 'white',

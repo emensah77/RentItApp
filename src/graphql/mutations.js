@@ -80,6 +80,7 @@ export const createReview = /* GraphQL */ `
       userID
       rating
       review
+      parentReviewId
       createdAt
       updatedAt
     }
@@ -157,6 +158,7 @@ export const updateReview = /* GraphQL */ `
       userID
       rating
       review
+      parentReviewId
       createdAt
       updatedAt
     }
@@ -234,6 +236,7 @@ export const deleteReview = /* GraphQL */ `
       userID
       rating
       review
+      parentReviewId
       createdAt
       updatedAt
     }
@@ -295,6 +298,7 @@ export const createUser = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }
@@ -361,6 +365,7 @@ export const updateUser = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }
@@ -427,6 +432,7 @@ export const deleteUser = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }
@@ -466,6 +472,7 @@ export const createPost = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }
@@ -535,6 +542,7 @@ export const updatePost = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }
@@ -604,6 +612,7 @@ export const deletePost = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }

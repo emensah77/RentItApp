@@ -11,12 +11,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import analytics from '@react-native-firebase/analytics';
 import {AuthContext} from '../../navigation/AuthProvider';
+import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
+import mixpanel from '../../MixpanelConfig.js';
 const DestinationSearch = (props) => {
     const navigation = useNavigation();
     const {user, logout} = useContext(AuthContext);
     const ref = useRef();
     const route = useRoute();
     const hometype = route.params?.type;
+    const { trackDwellTime } = useDwellTimeTracking();
+    useEffect(trackDwellTime, [trackDwellTime]);
     useEffect(() => {
       ref.current?.focus();
       console.log(hometype)
@@ -66,6 +70,11 @@ const DestinationSearch = (props) => {
                       description:user.displayName,
                       
                     })
+                    mixpanel.track('Search Query', {
+                      id: user.uid,
+                      location: details.name,
+                      userName:user.displayName,
+                    });
                   
           
                     navigation.navigate('Number of Guests', {

@@ -248,8 +248,8 @@ const Router = (props) => {
                 component={SearchResultsTabNavigator}
 
                 options={{
-                    headerShown: true,
-                    title: 'Homes to Rent',
+                    headerShown: false,
+                    title: '',
                 }}
             />
 

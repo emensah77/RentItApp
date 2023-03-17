@@ -18,41 +18,74 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 async function findSimilarHomes(home, N) {
-    // Get all homes from DynamoDB
-    const allHomes = await ddb.scan({ TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev' }).promise();
-  
-    // Calculate the feature vector for the input home
-    const featureVector1 = [home.newPrice, home.latitude, home.longitude, home.bedroom, home.kitchen, home.water, home.wifi, home.aircondition, home.type, home.mode, home.bathroom];
-  
-    // Calculate the similarity score and distance between the input home and all homes in the database
-    const similarities = [];
-    const maxDistance = 10000; // Set maximum acceptable distance to 30km
-    for (let i = 0; i < allHomes.Items.length; i++) {
-      const featureVector2 = [allHomes.Items[i].newPrice, allHomes.Items[i].latitude, allHomes.Items[i].longitude, allHomes.Items[i].bedroom, allHomes.Items[i].kitchen, allHomes.Items[i].water, allHomes.Items[i].wifi, allHomes.Items[i].aircondition, allHomes.Items[i].type, allHomes.Items[i].mode, allHomes.Items[i].bathroom];
-      const dotProduct = featureVector1.reduce((acc, val, index) => acc + val * featureVector2[index], 0);
-      const magnitude1 = Math.sqrt(featureVector1.reduce((acc, val) => acc + val * val, 0));
-      const magnitude2 = Math.sqrt(featureVector2.reduce((acc, val) => acc + val * val, 0));
-      const similarity = dotProduct / (magnitude1 * magnitude2);
-      const distance = haversineDistance(home.latitude, home.longitude, allHomes.Items[i].latitude, allHomes.Items[i].longitude);
-      const score = (0.7 * (1 - (distance / maxDistance))) + (0.3 * similarity); // Use a weighted sum of distance and similarity
-      similarities.push({ home: allHomes.Items[i], score, distance });
-    }
-  
-    // Sort the list of similar homes by score and distance
-    similarities.sort((a, b) => {
-      if (b.score !== a.score) {
-        return b.score - a.score;
-      } else {
-        return a.distance - b.distance;
+  // Get all homes from DynamoDB
+  const allHomes = await ddb.scan({ TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev' }).promise();
+
+  // Define weights for each feature (higher weight = more important)
+  const weights = {
+    newPrice: 4,
+    latitude: 5,
+    longitude: 5,
+    bedroom: 1,
+    kitchen: 1,
+    water: 1,
+    wifi: 1,
+    aircondition: 1,
+    type: 3,
+    mode: 3,
+    bathroom: 1
+};
+
+  // Calculate the feature vector for the input home
+  const featureVector1 = [        home.newPrice,        home.latitude,        home.longitude,        home.bedroom,        home.kitchen,        home.water,        home.wifi,        home.aircondition,        home.type,        home.mode,        home.bathroom    ];
+
+  // Calculate the sum of weights for all features
+  const totalWeight = Object.values(weights).reduce((acc, val) => acc + val, 0);
+
+  // Calculate the similarity score and distance between the input home and all homes in the database
+  const similarities = [];
+  const maxDistance = 10000; // Set maximum acceptable distance to 30km
+  for (let i = 0; i < allHomes.Items.length; i++) {
+      const featureVector2 = [            allHomes.Items[i].newPrice,
+          allHomes.Items[i].latitude,
+          allHomes.Items[i].longitude,
+          allHomes.Items[i].bedroom,
+          allHomes.Items[i].kitchen,
+          allHomes.Items[i].water,
+          allHomes.Items[i].wifi,
+          allHomes.Items[i].aircondition,
+          allHomes.Items[i].type,
+          allHomes.Items[i].mode,
+          allHomes.Items[i].bathroom
+      ];
+
+      // Compute weighted similarity score and distance
+      let weightedScore = 0;
+      for (let j = 0; j < featureVector1.length; j++) {
+          const weight = weights[Object.keys(weights)[j]];
+          weightedScore += weight * (featureVector1[j] === featureVector2[j] ? 1 : 0);
       }
-    });
-    
-    // Filter out the input home
-    // Filter out homes that are too far, too expensive, or have status of PENDING or REJECTED
-    const filteredHomes = similarities.filter(item => item.home.id !== home.id && item.distance <= maxDistance && item.home.newPrice <= home.newPrice * 3 && item.home.status !== 'PENDING' && item.home.status !== 'REJECTED');
-  
-    // Return the top N most similar homes
-    return filteredHomes.slice(0, N).map(item => item.home);
+      const distance = haversineDistance(home.latitude, home.longitude, allHomes.Items[i].latitude, allHomes.Items[i].longitude);
+      const score = (0.7 * (1 - (distance / maxDistance))) + (0.3 * (weightedScore / totalWeight));
+
+      similarities.push({ home: allHomes.Items[i], score, distance });
+  }
+
+  // Sort the list of similar homes by score and distance
+  similarities.sort((a, b) => {
+      if (b.score !== a.score) {
+          return b.score - a.score;
+      } else {
+          return a.distance - b.distance;
+      }
+  });
+
+  // Filter out the input home
+  // Filter out homes that are too far, too expensive, or have status of PENDING or REJECTED
+  const filteredHomes = similarities.filter(item => item.home.id !== home.id && item.distance <= maxDistance && item.home.newPrice <= home.newPrice * 3 && item.home.status !== 'PENDING' && item.home.status !== 'REJECTED');
+
+  // Return the top N most similar homes
+  return filteredHomes.slice(0, N).map(item => item.home);
 }
 
 

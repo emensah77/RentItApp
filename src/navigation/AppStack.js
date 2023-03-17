@@ -14,14 +14,34 @@ import SearchResultsTabNavigator from './SearchResultsTabNavigator';
 import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
+import mixpanel from '../../src/MixpanelConfig';
+import { AuthContext } from '../navigation/AuthProvider';
+
+
 
 const Stack = createStackNavigator();
+
+const onNavigationStateChange = (state) => {
+    const currentRoute = state.routes[state.index];
+    const currentScreen = currentRoute.name;
+  
+    const { user } = useContext(AuthContext);
+  
+    mixpanel.track('Screen Viewed', {
+      screenName: currentScreen,
+      userId: user ? user.uid : 'guest',
+    });
+  };
 
 const AppStack = () => {
    
   
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        onStateChange={(state) =>
+            onNavigationStateChange(state)
+          }
+        >
 
                     
                     

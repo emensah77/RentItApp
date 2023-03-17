@@ -70,6 +70,7 @@ export const getReview = /* GraphQL */ `
       userID
       rating
       review
+      parentReviewId
       createdAt
       updatedAt
     }
@@ -132,6 +133,7 @@ export const listReviews = /* GraphQL */ `
         userID
         rating
         review
+        parentReviewId
         createdAt
         updatedAt
       }
@@ -192,6 +194,7 @@ export const getUser = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }
@@ -253,6 +256,7 @@ export const getPost = /* GraphQL */ `
           userID
           rating
           review
+          parentReviewId
           createdAt
           updatedAt
         }

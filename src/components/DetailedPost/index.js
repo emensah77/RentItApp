@@ -52,6 +52,7 @@ import {AuthContext} from '../../navigation/AuthProvider';
 //const uploadusers = ["17Kx04gVyJXkO8kZsIxUxRu4uJw1","Ye7iz2KN5Fbk5Y0Z91IEmzywNPh1","UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1", "JleriGZuTqXkAyO3xCiDsey1CCb2"]
 import firestore from '@react-native-firebase/firestore';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import mixpanel from '../../MixpanelConfig.js';
 
 import {API, graphqlOperation} from 'aws-amplify';
 import {deletePost, updatePost} from '../../graphql/mutations';
@@ -148,6 +149,14 @@ const DetailedPost = props => {
   };
 
   useEffect(() => {
+    mixpanel.track('Property Viewed', {
+      propertyId: post.id,
+      propertyTitle: post.title,
+      propertyType: post.type,
+      price: post.newPrice,
+      locality: post.locality,
+      
+    });
     async function getRecommendedHomes() {
       try {
         setIsLoading(true);
@@ -279,6 +288,15 @@ const DetailedPost = props => {
     deleteFromFavorites(id);
   };
   const sendWhatsApp = () => {
+    mixpanel.track('User Home Interest', {
+      propertyId: post.id,
+      propertyTitle: post.title,
+      propertyType: post.type,
+      price: post.newPrice,
+      locality: post.locality,
+      url: `https://rentit.homes/rooms/room/${post.id}`,
+      
+    });
     let msg =
       'I am interested in this home ' +
       `https://rentit.homes/rooms/room/${post.id}` +
@@ -589,19 +607,28 @@ const DetailedPost = props => {
           <Text style={{ color: 'deeppink' }}>Guarantee</Text>
         </Text>
         <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>
-          This property is part of a rental guarantee and protection program where tenants can receive guaranteed rent and protection against property damage.
+          Every booking on RentIt comes with RentItGuarantee, if you don't like the property you get your money back.
           {showMore ? (
             <>
-              {'\n\n'}
-              The RentItGuarantee program includes the following benefits:
-              {'\n\n'}
-              - Guaranteed rental income for up to 12 months
-              {'\n'}
-              - Coverage for damage to the property caused by tenants
-              {'\n'}
-              - Legal assistance for eviction and recovery of unpaid rent
-              {'\n'}
-              - Unlimited claims with no excess or deductibles
+                          {'\n\n'}
+            <Text style={{ fontWeight: 'bold' }}>What's included?</Text>
+            {'\n\n'}
+
+            Book with confidence: Our guarantee program gives you the option of getting a refund if you're not satisfied with the property you booked, or if the property doesn't meet your expectations.
+
+           
+
+            {'\n'}
+
+            {'\n\n'}
+
+            
+
+            Protection against scams: You can trust that the properties listed on our platform are legitimate and not fraudulent listings.
+
+            {'\n'}
+
+            
             </>
           ) : null}
         </Text>
@@ -632,7 +659,7 @@ const DetailedPost = props => {
       </View>
     </View>
   ) : null}
-  {post.loyaltyProgram ? (
+  {/* {post.loyaltyProgram ? (
     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
       <FontAwesomeIcon icon={faStar} size={30} color="blue" />
       <View style={{ marginLeft: 12 }}>
@@ -640,7 +667,7 @@ const DetailedPost = props => {
         <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>This property is part of a loyalty program where tenants can earn rewards and discounts.</Text>
       </View>
     </View>
-  ) : null}
+  ) : null} */}
   {post.verified ? (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <FontAwesomeIcon icon={faCheckCircle} size={30} color="blue" />

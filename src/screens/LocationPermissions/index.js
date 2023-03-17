@@ -182,7 +182,7 @@ const LocationPermissions = () => {
                 BackgroundGeolocation.start();
                 setTimeout(() => {
                     navigation.navigate('Notifications')
-                }, 4000);
+                }, 10000);
             }
             else{
                 BackgroundGeolocation.start();
@@ -190,7 +190,7 @@ const LocationPermissions = () => {
                 initBackgroundGeolocation();
                 setTimeout(() => {
                     navigation.navigate('Notifications')
-                }, 4000);
+                }, 10000);
 
             }
             if(allow){

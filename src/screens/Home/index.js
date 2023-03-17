@@ -85,8 +85,14 @@ import {registerTransistorAuthorizationListener} from './Authorization';
 import {HOME_STATUS} from '../../variables';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
 import useWishlist from '../../hooks/useWishlist';
+import mixpanel from '../../../src/MixpanelConfig';
+import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
+
+mixpanel.init();
 
 const HomeScreen = props => {
+  const { trackDwellTime } = useDwellTimeTracking();
+  useEffect(trackDwellTime, [trackDwellTime]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const {user, logout} = useContext(AuthContext);
@@ -173,16 +179,20 @@ const HomeScreen = props => {
       BackgroundGeolocation.onLocation(
         location => {
           console.log('[onLocation]', location);
-          firestore()
-            .collection('marketers')
-            .doc(auth().currentUser.uid)
-            .update({
-              createdAt: new Date(),
-              uid: auth().currentUser.uid,
-              displayName: auth().currentUser.displayName,
-              lat: location.coords.latitude,
-              long: location.coords.longitude,
-            });
+
+          if (user) {   
+            // console.log('userID', user.uid);         
+            firestore()
+              .collection('marketers')
+              .doc(user.uid)
+              .update({
+                createdAt: new Date(),
+                uid: user.uid,
+                displayName: user.displayName,
+                lat: location.coords.latitude,
+                long: location.coords.longitude,
+              });
+          }
           addEvent('onLocation', location);
           return location;
         },
@@ -191,7 +201,7 @@ const HomeScreen = props => {
         },
       ),
     );
-
+    
     subscribe(
       BackgroundGeolocation.onMotionChange(location => {
         console.log('[onMotionChange]', location);
@@ -781,32 +791,6 @@ const HomeScreen = props => {
   const createTwoButtonAlert = () => {
     setmodalVisible(true);
 
-    // Alert.alert(
-    // "Service fee",
-    // "RentIt charges GHS 1 service fee. This is a one-time payment for using RentIt to search for homes all over Ghana",
-    // [
-
-    //     { text: "OK", onPress: () => {
-    //         navigation.navigate('Payment', {
-    //             channel : ["card", "mobile_money"],
-    //             totalAmount: 1,
-    //             homeimage: null,
-    //             homelatitude: null,
-    //             homelongitude: null,
-    //             hometitle: null,
-    //             homebed: null,
-    //             homeid: null,
-    //             homeyears: null,
-    //             homemonths: null,
-
-    //             })
-
-    //         }
-
-    // }
-    // ]
-    // );
-    // setTimeout(createTwoButtonAlert, 100000);
   };
   const userDetails = async () => {
     var user = await firestore()
@@ -873,6 +857,37 @@ const HomeScreen = props => {
   };
 
   useEffect(() => {
+    async function personalizedHomes(userLatitude, userLongitude, homeType) {
+      try {
+        //setIsLoadingType(true);
+        const response = await fetch('https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userLocation: {
+              latitude: userLatitude,
+              longitude: userLongitude
+            },
+            homeType
+          })
+        });
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        //setIsLoadingType(false); // Set loading state to false
+      }
+    }
+    
+    setIsLoadingType(true);
+
+    personalizedHomes(latitude, longitude, status);
+    setIsLoadingType(false);
+
+    
     _getUserData(auth().currentUser.uid);
 
     userDetails();
@@ -882,19 +897,19 @@ const HomeScreen = props => {
     console.log('status', status);
     console.log('nextToken', nextToken);
     //setInterval(selectColor, 2000);
-    VersionCheck.needUpdate().then(async res => {
-      //console.log(res.isNeeded);    // true
-      if (res.isNeeded) {
-        setUpdateNeeded(true);
-        setUpdateUrl(res.storeUrl);
-        //console.log(res.storeUrl === updateUrl);
-        //Linking.openURL(res.storeUrl);  // open store if update is needed.
-      }
-    });
+    // VersionCheck.needUpdate().then(async res => {
+    //   //console.log(res.isNeeded);    // true
+    //   if (res.isNeeded) {
+    //     setUpdateNeeded(true);
+    //     setUpdateUrl(res.storeUrl);
+    //     //console.log(res.storeUrl === updateUrl);
+    //     //Linking.openURL(res.storeUrl);  // open store if update is needed.
+    //   }
+    // });
 
-    setIsLoadingType(true);
-    fetchPostsType(status);
-    setIsLoadingType(false);
+    //setIsLoadingType(true);
+    //fetchPostsType(status);
+    //setIsLoadingType(false);
     console.log('posts', posts);
     //getLatestPost();
 
@@ -1534,460 +1549,6 @@ const HomeScreen = props => {
       </View>
     </ScrollView>
 
-    //         <ScrollView style={{backgroundColor:"#fff"}}>
-    //             <View style={{alignItems:"center"}}>
-    //             <Modal animationType = {"slide"} transparent = {false}
-    //               visible = {modalvisible}
-    //              onRequestClose = {() => {
-    //                 navigation.goBack();
-    //                 console.log("Modal has been closed.")
-    //                 } }
-    //             >
-
-    //               <View style = {{flex: 1,
-    //       alignItems: 'center',
-    //       backgroundColor: 'white',
-    //       padding: 10}}>
-    //                  <Text style = {{color: 'black',
-    //       marginTop: 10, fontWeight:'bold', fontSize:22}}>Service Charge!</Text>
-    //                 <Text style={{marginBottom:20}}>We began RentIt to help people like you.
-    //                     In order to continue doing that, we are now charging a GHS 2 service fee. This payment is one-time. You will not pay
-    //                     anything again for using RentIt</Text>
-    //                     <View style={{paddingBottom:10}}>
-    //                     <Pressable
-    //                                                       style={{ width: 300, backgroundColor: 'black',
-    //                                                        justifyContent: 'center', flexDirection: 'row',
-    //                                                       alignItems: 'center', borderRadius: 50,
-    //                                                         zIndex:1, alignSelf:"center",
-
-    //                                                     }}
-    //                                                         onPress={makeCall1}>
-    //                                                         <Fontisto name="phone" size={15} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
-
-    //                                                         <Text adjustsFontSizeToFit={true} style={{justifyContent: 'center', alignItems: 'center', fontSize: 10,
-    //                                                          fontFamily:'Montserrat-SemiBold', color:"white"}}>Call if you have any problems or you need help</Text>
-
-    //                                                             </Pressable>
-
-    //                     </View>
-    //                     <View style={{flex:1, flexDirection:"row", justifyContent:'space-between'}}>
-    //                     <TouchableOpacity
-    //                     onPress={() => {
-
-    //                                     navigation.navigate('Payment', {
-    //                                         channel : ["mobile_money"],
-    //                                         totalAmount: 2,
-    //                                         homeimage: null,
-    //                                         homelatitude: null,
-    //                                         homelongitude: null,
-    //                                         hometitle: null,
-    //                                         homebed: null,
-    //                                         homeid: null,
-    //                                         homeyears: null,
-    //                                         homemonths: null,
-
-    //                                     })
-
-    //                     }}
-    //                     style={{marginHorizontal:10,alignItems:"center",padding:10,borderRadius:10,backgroundColor:"deeppink", height:40}}
-    //                     >
-
-    //                   <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
-    //                     Pay with Mobile Money
-    //                   </Text>
-    //               </TouchableOpacity>
-    //               <TouchableOpacity
-    //               onPress={() => {
-
-    //                 navigation.navigate('Payment', {
-    //                     channel : ["card"],
-    //                     totalAmount: 2,
-    //                     homeimage: null,
-    //                     homelatitude: null,
-    //                     homelongitude: null,
-    //                     hometitle: null,
-    //                     homebed: null,
-    //                     homeid: null,
-    //                     homeyears: null,
-    //                     homemonths: null,
-
-    //                 })
-
-    // }}
-
-    //               style={{marginHorizontal:10,alignItems:"center",borderRadius:10,backgroundColor:"blue", padding:10, height:40}}>
-    //                   <Text style={{color:'white', fontSize:14, fontWeight:"bold"}}>
-    //                     Pay with Debit Card
-    //                   </Text>
-    //               </TouchableOpacity>
-
-    //                     </View>
-
-    //               </View>
-
-    //            </Modal>
-    //        </View>
-    //             <View>
-    //                 {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center', }}>
-    //                 <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
-    //             </TouchableOpacity>: null}
-
-    //                 <Pressable
-    //                         style={styles.searchButton}
-    //                         onPress={()=> navigation.navigate('House Type')}>
-    //                         <Fontisto name="search" size={20} color={"deeppink"}/>
-    //                         <Text adjustsFontSizeToFit={true} style={styles.searchButtonText}>Where do you want to rent?</Text>
-
-    //                             </Pressable>
-    //                 {/* Search bar */}
-    //                 <ImageBackground
-
-    //                 style={styles.image}>
-
-    //                     {/* <Text adjustsFontSizeToFit={true} style={{marginTop:-20,
-    //                         fontSize:30,
-    //                         alignSelf:'center',
-    //                         zIndex:1,
-    //                         fontFamily:'Montserrat-Bold',
-    //                         color: color}}>
-
-    //                             A home for everyone
-
-    //                     </Text> */}
-
-    //                     {/* <Pressable
-    //                         style={styles.button}
-    //                         onPress={()=> navigation.navigate
-    //                         ('House Type')}>
-    //                         <Text adjustsFontSizeToFit={true} style={styles.buttonText}>Explore nearby stays</Text>
-
-    //                             </Pressable> */}
-    //                 </ImageBackground>
-    //                 <View>
-
-    //                     <Image
-
-    //                     style={{height:500, width:Dimensions.get('screen').width - 20, top:-250, borderRadius:25, marginHorizontal:10}}
-    //                         source={image}
-
-    //                     />
-
-    //                     {/* <Text style={{top:-250, color:'white', position:'absolute',
-    //                     alignSelf:'center', fontWeight:'bold', fontSize:25}}>
-    //                         What are you looking for?</Text>
-
-    //                         <View style={{flex:1, top:-700, alignSelf:'center',flexDirection:'row', justifyContent:'space-between'}}>
-    //                         <TouchableOpacity style={{borderRadius:50,alignItems:'center',width:100,backgroundColor:'white', marginHorizontal:10}}>
-    //                             <Text style={{padding:10,fontWeight:'bold', fontSize:20, color:'purple'}}>Rent</Text>
-    //                         </TouchableOpacity>
-
-    //                         <TouchableOpacity style={{borderRadius:50,alignItems:'center',width:100,backgroundColor:'white', marginHorizontal:10}}>
-    //                             <Text style={{color:'purple',padding:10,fontWeight:'bold', fontSize:20}}>Buy</Text>
-    //                         </TouchableOpacity>
-    //                         </View> */}
-
-    //                 </View>
-    //             </View>
-
-    //             <ScrollView style={{marginBottom: 40, backgroundColor: 'white'}}>
-    //             <View style={{padding: 5, margin: 10}}>
-    //                 <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
-    //                     New Homes
-
-    //                 </Text>
-    //                 <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
-    //                         Browse homes you will love</Text>
-
-    //                 </View>
-
-    //                 <OptimizedFlatList
-    //                         showsHorizontalScrollIndicator={false}
-    //                         showsVerticalScrollIndicator={false}
-    //                         decelerationRate={"fast"}
-    //                         snapToInterval={Dimensions.get("window").width - 60}
-    //                         snapToAlignment={"center"}
-    //                         initialNumToRender={10}
-    //                         horizontal={true}
-    //                            data={postLatest}
-    //                            renderItem={({item}) => {
-    //                                return (
-    //                                    <View style={{paddingVertical:20, paddingLeft: 16 }}>
-    //                                        <TouchableOpacity onPress={() => {navigation.navigate("Post", {postId: item.id})}}>
-
-    //                                            <FastImage
-    //                                            source={{
-    //                                                uri: item.image,
-    //                                                headers: { Authorization: 'token' },
-    //                                                priority: FastImage.priority.high,
-    //                                             }}
-    //                                            style={{flex:1, width: Dimensions.get("window").width - 60, marginRight: 8, height: 250, borderRadius:10, resizeMode:'cover'}}/>
-
-    //                                             <View style={{width: Dimensions.get("window").width - 60,
-    //                                                             height: 250,
-    //                                                             marginRight: 8,
-    //                                                             borderRadius: 10,
-    //                                                             position: 'absolute',
-    //                                                             backgroundColor: '#000',
-    //                                                             opacity: .4}}></View>
-    //                                             <View style={{
-    //                                 shadowColor:"black", shadowOpacity:.5, shadowRadius:30, margin: 10, left:0, top:5, position: 'absolute'
-    //                                 ,height:30, width:80, backgroundColor:"white", elevation:90,
-    //                                 borderRadius:10, justifyContent:'center', alignItems:"center"}}>
-    //                                     <Text adjustsFontSizeToFit={true} style={{fontSize:14, fontWeight:'bold'}}>{item.mode === "For Sale" ? "FOR SALE":"FOR RENT"}</Text>
-    //                 </View>
-    //                                             <Text style={{ position: 'absolute',
-    //                                                             color: 'white',
-    //                                                             marginTop: 4,
-    //                                                             fontSize: 14,
-    //                                                             fontWeight: 'bold',
-    //                                                             left: 25,
-    //                                                             bottom: 15}}>GH₵ {(Math.round(item.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} |  {item.bedroom} bedrooms</Text>
-    //                                         </TouchableOpacity>
-
-    //                                         {/* <Text>{geocod(item.latitude, item.longitude)}</Text> */}
-    //                                         {/* <Text style={{fontSize:32}}>This {resiul}</Text> */}
-    //                                        {
-
-    //                                         item.locality != null ?
-    //                                             <View style={{flex:1, marginHorizontal:10,
-    //                                             flexDirection:'row' }}>
-    //                                              {/* <Feather style={{paddingTop:9, marginHorizontal:1}}  name='map-pin' size={20}/>    */}
-    //                                             <Text style={{fontWeight:'bold', paddingTop:10, fontSize:14}}>
-    //                                                  {item.type} in {item.locality}, {item.sublocality}
-
-    //                                                 </Text>
-    //                                                 </View>
-    //                                                 :
-
-    //                                            <Text style={{fontSize:14, paddingTop:10, fontWeight:'bold'}}>{item.type}</Text>
-    //                                        }
-    //                                        </View>
-    //                                )
-    //                            }}
-    //                         />
-    //                 {posts.length === 0 ?
-
-    //                 null :
-    //             //     <View style={{padding: 5, margin: 10}}>
-    //             //     <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
-    //             //         Nearby Homes
-
-    //             //     </Text>
-    //             //     <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
-    //             //             Find homes near you</Text>
-
-    //             // </View>
-    //             null
-
-    //                 }
-
-    //                     {/* <OptimizedFlatList
-    //                         showsHorizontalScrollIndicator={false}
-    //                         showsVerticalScrollIndicator={false}
-    //                         decelerationRate={"fast"}
-    //                         snapToInterval={Dimensions.get("window").width - 60}
-    //                         snapToAlignment={"center"}
-    //                         initialNumToRender={10}
-    //                         horizontal={true}
-    //                            data={posts}
-    //                            renderItem={({item}) => {
-    //                                return (
-    //                                    <View style={{paddingVertical:20, paddingLeft: 16 }}>
-    //                                        <TouchableOpacity onPress={() => {navigation.navigate("Post", {postId: item.id})}}>
-    //                                            <FastImage
-    //                                            source={{
-    //                                                uri: item.image,
-    //                                                headers: { Authorization: 'token' },
-    //                                                priority: FastImage.priority.high,
-    //                                             }}
-    //                                            style={{flex:1, width: Dimensions.get("window").width - 60, marginRight: 8, height: 250, borderRadius:10, resizeMode:'cover'}}/>
-    //                                             <View style={{width: Dimensions.get("window").width - 60,
-    //                                                             height: 250,
-    //                                                             marginRight: 8,
-    //                                                             borderRadius: 10,
-    //                                                             position: 'absolute',
-    //                                                             backgroundColor: '#000',
-    //                                                             opacity: .4}}></View>
-
-    //                                             <Text style={{ position: 'absolute',
-    //                                                             color: 'white',
-    //                                                             marginTop: 4,
-    //                                                             fontSize: 14,
-    //                                                             fontWeight: 'bold',
-    //                                                             left: 25,
-    //                                                             bottom: 15}}>GH₵ {(Math.round(item.newPrice*1.07)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} |  {item.bed} bedrooms</Text>
-    //                                         </TouchableOpacity>
-    //                                        </View>
-    //                                )
-    //                            }}
-    //                         />
-    //  */}
-
-    //                     <View style={{padding: 5, margin: 10}}>
-    //                         <Text style={{fontSize: 25, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
-    //                             Live anywhere
-
-    //                         </Text>
-    //                         <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>
-    //                                 Find rooms for rents in</Text>
-
-    //                     </View>
-
-    //                     <View>
-    //                         <OptimizedFlatList
-    //                         showsHorizontalScrollIndicator={false}
-    //                         showsVerticalScrollIndicator={false}
-    //                         horizontal={true}
-    //                            data={images}
-    //                            renderItem={({item}) => {
-    //                                return (
-    //                                    <View style={{paddingVertical:20, paddingLeft: 16 }}>
-    //                                        <TouchableOpacity onPress={goToLocationSearch}>
-    //                                            <FastImage
-    //                                            source={{
-    //                                                uri: item.image,
-    //                                                headers: { Authorization: 'token' },
-    //                                                priority: FastImage.priority.high,
-    //                                             }}
-    //                                            style={{width: 250, marginRight: 8, height: 250, borderRadius:10, resizeMode: 'cover'}}/>
-    //                                             <View style={styles.ImageOverlay}></View>
-    //                                             <Feather name='map-pin' size={26} color='white'
-    //                                             style={styles.imageLocationIcon}/>
-    //                                             <Text style={styles.ImageText}>{item.title}</Text>
-    //                                         </TouchableOpacity>
-    //                                        </View>
-    //                                )
-    //                            }}
-    //                         />
-
-    //                     {/* <View style={{padding: 5, margin: 10}}>
-    //                         <Text style={{fontSize: 22, fontWeight: 'bold', fontFamily:'Montserrat-Bold'}}>
-    //                             Explore
-
-    //                         </Text>
-    //                         <Text style={{fontSize:18, fontWeight: 'normal', fontFamily: 'Montserrat-Medium'}}>We have rooms for everyone</Text>
-    //                     </View> */}
-    //                     {/* <OptimizedFlatList
-    //                     showsHorizontalScrollIndicator={false}
-    //                     showsVerticalScrollIndicator={false}
-    //                         horizontal={true}
-    //                         decelerationRate="fast"
-    //                            data={imagesApt}
-    //                            renderItem={({item}) => {
-    //                                return (
-    //                                    <View style={{paddingVertical:20, paddingLeft: 16 }}>
-    //                                        <TouchableOpacity onPress={goToLocationSearch}>
-    //                                            <FastImage
-    //                                            source={{
-    //                                                uri: item.image,
-    //                                                headers: { Authorization: 'token' },
-    //                                                priority: FastImage.priority.high,
-    //                                             }}
-    //                                            style={{width: 250, marginRight: 8, height: 250, borderRadius:10}}/>
-    //                                             <View style={styles.ImageOverlay}></View>
-
-    //                                             <Text style={styles.ImageText}>{item.title}</Text>
-    //                                         </TouchableOpacity>
-    //                                        </View>
-    //                                )
-    //                            }}
-    //                         /> */}
-
-    //                                    <View style={{margin: 0, padding: 6 }}>
-
-    //                                         <Image
-    //                                                 source={image}
-    //                                                 style={{borderRadius: 20, height: 600, width: '100%', alignSelf:"center"}}/>
-    //                                                  <View style={styles.ImageOverlay1}></View>
-    //                                                     <Text adjustsFontSizeToFit={true} style={{flex:1, alignItems: "center", color:"white",
-    //                                                       marginLeft: Dimensions.get('screen').width/4.5, width:"100%",
-    //                                                       top: 10, position: 'absolute', zIndex:1, fontWeight:"bold",
-    //                                                        fontSize:26, fontFamily:'Montserrat-ExtraBold',
-
-    //                                                     }}>
-    //                                                         Become a Partner
-
-    //                                                     </Text>
-    //                                                     <Text adjustsFontSizeToFit={true} style={{ color:"white",
-    //                                                        justifyContent: 'center',
-    //                                                       alignSelf: 'center', width:'50%', justifyContent:'center',
-    //                                                       top: 50, position: 'absolute', zIndex:1, fontSize:12,
-    //                                                       fontFamily: 'Montserrat-Medium'
-
-    //                                                     }}>
-    //                                                         Open your home for rent and earn extra income.
-
-    //                                                     </Text>
-
-    //                                                     <Pressable
-    //                                                       style={{ width: Dimensions.get('screen').width /2, backgroundColor: 'white',
-    //                                                        justifyContent: 'center', flexDirection: 'row',
-    //                                                       alignItems: 'center', borderRadius: 50,
-    //                                                       top: 150, position: 'absolute', zIndex:1, alignSelf:"center"
-
-    //                                                     }}
-    //                                                         onPress={makeCall}>
-    //                                                         <Fontisto name="phone" size={25} style={{color: 'black' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
-
-    //                                                         <Text adjustsFontSizeToFit={true} style={{justifyContent: 'center', alignItems: 'center', fontSize: 18,
-    //                                                          fontFamily:'Montserrat-SemiBold'}}>Call Now</Text>
-
-    //                                                             </Pressable>
-
-    //                                     </View>
-
-    //                     </View>
-
-    //                 </ScrollView>
-
-    //                     <Pressable onPress={() => navigation.navigate('About')} style={{margin: 10, padding: 16, backgroundColor: 'lightgray', borderRadius:10}}>
-    //                         <Text adjustsFontSizeToFit={true} style={{margin: 10, fontSize:25, fontFamily:'Montserrat-Bold'}}>Stay Informed</Text>
-    //                         <View style={{margin: 10, flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-    //                         <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold', fontSize:12}}>For Tenants</Text>
-
-    //                         <Text adjustsFontSizeToFit={true} style={{fontFamily:'Montserrat-SemiBold', fontSize:12}}>For Landlords</Text>
-
-    //                         </View>
-    //                         <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-between'}}>
-    //                             <View>
-    //                                 <View style={{padding: 5, marginBottom: 5,}}>
-    //                                         <Text adjustsFontSizeToFit={true} style={{flex:0.8,padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
-    //                                         <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
-    //                                     </View>
-
-    //                                     <View style={{padding: 5, marginBottom: 5,}}>
-    //                                         <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Help Center</Text>
-    //                                         <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
-    //                                     </View>
-
-    //                                     <View style={{padding: 5, marginBottom: 5,}}>
-    //                                         <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Trust and Safety</Text>
-    //                                         <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
-    //                                     </View>
-    //                             </View>
-
-    //                             <View>
-    //                                 <View style={{padding: 5, marginBottom: 5,}}>
-    //                                         <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily:'Montserrat-Bold'}}>Cancellation Options</Text>
-    //                                         <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Learn of our flexible policy</Text>
-    //                                     </View>
-
-    //                                     <View style={{padding: 5, marginBottom: 5,}}>
-    //                                         <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily: 'Montserrat-Bold'}}>Help Center</Text>
-    //                                         <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Get Support</Text>
-    //                                     </View>
-
-    //                                     <View style={{padding: 5, marginBottom: 5,}}>
-    //                                         <Text adjustsFontSizeToFit={true} style={{padding:2, fontSize:10, fontFamily: 'Montserrat-Bold'}}>Trust and Safety</Text>
-    //                                         <Text adjustsFontSizeToFit={true} style={{fontSize:8, fontFamily:'Montserrat-Regular'}}>Our Commitment</Text>
-    //                                     </View>
-    //                             </View>
-
-    //                         </View>
-
-    //                     </Pressable>
-
-    //         </ScrollView>
   );
 };
 

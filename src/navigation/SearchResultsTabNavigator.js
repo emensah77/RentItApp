@@ -14,16 +14,28 @@ const SearchResultsTabNavigator = (props) => {
     
     return (
         
-        <Tab.Navigator tabBarOptions={{
-                activeTintColor: 'blue',
+        <Tab.Navigator 
+            screenOptions={{
+                tabBarStyle: {
+                    borderTopWidth: 0, // Add this line to remove the border
+                  },
+            }}
+        
+            tabBarOptions={{
+                activeTintColor: 'white',
                 indicatorStyle: {
-                    backgroundColor: 'blue'
+                    backgroundColor: 'white'
                 }
                 
         }}>
             
             <Tab.Screen 
                 name={"list"}
+                options={{
+                    headerTitle: '', // Set this to an empty string or null
+                    tabBarLabel: () => null,                    
+
+                  }}
                > 
                {() => (
                    <SearchResults guests={guests} viewport={viewport}/>
