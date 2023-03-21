@@ -105,7 +105,7 @@ const EFeedback = props => {
                     selectedStar={rating => {
                       setRate(rating);
                     }}
-                    fullStarColor={'blue'}
+                    fullStarColor={'orange'}
                     containerStyle={{padding: 5}}
                   />
                   <Text caption1 grayColor style={{textAlign: 'center'}}>

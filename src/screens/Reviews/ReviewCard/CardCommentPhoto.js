@@ -36,7 +36,7 @@ export default function CardCommentPhoto({
               maxStars={5}
               rating={rate}
               selectedStar={rating => {}}
-              fullStarColor={'blue'}
+              fullStarColor={'orange'}
             />
             <Text
               footnote

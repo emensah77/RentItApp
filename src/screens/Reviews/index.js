@@ -31,7 +31,7 @@ const EReviewsData = [
     totalLike: 100,
     source: 'https://picsum.photos/300',
     name: 'Thai Nguyen',
-    rate: 5,
+    rate: 3,
     date: '2020 July 21',
     title: 'Nice Place',
     comment:
