@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {StatusBar, View, Text, StyleSheet, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {getUserHomes} from '../../graphql/queries';
+import {getUserHomes} from '../../graphql/customQueries';
 import {AuthContext} from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
 import {useNavigation} from '@react-navigation/native';

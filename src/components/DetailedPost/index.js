@@ -439,7 +439,7 @@ const DetailedPost = props => {
                   on
                 />
                 <Text footnote grayColor style={{marginLeft: 5}}>
-                  (9) reviews
+                  (2) reviews
                 </Text>
               </TouchableOpacity>
             </View>
