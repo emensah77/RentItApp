@@ -5,7 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
 import {useNavigation, useRoute} from "@react-navigation/native";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPlus ,faFaucet, faBath, faBed, faToilet, faWifi, faWater, faCamera, faUpload, faCameraRetro, faFileUpload, faCloudUploadAlt, faArrowAltCircleUp, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash ,faFaucet, faBath, faBed, faToilet, faWifi, faWater, faCamera, faUpload, faCameraRetro, faFileUpload, faCloudUploadAlt, faArrowAltCircleUp, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -16,6 +16,7 @@ import awsconfig from '../../../src/aws-exports';
 Amplify.configure(awsconfig);
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+
 
 const OnboardingScreen4 = (props) => {
     const navigation = useNavigation();
@@ -91,6 +92,12 @@ const OnboardingScreen4 = (props) => {
         const blob = await response.blob();
         
         return blob;
+      };
+      
+      const handleDeleteImage = (imageToDelete) => {
+        setImages((prevImages) =>
+          prevImages.filter((image) => image.name !== imageToDelete.name)
+        );
       };
       
       useEffect(() => {
@@ -388,17 +395,44 @@ const OnboardingScreen4 = (props) => {
                 </TouchableOpacity>
                 
                 <FlatList
-                data={images}
-                numColumns={2}
-                renderItem={({item}) => 
-                <View style={{width:Dimensions.get('window').width/2,
-                    height:200, flex:1, flexDirection:'column', margin:5}}>
-                        <Image source={{uri:item.uri}} style={{borderRadius:10,flex:1, width:'100%', height:'100%', resizeMode:'cover'}} />
+                  data={images}
+                  numColumns={2}
+                  renderItem={({ item }) => (
+                    <View
+                      style={{
+                        width: Dimensions.get('window').width / 2,
+                        height: 200,
+                        flex: 1,
+                        flexDirection: 'column',
+                        margin: 5,
+                      }}
+                    >
+                      <Image
+                        source={{ uri: item.uri }}
+                        style={{
+                          borderRadius: 10,
+                          flex: 1,
+                          width: '100%',
+                          height: '100%',
+                          resizeMode: 'cover',
+                        }}
+                      />
+                      <TouchableOpacity
+                        style={styles.deleteImageButton}
+                        onPress={() => handleDeleteImage(item)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          color="black"
+                          size={20}
+                          style={styles.deleteImageIcon}
+                        />
+                      </TouchableOpacity>
                     </View>
-            }
-                keyExtractor={(item, index) => index.toString()}
-                
+                  )}
+                  keyExtractor={(item, index) => index.toString()}
                 />
+
             <TouchableOpacity disabled={images.length < 5 ? true : false} onPress={() => navigation.navigate('OnboardingScreen5', {
                 title: title,
                 type: type,

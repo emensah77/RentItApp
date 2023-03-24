@@ -32,6 +32,20 @@ const styles = StyleSheet.create({
         borderBottomEndRadius:-30
         
       },
+      deleteImageButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      deleteImageIcon: {
+        alignSelf: 'center',
+      },
 
     
 

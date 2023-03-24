@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
     View,
     Pressable,
@@ -17,6 +17,9 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import firestore from '@react-native-firebase/firestore';
 import { AuthContext } from '../../navigation/AuthProvider.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import mixpanel from '../../MixpanelConfig.js';
+import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
+
 
 const GuestsScreen = props => {
     const navigation = useNavigation();
@@ -25,6 +28,8 @@ const GuestsScreen = props => {
     const [rooms, setrooms] = useState(0);
     const route = useRoute();
     const { user } = useContext(AuthContext);
+    const { trackDwellTime } = useDwellTimeTracking();
+    useEffect(trackDwellTime, [trackDwellTime]);
 
     return (
         <LinearGradient

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Image, Modal, TouchableOpacity, Pressable, Text, Linking, useEffect as useEffectRN } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, ScrollView, Image, Modal, TouchableOpacity, Pressable, Text, Linking, } from 'react-native';
 import DetailedPost from '../../components/DetailedPost';
 import { listPosts, getPost } from '../../graphql/queries';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -12,6 +12,7 @@ import { URL } from 'url'
 
 const PostScreen = ({ route }) => {
 
+  const isMounted = useRef(true);
 
     const navigation = useNavigation();
     const params = route.params || {};
@@ -40,7 +41,9 @@ const PostScreen = ({ route }) => {
               id: postId,
             })
           )
-          setNewPost(postsResult.data.getPost);
+          if (isMounted.current) {
+            setNewPost(postsResult.data.getPost);
+          }
         } catch (e) {
           console.log(e);
         }
@@ -95,7 +98,12 @@ const PostScreen = ({ route }) => {
           handleForegroundDeepLink(deepLinkUrl);
         }
       }, [deepLinkUrl]);
-    
+      useEffect(() => {
+        return () => {
+          isMounted.current = false;
+        };
+      }, []);
+      
       useEffect(() => {
         if (postId || deepLinkUrl) {
           console.log('Fetching post:', postId || deepLinkUrl);
@@ -213,112 +221,7 @@ const PostScreen = ({ route }) => {
 
     return (
         <ScrollView style={{ backgroundColor: 'white', }}>
-            <View style={{ alignItems: "center" }}>
-                <Modal
-                    animationType={"slide"} transparent={false}
-                    visible={modalvisible}
-                    onRequestClose={() => {
-
-                        console.log("Modal has been closed.")
-                    }}
-                >
-
-                    <View style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        backgroundColor: 'white',
-                        padding: 10
-                    }}>
-                        <Text style={{
-                            color: 'black',
-                            marginTop: 10, fontWeight: 'bold', fontSize: 22
-                        }}>Service Charge!</Text>
-                        <Text style={{ marginBottom: 20 }}>We began RentIt to help people like you.
-                            In order to continue doing that, we are now charging a GHS 20 service fee. This payment is one-time. You will not pay
-                            anything again for using RentIt. You can browse thousands of homes and speak to homeowners directly. No agents and walking and moving fees</Text>
-                        <View style={{ paddingBottom: 10 }}>
-                            <Pressable
-                                style={{
-                                    width: 300, backgroundColor: 'black',
-                                    justifyContent: 'center', flexDirection: 'row',
-                                    alignItems: 'center', borderRadius: 50,
-                                    zIndex: 1, alignSelf: "center",
-
-                                }}
-                                onPress={makeCall1}>
-                                <Fontisto name="phone" size={15} style={{ color: 'white', margin: 10, transform: [{ rotate: '90deg' }] }} />
-
-                                <Text adjustsFontSizeToFit={true} style={{
-                                    justifyContent: 'center', alignItems: 'center', fontSize: 10,
-                                    fontFamily: 'Montserrat-SemiBold', color: "white"
-                                }}>Call if you have any problems or you need help</Text>
-
-                            </Pressable>
-
-                        </View>
-                        <View style={{ flex: 1, flexDirection: "row", justifyContent: 'space-between' }}>
-                            <TouchableOpacity
-                                onPress={() => {
-
-
-
-                                    navigation.navigate('Payment', {
-                                        channel: ["mobile_money"],
-                                        totalAmount: 20,
-                                        homeimage: null,
-                                        homelatitude: null,
-                                        homelongitude: null,
-                                        hometitle: null,
-                                        homebed: null,
-                                        homeid: null,
-                                        homeyears: null,
-                                        homemonths: null,
-
-                                    })
-
-
-                                }}
-                                style={{ marginHorizontal: 10, alignItems: "center", padding: 10, borderRadius: 10, backgroundColor: "deeppink", height: 40 }}
-                            >
-
-
-                                <Text style={{ color: 'white', fontSize: 14, fontWeight: "bold" }}>
-                                    Pay with Mobile Money
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-
-                                    navigation.navigate('Payment', {
-                                        channel: ["card"],
-                                        totalAmount: 20,
-                                        homeimage: null,
-                                        homelatitude: null,
-                                        homelongitude: null,
-                                        hometitle: null,
-                                        homebed: null,
-                                        homeid: null,
-                                        homeyears: null,
-                                        homemonths: null,
-
-                                    })
-
-
-                                }}
-
-                                style={{ marginHorizontal: 10, alignItems: "center", borderRadius: 10, backgroundColor: "blue", padding: 10, height: 40 }}>
-                                <Text style={{ color: 'white', fontSize: 14, fontWeight: "bold" }}>
-                                    Pay with Debit Card
-                                </Text>
-                            </TouchableOpacity>
-
-
-                        </View>
-
-                    </View>
-
-                </Modal>
-            </View>
+            
             <DetailedPost post={newPost} />
         </ScrollView>
     );

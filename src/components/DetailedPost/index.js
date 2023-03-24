@@ -416,7 +416,7 @@ const DetailedPost = props => {
             ) : null}
           </View>
 
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -443,7 +443,7 @@ const DetailedPost = props => {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
 
           <View style={styles.hairline} />
           <Text style={styles.bedrooms}>

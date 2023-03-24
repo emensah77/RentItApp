@@ -212,7 +212,7 @@ const OnboardingScreen12 = (props) => {
                 : styles.disabledNextButton
             ]}
             onPress={handleNextPress}
-            disabled={!loyalty && !negotiable && !furnished}
+            //disabled={!loyalty && !negotiable && !furnished}
           >
             <Text style={styles.nextButtonText}>Next</Text>
           </TouchableOpacity>
@@ -290,7 +290,7 @@ paddingVertical: 15,
 marginTop: 30,
 },
 disabledNextButton: {
-opacity: 0.5,
+opacity: 1,
 },
 nextButtonText: {
 color: 'white',
