@@ -1612,7 +1612,7 @@ const onEndReached = () => {
         ) : (
           <FlatList
             removeClippedSubviews={true}
-            data={posts}
+            data={posts?.homes}
             maxToRenderPerBatch={1}
             initialNumToRender={1}
             contentContainerStyle={{paddingBottom: 40}}

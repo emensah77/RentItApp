@@ -57,6 +57,7 @@ import mixpanel from '../../MixpanelConfig.js';
 import {API, graphqlOperation} from 'aws-amplify';
 import {deletePost, updatePost} from '../../graphql/mutations';
 import useWishlist from '../../hooks/useWishlist.js';
+import StarRating from '../StarRating/index.js';
 
 const DetailedPost = props => {
   const post = props.post;
@@ -413,6 +414,35 @@ const DetailedPost = props => {
                 <Fontisto name="trash" size={25} color={'blue'} />
               </TouchableOpacity>
             ) : null}
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <View>
+              <TouchableOpacity
+                style={{
+                  marginTop: 5,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={() => navigation.navigate('Reviews')}>
+                <StarRating
+                  disabled={true}
+                  starSize={13}
+                  maxStars={5}
+                  rating={4}
+                  fullStarColor={'orange'}
+                  on
+                />
+                <Text footnote grayColor style={{marginLeft: 5}}>
+                  (2) reviews
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.hairline} />

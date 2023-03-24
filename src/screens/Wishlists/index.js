@@ -1,22 +1,21 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, {useContext, useEffect, useState} from 'react';
-import {FlatList, StatusBar, View, Text, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, StatusBar, View, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Post from '../../components/Post';
-import {AuthContext} from '../../navigation/AuthProvider';
+import { AuthContext } from '../../navigation/AuthProvider';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 import LinearGradient from 'react-native-linear-gradient';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
+import { ActivityIndicator } from 'react-native';
 
 const Wishlists = () => {
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   const fetchPosts = async () => {
-    setLoading(true);
     const wishList = await FirebaseRepo.getWishlist(user.uid);
     const temp = {};
     const uniquePosts = [];
@@ -26,10 +25,13 @@ const Wishlists = () => {
       }
     });
     setPosts(uniquePosts);
-    setLoading(false);
+    setLoading(false)
   };
 
   useEffect(() => {
+    if (!user.uid) {
+      return
+    }
     fetchPosts();
   }, []);
 
@@ -43,8 +45,8 @@ const Wishlists = () => {
       <StatusBar hidden={true} />
       <LinearGradient
         colors={['purple', 'deeppink']}
-        start={{x: 0.1, y: 0.2}}
-        end={{x: 1, y: 0.5}}
+        start={{ x: 0.1, y: 0.2 }}
+        end={{ x: 1, y: 0.5 }}
         style={[
           {
             height: '25%',
@@ -54,7 +56,7 @@ const Wishlists = () => {
             justifyContent: 'center',
           },
         ]}>
-        <View style={{paddingTop: 15}}>
+        <View style={{ paddingTop: 15 }}>
           <Text
             style={{
               fontSize: 32,
@@ -66,91 +68,67 @@ const Wishlists = () => {
         </View>
       </LinearGradient>
 
-      {loading ? (
-        <View
-          style={{
-            marginVertical: 20,
-            padding: 10,
-            marginHorizontal: 0,
-            justifyContent: 'flex-start',
-            alignContent: 'center',
-          }}>
-          <SkeletonContent
-            containerStyle={{paddingBottom: 100, width: 300}}
-            animationDirection="horizontalLeft"
-            layout={[
-              {width: 370, height: 220, marginBottom: 10, borderRadius: 10},
-              {width: 220, height: 20, marginBottom: 6},
-              {width: 90, height: 20, marginBottom: 20},
-
-              {width: 370, height: 220, marginBottom: 10, borderRadius: 10},
-              {width: 220, height: 20, marginBottom: 6},
-              {width: 90, height: 20, marginBottom: 20},
-
-              {width: 370, height: 220, marginBottom: 10, borderRadius: 10},
-              {width: 220, height: 20, marginBottom: 6},
-              {width: 90, height: 20, marginBottom: 20},
-            ]}
-          />
-        </View>
-      ) : (
-        <View>
-          {posts.length !== 0 ? (
-            <>
-              <View style={{padding: 15}}>
-                <Text
-                  style={{
-                    fontFamily: 'Montserrat-Bold',
-                    fontSize: 20,
-                  }}>
-                  Your Favorites
-                </Text>
-              </View>
-              <FlatList
-                data={posts}
-                renderItem={({item}) => <Post post={item} />}
-              />
-            </>
-          ) : (
-            <View style={{padding: 15}}>
+      <View>
+        {posts.length !== 0 ? (
+          <>
+            <View style={{ padding: 15 }}>
               <Text
                 style={{
                   fontFamily: 'Montserrat-Bold',
                   fontSize: 20,
                 }}>
-                No saves yet
+                Your Favorites
               </Text>
-              <View style={{padding: 10}}>
-                <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-                  Start looking for homes to rent or buy: As you search, tap the
-                  heart icon to save your favorite homes to rent or buy.
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Welcome')}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderWidth: 1,
-                  borderColor: 'black',
-                  width: '50%',
-                  height: '20%',
-
-                  borderRadius: 10,
-                }}>
+            </View>
+            <FlatList
+              data={posts}
+              renderItem={({ item }) => <Post post={item} />}
+            />
+          </>
+        ) : (
+          <View style={{ padding: 15 }}>
+            {loading ? <ActivityIndicator animating={true} size="large" color="blue" style={{ opacity: 1 }} /> :
+              <>
                 <Text
                   style={{
-                    fontSize: 16,
                     fontFamily: 'Montserrat-Bold',
+                    fontSize: 20,
                   }}>
-                  Start exploring
+                  No saves yet
                 </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      )}
+                <View style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
+                    Start looking for homes to rent or buy: As you search, tap the
+                    heart icon to save your favorite homes to rent or buy.
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Welcome')}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderWidth: 1,
+                    borderColor: 'black',
+                    width: '50%',
+                    height: '20%',
+
+                    borderRadius: 10,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Montserrat-Bold',
+                    }}>
+                    Start exploring
+                  </Text>
+                </TouchableOpacity>
+              </>
+            }
+          </View>
+        )}
+      </View>
+
     </View>
   );
 };
