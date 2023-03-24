@@ -40,6 +40,12 @@ const awsmobile = {
     ],
     "aws_mobile_analytics_app_id": "93e934849ea24093a4610fb26fb3a34f",
     "aws_mobile_analytics_app_region": "us-east-1",
+    "Analytics": {
+        "AWSPinpoint": {
+            "appId": "93e934849ea24093a4610fb26fb3a34f",
+            "region": "us-east-1"
+        }
+    },
     "aws_user_files_s3_bucket": "pics175634-dev",
     "aws_user_files_s3_bucket_region": "us-east-2"
 };

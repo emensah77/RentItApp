@@ -34,11 +34,11 @@
         },
         "personalizationEngine": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/personalizationEngine-44753363665075716244-build.zip"
+          "s3Key": "amplify-builds/personalizationEngine-31616b33586545336541-build.zip"
         },
         "imageOptimizer": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/imageOptimizer-6d6f41666a4364516573-build.zip"
+          "s3Key": "amplify-builds/imageOptimizer-4c346f3548754a754f70-build.zip"
         }
       },
       "storage": {

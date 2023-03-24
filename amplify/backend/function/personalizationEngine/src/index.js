@@ -18,10 +18,21 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return d;
   }
 
-async function personalizationEngine(userLocation, homeType) {
+async function personalizationEngine(userLocation, homeType, nextToken) {
   // Get all homes from DynamoDB
+  const scanParams = {
+    TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev'
+  };
+
+  if (nextToken) {
+    scanParams.ExclusiveStartKey = nextToken;
+  }
+
+  const allHomes = await ddb.scan(scanParams).promise();
+  //console.log("All homes:", allHomes); // Add console log here
+
   
-  const allHomes = await ddb.scan({ TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev' }).promise();
+  
 
   // Define weights for each feature (higher weight = more important)
   const weights = {
@@ -79,35 +90,41 @@ async function personalizationEngine(userLocation, homeType) {
   });
   const personalizedHomes = similarities.filter(item => item.home.status !== 'PENDING' && item.home.status !== 'REJECTED');
 
-  return personalizedHomes.map(item => item.home);
+  return {
+    personalizedHomes: personalizedHomes.map(item => item.home),
+    newNextToken: allHomes.LastEvaluatedKey // Assuming LastEvaluatedKey is your nextToken value
+  };
+  
 }
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-exports.handler = async (event) => {
-    console.log("Received event.body:", event.body); // Add this line to log the received event.body
+ exports.handler = async (event) => {
+    const requestData = JSON.parse(event.body);
+    const userLocation = requestData.userLocation;
+    const homeType = requestData.homeType;
+    const nextToken = requestData.nextToken;
+  
+    try {
+      const { personalizedHomes, newNextToken } = await personalizationEngine(userLocation, homeType, nextToken);
+      console.log('Personalized homes:', personalizedHomes); // Add console.log to check personalized homes
+      console.log('New nextToken:', newNextToken); // Add console.log to check the new nextToken
 
-  const requestData = JSON.parse(event.body);
-  const userLocation = requestData.userLocation;
-  const homeType = requestData.homeType;
-
-  try {
-    const personalizedHomes = await personalizationEngine(userLocation, homeType);
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*"
-      },
-      body: JSON.stringify(personalizedHomes)
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      statusCode: 500,
-     
-      body: JSON.stringify({ error: 'Failed to find personalized homes' })
-    };
-}
-};    
+      return {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "*"
+        },
+        body: JSON.stringify({ homes: personalizedHomes, nextToken: newNextToken })
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Failed to find personalized homes' })
+      };
+    }
+  };
+  

@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, {useState, useContext, useEffect, useRef, useCallback} from 'react';
 import {
   View,
   Modal,
@@ -138,6 +138,23 @@ const HomeScreen = props => {
   const [maxvalue, setmaxValue] = useState('');
   const [nextToken, setNextToken] = useState(null);
   const [loading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 50;
+  const [cachedData, setCachedData] = useState({});
+  const [loadingMore, setIsLoadingMore] = useState(false);
+  const [fetchMore, setFetchMore] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const prevStatus = useRef(null);
+  const [fetchedPosts, setFetchedPosts] = useState([]);
+  const [refresh, setRefresh] = React.useState(false);
+  const [fetchingMore, setFetchingMore] = useState(false);
+
+
+
+
+
+
+
 
   const bgGeoEventSubscriptions = [];
   /// State.
@@ -170,7 +187,7 @@ const HomeScreen = props => {
   const initBackgroundGeolocation = async () => {
     subscribe(
       BackgroundGeolocation.onProviderChange(event => {
-        console.log('[onProviderChange]', event);
+        //console.log('[onProviderChange]', event);
         addEvent('onProviderChange', event);
       }),
     );
@@ -178,7 +195,7 @@ const HomeScreen = props => {
     subscribe(
       BackgroundGeolocation.onLocation(
         location => {
-          console.log('[onLocation]', location);
+          //console.log('[onLocation]', location);
 
           if (user) {   
             // console.log('userID', user.uid);         
@@ -197,42 +214,42 @@ const HomeScreen = props => {
           return location;
         },
         error => {
-          console.warn('[onLocation] ERROR: ', error);
+          //console.warn('[onLocation] ERROR: ', error);
         },
       ),
     );
     
     subscribe(
       BackgroundGeolocation.onMotionChange(location => {
-        console.log('[onMotionChange]', location);
+        //console.log('[onMotionChange]', location);
         addEvent('onMotionChange', location);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onGeofence(event => {
-        console.log('[onGeofence]', event);
+        //console.log('[onGeofence]', event);
         addEvent('onGeofence', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onConnectivityChange(event => {
-        console.log('[onConnectivityChange]', event);
+        //console.log('[onConnectivityChange]', event);
         addEvent('onConnectivityChange', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onEnabledChange(enabled => {
-        console.log('[onEnabledChange]', enabled);
+        //('[onEnabledChange]', enabled);
         addEvent('onEnabledChange', {enabled: enabled});
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onHttp(event => {
-        console.log('[onHttp]', event);
+        //('[onHttp]', event);
         addEvent('onHttp', event);
       }),
     );
@@ -246,14 +263,14 @@ const HomeScreen = props => {
 
     subscribe(
       BackgroundGeolocation.onActivityChange(event => {
-        console.log('[onActivityChange]', event);
+        //console.log('[onActivityChange]', event);
         addEvent('onActivityChange', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onPowerSaveChange(enabled => {
-        console.log('[onPowerSaveChange]', enabled);
+        //console.log('[onPowerSaveChange]', enabled);
         addEvent('onPowerSaveChange', {isPowerSaveMode: enabled});
       }),
     );
@@ -293,7 +310,7 @@ const HomeScreen = props => {
       state => {
         if (!state.enabled) {
           BackgroundGeolocation.start(() => {
-            console.log(' - Start success');
+            //console.log(' - Start success');
           });
         }
       },
@@ -322,7 +339,7 @@ const HomeScreen = props => {
     subscribe(
       BackgroundGeolocation.watchPosition(
         position => {},
-        error => console.log(error),
+        //error => console.log(error),
         {
           interval: 5000,
         },
@@ -338,11 +355,11 @@ const HomeScreen = props => {
         stopOnTerminate: true,
       },
       taskId => {
-        console.log('[BackgroundFetch] ', taskId);
+        //console.log('[BackgroundFetch] ', taskId);
         BackgroundFetch.finish(taskId);
       },
       taskId => {
-        console.log('[BackgroundFetch] TIMEOUT: ', taskId);
+        //console.log('[BackgroundFetch] TIMEOUT: ', taskId);
         BackgroundFetch.finish(taskId);
       },
     );
@@ -571,7 +588,7 @@ const HomeScreen = props => {
         Alert.alert(`Code ${error.code}`, error.message);
         setLatitude(null);
         setLongitude(null);
-        console.log(error);
+        //console.log(error);
       },
       {
         accuracy: {
@@ -602,7 +619,7 @@ const HomeScreen = props => {
     try {
       Linking.openURL(phoneNumber);
     } catch (e) {
-      console.log(e);
+     // console.log(e);
     }
   };
   const makeCall = () => {
@@ -625,7 +642,7 @@ const HomeScreen = props => {
     try {
       Linking.openURL(phoneNumber);
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
@@ -658,18 +675,16 @@ const HomeScreen = props => {
         return;
       }
     } catch (error) {
-      console.log('error2', error);
+      //console.log('error2', error);
     }
   };
 
-  const loadMore = token => {
-    setIsLoading(true);
-    if (token !== null) {
-      fetchMorePosts(token);
-    }
-
-    setIsLoading(false);
+  const loadMore = async () => {
+    setIsLoadingMore(true);
+    await personalizedHomes(latitude, longitude, status, nextToken);
+    setIsLoadingMore(false);
   };
+  
   function selectColor() {
     setcolor(colors[Math.floor(Math.random() * colors.length)]);
   }
@@ -741,7 +756,7 @@ const HomeScreen = props => {
 
       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
       //console.log('previouslist',previousList.length)
-      setPosts(shuffle(postsResult.data.listPosts.items));
+      //setPosts(shuffle(postsResult.data.listPosts.items));
       //setPosts(shuffle(posts));
       if (postsResult?.data?.listPosts?.nextToken !== null) {
         setNextToken(postsResult.data.listPosts.nextToken);
@@ -749,7 +764,7 @@ const HomeScreen = props => {
         return;
       }
     } catch (error) {
-      console.log('error1', error);
+      //console.log('error1', error);
     }
   };
 
@@ -769,7 +784,7 @@ const HomeScreen = props => {
         //console.log('nexttoken',nextToken);
       }
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 
@@ -857,45 +872,57 @@ const HomeScreen = props => {
   };
 
   useEffect(() => {
-    async function personalizedHomes(userLatitude, userLongitude, homeType) {
-      try {
-        //setIsLoadingType(true);
-        const response = await fetch('https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userLocation: {
-              latitude: userLatitude,
-              longitude: userLongitude
-            },
-            homeType
-          })
-        });
-        const data = await response.json();
-        setPosts(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        //setIsLoadingType(false); // Set loading state to false
+    const fetchInitialData = async () => {
+      setIsLoadingType(true);
+      if (!cachedData[status]) {
+        const data = await personalizedHomes(latitude, longitude, status, null);
+        if (data && data.homes) {
+          setPosts(data.homes);
+          setCachedData((prevData) => ({ ...prevData, [status]: data.homes }));
+          setNextToken(data.nextToken);
+        } else {
+          setPosts([]);
+        }
+      } else {
+        setPosts(cachedData[status]);
       }
-    }
+      setIsLoadingType(false);
+    };
+  
     
-    setIsLoadingType(true);
+  
+    // Reset posts and nextToken when status changes
+    if (status !== prevStatus.current) {
+      setPosts([]);
+      setNextToken(null);
+      prevStatus.current = status;
+    }
+   
+    
+    fetchInitialData();
+    
 
-    personalizedHomes(latitude, longitude, status);
-    setIsLoadingType(false);
+    
+      
+
+    
+    // setIsLoadingType(true);
+    // console.log('latitude', latitude);
+    // console.log('longitude', longitude);
+    // personalizedHomes(latitude, longitude, status);
+    // setIsLoadingType(false);
+
+   
 
     
     _getUserData(auth().currentUser.uid);
 
     userDetails();
-    setStatus(status);
-    setPosts([]);
-    setNextToken(null);
-    console.log('status', status);
-    console.log('nextToken', nextToken);
+    // setStatus(status);
+    // setPosts([]);
+    // setNextToken(null);
+    // console.log('status', status);
+    // console.log('nextToken', nextToken);
     //setInterval(selectColor, 2000);
     // VersionCheck.needUpdate().then(async res => {
     //   //console.log(res.isNeeded);    // true
@@ -910,17 +937,86 @@ const HomeScreen = props => {
     //setIsLoadingType(true);
     //fetchPostsType(status);
     //setIsLoadingType(false);
-    console.log('posts', posts);
+    //console.log('posts', posts);
     //getLatestPost();
 
     //console.log('This is latest',postLatest.map(item => (item.createdAt)));
     //clearInterval(selectColor);
-  }, [status]);
+  }, [status, latitude, longitude]);
   //    if (postLatest){
   //     postLatest.sort(function (a, b) {
   //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
   //       });
   //    }
+  // Add controls for navigating between pages
+// Increment the page
+
+
+async function fetchMoreData() {
+  if (nextToken && !fetchingMore) {
+    setFetchingMore(true);
+    const data = await personalizedHomes(latitude, longitude, status, nextToken);
+    const updatedData = [...posts, ...data.homes];
+    setPosts(updatedData);
+    setCachedData((prevData) => ({ ...prevData, [status]: updatedData }));
+    setNextToken(data.nextToken);
+    setFetchingMore(false);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+useEffect(() => {
+  console.log('posts length updated:', posts.length);
+}, [posts]);
+
+async function personalizedHomes(userLatitude, userLongitude, homeType, nextToken) {
+  try {
+    //setIsLoadingType(true);
+    const response = await fetch('https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userLocation: {
+          latitude: userLatitude,
+          longitude: userLongitude
+        },
+        homeType,
+        nextToken
+        
+      })
+    });
+    
+    const data = await response.json();
+    //console.log("Response data:", data.homes.length); // Add console log here
+    console.log("Response token:", data.nextToken); // Add console log here
+  
+    return data;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    //setIsLoadingType(false); // Set loading state to false
+  }
+}
+
+const onEndReached = () => {
+  fetchMoreData();
+};
+
+
+
+
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1196,7 +1292,7 @@ const HomeScreen = props => {
         visible={modalvisible}
         onRequestClose={() => {
           setmodalvisible(false);
-          console.log('Modal has been closed.');
+          //console.log('Modal has been closed.');
         }}>
         <View style={{paddingTop: 10}}>
           <ScrollView
@@ -1520,13 +1616,9 @@ const HomeScreen = props => {
             maxToRenderPerBatch={1}
             initialNumToRender={1}
             contentContainerStyle={{paddingBottom: 40}}
-            //   onEndReached={() => callOnScrollEnd.current = true}
-            //   onMomentumScrollEnd={() => {
-            //     callOnScrollEnd.current && loadMore(false);
-            //     callOnScrollEnd.current = false
-            //   }}
-            // onEndReached={({distanceFromEnd}) => {
-            // }}
+            
+
+           
             keyExtractor={(item, index) => {
               return index.toString();
             }}
@@ -1536,14 +1628,13 @@ const HomeScreen = props => {
               index,
             })}
             //ListEmptyComponent={renderNoHome()}
+            extraData={posts}
             renderItem={renderItem}
-            onEndReachedThreshold={0}
-            onEndReached={() => loadMore(nextToken)}
-            ListFooterComponent={renderLoader}
-            // getItemCount={data => data.length}
+            onEndReachedThreshold={0.5}
+            onEndReached={onEndReached}          
+            ListFooterComponent={fetchingMore ? renderLoader : null}
             windowSize={3}
             updateCellsBatchingPeriod={100}
-            //renderItem={({item}) => <Post post={item}/>}
           />
         )}
       </View>

@@ -21,6 +21,7 @@ const MyHomes = () => {
   const [posts, setPosts] = useState();
 
   const fetchUserHome = async () => {
+    console.log(user?.uid);
     try {
       setLoading(true);
       const result = await API.graphql(

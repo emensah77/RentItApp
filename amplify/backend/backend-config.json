@@ -58,12 +58,7 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "tinggPaymentGateway": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "similarHomes": {
+    "imageOptimizer": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -73,7 +68,12 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "imageOptimizer": {
+    "similarHomes": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "tinggPaymentGateway": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -109,6 +109,54 @@
         {
           "category": "function",
           "resourceName": "createpaystack"
+        }
+      ]
+    },
+    "AMPLIFY_function_imageOptimizer_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "imageOptimizer"
+        }
+      ]
+    },
+    "AMPLIFY_function_imageOptimizer_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "imageOptimizer"
+        }
+      ]
+    },
+    "AMPLIFY_function_personalizationEngine_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "personalizationEngine"
+        }
+      ]
+    },
+    "AMPLIFY_function_personalizationEngine_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "personalizationEngine"
+        }
+      ]
+    },
+    "AMPLIFY_function_similarHomes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "similarHomes"
+        }
+      ]
+    },
+    "AMPLIFY_function_similarHomes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "similarHomes"
         }
       ]
     },
