@@ -65,7 +65,7 @@ jobs:
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Bundle *.aap & *.apk
+      - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
       - name: Upload Artifact
