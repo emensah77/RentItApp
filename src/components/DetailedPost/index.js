@@ -768,7 +768,7 @@ const DetailedPost = props => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}>
             <View>
               <TouchableOpacity
@@ -777,14 +777,15 @@ const DetailedPost = props => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
-                onPress={() => navigation.navigate('Reviews')}>
+              // onPress={() => navigation.navigate('Reviews')}
+              >
                 <StarRating
                   disabled={true}
                   starSize={13}
                   maxStars={5}
-                  rating={4}
+                  rating={post?.reviews?.items?.reduce((acc, val) => acc + val.rating, 0) /
+                    post?.reviews?.items?.length || 0}
                   fullStarColor={'orange'}
-                  on
                 />
                 <Text footnote grayColor style={{ marginLeft: 5 }}>
                   ({post?.reviews?.items?.length}) reviews
