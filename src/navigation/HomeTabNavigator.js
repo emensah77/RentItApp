@@ -13,11 +13,13 @@ import ProfileScreen from '../screens/Profile';
 import LowPriceScreen from "../screens/LowPriceScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons"
-import { faCoffee, faSearch ,faHeart,faChartLine, faHouseUser ,faUser ,faCoins } from "@fortawesome/free-solid-svg-icons";
+import { faCoffee, faSearch ,faHeart,faChartLine, faHouseUser ,faUser ,faCoins, faBell } from "@fortawesome/free-solid-svg-icons";
 import Wishlists from "../screens/Wishlists";
 import Trending from "../screens/TrendingScreen";
 import House from "../screens/House";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import AppNotifications from "../screens/AppNotifications/AppNotifications";
+import { Text, View } from "react-native";
 const Tab = createBottomTabNavigator();
 
 const HomeTabNavigator = (props) => {
@@ -99,6 +101,36 @@ const HomeTabNavigator = (props) => {
                         options={{
                             tabBarIcon: ({color}) => (
                                 <FontAwesomeIcon icon={faChartLine} size={25} color={color} />
+                            )
+                        }}
+                        />
+            <Tab.Screen
+                name={"Alerts"}
+                component={AppNotifications}
+                options={{
+                    tabBarIcon: ({color}) => (
+                        <View>
+                            <FontAwesomeIcon icon={faBell} size={25} color={color} />
+                            <View
+                            style={{
+                                borderWidth: 1,
+                                borderColor: 'white',
+                                justifyContent: "center",
+                                alignItems: "center",
+                                position: "absolute",
+                                width: 15,
+                                height: 15,
+                                backgroundColor: "deeppink",
+                                top: -3,
+                                right: -3,
+                                borderRadius: 10,
+                            }}
+                            >
+                            {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
+                                3
+                            </Text> */}
+                            </View>
+                        </View>   
                             )
                         }}
                         />
