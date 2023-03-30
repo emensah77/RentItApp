@@ -1,4 +1,11 @@
 import { StyleSheet } from "react-native";
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
+const window = Dimensions.get('window');
+
+const fullWidth = window.width;
+const fullHeight = window.height;
+
 
 const styles = StyleSheet.create({
     container: {
@@ -199,7 +206,110 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
       },
-      
+      videoWrapper: {
+        width: width * 0.3,
+        height: width * 0.4,
+        borderRadius: 15,
+        overflow: "hidden",
+        marginRight: 10,
+        backgroundColor: "#000",
+        alignSelf: "flex-end",
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      video: {
+        width: "100%",
+        height: "100%",
+        backgroundColor: "transparent",
+      },
+      fullscreenVideo: {
+        position: "absolute",
+        top: 0,
+        left: 20,
+        width: fullWidth - 40,
+        height: (fullWidth - 40) * 9 / 16,
+        borderRadius: 15,
+        zIndex: 9999,
+        backgroundColor: "#000",
+      },
+      content: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      container1: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      scheduleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: 5,
+        padding: 5,
+        backgroundColor: 'black',
+        justifyContent: 'space-evenly',
+      },
+      modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      },
+      loadingOverlay: {
+        position: 'absolute',
+        top: 100,
+        left: 100,
+        right: 100,
+        bottom: 100,
+        backgroundColor: "white",
+        borderRadius:20,
+        height:"20%",
+        width:"50%", // You can change the background color and opacity as needed
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity:1,
+        zIndex: 999, // Ensure this value is higher than the zIndex of the DateTimePickerModal
+      },
+      loadingText: {
+        marginTop: 10, // Add some space between the ActivityIndicator and the text
+        fontSize: 16,
+        fontWeight: 'bold',
+        zIndex: 999,
+      },
+      modal: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+      },
+      modalTitle: {
+        fontSize: 20,
+        marginBottom: 10,
+      },
+      input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginBottom: 10,
+      },
+      submitButton: {
+        backgroundColor: 'dodgerblue',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        padding:5
+      },
+      submitText: {
+        color: 'white',
+      },
       
 });
 

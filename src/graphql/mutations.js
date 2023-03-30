@@ -43,6 +43,7 @@ export const createReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -55,6 +56,7 @@ export const createReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -121,6 +123,7 @@ export const updateReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -133,6 +136,7 @@ export const updateReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -199,6 +203,7 @@ export const deleteReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -211,6 +216,7 @@ export const deleteReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -237,6 +243,63 @@ export const deleteReview = /* GraphQL */ `
       rating
       review
       parentReviewId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createViewing = /* GraphQL */ `
+  mutation CreateViewing(
+    $input: CreateViewingInput!
+    $condition: ModelViewingConditionInput
+  ) {
+    createViewing(input: $input, condition: $condition) {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateViewing = /* GraphQL */ `
+  mutation UpdateViewing(
+    $input: UpdateViewingInput!
+    $condition: ModelViewingConditionInput
+  ) {
+    updateViewing(input: $input, condition: $condition) {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteViewing = /* GraphQL */ `
+  mutation DeleteViewing(
+    $input: DeleteViewingInput!
+    $condition: ModelViewingConditionInput
+  ) {
+    deleteViewing(input: $input, condition: $condition) {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
       createdAt
       updatedAt
     }
@@ -270,6 +333,7 @@ export const createUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -282,6 +346,7 @@ export const createUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -337,6 +402,7 @@ export const updateUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -349,6 +415,7 @@ export const updateUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -404,6 +471,7 @@ export const deleteUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -416,6 +484,7 @@ export const deleteUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -492,6 +561,7 @@ export const createPost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -504,6 +574,7 @@ export const createPost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude
@@ -562,6 +633,7 @@ export const updatePost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -574,6 +646,7 @@ export const updatePost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude
@@ -632,6 +705,7 @@ export const deletePost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -644,6 +718,7 @@ export const deletePost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude

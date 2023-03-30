@@ -220,10 +220,10 @@ const PostScreen = ({ route }) => {
 
 
     return (
-        <ScrollView style={{ backgroundColor: 'white', }}>
+        <View style={{ backgroundColor: 'white', }}>
             
             <DetailedPost post={newPost} />
-        </ScrollView>
+        </View>
     );
 
 

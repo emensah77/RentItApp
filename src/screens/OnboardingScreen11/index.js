@@ -67,7 +67,7 @@ const OnboardingScreen11 = (props) => {
           .get();
         if (userDoc.exists) {
           setUser(userDoc.data());
-          console.log('User data:', user);
+          //console.log('User data:', user);
           // Do something with user data
         }
       }
@@ -88,7 +88,7 @@ const OnboardingScreen11 = (props) => {
   useEffect(() => {
     userDetails();
     getUsersWithPrivileges();
-},[user])
+},[])
     
     return (
         

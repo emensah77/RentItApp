@@ -70,6 +70,7 @@ const OnboardingScreen7 = props => {
   const loyaltyProgram = route.params?.loyaltyProgram;
   const negotiable = route.params?.negotiable;
   const furnished = route.params?.furnished;
+  const videoUrl = route.params?.videoUrl;
   const {user, logout} = useContext(AuthContext);
   const uploadusers = [
     'UWHvpJ1XoObsFYTFR48zYe6jscJ2',
@@ -95,12 +96,13 @@ const OnboardingScreen7 = props => {
       locality: locality,
       sublocality: sublocality,
       userId: user.uid,
-      marketerNumber,
+      marketerNumber: marketerNumber,
       currency: currency,
       loyaltyProgram: loyaltyProgram,
       negotiable: negotiable,
       furnished: furnished,
       address: address,
+      videoUrl: videoUrl,
     });
   });
 

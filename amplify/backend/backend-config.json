@@ -77,6 +77,21 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "videoCompresser": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "videoUploaderOptimizer": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "viewingScheduler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -173,6 +188,54 @@
         {
           "category": "function",
           "resourceName": "tinggPaymentGateway"
+        }
+      ]
+    },
+    "AMPLIFY_function_videoCompresser_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "videoCompresser"
+        }
+      ]
+    },
+    "AMPLIFY_function_videoCompresser_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "videoCompresser"
+        }
+      ]
+    },
+    "AMPLIFY_function_videoUploaderOptimizer_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "videoUploaderOptimizer"
+        }
+      ]
+    },
+    "AMPLIFY_function_videoUploaderOptimizer_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "videoUploaderOptimizer"
+        }
+      ]
+    },
+    "AMPLIFY_function_viewingScheduler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "viewingScheduler"
+        }
+      ]
+    },
+    "AMPLIFY_function_viewingScheduler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "viewingScheduler"
         }
       ]
     }

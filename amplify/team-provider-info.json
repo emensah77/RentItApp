@@ -34,11 +34,23 @@
         },
         "personalizationEngine": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/personalizationEngine-31616b33586545336541-build.zip"
+          "s3Key": "amplify-builds/personalizationEngine-7872586d32512f636658-build.zip"
         },
         "imageOptimizer": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
           "s3Key": "amplify-builds/imageOptimizer-4c346f3548754a754f70-build.zip"
+        },
+        "videoUploaderOptimizer": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/videoUploaderOptimizer-32547267356871796747-build.zip"
+        },
+        "videoCompresser": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/videoCompresser-394e41557335304d6e71-build.zip"
+        },
+        "viewingScheduler": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/viewingScheduler-616862353166506e6277-build.zip"
         }
       },
       "storage": {

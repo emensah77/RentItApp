@@ -33,6 +33,7 @@ export const getReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -45,6 +46,7 @@ export const getReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -102,6 +104,7 @@ export const listReviews = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -114,6 +117,7 @@ export const listReviews = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -134,6 +138,45 @@ export const listReviews = /* GraphQL */ `
         rating
         review
         parentReviewId
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getViewing = /* GraphQL */ `
+  query GetViewing($id: ID!) {
+    getViewing(id: $id) {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listViewings = /* GraphQL */ `
+  query ListViewings(
+    $filter: ModelViewingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listViewings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
         createdAt
         updatedAt
       }
@@ -166,6 +209,7 @@ export const getUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -178,6 +222,7 @@ export const getUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -276,6 +321,7 @@ export const getPost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -288,6 +334,7 @@ export const getPost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude
@@ -332,6 +379,7 @@ export const listPosts = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -344,6 +392,7 @@ export const listPosts = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude

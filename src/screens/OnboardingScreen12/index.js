@@ -61,7 +61,7 @@ const OnboardingScreen12 = (props) => {
   };
 
   const handleNextPress = () => {
-    navigation.navigate('OnboardingScreen7', {
+    navigation.navigate('OnboardingScreen13', {
         title: title,
         type: type,
         description: description,
@@ -113,10 +113,12 @@ const OnboardingScreen12 = (props) => {
     }
   };
 
-    useEffect(() => {
-        userDetails();
-        getUsersWithPrivileges();
-    }, [user]);
+  useEffect(() => {
+    userDetails();
+    getUsersWithPrivileges();
+    return () => {};
+  }, [user]);
+  
   return (
     <LinearGradient
       colors={['blue', 'deeppink']}
