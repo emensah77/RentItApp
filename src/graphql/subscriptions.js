@@ -7,6 +7,8 @@ export const onCreateReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -84,6 +86,8 @@ export const onUpdateReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -161,6 +165,8 @@ export const onDeleteReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -243,6 +249,9 @@ export const onCreateViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -259,6 +268,9 @@ export const onUpdateViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -275,6 +287,9 @@ export const onDeleteViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -290,6 +305,8 @@ export const onCreateUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -356,6 +373,8 @@ export const onUpdateUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -422,6 +441,8 @@ export const onDeleteUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -482,6 +503,8 @@ export const onCreatePost = /* GraphQL */ `
   subscription OnCreatePost {
     onCreatePost {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -551,6 +574,8 @@ export const onUpdatePost = /* GraphQL */ `
   subscription OnUpdatePost {
     onUpdatePost {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -620,6 +645,8 @@ export const onDeletePost = /* GraphQL */ `
   subscription OnDeletePost {
     onDeletePost {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id

@@ -25,6 +25,9 @@ type Viewing @model {
   usercontact: String
   userlocation: String
   viewingDateTime: String
+  userId: String
+  status: String
+  assignedRep: String
 }
 type User @model {
   id: String!
@@ -35,9 +38,12 @@ type User @model {
   reviews: [Review] @connection(keyName: "byUser" , fields: ["id"])
 }
 
-type Post @model @key(name: "byUser", fields: ["userID"]){
+type Post @model @key(name: "byUser", fields: ["userID"])
+ @key(name: "byCreatedTime", fields: ["type", "createdTime"], queryField: "listPostsSortedByCreatedTime") {
   id: ID!
   
+  createdTime: AWSDateTime
+  updatedTime: AWSDateTime
   userID: String
   user: User @connection(fields: ["userID"])
   reviews: [Review] @connection(keyName: "byPost", fields: ["id"])
@@ -78,7 +84,8 @@ type Post @model @key(name: "byUser", fields: ["userID"]){
   longitude: Float!
 }
 
-type PostNew @model @key(fields: ["latitude", "longitude"]) {
+type PostNew @model @key(fields: ["latitude", "longitude"])
+  {
   id: ID!
 
   image: String

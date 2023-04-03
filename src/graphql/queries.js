@@ -7,6 +7,8 @@ export const getReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -89,6 +91,8 @@ export const listReviews = /* GraphQL */ `
         id
         post {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -156,6 +160,9 @@ export const getViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -177,6 +184,9 @@ export const listViewings = /* GraphQL */ `
         usercontact
         userlocation
         viewingDateTime
+        userId
+        status
+        assignedRep
         createdAt
         updatedAt
       }
@@ -194,6 +204,8 @@ export const getUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -279,6 +291,8 @@ export const getPost = /* GraphQL */ `
   query GetPost($id: ID!) {
     getPost(id: $id) {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -353,6 +367,8 @@ export const listPosts = /* GraphQL */ `
     listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -484,6 +500,78 @@ export const listPostNews = /* GraphQL */ `
       nextToken
       scannedCount
       count
+    }
+  }
+`;
+export const listPostsSortedByCreatedTime = /* GraphQL */ `
+  query ListPostsSortedByCreatedTime(
+    $type: String
+    $createdTime: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPostsSortedByCreatedTime(
+      type: $type
+      createdTime: $createdTime
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        createdTime
+        updatedTime
+        userID
+        user {
+          id
+          username
+          email
+          imageuri
+          createdAt
+          updatedAt
+        }
+        reviews {
+          nextToken
+        }
+        image
+        images
+        type
+        title
+        description
+        mode
+        phoneNumbers
+        marketerNumber
+        currency
+        status
+        negotiable
+        furnished
+        loyaltyProgram
+        verified
+        available
+        bed
+        bedroom
+        bathroomNumber
+        maxGuests
+        wifi
+        kitchen
+        bathroom
+        water
+        toilet
+        aircondition
+        locality
+        sublocality
+        videoUrl
+        oldPrice
+        newPrice
+        latitude
+        longitude
+        createdAt
+        updatedAt
+      }
+      nextToken
     }
   }
 `;

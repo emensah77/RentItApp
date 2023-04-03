@@ -3,9 +3,8 @@ const { v4: uuidv4 } = require('uuid');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const currentDate = new Date().toISOString();
 
-
 exports.handler = async (event) => {
-  const { postId, viewingDate, viewingTime, userName, userContact, userLocation } = JSON.parse(event.body);
+  const { postId, viewingDate, viewingTime, userName, userContact, userLocation, userId } = JSON.parse(event.body);
   const viewingDateTime = `${viewingDate}_${viewingTime}`;
 
   const bufferInMinutes = 30;
@@ -30,13 +29,15 @@ exports.handler = async (event) => {
     const result = await dynamoDb.query(params).promise();
     console.log('Query result:', result); // Log the result of the query
 
-
     if (result.Items.length > 0) {
       return {
         statusCode: 409,
         body: JSON.stringify({ message: 'The selected date and time for this property are already scheduled.' }),
       };
     }
+
+    const reps = ['Lydia', 'Priscilla', 'Juliana'];
+    const assignedRep = reps[Math.floor(Math.random() * reps.length)];
 
     const newItemParams = {
       TableName: 'Viewing-k5j5uz5yp5d7tl2yzjyruz5db4-dev',
@@ -51,6 +52,9 @@ exports.handler = async (event) => {
         createdAt: currentDate,
         updatedAt: currentDate,
         viewingDateTime: viewingDateTime,
+        userId: userId,
+        status: 'Todo', // Add the status attribute with the default value 'Todo'
+        assignedRep: assignedRep, // Assign the viewing to a randomly selected rep
       },
     };
 

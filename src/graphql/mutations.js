@@ -17,6 +17,8 @@ export const createReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -97,6 +99,8 @@ export const updateReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -177,6 +181,8 @@ export const deleteReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -262,6 +268,9 @@ export const createViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -281,6 +290,9 @@ export const updateViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -300,6 +312,9 @@ export const deleteViewing = /* GraphQL */ `
       usercontact
       userlocation
       viewingDateTime
+      userId
+      status
+      assignedRep
       createdAt
       updatedAt
     }
@@ -318,6 +333,8 @@ export const createUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -387,6 +404,8 @@ export const updateUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -456,6 +475,8 @@ export const deleteUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -519,6 +540,8 @@ export const createPost = /* GraphQL */ `
   ) {
     createPost(input: $input, condition: $condition) {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -591,6 +614,8 @@ export const updatePost = /* GraphQL */ `
   ) {
     updatePost(input: $input, condition: $condition) {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -663,6 +688,8 @@ export const deletePost = /* GraphQL */ `
   ) {
     deletePost(input: $input, condition: $condition) {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id

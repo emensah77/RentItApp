@@ -58,7 +58,17 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "homeUploadProgress": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "imageOptimizer": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "inAppMessenger": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -127,6 +137,22 @@
         }
       ]
     },
+    "AMPLIFY_function_homeUploadProgress_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeUploadProgress"
+        }
+      ]
+    },
+    "AMPLIFY_function_homeUploadProgress_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeUploadProgress"
+        }
+      ]
+    },
     "AMPLIFY_function_imageOptimizer_deploymentBucketName": {
       "usedBy": [
         {
@@ -140,6 +166,22 @@
         {
           "category": "function",
           "resourceName": "imageOptimizer"
+        }
+      ]
+    },
+    "AMPLIFY_function_inAppMessenger_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "inAppMessenger"
+        }
+      ]
+    },
+    "AMPLIFY_function_inAppMessenger_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "inAppMessenger"
         }
       ]
     },

@@ -15,7 +15,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Video from 'react-native-video';
 import axios from 'axios';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import { PERMISSIONS, request as requestPermission } from 'react-native-permissions';
+import {check, request, PERMISSIONS} from 'react-native-permissions';
+import auth from '@react-native-firebase/auth';
 
 
 
@@ -39,7 +40,7 @@ const OnboardingScreen13 = (props) => {
     }
   
     try {
-      const granted = await requestPermission(permission);
+      const granted = await request(permission);
       if (granted === 'granted') {
         console.log('Camera permission given');
         return true;
@@ -54,35 +55,72 @@ const OnboardingScreen13 = (props) => {
   };
 
   const openVideoPicker = async () => {
-    const hasPermission = await requestCameraPermission(); // Add this line to request camera permission
+  const hasPermission = await requestCameraPermission();
 
-    if (!hasPermission) {
-      return;
+  if (!hasPermission) {
+    return;
+  }
+
+  Alert.alert(
+    'Select Video',
+    'Choose an action:',
+    [
+      {
+        text: 'Record a video',
+        onPress: () => launchCameraWithOptions(),
+      },
+      {
+        text: 'Select from library',
+        onPress: () => launchImageLibraryWithOptions(),
+      },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+    ],
+    { cancelable: true },
+  );
+};
+
+const handleVideoResponse = (response) => {
+  if (response.didCancel) {
+    console.log('User cancelled video picker');
+  } else if (response.error) {
+    console.log('ImagePicker Error: ', response.error);
+  } else {
+    console.log('Setting videoPath to:', response);
+
+    if (response.assets && response.assets.length > 0) {
+      setVideoPath(response.assets[0].uri);
+    } else {
+      console.log('No video assets found in the response object:', response);
     }
+  }
+};
+
+
+  const launchCameraWithOptions = () => {
     const options = {
       mediaType: 'video',
-      videoQuality: 'low', // Set to low quality
-      durationLimit: 60, // Limit to 60 seconds
+      videoQuality: 'low',
+      durationLimit: 60,
       noData: true,
     };
   
-    launchCamera(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        console.log('Setting videoPath to:', response); // Add this line
-
-        if (response.assets && response.assets.length > 0) {
-          setVideoPath(response.assets[0].uri);
-        } else {
-          console.log('No video assets found in the response object:', response);
-        }
-        
-      }
-    });
+    launchCamera(options, handleVideoResponse);
   };
+  
+  const launchImageLibraryWithOptions = () => {
+    const options = {
+      mediaType: 'video',
+      videoQuality: 'low',
+      durationLimit: 60,
+      noData: true,
+    };
+  
+    launchImageLibrary(options, handleVideoResponse);
+  };
+  
 
   const handleVideoLoad = (data) => {
     if (data.duration > 65) {
@@ -98,33 +136,45 @@ const OnboardingScreen13 = (props) => {
   const handleUpload = async () => {
     try {
       setUploading(true);
-
+  
+      // Fetch pre-signed URL from the Lambda function
+      const response = await axios.post(
+        'https://byagcgy5qbw4mfwgej3n7rr4ty0xvteq.lambda-url.us-east-2.on.aws/',
+      );
+  
+      if (response.status !== 200) {
+        throw new Error('Error fetching pre-signed URL');
+      }
+  
+      const preSignedUrl = response.data.preSignedUrl;
+  
+      // Upload video using the pre-signed URL
       const file = {
         uri: videoPath,
         type: 'video/mp4',
         name: 'video.mp4',
       };
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await axios.post(
-        'https://byagcgy5qbw4mfwgej3n7rr4ty0xvteq.lambda-url.us-east-2.on.aws/',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+  
+      const uploadResponse = await fetch(preSignedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'video/mp4',
         },
-      );
-
+        body: file,
+      });
+  
       setUploading(false);
-
-      if (response.status === 200) {
-        const videoUrl = response.data.videoUrl;
+  
+      if (uploadResponse.status === 200) {
+        const s3Url = preSignedUrl.split('?')[0];
+        const videoUrl = s3Url.replace(
+          'https://videosrentit.s3.us-east-2.amazonaws.com',
+          'https://d1mgzi0ytcdaf9.cloudfront.net'
+        );
+        
         setVideoUrl(videoUrl);
         setVideoUploaded(true);
-
+  
         Alert.alert(
           'Video uploaded',
           `Your video has been uploaded successfully. Video URL: ${videoUrl}`,
@@ -138,17 +188,44 @@ const OnboardingScreen13 = (props) => {
       Alert.alert('Upload failed', 'Failed to upload the video. Please try again.');
     }
   };
+  
+  
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
   };
 
-  const handleNext = () => {
+  const handleNext = async() => {
+    await saveProgress({ ...route.params, videoUrl })
     navigation.navigate('OnboardingScreen7', {
       ...route.params,
       videoUrl: videoUrl,
     });
   };
+
+  const saveProgress = async (progressData) => {
+    try {
+      const user = auth().currentUser;
+      const screenName = route.name;
+      const userId = user.uid;
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData
+          }
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  };
+  
 
   return (
     <View style={styles.container}>

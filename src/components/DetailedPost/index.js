@@ -96,6 +96,8 @@ const DetailedPost = props => {
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [videoDuration, setVideoDuration] = useState(0);
   const [playbackTime, setPlaybackTime] = useState(0);
+  const [videoLoading, setVideoLoading] = useState(true);
+
 
   
 
@@ -127,6 +129,7 @@ const DetailedPost = props => {
       userLocation: location,
       viewingDate: date.toISOString().slice(0, 10),
       viewingTime: date.toISOString().slice(11, 19),
+      userId: user.uid,
     };
    
     try {
@@ -200,6 +203,8 @@ const DetailedPost = props => {
 
   const handleLoad = (meta) => {
     setVideoDuration(meta.duration);
+    setVideoLoading(false);
+
   };
   const handlePlaybackStatusUpdate = (playbackStatus) => {
     if (playbackStatus.isPlaying) {
@@ -601,7 +606,7 @@ const DetailedPost = props => {
         flexDirection: "row",
         alignItems: "center",
         borderRadius: 5,
-        padding: 5,
+        padding: 10,
         backgroundColor: "limegreen",
         marginVertical: 5,
         justifyContent: "space-evenly",
@@ -626,7 +631,8 @@ const DetailedPost = props => {
         <Pressable onPress={hideDetailsModal} style={styles.modalOverlay}>
           <View onStartShouldSetResponder={() => true} style={styles.modal}>
           
-            <Text style={styles.modalTitle}>Enter your details. Click next and choose date and time to confirm Viewing</Text>
+            <Text style={styles.modalTitle}>Enter your details. </Text>
+            <Text style={{fontSize:14}}> Click next and choose date and time to confirm Viewing</Text>
             <TextInput
               style={styles.input}
               onChangeText={setName}
@@ -659,7 +665,7 @@ const DetailedPost = props => {
         mode="datetime"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
-        minimumDate={new Date()}
+        minimumDate={new Date(Date.now())}
         maximumDate={new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)} // Six months from now
       />
     
@@ -724,47 +730,57 @@ const DetailedPost = props => {
       </>
     )}
   </View>
-
   <View style={{ marginLeft: 10 }}>
-    {!fullscreen && (
-      <TouchableOpacity onPress={() => setFullscreen(true)}>
-        <View style={styles.videoWrapper}>
-          <Video
-            ref={videoRef}
-            source={{ uri: post.videoUrl }}
-            style={styles.video}
-            resizeMode="contain"
-            repeat={true}
-            onProgress={handleProgress}
-            onLoad={handleLoad}
-            onError={(error) => console.log("Error playing video:", error)}
-          />
-        </View>
-      </TouchableOpacity>
-    )}
-
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={fullscreen}
-      onRequestClose={() => setFullscreen(false)}
-    >
-      <View style={styles.modalContainer}>
-        <TouchableOpacity onPress={() => setFullscreen(false)}>
-          <Video
-            ref={videoRef}
-            source={{ uri: post.videoUrl }}
-            style={styles.fullscreenVideo}
-            resizeMode="cover"
-            repeat={true}
-            onProgress={handleProgress}
-            onLoad={handleLoad}
-            onError={(error) => console.log("Error playing video:", error)}
-          />
+  {post.videoUrl && (
+    <>
+      {!fullscreen && (
+        <TouchableOpacity onPress={() => setFullscreen(true)}>
+          <View style={styles.videoWrapper}>
+            <Video
+              ref={videoRef}
+              source={{ uri: post.videoUrl }}
+              style={styles.video}
+              resizeMode="contain"
+              repeat={true}
+              onProgress={handleProgress}
+              onLoad={handleLoad}
+              onError={(error) => console.log("Error playing video:", error)}
+            />
+            {videoLoading && (
+              <ActivityIndicator size="large" color="white" style={styles.loadingIndicator} />
+            )}
+          </View>
         </TouchableOpacity>
-      </View>
-    </Modal>
-  </View>
+      )}
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={fullscreen}
+        onRequestClose={() => setFullscreen(false)}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={() => setFullscreen(false)}>
+            <Video
+              ref={videoRef}
+              source={{ uri: post.videoUrl }}
+              style={styles.fullscreenVideo}
+              resizeMode="cover"
+              repeat={true}
+              onProgress={handleProgress}
+              onLoad={handleLoad}
+              onError={(error) => console.log("Error playing video:", error)}
+            />
+            {videoLoading && (
+              <ActivityIndicator size="large" color="white" style={styles.loadingIndicator} />
+            )}
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </>
+  )}
+</View>
+
 
 
 

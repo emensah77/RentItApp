@@ -10,6 +10,8 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import auth from '@react-native-firebase/auth';
+
 
 const OnboardingScreen9 = (props) => {
     const navigation = useNavigation();
@@ -23,7 +25,28 @@ const OnboardingScreen9 = (props) => {
     const bed = route.params?.bed;
     const bedroom = route.params?.bedroom;
     const bathroom = route.params?.bathroom;
-    
+    const saveProgress = async (progressData) => {
+      try {
+        const user = auth().currentUser;
+        const screenName = route.name;
+        const userId = user.uid;
+        await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            progress: {
+              screenName,
+              progressData
+            }
+          }),
+        });
+      } catch (error) {
+        console.error('Error saving progress:', error);
+      }
+    };
     const hellod = (text) => {
         setValue(text);
         
@@ -113,7 +136,10 @@ const OnboardingScreen9 = (props) => {
         
         
             
-            <TouchableOpacity disabled={value.length === 0} onPress={() => navigation.navigate('OnboardingScreen8', {
+            <TouchableOpacity disabled={value.length === 0} onPress={async() => 
+            {
+            await saveProgress({title: value, type: type, bed: bed, bedroom: bedroom, bathroom: bathroom, mode: mode})
+            navigation.navigate('OnboardingScreen8', {
                 type: type,
                 bed: bed,
                 bedroom: bedroom,
@@ -121,7 +147,7 @@ const OnboardingScreen9 = (props) => {
                 title: value,
                 mode: mode,
                 
-            })} style={{left:250,width:100,backgroundColor:'deeppink',
+            })}} style={{left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, opacity: value.length === 0 ? .4 : 1,alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </TouchableOpacity>

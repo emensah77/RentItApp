@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 const { width, height } = Dimensions.get('window');
 const window = Dimensions.get('window');
 
@@ -222,9 +222,14 @@ const styles = StyleSheet.create({
         height: "100%",
         backgroundColor: "transparent",
       },
+      loadingIndicator: {
+        position: 'absolute',
+        alignSelf: 'center',
+        top: '50%',
+      },
       fullscreenVideo: {
         position: "absolute",
-        top: 0,
+        top: Platform.OS === "android" ? 10 : 60,
         left: 20,
         width: fullWidth - 40,
         height: (fullWidth - 40) * 9 / 16,
@@ -246,7 +251,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 5,
-        padding: 5,
+        padding: 10,
         backgroundColor: 'black',
         justifyContent: 'space-evenly',
       },

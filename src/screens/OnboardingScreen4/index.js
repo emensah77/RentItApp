@@ -16,6 +16,7 @@ import awsconfig from '../../../src/aws-exports';
 Amplify.configure(awsconfig);
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+import auth from '@react-native-firebase/auth';
 
 
 const OnboardingScreen4 = (props) => {
@@ -57,6 +58,29 @@ const OnboardingScreen4 = (props) => {
           return `file://${path}`;
         }
         return path;
+      };
+
+      const saveProgress = async (progressData) => {
+        try {
+          const user = auth().currentUser;
+          const screenName = route.name;
+          const userId = user.uid;
+          await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId,
+              progress: {
+                screenName,
+                progressData
+              }
+            }),
+          });
+        } catch (error) {
+          console.error('Error saving progress:', error);
+        }
       };
       
       const resizeImage = async (uri, width, height, format, quality) => {
@@ -433,7 +457,10 @@ const OnboardingScreen4 = (props) => {
                   keyExtractor={(item, index) => index.toString()}
                 />
 
-            <TouchableOpacity disabled={images.length < 5 ? true : false} onPress={() => navigation.navigate('OnboardingScreen5', {
+            <TouchableOpacity disabled={images.length < 5 ? true : false} onPress={async() => 
+            {
+            await saveProgress({title: title, type: type, description: description, bed: bed, bedroom: bedroom, bathroom: bathroom, imageUrls: urls, mode: mode, amenities: amenities})
+            navigation.navigate('OnboardingScreen5', {
                 title: title,
                 type: type,
                 description: description,
@@ -443,7 +470,7 @@ const OnboardingScreen4 = (props) => {
                 imageUrls: urls,
                 mode: mode,
                 amenities: amenities,
-            })} style={{left:250,width:100,backgroundColor:'deeppink',
+            })}} style={{left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20, marginTop:15, opacity:images.length < 5 ? .2 : 1}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-Bold', fontSize:18}}>Next</Text>
             </TouchableOpacity>

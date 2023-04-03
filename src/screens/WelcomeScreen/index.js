@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Share, FlatList, StatusBar, View, SafeAreaView, Dimensions, Text, Pressable, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
+import { Share, FlatList, StatusBar, View, SafeAreaView, Dimensions, Text, Pressable, KeyboardAvoidingView,Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import PhoneInput from "react-native-phone-number-input";
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -16,8 +16,13 @@ const WelcomeScreen = ({ props }) => {
     const navigation = useNavigation();
 
     return (
-        <View style={{ flex: 1, top: 100, padding: 10, backgroundColor: 'white' }}>
-            <ScrollView>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+        <ScrollView style={{ flexGrow: 1 }}>
+        <View style={{ flex: 1, padding: 10, marginTop: 100, backgroundColor: 'white', paddingBottom: 20 }}>
+        
 
             <Text style={{ fontSize: 22, fontWeight: 'bold', padding: 10 }}>Welcome {user?._user?.displayName}</Text>
             <Text style={{ fontWeight: '400', fontSize: 14, padding: 10 }}>We are glad you are here. We began RentIt to make it easier for people like you
@@ -160,9 +165,10 @@ const WelcomeScreen = ({ props }) => {
                 <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'white' }}>Agree and Continue</Text>
             </TouchableOpacity>
 
-
+            </View>
             </ScrollView>
-                    </View>
+            </KeyboardAvoidingView>
+                    
     )
 
 }

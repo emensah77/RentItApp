@@ -7,6 +7,27 @@ ffmpeg.setFfmpegPath('/opt/bin/ffmpeg');
 const INPUT_BUCKET = 'videosrentit';
 const OUTPUT_BUCKET = 'pics175634-dev';
 
+const { Readable } = require('stream');
+
+async function downloadFile(bucket, key) {
+    return new Promise((resolve, reject) => {
+      const params = { Bucket: bucket, Key: key };
+      const chunks = [];
+  
+      s3.getObject(params).createReadStream()
+        .on('data', chunk => {
+          chunks.push(chunk);
+        })
+        .on('end', () => {
+          resolve(Buffer.concat(chunks));
+        })
+        .on('error', err => {
+          reject(err);
+        });
+    });
+  }
+  
+
 exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event, null, 2));
 
@@ -20,6 +41,8 @@ exports.handler = async (event) => {
 
   try {
     const data = await s3.getObject(getObjectParams).promise();
+    console.log('Data from S3:', data); // Add this line  
+
     const compressedVideoBuffer = await compressVideo(data.Body);
 
     const putObjectParams = {

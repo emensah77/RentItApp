@@ -8,6 +8,7 @@ import {
   Linking,
   Platform,
   Pressable,
+  Dimensions,
   PermissionsAndroid,
   ScrollView,
   FlatList,
@@ -21,7 +22,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 const image = {uri: 'https://d5w4alzj7ppu4.cloudfront.net/cities/night.jpeg'};
 import {FlatListSlider} from 'react-native-flatlist-slider';
-import {Dimensions} from 'react-native';
 import {OptimizedFlatList} from 'react-native-optimized-flatlist';
 import FastImage from 'react-native-fast-image';
 import VersionCheck from 'react-native-version-check';
@@ -87,6 +87,8 @@ import FirebaseRepo from '../../repositry/FirebaseRepo';
 import useWishlist from '../../hooks/useWishlist';
 import mixpanel from '../../../src/MixpanelConfig';
 import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
+import Video from 'react-native-video';
+
 
 mixpanel.init();
 
@@ -148,6 +150,16 @@ const HomeScreen = props => {
   const [fetchedPosts, setFetchedPosts] = useState([]);
   const [refresh, setRefresh] = React.useState(false);
   const [fetchingMore, setFetchingMore] = useState(false);
+  const [hasWatchedVideo, setHasWatchedVideo] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const videoRef = useRef(null);
+  const [watchedVideoVersion, setWatchedVideoVersion] = useState(null);
+  const [videoVersion, setVideoVersion] = useState(0); // Initialize videoVersion state
+  const [videoLoading, setIsVideoLoading] = useState(false);
+
+
+
+
 
 
 
@@ -803,10 +815,7 @@ const HomeScreen = props => {
     }
   };
 
-  const createTwoButtonAlert = () => {
-    setmodalVisible(true);
-
-  };
+  
   const userDetails = async () => {
     var user = await firestore()
       .collection('users')
@@ -824,20 +833,7 @@ const HomeScreen = props => {
     });
   };
 
-  const _retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem(auth().currentUser.uid);
-      console.log('value1', value);
-      if (value === null) {
-        setmodalVisible(true);
-      } else {
-        setmodalVisible(false);
-        //navigation.navigate('Welcome')
-      }
-    } catch (error) {
-      console.log('Error fetching data', error);
-    }
-  };
+  
   const _getUserData = async ID => {
     try {
       const userDB = await API.graphql(
@@ -870,6 +866,73 @@ const HomeScreen = props => {
       console.log(e);
     }
   };
+
+
+
+
+
+
+  useEffect(() => {
+    if (!hasWatchedVideo) {
+      setmodalVisible(true);
+    }
+  }, [hasWatchedVideo]);
+
+
+
+  useEffect(() => {
+    setIsVideoLoading(true);
+    const fetchUserDataAndVideoUrl = async () => {
+      
+      const response = await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'fetchVideoUrl',
+          userId: auth().currentUser.uid,
+        }),
+      });
+  
+      const data = await response.json();
+      console.log('data', data);
+      setHasWatchedVideo(data.hasWatchedVideo);
+      setVideoUrl(data.videoUrl);
+      setVideoVersion(data.videoVersion);
+      setWatchedVideoVersion(data.watchedVideoVersion);
+      
+      setIsVideoLoading(false); // Show the video after 10 seconds
+      
+    };
+    
+  
+    
+      fetchUserDataAndVideoUrl();
+    
+  }, []);
+
+  
+
+
+  const handleVideoPlaybackComplete = async () => {
+    await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'updateWatchStatus',
+        userId: auth().currentUser.uid,
+        videoVersion: videoVersion, // Send the video version
+
+      }),
+    });
+  
+    setHasWatchedVideo(true);
+    setmodalVisible(false); // Add this line to close the modal
+
+  };
+  
+
+
+
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -1148,137 +1211,7 @@ const onEndReached = () => {
     <ScrollView
       style={{backgroundColor: 'white'}}
       contentContainerStyle={{backgroundColor: 'white', flex: 1}}>
-      <Modal
-        animationType={'slide'}
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          navigation.goBack();
-          console.log('Modal has been closed.');
-        }}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: 'white',
-            padding: 10,
-            marginTop: 20,
-          }}>
-          <Text
-            style={{
-              color: 'black',
-              marginTop: 10,
-              fontWeight: 'bold',
-              fontSize: 22,
-            }}>
-            Service Charge!
-          </Text>
-          <Text style={{marginBottom: 20}}>
-            We began RentIt to help people like you. In order to continue doing
-            that, we are now charging a GHS 2 service fee. This payment is
-            one-time. You will not pay anything again for using RentIt
-          </Text>
-          <View style={{paddingBottom: 10}}>
-            <Pressable
-              style={{
-                width: 300,
-                backgroundColor: 'black',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                alignItems: 'center',
-                borderRadius: 50,
-                zIndex: 1,
-                alignSelf: 'center',
-              }}
-              onPress={makeCall1}>
-              <Fontisto
-                name="phone"
-                size={15}
-                style={{
-                  color: 'white',
-                  margin: 10,
-                  transform: [{rotate: '90deg'}],
-                }}
-              />
-
-              <Text
-                adjustsFontSizeToFit={true}
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontSize: 10,
-                  fontFamily: 'Montserrat-SemiBold',
-                  color: 'white',
-                }}>
-                Call if you have any problems or you need help
-              </Text>
-            </Pressable>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                setmodalVisible(false),
-                  navigation.replace('Payment', {
-                    channel: ['mobile_money'],
-                    totalAmount: 2,
-                    homeimage: null,
-                    homelatitude: null,
-                    homelongitude: null,
-                    hometitle: null,
-                    homebed: null,
-                    homeid: null,
-                    homeyears: null,
-                    homemonths: null,
-                  });
-              }}
-              style={{
-                marginHorizontal: 10,
-                alignItems: 'center',
-                padding: 10,
-                borderRadius: 10,
-                backgroundColor: 'deeppink',
-                height: 40,
-              }}>
-              <Text style={{color: 'white', fontSize: 14, fontWeight: 'bold'}}>
-                Pay with Mobile Money
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setmodalVisible(false),
-                  navigation.replace('Payment', {
-                    channel: ['card'],
-                    totalAmount: 2,
-                    homeimage: null,
-                    homelatitude: null,
-                    homelongitude: null,
-                    hometitle: null,
-                    homebed: null,
-                    homeid: null,
-                    homeyears: null,
-                    homemonths: null,
-                  });
-              }}
-              style={{
-                marginHorizontal: 10,
-                alignItems: 'center',
-                borderRadius: 10,
-                backgroundColor: 'blue',
-                padding: 10,
-                height: 40,
-              }}>
-              <Text style={{color: 'white', fontSize: 14, fontWeight: 'bold'}}>
-                Pay with Debit Card
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      
 
       <Modal
         style={{
@@ -1638,6 +1571,69 @@ const onEndReached = () => {
           />
         )}
       </View>
+      {videoUrl && (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
+
+          <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        //onRequestClose={closeModal}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+           
+          }}
+        >
+          <View
+            style={{
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height*.5,
+              backgroundColor: 'black',
+              borderRadius:30,
+              
+              borderColor:'white',
+             
+            }}
+          >
+           {videoLoading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 30,
+          }}
+        >
+          <ActivityIndicator size={'large'} color="white" />
+        </View>
+      ) : (
+              <Video
+              ref={videoRef}
+              source={{ uri: videoUrl }}
+              resizeMode="cover"
+              style={{
+                width: Dimensions.get('window').width,
+                height: Dimensions.get('window').height,
+                borderRadius:30,
+            borderWidth:2,
+            borderColor:'white',
+              }}
+              onEnd={handleVideoPlaybackComplete}
+            />
+            )}
+              
+            
+          </View>
+        </View>
+      </Modal>
+      ) : (
+        null
+)}
+
     </ScrollView>
 
   );
