@@ -60,8 +60,17 @@ const OnboardingScreen12 = (props) => {
     setFurnished(!furnished);
   };
 
-  const handleNextPress = () => {
-    navigation.navigate('OnboardingScreen7', {
+  const handleNextPress = async () => {
+    await saveProgress({title: title, type: type, description: description,
+       bed: bed, bedroom: bedroom, bathroom: bathroom, imageUrls: imageUrls,
+        homeprice: homeprice, latitude: latitude,
+       longitude: longitude, mode: mode, amenities: amenities,
+        phoneNumber: phoneNumber, marketerNumber: marketerNumber,
+         locality: locality, sublocality: sublocality, currency: currency, 
+         negotiable: negotiable ? "Yes" : "No", loyaltyProgram: loyalty ? "Yes" : "No", 
+         furnished: furnished  ? "Yes" : "No", address: address,})
+
+      navigation.navigate('OnboardingScreen13', {
         title: title,
         type: type,
         description: description,
@@ -112,11 +121,34 @@ const OnboardingScreen12 = (props) => {
       console.log(error);
     }
   };
-
-    useEffect(() => {
-        userDetails();
-        getUsersWithPrivileges();
-    }, [user]);
+  const saveProgress = async (progressData) => {
+    try {
+      const user = auth().currentUser;
+      const screenName = route.name;
+      const userId = user.uid;
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData
+          }
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  };
+  useEffect(() => {
+    userDetails();
+    getUsersWithPrivileges();
+    return () => {};
+  }, [user]);
+  
   return (
     <LinearGradient
       colors={['blue', 'deeppink']}

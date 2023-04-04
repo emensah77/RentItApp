@@ -14,6 +14,7 @@ import MapView from 'react-native-maps';
 import SuggestionRow from '../../screens/DestinationSearch/SuggestionRow'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Marker, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
+import auth from '@react-native-firebase/auth';
 const mapStyle = [
     {
       "elementType": "geometry",
@@ -286,6 +287,29 @@ const hasPermissionIOS = async () => {
     }
 
     return false;
+  };
+
+  const saveProgress = async (progressData) => {
+    try {
+      const user = auth().currentUser;
+      const screenName = route.name;
+      const userId = user.uid;
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData
+          }
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
   };
 
   const hasLocationPermission = async () => {
@@ -570,7 +594,11 @@ const hasPermissionIOS = async () => {
             {/* <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text> */}
             
             <View style={{flex:1, flexDirection:'row', marginTop:30, justifyContent:'space-between'}}>
-            <TouchableOpacity disabled={latitude === null || longitude === null} onPress={() => navigation.navigate('OnboardingScreen11', {
+            <TouchableOpacity disabled={latitude === null || longitude === null} onPress={async() => 
+            
+            {
+            await saveProgress({title: title, type: type, description: description, bed: bed, bedroom: bedroom, bathroom: bathroom, imageUrls: imageUrls, homeprice: homeprice, latitude: latitude, longitude: longitude, mode: mode, amenities: amenities, locality: locality, sublocality: sublocality, address: address, currency: currency})
+            navigation.navigate('OnboardingScreen11', {
               title: title,
               type: type,
               description: description,
@@ -587,7 +615,7 @@ const hasPermissionIOS = async () => {
               sublocality: sublocality,
               address: address,
               currency: currency,
-            })} style={{left:250,height:60,width:100,backgroundColor:'deeppink',
+            })}} style={{left:250,height:60,width:100,backgroundColor:'deeppink',
              opacity: latitude === null || longitude === null ? .4 : 1,borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </TouchableOpacity>

@@ -3,14 +3,41 @@ import {View, Text, ScrollView,ImageBackground, TouchableOpacity ,StatusBar,Text
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
+import auth from '@react-native-firebase/auth';
 
 const OnboardingScreen1 = (props) => {
     const navigation = useNavigation();
+    const [uploadProgress, setUploadProgress] = useState({});
+    const route = useRoute();
+
+    const saveProgress = async (progressData) => {
+    try {
+      const user = auth().currentUser;
+      const screenName = route.name;
+      const userId = user.uid;
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData
+          }
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving progress:', error);
+    }
+  };
+
 
     const items = [
         {
@@ -106,10 +133,12 @@ const OnboardingScreen1 = (props) => {
         renderItem={({item}) => {
             return (
                 <TouchableOpacity style={styles.row}
-                onPress={() => navigation.navigate('OnboardingScreen10', {
-                    type: item.title
-                })
-                }>
+                onPress={async () => {
+                    await saveProgress({ homeType: item.title });
+                    navigation.navigate('OnboardingScreen10', {
+                      type: item.title,
+                    });
+                  }}>
                     <View style={{justifyContent:'center'}}>
                         <Text style={{fontWeight: 'bold'}}>{item.title}</Text>
                         

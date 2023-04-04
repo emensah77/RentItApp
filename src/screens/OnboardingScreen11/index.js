@@ -67,9 +67,32 @@ const OnboardingScreen11 = (props) => {
           .get();
         if (userDoc.exists) {
           setUser(userDoc.data());
-          console.log('User data:', user);
+          //console.log('User data:', user);
           // Do something with user data
         }
+      }
+    };
+
+    const saveProgress = async (progressData) => {
+      try {
+        const user = auth().currentUser;
+        const screenName = route.name;
+        const userId = user.uid;
+        await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            progress: {
+              screenName,
+              progressData
+            }
+          }),
+        });
+      } catch (error) {
+        console.error('Error saving progress:', error);
       }
     };
     const getUsersWithPrivileges = async () => {
@@ -88,7 +111,7 @@ const OnboardingScreen11 = (props) => {
   useEffect(() => {
     userDetails();
     getUsersWithPrivileges();
-},[user])
+},[])
     
     return (
         
@@ -228,12 +251,14 @@ const OnboardingScreen11 = (props) => {
         
         
             
-            <TouchableOpacity disabled={phoneNumber.length < 9} onPress={() =>
+            <TouchableOpacity disabled={phoneNumber.length < 9} onPress={async() =>
             {
+            
             const checkValid = phoneInput.current?.isValidNumber(value);
             const checkSecondValid = phoneInput.current?.isValidNumber(phoneNumber);
             if(checkSecondValid){
               Alert.alert('Your phone number is correct', secondformattedValue);
+              await saveProgress({type: type, title: title, description: description, bed: bed, bedroom: bedroom, bathroom: bathroom, imageUrls: imageUrls, homeprice: homeprice, latitude: latitude, longitude: longitude, mode: mode, amenities: amenities, phoneNumber: secondformattedValue, marketerNumber: usersWithPrivileges.includes(user.uid) || user?.marketer_status === "ACCEPTED" ? formattedValue : null, locality: locality, sublocality: sublocality, currency: currency, address: address})
               navigation.navigate('OnboardingScreen12', {
                 title: title,
                 type: type,

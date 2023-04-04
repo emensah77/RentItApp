@@ -34,11 +34,31 @@
         },
         "personalizationEngine": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/personalizationEngine-31616b33586545336541-build.zip"
+          "s3Key": "amplify-builds/personalizationEngine-7872586d32512f636658-build.zip"
         },
         "imageOptimizer": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
           "s3Key": "amplify-builds/imageOptimizer-4c346f3548754a754f70-build.zip"
+        },
+        "videoUploaderOptimizer": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/videoUploaderOptimizer-3162416a4674616a334c-build.zip"
+        },
+        "videoCompresser": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/videoCompresser-7a526b757a6b4f507969-build.zip"
+        },
+        "viewingScheduler": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/viewingScheduler-4c594d6941523942522b-build.zip"
+        },
+        "inAppMessenger": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/inAppMessenger-736f3446314974346975-build.zip"
+        },
+        "homeUploadProgress": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/homeUploadProgress-564139317a567773767a-build.zip"
         }
       },
       "storage": {

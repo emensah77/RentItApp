@@ -160,7 +160,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
         </Text>
       </View>
 
-      <View style={styles.dots}>
+      {/* <View style={styles.dots}> */}
         {/* {images.map((image, index) => (
           // <View
           //   style={[
@@ -179,13 +179,13 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           
         ))} */}
 
-        <PaginationDot
+        {/* <PaginationDot
           activeDotColor={'#FF007F'}
           curPage={activeIndex}
           maxPage={images.length}
           sizeRatio={1}
-        />
-      </View>
+        /> */}
+      {/* </View> */}
     </View>
   );
 };

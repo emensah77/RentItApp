@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState, useEffect} from 'react';
 import {View, Text, ImageBackground, TouchableOpacity ,StatusBar,TextInput, FlatList, Pressable} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,9 +8,42 @@ import {useNavigation} from "@react-navigation/native";
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
+import auth from '@react-native-firebase/auth';
 
 const HouseUploadScreen = (props) => {
     const navigation = useNavigation();
+    const [uploadInProgress, setUploadInProgress] = useState(false);
+    const [lastScreen, setLastScreen] = useState(null);
+
+
+    useEffect(() => {
+      checkHomeUploadProgress();
+    }, []);
+  
+    const checkHomeUploadProgress = async () => {
+      const userId = auth().currentUser.uid;
+      try {
+        const response = await fetch(`https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          
+        });
+  
+        const data = await response.json();
+  
+        if (data) {
+          console.log('Home upload progress:', data);
+          setLastScreen(data.screenName);
+          setUploadInProgress(true);
+        }
+      } catch (error) {
+        console.error('Error checking home upload progress:', error);
+      }
+    };
+    const buttonText = uploadInProgress && lastScreen ? "Continue" : "Let's go";
+
     
     return (
         
@@ -41,11 +74,20 @@ const HouseUploadScreen = (props) => {
     
         
         <Text style={styles.text_header}> Upload your home in  {'\n'} 10 easy steps </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('OnboardingScreen1')} style={{borderRadius:10, paddingHorizontal:10, 
+        <TouchableOpacity onPress={() => {
+          if (uploadInProgress && lastScreen) {
+            navigation.navigate(lastScreen);
+          } else {
+            navigation.navigate('OnboardingScreen1');
+          }
+        }}
+        
+        style={{borderRadius:10, paddingHorizontal:10, 
             marginHorizontal:15, paddingVertical:20, alignItems:'center',
-             backgroundColor:'deeppink'}} >
+             backgroundColor:'deeppink'}} 
+             >
                 <Text style={{color:'white', fontSize:18,
-        fontFamily:'Montserrat-Bold'}}>Let's go</Text>
+        fontFamily:'Montserrat-Bold'}}>{buttonText}</Text>
             </TouchableOpacity>
             
            

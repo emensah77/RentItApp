@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import auth from '@react-native-firebase/auth';
 
 const OnboardingScreen3 = (props) => {
     const navigation = useNavigation();
@@ -26,6 +27,29 @@ const OnboardingScreen3 = (props) => {
     const bathroom = route.params?.bathroom;
     const mode = route.params?.mode;
     const increment = a => !a ;
+
+    const saveProgress = async (progressData) => {
+        try {
+          const user = auth().currentUser;
+          const screenName = route.name;
+          const userId = user.uid;
+          await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId,
+              progress: {
+                screenName,
+                progressData
+              }
+            }),
+          });
+        } catch (error) {
+          console.error('Error saving progress:', error);
+        }
+      };
     const onPressHandler = (id, isSelect) => {
         
         setSelectedItem(id);
@@ -230,7 +254,10 @@ const OnboardingScreen3 = (props) => {
         }}
         /> */}
             
-            <TouchableOpacity disabled={selectedItems.length === 0} onPress={() => navigation.navigate('OnboardingScreen4',{
+            <TouchableOpacity disabled={selectedItems.length === 0} onPress={async() => 
+            {
+            await saveProgress({type:type ,title:title, description:description, bed:bed, bedroom:bedroom, bathroom:bathroom, mode:mode, amenities:selectedItems})
+            navigation.navigate('OnboardingScreen4',{
                 type: type,
                 title: title,
                 description: description,
@@ -239,7 +266,7 @@ const OnboardingScreen3 = (props) => {
                 bathroom: bathroom,
                 mode: mode,
                 amenities: selectedItems,
-            })} style={{opacity:selectedItems.length === 0 ? .4 : 1,left:250,width:100,backgroundColor:'deeppink',
+            })}} style={{opacity:selectedItems.length === 0 ? .4 : 1,left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-Bold', fontSize:18}}>Next</Text>
             </TouchableOpacity>

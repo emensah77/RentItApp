@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useContext, useState } from 'react';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   View,
   Image,
@@ -13,6 +13,7 @@ import {
   Linking,
   Pressable,
   StatusBar,
+  ActivityIndicator,
   Alert,
   RefreshControl,
 } from 'react-native';
@@ -33,8 +34,9 @@ import {
   faToilet,
   faBackward,
   faTimes,
-  faChair,
-  faIdBadge,
+  faChair, 
+  faIdBadge, 
+  faCalendar, 
   faHandshake,
   faStar,
   faCheckCircle,
@@ -62,6 +64,10 @@ import StarRating from '../StarRating/index.js';
 import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto.js';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment/moment.js';
+import Video from 'react-native-video';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
+
 
 const DetailedPost = props => {
   const [post, setPost] = useState(props.post)
@@ -83,7 +89,101 @@ const DetailedPost = props => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const videoRef = useRef(null);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [location, setLocation] = useState('');
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const [videoDuration, setVideoDuration] = useState(0);
+  const [playbackTime, setPlaybackTime] = useState(0);
+  const [videoLoading, setVideoLoading] = useState(true);
 
+
+  
+
+  const showDetailsModal = () => {
+    setIsDetailsModalVisible(true);
+  };
+
+  const hideDetailsModal = () => {
+    setIsDetailsModalVisible(false);
+  };
+
+  const showDatePicker = () => {
+    setIsDatePickerVisible(true);
+  };
+
+  const hideDatePicker = () => {
+    setIsDatePickerVisible(false);
+  };
+
+  const handleConfirm = async (date) => {
+    setIsDatePickerVisible(false);
+    setSelectedDateTime(date);
+    setIsScheduling(true);
+    
+    const data = {
+      postId: `https://rentit.homes/rooms/room/${post.id}`, // replace with the actual post ID
+      userName: name,
+      userContact: phoneNumber,
+      userLocation: location,
+      viewingDate: date.toISOString().slice(0, 10),
+      viewingTime: date.toISOString().slice(11, 19),
+      userId: user.uid,
+    };
+   
+    try {
+      const response = await fetch('https://mhxbfh6thc6jz4pdoitevz4vhq0abvsf.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        // Success
+        console.log(result.message);
+        setIsDetailsModalVisible(false);
+        const formattedDate = new Date(date).toLocaleDateString();
+        const formattedTime = new Date(date).toLocaleTimeString();
+        Alert.alert(
+          'Viewing Scheduled',
+          `Your viewing is confirmed for ${formattedDate} at ${formattedTime}.`,
+        );
+      } else {
+        // Error
+        const formattedDate = new Date(date).toLocaleDateString();
+        const formattedTime = new Date(date).toLocaleTimeString();
+        Alert.alert(
+          'The home is currently unavailable for viewing',
+          `for the selected date ${formattedDate} and ${formattedTime}.`,
+        );
+        //console.error(result.message);
+      }
+    } catch (error) {
+      
+      //console.error('Error scheduling viewing:', error);
+    } finally {
+      setIsScheduling(false);
+    }
+    
+   
+  
+  };
+  
+
+  const handleSubmit = () => {
+    // Handle submit and show date picker
+    hideDetailsModal();
+    showDatePicker();
+  };
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
@@ -101,8 +201,35 @@ const DetailedPost = props => {
         : prevNumHomes + 10
     );
   };
+  const handleProgress = (progress) => {
+    setPlaybackTime(progress.currentTime);
+  };
 
-  const loadMoreButton = (
+  const handleLoad = (meta) => {
+    setVideoDuration(meta.duration);
+    setVideoLoading(false);
+
+  };
+  const handlePlaybackStatusUpdate = (playbackStatus) => {
+    if (playbackStatus.isPlaying) {
+      // Track the video view event
+      mixpanel.track('Video Viewed', {
+        'Home ID': post.id,
+        'Home VideoURL': post.videoURL,
+      });
+      playStartPosition.current = playbackStatus.positionMillis;
+    } else if (playbackStatus.didJustFinish) {
+      const playDurationSeconds = (playbackStatus.positionMillis - playStartPosition.current) / 1000;
+      mixpanel.track('Video Played Duration', {
+        'Home ID': post.id,
+        'Home VideoURL': post.videoURL,
+        'Video PlayDuration': playDurationSeconds,
+      });
+    }
+  };
+  
+  
+  const loadMoreButton =  (
     <TouchableOpacity onPress={loadMore} style={styles.loadMoreButton}>
       <Text style={styles.loadMoreText}>Load More</Text>
     </TouchableOpacity>
@@ -152,6 +279,14 @@ const DetailedPost = props => {
       //console.log('phoneNumbers',phoneNumbers)
     });
   };
+  useEffect(() => {
+    mixpanel.track('Video Play Time',
+
+    { homeID: post.id,
+      videoUrl: post.videoUrl,
+      playbackTime: playbackTime,
+       videoDuration: videoDuration });
+  }, [playbackTime]);
 
   useEffect(() => {
     mixpanel.track('Property Viewed', {
@@ -368,9 +503,19 @@ const DetailedPost = props => {
       </Pressable>
     );
   };
-  return (
-    <View style={{ backgroundColor: 'white' }}>
 
+  
+  
+  return (
+    
+    <View style={{backgroundColor: 'white'}}>
+      {isScheduling && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="blue" />
+          <Text style={styles.loadingText}>Scheduling viewing...</Text>
+        </View>
+      )}
+      
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: 150 }}
@@ -386,6 +531,9 @@ const DetailedPost = props => {
         />
 
         <View style={styles.container}>
+       
+        
+
           {/* Bed and Bedroom */}
           <View
             style={{
@@ -420,118 +568,232 @@ const DetailedPost = props => {
             ) : null}
           </View>
 
-
-
-          <View style={styles.hairline} />
-          <Text style={styles.bedrooms}>
-            {post.type} | {post.bedroom} bedrooms | {post.bathroomNumber}{' '}
-            bathrooms |
-          </Text>
-
-          {usersWithPrivileges.includes(user.uid) ? (
-            <Pressable
-              onPress={() => makeCall(post.phoneNumbers)}
-              style={{
-                margin: 5,
-                paddingRight: 5,
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                width: '40%',
-                backgroundColor: 'blue',
-                borderRadius: 5,
-              }}>
-              <Fontisto
-                name="phone"
-                size={15}
-                style={{
-                  color: 'white',
-                  margin: 10,
-                  transform: [{ rotate: '90deg' }],
-                }}></Fontisto>
-              <Text style={{ color: 'white' }}>Call Homeowner</Text>
-            </Pressable>
-          ) : null}
-          {usersWithPrivileges.includes(user.uid) ? (
-            <Pressable
-              onPress={() => makeCall(post.marketerNumber)}
-              style={{
-                borderColor: 'black',
-                margin: 5,
-                paddingRight: 5,
-                alignItems: 'center',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                width: '40%',
-                backgroundColor: 'yellow',
-                borderRadius: 5,
-              }}>
-              <Fontisto
-                name="phone"
-                size={15}
-                style={{
-                  color: 'black',
-                  margin: 10,
-                  transform: [{ rotate: '90deg' }],
-                }}></Fontisto>
-              <Text style={{ color: 'black' }}>Call Marketer</Text>
-            </Pressable>
-          ) : null}
-
-          <View
+          {/* <View
             style={{
-              flex: 1,
               flexDirection: 'row',
+              alignItems: 'center',
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={styles.prices}>
-                {/* <Text style={styles.oldPrice}>
-                    GH₵{post.oldPrice} 
-                    </Text> */}
-                {post.mode === 'For Sale' ? (
-                  <Text style={styles.newPrice}>
-                    {post.currency === null
-                      ? 'GH₵'
-                      : post.currency[0] === 'usd'
-                        ? '$'
-                        : 'GH₵'}
-                    {Math.round(post.newPrice * 1.07)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-                  </Text>
-                ) : (
-                  <Text style={styles.newPrice}>
-                    {post.currency === null
-                      ? 'GH₵'
-                      : post.currency[0] === 'usd'
-                        ? '$'
-                        : 'GH₵'}
-                    {Math.round((post.newPrice * 1.07) / 12)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-                    / month
-                  </Text>
-                )}
-                <View style={styles.hairline} />
-              </Text>
+              <TouchableOpacity
+                style={{
+                  marginTop: 5,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={() => navigation.navigate('Reviews')}>
+                <StarRating
+                  disabled={true}
+                  starSize={13}
+                  maxStars={5}
+                  rating={4}
+                  fullStarColor={'orange'}
+                  on
+                />
+                <Text footnote grayColor style={{marginLeft: 5}}>
+                  (2) reviews
+                </Text>
+              </TouchableOpacity>
             </View>
-            <Pressable
-              onPress={sendWhatsApp}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '40%',
-                borderRadius: 5,
-                padding: 5,
-                backgroundColor: 'limegreen',
-                margin: 10,
-                justifyContent: 'space-evenly',
-              }}>
-              <Fontisto name="whatsapp" size={20} />
-              <Text>Chat to Rent</Text>
+          </View> */}
+
+<View style={styles.hairline} />
+<Text style={styles.bedrooms}>
+  {post.type} | {post.bedroom} bedrooms | {post.bathroomNumber} bathrooms |
+</Text>
+
+<View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
+  <View style={{ flexDirection: "column" }}>
+    <Pressable
+      onPress={sendWhatsApp}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        borderRadius: 5,
+        padding: 10,
+        backgroundColor: "limegreen",
+        marginVertical: 5,
+        justifyContent: "space-evenly",
+      }}
+    >
+      <Fontisto name="whatsapp" size={20} />
+      <Text>Chat to Rent</Text>
+    </Pressable>
+    
+    <View style={styles.container1}>
+    <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
+        <FontAwesomeIcon icon={faCalendar} size={20} color={"white"} />
+        <Text style={{fontWeight:"bold", color:"white"}}>Schedule Viewing</Text>
+      </Pressable>
+      
+      
+      <Modal
+        visible={isDetailsModalVisible}
+        transparent={true}
+        onRequestClose={hideDetailsModal}
+      >
+        <Pressable onPress={hideDetailsModal} style={styles.modalOverlay}>
+          <View onStartShouldSetResponder={() => true} style={styles.modal}>
+          
+            <Text style={styles.modalTitle}>Enter your details. </Text>
+            <Text style={{fontSize:14}}> Click next and choose date and time to confirm Viewing</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={setName}
+              value={name}
+              placeholder="Name"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setPhoneNumber}
+              value={phoneNumber}
+              placeholder="Phone Number"
+              keyboardType="phone-pad"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setLocation}
+              value={location}
+              placeholder="Location"
+            />
+            <Pressable opacity={!name || !phoneNumber || !location ? .5 : 1} disabled={!name || !phoneNumber || !location} onPress={handleSubmit} style={styles.submitButton}>
+              <Text style={styles.submitText}>Next</Text>
             </Pressable>
           </View>
+          
+        </Pressable>
+      </Modal>
+      
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="datetime"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+        minimumDate={new Date(Date.now())}
+        maximumDate={new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)} // Six months from now
+      />
+    
+    </View>
+
+
+
+
+    {usersWithPrivileges.includes(user.uid) && (
+      <>
+        <Pressable
+          onPress={() => makeCall(post.phoneNumbers)}
+          style={{
+            marginVertical: 5,
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            backgroundColor: "blue",
+            borderRadius: 5,
+            paddingHorizontal: 5,
+            paddingVertical: 5,
+            marginVertical: 5,
+          }}
+        >
+          <Fontisto
+            name="phone"
+            size={15}
+            style={{
+              color: "white",
+              marginHorizontal: 5,
+              transform: [{ rotate: "90deg" }],
+            }}
+          />
+          <Text style={{ color: "white" }}>Call Homeowner</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => makeCall(post.marketerNumber)}
+          style={{
+            borderColor: "black",
+            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            backgroundColor: "yellow",
+            borderRadius: 5,
+            paddingHorizontal: 5,
+            paddingVertical: 5,
+            marginVertical:5
+          }}
+        >
+          <Fontisto
+            name="phone"
+            size={15}
+            style={{
+              color: "black",
+              marginHorizontal: 5,
+              transform: [{ rotate: "90deg" }],
+            }}
+          />
+          <Text style={{ color: "black" }}>Call Marketer</Text>
+        </Pressable>
+      </>
+    )}
+  </View>
+  <View style={{ marginLeft: 10 }}>
+  {post.videoUrl && (
+    <>
+      {!fullscreen && (
+        <TouchableOpacity onPress={() => setFullscreen(true)}>
+          <View style={styles.videoWrapper}>
+            <Video
+              ref={videoRef}
+              source={{ uri: post.videoUrl }}
+              style={styles.video}
+              resizeMode="contain"
+              repeat={true}
+              onProgress={handleProgress}
+              onLoad={handleLoad}
+              onError={(error) => console.log("Error playing video:", error)}
+            />
+            {videoLoading && (
+              <ActivityIndicator size="large" color="white" style={styles.loadingIndicator} />
+            )}
+          </View>
+        </TouchableOpacity>
+      )}
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={fullscreen}
+        onRequestClose={() => setFullscreen(false)}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={() => setFullscreen(false)}>
+            <Video
+              ref={videoRef}
+              source={{ uri: post.videoUrl }}
+              style={styles.fullscreenVideo}
+              resizeMode="cover"
+              repeat={true}
+              onProgress={handleProgress}
+              onLoad={handleLoad}
+              onError={(error) => console.log("Error playing video:", error)}
+            />
+            {videoLoading && (
+              <ActivityIndicator size="large" color="white" style={styles.loadingIndicator} />
+            )}
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </>
+  )}
+</View>
+
+
+
+
+
+
+
+
+          </View>
+          
 
           {/* Type and Description */}
 
@@ -907,7 +1169,7 @@ const DetailedPost = props => {
             </Text>
           )}
         </View>
-        <View style={{ marginTop: 10, marginHorizontal: 40 }}>
+        <View style={{marginTop: 10, marginHorizontal: 40,}}>
           <Pressable
             style={{
               marginBottom: 10,

@@ -49,35 +49,102 @@ const OnboardingScreen7 = props => {
   const navigation = useNavigation();
   const [images, setImages] = useState([]);
   const route = useRoute();
-  const title = route.params?.title;
-  const bed = route.params?.bed;
-  const bedroom = route.params?.bedroom;
-  const bathroom = route.params?.bathroom;
-  const imageUrls = route.params?.imageUrls;
-  const homeprice = route.params?.homeprice;
-  const latitude = route.params?.latitude;
-  const longitude = route.params?.longitude;
-  const type = route.params?.type;
-  const description = route.params?.description;
-  const mode = route.params?.mode;
-  const amenities = route.params?.amenities;
-  const phoneNumber = route.params?.phoneNumber;
-  const locality = route.params?.locality;
-  const sublocality = route.params?.sublocality;
-  const address = route.params?.address;
-  const marketerNumber = route.params?.marketerNumber;
-  const currency = route.params?.currency;
-  const loyaltyProgram = route.params?.loyaltyProgram;
-  const negotiable = route.params?.negotiable;
-  const furnished = route.params?.furnished;
+  const title = route.params?.title || progressData?.title;
+  const bed = route.params?.bed || progressData?.bed;
+  const bedroom = route.params?.bedroom || progressData?.bedroom;
+  const bathroom = route.params?.bathroom || progressData?.bathroom;
+  const imageUrls = route.params?.imageUrls || progressData?.imageUrls;
+  const homeprice = route.params?.homeprice || progressData?.homeprice;
+  const latitude = route.params?.latitude || progressData?.latitude;
+  const longitude = route.params?.longitude || progressData?.longitude;
+  const type = route.params?.type || progressData?.type;
+  const description = route.params?.description || progressData?.description;
+  const mode = route.params?.mode || progressData?.mode;
+  const amenities = route.params?.amenities || progressData?.amenities;
+  const phoneNumber = route.params?.phoneNumber || progressData?.phoneNumber;
+  const locality = route.params?.locality || progressData?.locality;
+  const sublocality = route.params?.sublocality || progressData?.sublocality;
+  const address = route.params?.address || progressData?.address;
+  const marketerNumber = route.params?.marketerNumber || progressData?.marketerNumber;
+  const currency = route.params?.currency || progressData?.currency;
+  const loyaltyProgram = route.params?.loyaltyProgram || progressData?.loyaltyProgram;
+  const negotiable = route.params?.negotiable || progressData?.negotiable;
+  const furnished = route.params?.furnished || progressData?.furnished;
+  const videoUrl = route.params?.videoUrl || progressData?.videoUrl;
   const {user, logout} = useContext(AuthContext);
+  const [progressData, setProgressData] = useState(null);
+  const [mergedData, setMergedData] = useState({});
+
+
   const uploadusers = [
     'UWHvpJ1XoObsFYTFR48zYe6jscJ2',
     '7WGODlIhvkXGhjpngLXxAnQihTK2',
     'lvtDmH13IRW1njCJKZyKsO2okKr1',
   ];
 
+  const loadProgress = async (userId) => {
+
+    try {
+      const response = await fetch(`https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      const progressData = await response.json();
+  
+      if (progressData) {
+        return progressData;
+      } else {
+        throw new Error('No progress data found');
+      }
+    } catch (error) {
+      console.error('Error loading progress:', error);
+      return null;
+    }
+  };
+  
+  const fetchProgressData = async () => {
+    const data = await loadProgress(user.uid);
+    if (data) {
+      console.log('Progress data found:', data);
+      setProgressData(data);
+    }
+  };
+  
   useEffect(() => {
+    fetchProgressData();
+  }, []);
+  
+  useEffect(() => {
+    if (progressData) {
+      const sanitizedRouteParams = Object.fromEntries(
+        Object.entries(route.params).filter(([key, value]) => value !== undefined)
+      );
+  
+      const merged = {
+        ...progressData,
+        ...sanitizedRouteParams,
+        ...progressData.progressData,
+      };
+  
+      const unwantedKeys = ['progressData', 'screenName'];
+  
+      const sanitizedMergedData = Object.keys(merged).reduce((acc, key) => {
+        if (!unwantedKeys.includes(key)) {
+          acc[key] = merged[key];
+        }
+        return acc;
+      }, {});
+  
+      setMergedData(sanitizedMergedData);
+    }
+    console.log('mergedData', mergedData)
+  }, [progressData]);
+  
+  useEffect(() => {
+   
     console.log({
       title: title,
       bedroom: bedroom,
@@ -95,14 +162,17 @@ const OnboardingScreen7 = props => {
       locality: locality,
       sublocality: sublocality,
       userId: user.uid,
-      marketerNumber,
+      marketerNumber: marketerNumber,
       currency: currency,
       loyaltyProgram: loyaltyProgram,
       negotiable: negotiable,
       furnished: furnished,
       address: address,
+      videoUrl: videoUrl,
     });
-  });
+  }, []);
+
+
 
   const searchApi = async data => {
     const {search, postId, title, description, image} = data;
@@ -117,39 +187,67 @@ const OnboardingScreen7 = props => {
       .catch(error => console.log(error));
   };
 
+  async function clearProgressData(userId) {
+    try {
+      const response = await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          action: 'clear',
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.status === 200) {
+        console.log('Progress data cleared successfully:', result);
+      } else {
+        console.error('Error clearing progress data:', result);
+      }
+    } catch (error) {
+      console.error('Error clearing progress data:', error);
+    }
+  }
+  
+  
+
   const uploadHome = async id => {
     try {
       let input = {
-        image: imageUrls[0],
-        bed: bed,
-        bedroom: bedroom,
-        maxGuests: bedroom,
-        bathroomNumber: bathroom,
-        title: title,
-        type: type,
-        mode: mode,
+        image: mergedData.imageUrls[0],
+        bed: mergedData.bed,
+        bedroom: mergedData.bedroom,
+        maxGuests: mergedData.bedroom,
+        bathroomNumber: mergedData.bathroom,
+        title: mergedData.title,
+        type: mergedData.type,
+        mode: mergedData.mode,
         userID: user.uid,
-        phoneNumbers: [phoneNumber],
-        images: imageUrls,
-        description: description,
-        locality: locality,
-        sublocality: sublocality,
-        latitude: latitude,
-        longitude: longitude,
-        oldPrice: Math.round(homeprice * 12),
-        newPrice: Math.round(homeprice * 12),
-        aircondition: amenities.includes('Air Conditioner') ? 'Yes' : 'No',
-        wifi: amenities.includes('WiFi') ? 'Yes' : 'No',
-        kitchen: amenities.includes('Kitchen') ? 'Yes' : 'No',
-        bathroom: amenities.includes('Bathroom') ? 'Yes' : 'No',
-        water: amenities.includes('Water') ? 'Yes' : 'No',
-        toilet: amenities.includes('Toilet') ? 'Yes' : 'No',
-        marketerNumber: marketerNumber,
-        currency: [currency],
+        phoneNumbers: [mergedData.phoneNumber],
+        images: mergedData.imageUrls,
+        description: mergedData.description,
+        locality: mergedData.locality,
+        sublocality: mergedData.sublocality,
+        latitude: mergedData.latitude,
+        longitude: mergedData.longitude,
+        oldPrice: Math.round(mergedData.homeprice * 12),
+        newPrice: Math.round(mergedData.homeprice * 12),
+        aircondition: mergedData.amenities.includes('Air Conditioner') ? 'Yes' : 'No',
+        wifi: mergedData.amenities.includes('WiFi') ? 'Yes' : 'No',
+        kitchen: mergedData.amenities.includes('Kitchen') ? 'Yes' : 'No',
+        bathroom: mergedData.amenities.includes('Bathroom') ? 'Yes' : 'No',
+        water: mergedData.amenities.includes('Water') ? 'Yes' : 'No',
+        toilet: mergedData.amenities.includes('Toilet') ? 'Yes' : 'No',
+        marketerNumber: mergedData.marketerNumber,
+        currency: [mergedData.currency],
         status: HOME_STATUS.PENDING,
-        loyaltyProgram: loyaltyProgram,
-        negotiable: negotiable,
-        furnished: furnished,
+        loyaltyProgram: mergedData.loyaltyProgram,
+        negotiable: mergedData.negotiable,
+        furnished: mergedData.furnished,
+        videoUrl: mergedData.videoUrl,
       };
       const uploadedHome = await API.graphql(
         graphqlOperation(
@@ -164,16 +262,16 @@ const OnboardingScreen7 = props => {
       );
 
       await searchApi({
-        search: address,
+        search: mergedData.address,
         postId: uploadedHome.data.createPost.id,
         title,
         description,
         image: imageUrls[0],
       });
-
+      await clearProgressData(user.uid);
       console.log(
         'Succesfully uploaded the home',
-        address,
+        mergedData.address,
         uploadedHome.data.createPost.id,
       );
       // console.log("Succesfully uploaded the home", uploadHome);

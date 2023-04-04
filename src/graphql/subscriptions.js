@@ -7,6 +7,8 @@ export const onCreateReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -33,6 +35,7 @@ export const onCreateReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -45,6 +48,7 @@ export const onCreateReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -82,6 +86,8 @@ export const onUpdateReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -108,6 +114,7 @@ export const onUpdateReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -120,6 +127,7 @@ export const onUpdateReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -157,6 +165,8 @@ export const onDeleteReview = /* GraphQL */ `
       id
       post {
         id
+        createdTime
+        updatedTime
         userID
         user {
           id
@@ -183,6 +193,7 @@ export const onDeleteReview = /* GraphQL */ `
         furnished
         loyaltyProgram
         verified
+        available
         bed
         bedroom
         bathroomNumber
@@ -195,6 +206,7 @@ export const onDeleteReview = /* GraphQL */ `
         aircondition
         locality
         sublocality
+        videoUrl
         oldPrice
         newPrice
         latitude
@@ -226,6 +238,63 @@ export const onDeleteReview = /* GraphQL */ `
     }
   }
 `;
+export const onCreateViewing = /* GraphQL */ `
+  subscription OnCreateViewing {
+    onCreateViewing {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
+      userId
+      status
+      assignedRep
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateViewing = /* GraphQL */ `
+  subscription OnUpdateViewing {
+    onUpdateViewing {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
+      userId
+      status
+      assignedRep
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteViewing = /* GraphQL */ `
+  subscription OnDeleteViewing {
+    onDeleteViewing {
+      id
+      postId
+      username
+      viewingDate
+      viewingTime
+      usercontact
+      userlocation
+      viewingDateTime
+      userId
+      status
+      assignedRep
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser {
     onCreateUser {
@@ -236,6 +305,8 @@ export const onCreateUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -251,6 +322,7 @@ export const onCreateUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -263,6 +335,7 @@ export const onCreateUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -300,6 +373,8 @@ export const onUpdateUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -315,6 +390,7 @@ export const onUpdateUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -327,6 +403,7 @@ export const onUpdateUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -364,6 +441,8 @@ export const onDeleteUser = /* GraphQL */ `
       posts {
         items {
           id
+          createdTime
+          updatedTime
           userID
           image
           images
@@ -379,6 +458,7 @@ export const onDeleteUser = /* GraphQL */ `
           furnished
           loyaltyProgram
           verified
+          available
           bed
           bedroom
           bathroomNumber
@@ -391,6 +471,7 @@ export const onDeleteUser = /* GraphQL */ `
           aircondition
           locality
           sublocality
+          videoUrl
           oldPrice
           newPrice
           latitude
@@ -422,6 +503,8 @@ export const onCreatePost = /* GraphQL */ `
   subscription OnCreatePost {
     onCreatePost {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -464,6 +547,7 @@ export const onCreatePost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -476,6 +560,7 @@ export const onCreatePost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude
@@ -489,6 +574,8 @@ export const onUpdatePost = /* GraphQL */ `
   subscription OnUpdatePost {
     onUpdatePost {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -531,6 +618,7 @@ export const onUpdatePost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -543,6 +631,7 @@ export const onUpdatePost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude
@@ -556,6 +645,8 @@ export const onDeletePost = /* GraphQL */ `
   subscription OnDeletePost {
     onDeletePost {
       id
+      createdTime
+      updatedTime
       userID
       user {
         id
@@ -598,6 +689,7 @@ export const onDeletePost = /* GraphQL */ `
       furnished
       loyaltyProgram
       verified
+      available
       bed
       bedroom
       bathroomNumber
@@ -610,6 +702,7 @@ export const onDeletePost = /* GraphQL */ `
       aircondition
       locality
       sublocality
+      videoUrl
       oldPrice
       newPrice
       latitude

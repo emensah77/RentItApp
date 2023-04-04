@@ -18,84 +18,50 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return d;
   }
 
-async function personalizationEngine(userLocation, homeType, nextToken) {
-  // Get all homes from DynamoDB
-  const scanParams = {
-    TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev'
-  };
-
-  if (nextToken) {
-    scanParams.ExclusiveStartKey = nextToken;
-  }
-
-  const allHomes = await ddb.scan(scanParams).promise();
-  //console.log("All homes:", allHomes); // Add console log here
-
+  async function personalizationEngine(userLocation, homeType, nextToken) {
+    // Get all homes from DynamoDB
+    const scanParams = {
+      TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev'
+    };
   
-  
-
-  // Define weights for each feature (higher weight = more important)
-  const weights = {
-    newPrice: 4,
-    latitude: 5,
-    longitude: 5,
-    bedroom: 1,
-    kitchen: 1,
-    water: 1,
-    wifi: 1,
-    aircondition: 1,
-    type: 3,
-    mode: 3,
-    bathroom: 1
-  };
-
-  // Calculate the sum of weights for all features
-  const totalWeight = Object.values(weights).reduce((acc, val) => acc + val, 0);
-
-  // Filter homes by the specified homeType
-  const filteredHomes = allHomes.Items.filter(home => home.type === homeType);
-
-  // Calculate the similarity score and distance between the user location and filtered homes
-  const similarities = [];
-  const maxDistance = 10000; // Set maximum acceptable distance to 10km
-  for (let i = 0; i < filteredHomes.length; i++) {
-    const featureVector1 = [
-      userLocation.latitude,
-      userLocation.longitude
-    ];
-    const featureVector2 = [
-      filteredHomes[i].latitude,
-      filteredHomes[i].longitude
-    ];
-
-    // Compute weighted similarity score and distance
-    let weightedScore = 0;
-    for (let j = 0; j < featureVector1.length; j++) {
-      const weight = weights[Object.keys(weights)[j]];
-      weightedScore += weight * (featureVector1[j] === featureVector2[j] ? 1 : 0);
+    if (nextToken) {
+      scanParams.ExclusiveStartKey = nextToken;
     }
-    const distance = haversineDistance(userLocation.latitude, userLocation.longitude, filteredHomes[i].latitude, filteredHomes[i].longitude);
-    const score = (0.7 * (1 - (distance / maxDistance))) + (0.3 * (weightedScore / totalWeight));
-
-    similarities.push({ home: filteredHomes[i], score, distance });
-  }
-
-  // Sort the list of similar homes by score and distance
-  similarities.sort((a, b) => {
-    if (b.score !== a.score) {
-      return b.score - a.score;
-    } else {
-      return a.distance - b.distance;
-    }
-  });
-  const personalizedHomes = similarities.filter(item => item.home.status !== 'PENDING' && item.home.status !== 'REJECTED');
-
-  return {
-    personalizedHomes: personalizedHomes.map(item => item.home),
-    newNextToken: allHomes.LastEvaluatedKey // Assuming LastEvaluatedKey is your nextToken value
-  };
   
-}
+    const allHomes = await ddb.scan(scanParams).promise();
+  
+    // Filter homes by the specified homeType
+    const filteredHomes = allHomes.Items.filter(home => home.type === homeType);
+  
+    // Calculate the distance between the user location and filtered homes
+    const distances = filteredHomes.map(home => {
+      const distance = haversineDistance(userLocation.latitude, userLocation.longitude, home.latitude, home.longitude);
+      return { home, distance };
+    });
+  
+    // Define weights for distance, price, and created time
+    const distanceWeight = 0.7;
+    const priceWeight = 0.15;
+    const timeWeight = 0.15;
+  
+    // Calculate the similarity score for each home
+    distances.forEach(item => {
+      item.score = (distanceWeight * item.distance) +
+                   (priceWeight * item.home.newPrice) +
+                   (timeWeight * new Date(item.home.createdAt).getTime());
+    });
+  
+    // Sort the homes by similarity score (lower score = better match)
+    distances.sort((a, b) => a.score - b.score);
+  
+    const personalizedHomes = distances.filter(item => item.home.status !== 'PENDING' && item.home.status !== 'REJECTED');
+  
+    return {
+      personalizedHomes: personalizedHomes.map(item => item.home),
+      newNextToken: allHomes.LastEvaluatedKey // Assuming LastEvaluatedKey is your nextToken value
+    };
+  }
+  
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}

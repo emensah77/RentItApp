@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import auth from '@react-native-firebase/auth';
 
 const OnboardingScreen5 = (props) => {
     const navigation = useNavigation();
@@ -29,6 +30,29 @@ const OnboardingScreen5 = (props) => {
     const mode = route.params?.mode;
     const amenities = route.params?.amenities;
     const [currency, setCurrency] = useState('');
+
+    const saveProgress = async (progressData) => {
+        try {
+          const user = auth().currentUser;
+          const screenName = route.name;
+          const userId = user.uid;
+          await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId,
+              progress: {
+                screenName,
+                progressData
+              }
+            }),
+          });
+        } catch (error) {
+          console.error('Error saving progress:', error);
+        }
+      };
     const hellod = (text) => {
         setValue(parseInt(text));
         
@@ -243,7 +267,10 @@ const OnboardingScreen5 = (props) => {
         
         
             
-            <Pressable disabled={currency === ""} onPress={() => navigation.navigate('OnboardingScreen6', {
+            <Pressable disabled={currency === ""} onPress={async() => 
+            {
+            await saveProgress({title:title, type:type, description:description, bed:bed, bedroom:bedroom, bathroom:bathroom, imageUrls:imageUrls, homeprice:value, mode:mode, amenities:amenities, currency:currency})
+            navigation.navigate('OnboardingScreen6', {
                 title: title,
                 type: type,
                 description: description,
@@ -255,7 +282,7 @@ const OnboardingScreen5 = (props) => {
                 mode: mode,
                 amenities: amenities,
                 currency: currency,
-            })} style={{opacity:currency === "" ? .4 : 1,left:250,width:100,backgroundColor:'deeppink',
+            })}} style={{opacity:currency === "" ? .4 : 1,left:250,width:100,backgroundColor:'deeppink',
              borderRadius:20, alignItems:'center', paddingHorizontal:20, paddingVertical:20}}>
                 <Text style={{color:'white', fontFamily:'Montserrat-SemiBold', fontSize:14}}>Next</Text>
             </Pressable>

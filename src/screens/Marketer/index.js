@@ -34,6 +34,8 @@ const Marketer = () => {
 
   const [posts, setPosts] = useState();
   const [range, setRange] = useState({});
+  const [loading, setLoading] = useState(true);
+
 
   const handleFilter = async () => {
     try {
@@ -75,6 +77,8 @@ const Marketer = () => {
         if (documentSnapshot.exists) {
           setFirebaseUser(documentSnapshot.data());
         }
+        setLoading(false);
+
       });
   };
 
@@ -111,7 +115,11 @@ const Marketer = () => {
 
   return (
     <View style={styles.container}>
-      {firebaseUser?.marketer_status && (
+      {loading ? (
+  <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <ActivityIndicator size="large" color="blue" />
+  </View>
+) : (
         <>
           <StatusBar hidden={true} />
           <LinearGradient
@@ -241,7 +249,7 @@ const Marketer = () => {
                         firebaseUser?.marketer_status ===
                           Marketer_Status.inReview
                       }
-                      style={{width: 200}}
+                      style={{width: 200, backgroundColor: 'blue', fontSize: 20, fontWeight:"bold"}}
                       appearance="filled">
                       {temp[firebaseUser?.marketer_status]?.buttonText ||
                         'Submit'}
@@ -258,7 +266,7 @@ const Marketer = () => {
                   }}>
                   <Button
                     onPress={() => navigation.goBack()}
-                    style={{width: 200}}
+                    style={{width: 200, backgroundColor: 'white', fontSize: 20, fontWeight:"bold"}}
                     appearance="outline">
                     Go Back
                   </Button>

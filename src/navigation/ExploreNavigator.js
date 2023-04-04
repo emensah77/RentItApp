@@ -29,6 +29,7 @@ import Marketer from '../screens/Marketer';
 import MyHomes from '../screens/MyHomes';
 import EditHome from '../screens/EditHome';
 import OnboardingScreen12 from '../screens/OnboardingScreen12';
+import OnboardingScreen13 from '../screens/OnboardingScreen13';
 
 
 const Stack = createStackNavigator();
@@ -184,6 +185,13 @@ const Router = (props) => {
             <Stack.Screen
                 name={'OnboardingScreen12'}
                 component={OnboardingScreen12}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name={'OnboardingScreen13'}
+                component={OnboardingScreen13}
                 options={{
                     headerShown: false,
                 }}
