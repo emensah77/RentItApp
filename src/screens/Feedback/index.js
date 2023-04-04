@@ -1,9 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
-import {useNavigation} from '@react-navigation/core';
-import {Button, Input, Layout} from '@ui-kitten/components';
-import React, {useState} from 'react';
-import {Image, StatusBar, Text} from 'react-native';
-import {TextInput} from 'react-native';
+import { useNavigation } from '@react-navigation/core';
+import { Button, Input, Layout } from '@ui-kitten/components';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, Image, StatusBar, Text } from 'react-native';
+import { TextInput } from 'react-native';
 import {
   ScrollView,
   View,
@@ -14,46 +14,88 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import StarRating from '../../components/StarRating';
+import { AuthContext } from '../../navigation/AuthProvider';
+import uuid from 'react-native-uuid'
 import styles from './style';
+import { createReview } from '../../graphql/mutations';
+import { API, graphqlOperation } from 'aws-amplify';
+import firestore from '@react-native-firebase/firestore';
 
-const EFeedback = props => {
+const EFeedback = ({ route }) => {
   const navigation = useNavigation();
-  const [rate, setRate] = useState(4.5);
+  const { user } = useContext(AuthContext);
+  const [rate, setRate] = useState(4);
   const [review, setReview] = useState('');
+  const [error, setError] = useState(false)
+  const [bookings, setBookings] = useState()
+
+
+  useEffect(() => {
+    checkHomeBooking()
+  }, [])
+
+  const checkHomeBooking = async () => {
+    try {
+      const data = await
+        firestore().collection('homeorders')
+          .where('homeid', '==', route?.params?.postID ? route?.params?.postID : '').get();
+      setBookings(data.docs)
+      return data.docs;
+    } catch (error) {
+      console.log(error, "Error");
+    }
+  }
+
+
+
+  const submitHandler = () => {
+    if (!review || !rate) {
+      setError(true)
+      return
+    }
+    const userInfo = bookings?.filter((single) => single?.userId === user?.uid);
+    const isFound = userInfo?.length !== 0 ? true : false;
+    if (!isFound) {
+      Alert.alert('You cannot review this home.')
+      navigation.goBack()
+      return;
+    }
+
+    uploadReview({
+      reply: review,
+      rating: rate,
+    });
+  }
+
+  const uploadReview = async (data) => {
+
+    const randomID = uuid.v4();
+    const input = {
+      review: data?.reply,
+      postId: route?.params?.postID,
+      id: randomID,
+      rating: data?.rating,
+      userID: user?.uid,
+      // parentReviewId: reviewPost?.id,
+    };
+
+    try {
+      await API.graphql(graphqlOperation(createReview, { input }));
+      navigation.goBack()
+      Alert.alert('Review has been added.')
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
 
   return (
-    <View style={{flex: 1}} edges={['right', 'top', 'left']}>
-      {/* <Header
-        title={t('feedback')}
-        renderLeft={() => {
-          return (
-            <Icon
-              name="angle-left"
-              size={20}
-              color={colors.text}
-              enableRTL={true}
-            />
-          );
-        }}
-        renderRight={() => {
-          return (
-            <Text body1 primaryColor numberOfLines={1}>
-              {t('save')}
-            </Text>
-          );
-        }}
-        onPressLeft={() => {
-          navigation.goBack();
-        }}
-        onPressRight={() => {
-          navigation.goBack();
-        }}
-      /> */}
+    <View style={{ flex: 1 }} edges={['right', 'top', 'left']}>
       <StatusBar hidden={true} />
       <LinearGradient
         colors={['purple', 'deeppink']}
-        start={{x: 0.1, y: 0.2}}
-        end={{x: 1, y: 0.5}}
+        start={{ x: 0.1, y: 0.2 }}
+        end={{ x: 1, y: 0.5 }}
         style={[
           {
             backgroundColor: 'blue',
@@ -83,56 +125,59 @@ const EFeedback = props => {
           </View>
         </View>
       </LinearGradient>
-      <KeyboardAvoidingView behavior={'padding'} style={{flex: 1}}>
+      <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
         <FlatList
-          contentContainerStyle={{paddingHorizontal: 20}}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
           ListHeaderComponent={
             <View style={{}}>
-              <View style={{alignItems: 'center'}}>
+              <View style={{ alignItems: 'center' }}>
                 <Image
-                  source={{uri: 'https://picsum.photos/300'}}
+                  source={{ uri: user?.photoURL }}
                   style={{
                     width: 62,
                     height: 62,
                     borderRadius: 31,
                   }}
                 />
-                <View style={{width: 160}}>
+                <View style={{ width: 160 }}>
                   <StarRating
                     starSize={26}
                     maxStars={5}
                     rating={rate}
                     selectedStar={rating => {
                       setRate(rating);
+                      setError(false)
                     }}
                     fullStarColor={'orange'}
-                    containerStyle={{padding: 5}}
+                    containerStyle={{ padding: 5 }}
                   />
-                  <Text caption1 grayColor style={{textAlign: 'center'}}>
+                  <Text caption1 grayColor style={{ textAlign: 'center' }}>
                     Tap to Rate
                   </Text>
                 </View>
               </View>
-              <View style={{marginVertical: 20}}>
+              <View style={{ marginVertical: 20 }}>
                 <Input
                   multiline={true}
                   style={styles.input}
                   value={review}
-                  textStyle={{minHeight: 94}}
+                  textStyle={{ minHeight: 94 }}
                   placeholder="Write a review here ..."
-                  onChangeText={nextValue => setReview(nextValue)}
+                  onChangeText={nextValue => { setReview(nextValue); setError(false) }}
                 />
+                {error && <Text style={{ color: 'red', fontSize: 12 }}>Review can not be empty</Text>}
               </View>
               <Button
-                onPress={() => navigation.goBack()}
-                style={{margin: 2, marginBottom: 40}}
+                // onPress={() => navigation.goBack()}
+                onPress={submitHandler}
+                style={{ margin: 2, marginBottom: 40 }}
                 appearance="outline"
                 status="primary">
                 Submit
               </Button>
             </View>
           }
-          style={{marginTop: 20}}
+          style={{ marginTop: 20 }}
           numColumns={4}
           data={[]}
           keyExtractor={(item, index) => index.toString()}

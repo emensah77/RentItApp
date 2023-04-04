@@ -175,10 +175,10 @@ const OnboardingScreen7 = props => {
 
 
   const searchApi = async data => {
-    const {search, postId} = data;
+    const {search, postId, title, description, image} = data;
     await axios
       .get(
-        `https://rentit.herokuapp.com/api/v1/emojis?search=${search}&homeId=${postId}`,
+        `https://rentit.herokuapp.com/api/v1/emojis?search=${search}&homeId=${postId}&title=${title}&description=${description}&image=${image}`,
       )
       .then(data => {
         console.log(data);
@@ -264,6 +264,9 @@ const OnboardingScreen7 = props => {
       await searchApi({
         search: mergedData.address,
         postId: uploadedHome.data.createPost.id,
+        title,
+        description,
+        image: imageUrls[0],
       });
       await clearProgressData(user.uid);
       console.log(
