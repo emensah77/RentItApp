@@ -73,7 +73,17 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "marketerData": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "personalizationEngine": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "rentmarketerdemand": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -185,6 +195,22 @@
         }
       ]
     },
+    "AMPLIFY_function_marketerData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "marketerData"
+        }
+      ]
+    },
+    "AMPLIFY_function_marketerData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "marketerData"
+        }
+      ]
+    },
     "AMPLIFY_function_personalizationEngine_deploymentBucketName": {
       "usedBy": [
         {
@@ -198,6 +224,22 @@
         {
           "category": "function",
           "resourceName": "personalizationEngine"
+        }
+      ]
+    },
+    "AMPLIFY_function_rentmarketerdemand_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "rentmarketerdemand"
+        }
+      ]
+    },
+    "AMPLIFY_function_rentmarketerdemand_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "rentmarketerdemand"
         }
       ]
     },

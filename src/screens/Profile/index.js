@@ -454,6 +454,22 @@ const ProfileScreen = ({route}) => {
               <Text style={styles.menuItemText}>Your homes</Text>
             </View>
           </TouchableOpacity>
+          {userData?.marketer_status === 'ACCEPTED' ? 
+          <TouchableOpacity onPress={() => navigation.navigate('HeatMap')}>
+            <View style={styles.menuItem}>
+              <Icon name="fire" color="blue" size={25} />
+              <Text style={styles.menuItemText}>Demand</Text>
+            </View>
+          </TouchableOpacity>
+          : null}
+          { userData?.marketer_status === 'ACCEPTED' ?
+          <TouchableOpacity onPress={() => navigation.navigate('MarketerDashboard')}>
+            <View style={styles.menuItem}>
+              <Icon name="table" color="blue" size={25} />
+              <Text style={styles.menuItemText}>Marketer Dashboard</Text>
+            </View>
+          </TouchableOpacity>
+          : null}
         </View>
       </ScrollView>
 

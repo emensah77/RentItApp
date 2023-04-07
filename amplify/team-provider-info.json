@@ -59,6 +59,14 @@
         "homeUploadProgress": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
           "s3Key": "amplify-builds/homeUploadProgress-564139317a567773767a-build.zip"
+        },
+        "rentmarketerdemand": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/rentmarketerdemand-316a7736654a35556f54-build.zip"
+        },
+        "marketerData": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/marketerData-62516f327149724e782f-build.zip"
         }
       },
       "storage": {

@@ -4,6 +4,7 @@ import {
     Pressable,
     ScrollView,
     Dimensions,
+    TouchableOpacity,
     StatusBar,
     Text,
     Platform,
@@ -19,6 +20,8 @@ import { AuthContext } from '../../navigation/AuthProvider.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import mixpanel from '../../MixpanelConfig.js';
 import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 
 const GuestsScreen = props => {
@@ -28,9 +31,31 @@ const GuestsScreen = props => {
     const [rooms, setrooms] = useState(0);
     const route = useRoute();
     const { user } = useContext(AuthContext);
+    const [priceRange, setPriceRange] = useState([1, 500]);
+    const [moveInDate, setMoveInDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [dateSelected, setDateSelected] = useState(false);
+    const hometype = route.params?.hometype;
+    const [daysDifference, setDaysDifference] = useState(0);
+
     const { trackDwellTime } = useDwellTimeTracking();
     useEffect(trackDwellTime, [trackDwellTime]);
 
+    const calculateDaysDifference = (date1, date2) => {
+        const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+        const diffDays = Math.round(Math.abs((date1 - date2) / oneDay));
+        return diffDays;
+    };
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || moveInDate;
+        setShowDatePicker(Platform.OS === 'ios');
+        setMoveInDate(currentDate);
+        setDateSelected(true);
+        // Calculate the difference between the selected date and the current date
+        setDaysDifference(calculateDaysDifference(currentDate, new Date()));
+        console.log('Days difference:', daysDifference);
+    };
     return (
         <LinearGradient
             colors={['#009245', '#FCEE21']}
@@ -51,12 +76,17 @@ const GuestsScreen = props => {
                 {' '}
                 How many {'\n'} people and rooms?{' '}
             </Text>
+
             <View style={{ justifyContent: 'space-between', height: '100%' }}>
                 <Animatable.View
                     animation="fadeInUpBig"
                     duration={50}
                     style={styles.footer}>
-                    <View style={styles.row}>
+                <ScrollView contentContainerStyle={{ paddingBottom: 100 }}
+                 showsVerticalScrollIndicator={false}> 
+                    <View> 
+
+                    {/* <View style={styles.row}>
                         <View>
                             <Text style={{ fontWeight: 'bold' }}>Adults</Text>
                             <Text style={{ color: 'darkgray' }}>Ages 13 or above</Text>
@@ -77,9 +107,9 @@ const GuestsScreen = props => {
                                 <Text style={{ fontSize: 20, color: 'black' }}>+</Text>
                             </Pressable>
                         </View>
-                    </View>
+                    </View> */}
 
-                    <View style={styles.row}>
+                    {/* <View style={styles.row}>
                         <View>
                             <Text style={{ fontWeight: 'bold' }}>Children</Text>
                             <Text style={{ color: 'darkgray' }}>2 - 12</Text>
@@ -102,7 +132,7 @@ const GuestsScreen = props => {
                                 <Text style={{ fontSize: 20, color: 'black' }}>+</Text>
                             </Pressable>
                         </View>
-                    </View>
+                    </View> */}
 
                     <View style={styles.row}>
                         <View>
@@ -126,7 +156,68 @@ const GuestsScreen = props => {
                             </Pressable>
                         </View>
                     </View>
-                    <View></View>
+                    {/* Price Range */}
+                    <View style={styles.row}>
+                    <View style={{ marginHorizontal: 10 }}>
+                        <Text style={{ fontWeight: 'bold' }}>Price Range</Text>
+                        <Text style={{ color: 'darkgray' }}>
+                            ${priceRange[0]} - ${priceRange[1]}
+                        </Text>
+                    </View>
+                    <View style={{ paddingHorizontal: 10, marginHorizontal: 10 }}>
+                        <MultiSlider
+                            min={0}
+                            max={100000}
+                            values={priceRange}
+                            onValuesChange={setPriceRange}
+                            sliderLength={200}
+                            step={100}
+                            style={{color:"blue"}}
+                            customMarker={() => (
+                                <View
+                                    style={{
+                                        height: 30,
+                                        width: 30,
+                                        borderRadius: 15,
+                                        backgroundColor: 'blue',
+                                        borderWidth: 3,
+                                        borderColor: 'white',
+                                        margin: 30,
+                                    }}
+                                />
+                            )}
+                        />
+                    </View>
+                </View>
+
+                    {/* Move-in Date */}
+                    <View style={styles.row}>
+                             <View>
+                                <Text style={{ fontWeight: 'bold' }}>Move-in Date</Text>
+                                <Text style={{ color: 'darkgray' }}>
+                                    Select the date you want to move in
+                                </Text>
+                            </View>
+                        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                        {dateSelected ? (
+                                            <Text style={{ color: 'blue' }}>
+                                                {moveInDate.toLocaleDateString()}
+                                            </Text>
+                                        ) : (
+                                            <Text style={{ color: 'blue' }}>Select Date</Text>
+                                        )}
+                        </TouchableOpacity>
+                        {showDatePicker && (
+                            <DateTimePicker
+                                testID="dateTimePicker"
+                                value={moveInDate}
+                                mode="date"
+                                display="default"
+                                onChange={onChange}
+                                minimumDate={new Date()}
+                            />
+                        )}
+                    </View>
                     {/* <ScrollView style={{marginHorizontal:10}} scrollEnabled={true}>
       <MultiSlider
         
@@ -146,6 +237,9 @@ const GuestsScreen = props => {
                                     params: {
                                         guests: rooms,
                                         viewport: route.params.viewport,
+                                        priceRange: priceRange,
+                                        moveInDate: daysDifference,
+                                        hometype: hometype,
                                     },
                                 },
                             });
@@ -161,7 +255,10 @@ const GuestsScreen = props => {
                                         userId: user.uid,
                                         guests: rooms,
                                         created_at: new Date(),
-                                        userFcm: fcmToken
+                                        userFcm: fcmToken,
+                                        priceRange: priceRange,
+                                        moveInDate: daysDifference,
+                                        hometype: hometype,
                                     });
                                 } catch (error) {
                                     console.log(error);
@@ -176,6 +273,7 @@ const GuestsScreen = props => {
                             height: 50,
                             marginHorizontal: 20,
                             borderRadius: 25,
+                            marginBottom: 60,
                         }}>
                         <Text
                             style={{
@@ -186,8 +284,12 @@ const GuestsScreen = props => {
                             Search
                         </Text>
                     </Pressable>
+                    </View>
+                    </ScrollView> 
+
                 </Animatable.View>
             </View>
+
         </LinearGradient>
     );
 };

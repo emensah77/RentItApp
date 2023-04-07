@@ -1,5 +1,5 @@
 import React , {useEffect, useState, useRef} from 'react';
-import {View, Text,Alert, TextInput, ScrollView,ImageBackground, Platform,TouchableOpacity ,StatusBar, FlatList,PermissionsAndroid,ToastAndroid,Linking, Pressable, KeyboardAvoidingView} from 'react-native';
+import {View, Text,Alert, ActivityIndicator,TextInput, ScrollView,ImageBackground, Platform,TouchableOpacity ,StatusBar, FlatList,PermissionsAndroid,ToastAndroid,Linking, Pressable, KeyboardAvoidingView} from 'react-native';
 import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
@@ -15,6 +15,9 @@ import SuggestionRow from '../../screens/DestinationSearch/SuggestionRow'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Marker, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import auth from '@react-native-firebase/auth';
+import Geocoder from 'react-native-geocoding';
+Geocoder.init('AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys');
+
 const mapStyle = [
     {
       "elementType": "geometry",
@@ -246,6 +249,7 @@ const OnboardingScreen6 = (props) => {
     const [locality, setLocality] = useState('');
     const [address, setAddress] = useState('');
     const [sublocality, setSubLocality] = useState('');
+    const [loading, setIsLoading] = useState(false);
     const map = useRef();
     const route = useRoute();
     const title = route.params?.title
@@ -359,6 +363,7 @@ const hasPermissionIOS = async () => {
     if (!hasPermission) {
       return;
     }
+    setIsLoading(true); 
 
     Geolocation.getCurrentPosition(
       (position) => {
@@ -371,6 +376,28 @@ const hasPermissionIOS = async () => {
             longitudeDelta: 0.8,
           };
           map.current.animateToRegion(region);
+
+          // Reverse geocoding to get the address details
+          Geocoder.from(position.coords.latitude, position.coords.longitude)
+            .then((json) => {
+              const details = json.results[0];
+              const locality = details.address_components.find((component) =>
+                component.types.includes('locality'),
+              ).short_name;
+              const subLocality = details.address_components.find((component) =>
+                component.types.includes('sublocality'),
+              ).short_name;
+              const address = details.formatted_address;
+
+              setLocality(locality);
+              setSubLocality(subLocality);
+              setAddress(address);
+              setIsLoading(false); 
+
+              console.log(locality, subLocality, address);
+            })
+            .catch((error) => console.warn(error));
+      
       },
       (error) => {
         Alert.alert(`Code ${error.code}`, error.message);
@@ -391,14 +418,15 @@ const hasPermissionIOS = async () => {
         showLocationDialog: locationDialog,
       },
     );
+    
   };
 
-
+  
     
     
     return (
-        
-        <View
+      
+          <View
         style={styles.container}
       >
           <StatusBar hidden={true} />
@@ -544,13 +572,21 @@ const hasPermissionIOS = async () => {
           
 
             </KeyboardAvoidingView>
-   
-            {/* <Text style={{fontWeight:'bold',marginBottom:8,fontSize:20,marginTop:10,alignSelf:'center'}}>OR</Text>
-           
-            <TouchableOpacity onPress={getLocation} style={{flex:1, borderWidth:1, borderRadius:20, marginVertical:20,padding:5, flexDirection:'row', justifyContent:'center'}}>
+              {loading ? 
+                <View style={{flex:1,alignSelf:"center",alignItems:"center",  width:"80%", zIndex:99, borderRadius:20,
+                borderWidth:2, borderColor:"black"}}>
+                  <Text>Getting your location ...</Text>
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+               
+
+              : 
+            <Text style={{fontWeight:'bold',marginBottom:8,fontSize:20,marginTop:10,alignSelf:'center'}}>OR</Text>
+            }
+            <TouchableOpacity onPress={getLocation} style={{ borderWidth:1, borderRadius:20, marginVertical:20,padding:5, flexDirection:'row', justifyContent:'center'}}>
                 <FontAwesomeIcon icon={faLocationArrow} size={20} />
                 <Text style={{paddingHorizontal:10, fontFamily:'Montserrat-SemiBold'}}>Get my current location</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
 
            

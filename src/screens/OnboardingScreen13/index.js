@@ -55,11 +55,7 @@ const OnboardingScreen13 = (props) => {
   };
 
   const openVideoPicker = async () => {
-  const hasPermission = await requestCameraPermission();
-
-  if (!hasPermission) {
-    return;
-  }
+  
 
   Alert.alert(
     'Select Video',

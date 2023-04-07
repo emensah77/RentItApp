@@ -1,6 +1,7 @@
 #import <React/RCTLinkingManager.h>
 #import <Firebase.h>
 #import "AppDelegate.h"
+#import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -26,7 +27,7 @@
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-
+  [GMSServices provideAPIKey:@"AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys"]; // add this line using the api key obtained from Google Console
    // [REQUIRED] Register BackgroundFetch
   [[TSBackgroundFetch sharedInstance] didFinishLaunching];
   [FIRApp configure];

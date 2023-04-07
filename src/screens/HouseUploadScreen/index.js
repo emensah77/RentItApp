@@ -14,6 +14,8 @@ const HouseUploadScreen = (props) => {
     const navigation = useNavigation();
     const [uploadInProgress, setUploadInProgress] = useState(false);
     const [lastScreen, setLastScreen] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
 
 
     useEffect(() => {
@@ -38,11 +40,21 @@ const HouseUploadScreen = (props) => {
           setLastScreen(data.screenName);
           setUploadInProgress(true);
         }
+        setIsLoading(false); // Set loading state to false after fetching the data
+
       } catch (error) {
         console.error('Error checking home upload progress:', error);
       }
     };
-    const buttonText = uploadInProgress && lastScreen ? "Continue" : "Let's go";
+    let buttonText;
+
+  if (isLoading) {
+    buttonText = 'Loading...';
+  } else if (uploadInProgress && lastScreen) {
+    buttonText = 'Continue';
+  } else {
+    buttonText = "Let's go";
+  }
 
     
     return (
