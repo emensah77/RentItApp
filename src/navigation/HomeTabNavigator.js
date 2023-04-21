@@ -25,7 +25,8 @@ const Tab = createBottomTabNavigator();
 const HomeTabNavigator = (props) => {
     const routes = ["HouseUpload", "OnboardingScreen1", "OnboardingScreen2",
         "OnboardingScreen3", "OnboardingScreen4", "OnboardingScreen5", "OnboardingScreen6",
-        "OnboardingScreen7", "OnboardingScreen8", "OnboardingScreen9", "OnboardingScreen10"]
+        "OnboardingScreen7", "OnboardingScreen8", "OnboardingScreen9", "OnboardingScreen10", "OnboardingScreen11",
+        "OnboardingScreen12", "OnboardingScreen13"]
     return (
         <Tab.Navigator tabBarOptions={{
             activeTintColor: "blue"

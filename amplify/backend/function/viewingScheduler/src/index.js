@@ -2,7 +2,43 @@ const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const currentDate = new Date().toISOString();
+const sns = new AWS.SNS();
 
+async function sendSMSNotification(phoneNumber, message) {
+  const params = {
+    PhoneNumber: phoneNumber,
+    Message: message,
+  };
+
+  try {
+    const result = await sns.publish(params).promise();
+    console.log('SMS sent successfully:', result);
+  } catch (error) {
+    console.error('Error sending SMS:', error);
+  }
+}
+
+async function findRepForUser(userId) {
+  const params = {
+    TableName: 'Viewing-k5j5uz5yp5d7tl2yzjyruz5db4-dev',
+    IndexName: 'userId-index',
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: {
+      ':userId': userId,
+    },
+  };
+
+  try {
+    const result = await dynamoDb.query(params).promise();
+    if (result.Items.length > 0) {
+      return result.Items[0].assignedRep;
+    }
+  } catch (error) {
+    console.error('Error finding rep for user:', error);
+  }
+
+  return null;
+}
 exports.handler = async (event) => {
   const { postId, viewingDate, viewingTime, userName, userContact, userLocation, userId } = JSON.parse(event.body);
   const viewingDateTime = `${viewingDate}_${viewingTime}`;
@@ -36,8 +72,14 @@ exports.handler = async (event) => {
       };
     }
 
-    const reps = ['Lydia', 'Priscilla', 'Juliana'];
-    const assignedRep = reps[Math.floor(Math.random() * reps.length)];
+    const reps = ['Lydia', 'Priscilla', 'Juliana', 'Jacqueline', 'Josephine', 'Violet', 'Memuna', 'Princess', 'Dzigbordi', 'Rosabell'];
+
+  // Check if the user has a rep assigned from a previous viewing
+    const previousRep = await findRepForUser(userId);
+
+    // If the user has a previous rep assigned, use the same rep. Otherwise, assign a random rep.
+    const assignedRep = previousRep || reps[Math.floor(Math.random() * reps.length)];
+
 
     const newItemParams = {
       TableName: 'Viewing-k5j5uz5yp5d7tl2yzjyruz5db4-dev',
@@ -59,6 +101,8 @@ exports.handler = async (event) => {
     };
 
     await dynamoDb.put(newItemParams).promise();
+    const message = `Hi ${userName}, your viewing for property ID ${postId} has been scheduled for ${viewingDate} at ${viewingTime}.`;
+    await sendSMSNotification(userContact, message);
 
     return {
       statusCode: 200,

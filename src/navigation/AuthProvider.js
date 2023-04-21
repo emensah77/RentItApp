@@ -203,6 +203,7 @@ export const AuthProvider = ({ children }) => {
             // Sign the user in with the credential
             setLoading(true);
             await auth().signInWithCredential(appleCredential)
+            console.log('apple user name', appleAuthRequestResponse)
 
             // Identify the user with a unique ID (e.g., user.uid)
             const currentUser = auth().currentUser;
@@ -221,15 +222,15 @@ export const AuthProvider = ({ children }) => {
               .then(doc => {
                 if (!doc.exists) {
                   firestore().collection('users').doc(auth().currentUser.uid)
-                    .set({
-                      fname: auth().currentUser.displayName,
-                      lname: auth().currentUser.displayName,
-                      email: auth().currentUser.email,
-                      createdAt: firestore.Timestamp.fromDate(new Date()),
-                      userImg: auth().currentUser.photoURL,
-                      phoneNumber: auth().currentUser.phoneNumber,
-                      role: 'USER'
-                    })
+                .set({
+                  fname: appleAuthRequestResponse.fullName.givenName || 'N/A',
+                  lname: appleAuthRequestResponse.fullName.familyName || 'N/A',
+                  email: auth().currentUser.email || 'N/A',
+                  createdAt: firestore.Timestamp.fromDate(new Date()),
+                  userImg: auth().currentUser.photoURL || null,
+                  phoneNumber: auth().currentUser.phoneNumber || null, // Make the phone number field optional
+                  role: 'USER'
+                })
                   console.log('User successfully added');
 
                 } else {

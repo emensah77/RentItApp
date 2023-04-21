@@ -44,6 +44,8 @@ import {createPost} from '../../graphql/mutations';
 import {AuthContext} from '../../navigation/AuthProvider';
 import axios from 'axios';
 import {HOME_STATUS} from '../../variables.js';
+import firestore from '@react-native-firebase/firestore';
+
 
 const OnboardingScreen7 = props => {
   const navigation = useNavigation();
@@ -72,6 +74,7 @@ const OnboardingScreen7 = props => {
   const furnished = route.params?.furnished || progressData?.furnished;
   const videoUrl = route.params?.videoUrl || progressData?.videoUrl;
   const {user, logout} = useContext(AuthContext);
+  const [userData, setUserData] = useState(null);
   const [progressData, setProgressData] = useState(null);
   const [mergedData, setMergedData] = useState({});
 
@@ -104,6 +107,18 @@ const OnboardingScreen7 = props => {
       return null;
     }
   };
+  const getUser = async() => {
+    await firestore()
+    .collection('users')
+    .doc(user.uid)
+    .get()
+    .then((documentSnapshot) => {
+      if( documentSnapshot.exists ) {
+        console.log('User Data', documentSnapshot.data());
+        setUserData(documentSnapshot.data());
+      }
+    })
+  }
   
   const fetchProgressData = async () => {
     const data = await loadProgress(user.uid);
@@ -114,6 +129,8 @@ const OnboardingScreen7 = props => {
   };
   
   useEffect(() => {
+    getUser();
+    console.log('userData', userData)
     fetchProgressData();
   }, []);
   
@@ -217,7 +234,7 @@ const OnboardingScreen7 = props => {
   const uploadHome = async id => {
     try {
       let input = {
-        image: mergedData.imageUrls[0],
+        image: mergedData?.imageUrls[0],
         bed: mergedData.bed,
         bedroom: mergedData.bedroom,
         maxGuests: mergedData.bedroom,
@@ -248,6 +265,9 @@ const OnboardingScreen7 = props => {
         negotiable: mergedData.negotiable,
         furnished: mergedData.furnished,
         videoUrl: mergedData.videoUrl,
+        homeownerName: mergedData.homeownerName,
+        availabilityDate: mergedData.availabilityDate,
+        available: mergedData.available,
       };
       const uploadedHome = await API.graphql(
         graphqlOperation(
@@ -264,9 +284,9 @@ const OnboardingScreen7 = props => {
       await searchApi({
         search: mergedData.address,
         postId: uploadedHome.data.createPost.id,
-        title,
-        description,
-        image: imageUrls[0],
+        title: mergedData.title,
+        description: mergedData.description,
+        image: mergedData.imageUrls[0],
       });
       await clearProgressData(user.uid);
       console.log(
@@ -501,8 +521,33 @@ const OnboardingScreen7 = props => {
                 <FontAwesomeIcon icon={faCamera} size={30} color={'black'} />
               </View>
             </TouchableOpacity>
-
+            {userData?.marketer_status === 'ACCEPTED' ? 
+            
             <TouchableOpacity
+            onPress={goHome}
+            style={{
+              left: 250,
+              width: 100,
+              backgroundColor: 'deeppink',
+              borderRadius: 20,
+              alignItems: 'center',
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'Montserrat-Bold',
+                fontSize: 14,
+              }}>
+              Submit
+            </Text>
+          </TouchableOpacity>
+            
+            
+            :
+
+              <TouchableOpacity
               disabled={images.length === 0 ? true : false}
               onPress={goHome}
               style={{
@@ -523,7 +568,10 @@ const OnboardingScreen7 = props => {
                 }}>
                 Submit
               </Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            
+            }
+            
           </ScrollView>
         )}
       </Animatable.View>

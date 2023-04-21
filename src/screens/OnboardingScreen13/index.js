@@ -6,6 +6,7 @@ import {
   StyleSheet,
   StatusBar,
   Alert,
+  Platform,
   ActivityIndicator,
   PermissionsAndroid
 } from 'react-native';
@@ -15,8 +16,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Video from 'react-native-video';
 import axios from 'axios';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {check, request, PERMISSIONS} from 'react-native-permissions';
+import {check, request, RESULTS,PERMISSIONS} from 'react-native-permissions';
 import auth from '@react-native-firebase/auth';
+import RNFS from 'react-native-fs';
+import base64 from 'base64-js';
+
 
 
 
@@ -29,54 +33,70 @@ const OnboardingScreen13 = (props) => {
   const [isMuted, setIsMuted] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [videoUploaded, setVideoUploaded] = useState(false);
+  const chunkSize = 5 * 1024 * 1024; // 5MB
+  const apiUrl = 'https://byagcgy5qbw4mfwgej3n7rr4ty0xvteq.lambda-url.us-east-2.on.aws/';
 
   const videoRef = useRef(null);
   const requestCameraPermission = async () => {
-    let permission;
-    if (Platform.OS === 'android') {
-      permission = PermissionsAndroid.PERMISSIONS.CAMERA;
-    } else if (Platform.OS === 'ios') {
-      permission = PERMISSIONS.IOS.CAMERA;
-    }
-  
     try {
-      const granted = await request(permission);
-      if (granted === 'granted') {
-        console.log('Camera permission given');
+      const cameraPermission = Platform.select({
+        android: PERMISSIONS.ANDROID.CAMERA,
+        ios: PERMISSIONS.IOS.CAMERA,
+      });
+  
+      const permissionStatus = await check(cameraPermission);
+  
+      if (permissionStatus === RESULTS.GRANTED) {
+        console.log('Camera permission already granted');
+        return true;
+      }
+  
+      const result = await request(cameraPermission);
+  
+      if (result === RESULTS.GRANTED) {
+        console.log('Camera permission granted');
         return true;
       } else {
         console.log('Camera permission denied');
         return false;
       }
-    } catch (err) {
-      console.warn(err);
+    } catch (error) {
+      console.warn('Error requesting camera permission:', error);
       return false;
     }
   };
-
-  const openVideoPicker = async () => {
   
-
-  Alert.alert(
-    'Select Video',
-    'Choose an action:',
-    [
-      {
-        text: 'Record a video',
-        onPress: () => launchCameraWithOptions(),
-      },
-      {
-        text: 'Select from library',
-        onPress: () => launchImageLibraryWithOptions(),
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-    ],
-    { cancelable: true },
-  );
-};
+  const openVideoPicker = async () => {
+    Alert.alert(
+      'Select Video',
+      'Choose an action:',
+      [
+        {
+          text: 'Record a video',
+          onPress: async () => {
+            const permissionGranted = await requestCameraPermission();
+            if (permissionGranted) {
+              launchCameraWithOptions();
+            }
+          },
+        },
+        {
+          text: 'Select from library',
+          onPress: async () => {
+            const permissionGranted = await requestCameraPermission();
+            if (permissionGranted) {
+              launchImageLibraryWithOptions();
+            }
+          },
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true },
+    );
+  };
 
 const handleVideoResponse = (response) => {
   if (response.didCancel) {
@@ -99,7 +119,7 @@ const handleVideoResponse = (response) => {
     const options = {
       mediaType: 'video',
       videoQuality: 'low',
-      durationLimit: 60,
+      durationLimit: 30,
       noData: true,
     };
   
@@ -110,7 +130,7 @@ const handleVideoResponse = (response) => {
     const options = {
       mediaType: 'video',
       videoQuality: 'low',
-      durationLimit: 60,
+      durationLimit: 30,
       noData: true,
     };
   
@@ -133,58 +153,79 @@ const handleVideoResponse = (response) => {
     try {
       setUploading(true);
   
-      // Fetch pre-signed URL from the Lambda function
-      const response = await axios.post(
-        'https://byagcgy5qbw4mfwgej3n7rr4ty0xvteq.lambda-url.us-east-2.on.aws/',
-      );
-  
-      if (response.status !== 200) {
-        throw new Error('Error fetching pre-signed URL');
-      }
-  
-      const preSignedUrl = response.data.preSignedUrl;
-  
-      // Upload video using the pre-signed URL
-      const file = {
-        uri: videoPath,
-        type: 'video/mp4',
-        name: 'video.mp4',
-      };
-  
-      const uploadResponse = await fetch(preSignedUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'video/mp4',
-        },
-        body: file,
+      // Initialize the multipart upload
+      const initResponse = await axios.get(apiUrl, {
+        params: { method: 'initiate' },
       });
   
-      setUploading(false);
-  
-      if (uploadResponse.status === 200) {
-        const s3Url = preSignedUrl.split('?')[0];
-        const videoUrl = s3Url.replace(
-          'https://videosrentit.s3.us-east-2.amazonaws.com',
-          'https://d1mgzi0ytcdaf9.cloudfront.net'
-        );
-        
-        setVideoUrl(videoUrl);
-        setVideoUploaded(true);
-  
-        Alert.alert(
-          'Video uploaded',
-          `Your video has been uploaded successfully. Video URL: ${videoUrl}`,
-        );
-      } else {
-        Alert.alert('Upload failed', 'Failed to upload the video. Please try again.');
+      if (initResponse.status !== 200) {
+        throw new Error('Error initiating multipart upload');
       }
+  
+      const { fileName, uploadId } = initResponse.data;
+      const fileUri = videoPath;
+      const fileBase64 = await RNFS.readFile(fileUri, 'base64');
+      const fileArrayBuffer = base64.toByteArray(fileBase64).buffer;
+      const fileSize = fileArrayBuffer.byteLength;
+      const chunkCount = Math.ceil(fileSize / chunkSize);
+      const parts = [];
+  
+      for (let i = 0; i < chunkCount; i++) {
+        const start = i * chunkSize;
+        const end = Math.min(start + chunkSize, fileSize);
+        const chunk = fileArrayBuffer.slice(start, end);
+        const partNumber = i + 1;
+  
+        // Get pre-signed URL for the current part
+        const partResponse = await axios.get(apiUrl, {
+          params: { method: 'part', fileName, uploadId, partNumber },
+        });
+  
+        if (partResponse.status !== 200) {
+          throw new Error('Error fetching pre-signed URL for part');
+        }
+  
+        const preSignedUrl = partResponse.data.preSignedUrl;
+  
+        // Upload the current part using the pre-signed URL
+        const uploadResponse = await fetch(preSignedUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'video/mp4' },
+          body: chunk,
+        });
+  
+        if (uploadResponse.status !== 200) {
+          throw new Error('Error uploading part');
+        }
+  
+        parts.push({ PartNumber: partNumber, ETag: uploadResponse.headers.get('etag') });
+      }
+  
+      // Complete the multipart upload
+      const completeResponse = await axios.post(apiUrl, { parts, uploadId }, { // Include uploadId here
+        params: { method: 'complete', fileName, uploadId },
+      });
+  
+      if (completeResponse.status !== 200) {
+        throw new Error('Error completing multipart upload');
+      }
+  
+      const videoUrl = completeResponse.data.videoUrl;
+  
+      setUploading(false);
+      setVideoUrl(videoUrl);
+      setVideoUploaded(true);
+  
+      Alert.alert(
+        'Video uploaded',
+        `Your video has been uploaded successfully. Video URL: ${videoUrl}`,
+      );
     } catch (error) {
       setUploading(false);
       console.log('Error uploading video:', error);
       Alert.alert('Upload failed', 'Failed to upload the video. Please try again.');
     }
   };
-  
   
 
   const toggleMute = () => {

@@ -58,6 +58,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "homeData": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "homeUploadProgress": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -74,6 +79,11 @@
       "service": "Lambda"
     },
     "marketerData": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "marketerSalary": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -112,6 +122,11 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "viewingsDashboard": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -144,6 +159,22 @@
         {
           "category": "function",
           "resourceName": "createpaystack"
+        }
+      ]
+    },
+    "AMPLIFY_function_homeData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeData"
+        }
+      ]
+    },
+    "AMPLIFY_function_homeData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeData"
         }
       ]
     },
@@ -208,6 +239,22 @@
         {
           "category": "function",
           "resourceName": "marketerData"
+        }
+      ]
+    },
+    "AMPLIFY_function_marketerSalary_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "marketerSalary"
+        }
+      ]
+    },
+    "AMPLIFY_function_marketerSalary_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "marketerSalary"
         }
       ]
     },
@@ -320,6 +367,22 @@
         {
           "category": "function",
           "resourceName": "viewingScheduler"
+        }
+      ]
+    },
+    "AMPLIFY_function_viewingsDashboard_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "viewingsDashboard"
+        }
+      ]
+    },
+    "AMPLIFY_function_viewingsDashboard_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "viewingsDashboard"
         }
       ]
     }

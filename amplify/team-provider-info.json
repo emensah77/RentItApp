@@ -42,15 +42,15 @@
         },
         "videoUploaderOptimizer": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/videoUploaderOptimizer-3162416a4674616a334c-build.zip"
+          "s3Key": "amplify-builds/videoUploaderOptimizer-456b39357876554b684d-build.zip"
         },
         "videoCompresser": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/videoCompresser-7a526b757a6b4f507969-build.zip"
+          "s3Key": "amplify-builds/videoCompresser-4a5253696a726934555a-build.zip"
         },
         "viewingScheduler": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/viewingScheduler-4c594d6941523942522b-build.zip"
+          "s3Key": "amplify-builds/viewingScheduler-387364574a667a716653-build.zip"
         },
         "inAppMessenger": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -62,11 +62,23 @@
         },
         "rentmarketerdemand": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/rentmarketerdemand-316a7736654a35556f54-build.zip"
+          "s3Key": "amplify-builds/rentmarketerdemand-574c53547677624b686a-build.zip"
         },
         "marketerData": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/marketerData-62516f327149724e782f-build.zip"
+          "s3Key": "amplify-builds/marketerData-794a74393270776a4c2b-build.zip"
+        },
+        "viewingsDashboard": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/viewingsDashboard-795a415555546b6a4e32-build.zip"
+        },
+        "marketerSalary": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/marketerSalary-7967783770655a455a4b-build.zip"
+        },
+        "homeData": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/homeData-55732b4c74307661672b-build.zip"
         }
       },
       "storage": {

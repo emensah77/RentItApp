@@ -54,6 +54,13 @@ import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import {WishListProvider} from './src/context/WishlistContext';
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({ 
+  dsn: 'https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972', 
+});
+
+
 const myTheme = StyleSheet.create({
   container: {
     flex: 1,
@@ -188,16 +195,16 @@ const Section = ({children, title}) => {
   );
 };
 
-const App: () => Node = () => {
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   useEffect(() => {
+    SplashScreen.hide();
     requestUserPermission();
     notificationListener();
-    SplashScreen.hide();
   });
   return (
     <>

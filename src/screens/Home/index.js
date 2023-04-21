@@ -820,12 +820,14 @@ const HomeScreen = props => {
     var user = await firestore()
       .collection('users')
       .doc(auth().currentUser.uid);
-    //console.log('user', (await user.get()).data())
-
+  
     user.get().then(doc => {
       if (doc.exists) {
         if (doc.data().phoneNumber === null || doc.data().phoneNumber === '') {
-          navigation.navigate('WelcomeScreen');
+          if (Platform.OS === 'android') {
+            navigation.navigate('WelcomeScreen');
+          }
+          // Do nothing for iOS
         } else {
           console.log('User already has phone number');
         }
@@ -1082,10 +1084,9 @@ const onEndReached = () => {
 
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    
       getLocation();
-    }, 10000);
-    return () => clearInterval(interval);
+   
   }, []);
 
   const updateApp = () => {
@@ -1208,9 +1209,8 @@ const onEndReached = () => {
   };
 
   return (
-    <ScrollView
-      style={{backgroundColor: 'white'}}
-      contentContainerStyle={{backgroundColor: 'white', flex: 1}}>
+    <View style={{ backgroundColor: "white", flex: 1 }}>
+
       
 
       <Modal
@@ -1634,7 +1634,7 @@ const onEndReached = () => {
         null
 )}
 
-    </ScrollView>
+    </View>
 
   );
 };

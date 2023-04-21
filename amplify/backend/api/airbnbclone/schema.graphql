@@ -28,7 +28,11 @@ type Viewing @model {
   userId: String
   status: String
   assignedRep: String
+  comments: [String]
+
 }
+
+
 type User @model {
   id: String!
   username: String
@@ -58,6 +62,8 @@ type Post @model @key(name: "byUser", fields: ["userID"])
   currency: [String]
 
   status: String
+  availabilityDate: String
+  homeownerName: String
   negotiable: String
   furnished: String
   loyaltyProgram: String

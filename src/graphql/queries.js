@@ -31,6 +31,8 @@ export const getReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        availabilityDate
+        homeownerName
         negotiable
         furnished
         loyaltyProgram
@@ -104,6 +106,8 @@ export const listReviews = /* GraphQL */ `
           marketerNumber
           currency
           status
+          availabilityDate
+          homeownerName
           negotiable
           furnished
           loyaltyProgram
@@ -163,6 +167,7 @@ export const getViewing = /* GraphQL */ `
       userId
       status
       assignedRep
+      comments
       createdAt
       updatedAt
     }
@@ -187,6 +192,7 @@ export const listViewings = /* GraphQL */ `
         userId
         status
         assignedRep
+        comments
         createdAt
         updatedAt
       }
@@ -217,6 +223,8 @@ export const getUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          availabilityDate
+          homeownerName
           negotiable
           furnished
           loyaltyProgram
@@ -331,6 +339,8 @@ export const getPost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      availabilityDate
+      homeownerName
       negotiable
       furnished
       loyaltyProgram
@@ -391,6 +401,8 @@ export const listPosts = /* GraphQL */ `
         marketerNumber
         currency
         status
+        availabilityDate
+        homeownerName
         negotiable
         furnished
         loyaltyProgram
@@ -546,6 +558,8 @@ export const listPostsSortedByCreatedTime = /* GraphQL */ `
         marketerNumber
         currency
         status
+        availabilityDate
+        homeownerName
         negotiable
         furnished
         loyaltyProgram

@@ -72,7 +72,7 @@ async function compressVideo(buffer) {
 
     ffmpeg(inputFile)
       .inputOptions('-f mp4')
-      .outputOptions(['-c:v libx264', '-preset veryfast', '-crf 23'])
+      .outputOptions(['-c:v libx264', '-preset veryfast', '-crf 28', '-movflags +faststart'])
       .output(outputFile)
       .on('end', () => {
         resolve(fs.readFileSync(outputFile));
@@ -83,3 +83,4 @@ async function compressVideo(buffer) {
       .run();
   });
 }
+

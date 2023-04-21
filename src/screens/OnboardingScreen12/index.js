@@ -7,6 +7,7 @@ import {
   StatusBar,
   ScrollView,
   Image,
+  TextInput,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -21,6 +22,8 @@ import {
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import * as Animatable from 'react-native-animatable';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 const OnboardingScreen12 = (props) => {
   const navigation = useNavigation();
@@ -48,8 +51,38 @@ const OnboardingScreen12 = (props) => {
   const address =  route.params?.address;
   const currency = route.params?.currency;
   const marketerNumber = route.params?.marketerNumber;
+  const [availableForRent, setAvailableForRent] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [availabilityDate, setAvailabilityDate] = useState(null);
+  const [homeownerName, setHomeownerName] = useState('');
+
+
+
   const handleLoyaltyPress = () => {
     setLoyalty(!loyalty);
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+    
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    console.log("Selected date:", date);
+    // Save the selected date here
+    setAvailabilityDate(date);
+    hideDatePicker();
+  };
+
+  const handleAvailableForRent = (value) => {
+    setAvailableForRent(value);
+    if (!value) {
+      showDatePicker();
+    }
   };
 
   const handleNegotiablePress = () => {
@@ -61,6 +94,9 @@ const OnboardingScreen12 = (props) => {
   };
 
   const handleNextPress = async () => {
+    if (!homeownerName || availableForRent === null) {
+      return;
+    }
     await saveProgress({title: title, type: type, description: description,
        bed: bed, bedroom: bedroom, bathroom: bathroom, imageUrls: imageUrls,
         homeprice: homeprice, latitude: latitude,
@@ -68,7 +104,11 @@ const OnboardingScreen12 = (props) => {
         phoneNumber: phoneNumber, marketerNumber: marketerNumber,
          locality: locality, sublocality: sublocality, currency: currency, 
          negotiable: negotiable ? "Yes" : "No", loyaltyProgram: loyalty ? "Yes" : "No", 
-         furnished: furnished  ? "Yes" : "No", address: address,})
+         furnished: furnished  ? "Yes" : "No", address: address,       
+         available: availableForRent ? "Yes" : "No",
+         availabilityDate: availabilityDate ? availabilityDate : null,
+         homeownerName: homeownerName,
+        })
 
       navigation.navigate('OnboardingScreen13', {
         title: title,
@@ -92,6 +132,10 @@ const OnboardingScreen12 = (props) => {
         loyaltyProgram: loyalty ? "Yes" : "No",
         furnished: furnished  ? "Yes" : "No",
         address: address,
+        available: availableForRent ? "Yes" : "No",
+        availabilityDate: availabilityDate ? availabilityDate : null,
+        homeownerName: homeownerName,
+
        
     });
   };
@@ -236,15 +280,69 @@ const OnboardingScreen12 = (props) => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          <View style={styles.homeownerNameContainer}>
+            <Text style={styles.homeownerNameText}>
+              Enter the homeowner's name
+            </Text>
+            <TextInput
+              style={styles.homeownerNameInput}
+              onChangeText={(text) => setHomeownerName(text)}
+              value={homeownerName}
+              placeholder="Homeowner's Name"
+            />
+          </View>
+
+
+                <View style={styles.availableForRentContainer}>
+            <Text style={styles.availableForRentText}>Is your home available for rent now?</Text>
+            <View style={styles.availableForRentButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.availableForRentButton,
+                  availableForRent === true && styles.selectedAvailableForRentButton,
+                ]}
+                onPress={() => handleAvailableForRent(true)}
+              >
+                <Text style={styles.availableForRentButtonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.availableForRentButton,
+                  availableForRent === false && styles.selectedAvailableForRentButton,
+                ]}
+                onPress={() => handleAvailableForRent(false)}
+              >
+                <Text style={styles.availableForRentButtonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+            customHeaderIOS={() => (
+              <View style={styles.customHeader}>
+                <Text style={styles.customHeaderText}>Select when your home will be available</Text>
+              </View>
+            )}
+            customHeaderAndroid={() => (
+              <View style={styles.customHeader}>
+                <Text style={styles.customHeaderText}>Select when your home will be available</Text>
+              </View>
+            )}
+          />
+
+        <TouchableOpacity
             style={[
               styles.nextButton,
-              (loyalty || negotiable || furnished)
+              homeownerName && availableForRent !== null
                 ? null
-                : styles.disabledNextButton
+                : styles.disabledNextButton,
             ]}
             onPress={handleNextPress}
-            //disabled={!loyalty && !negotiable && !furnished}
+            disabled={!homeownerName || availableForRent === null}
           >
             <Text style={styles.nextButtonText}>Next</Text>
           </TouchableOpacity>
@@ -314,6 +412,7 @@ color: 'black',
 optionDescription: {
 color: 'gray',
 marginTop: 5,
+fontSize: 12,
 },
 nextButton: {
 backgroundColor: 'deeppink',
@@ -322,14 +421,88 @@ paddingVertical: 15,
 marginTop: 30,
 },
 disabledNextButton: {
-opacity: 1,
-},
+    opacity: 0.5,
+  },
 nextButtonText: {
 color: 'white',
 fontWeight: 'bold',
 fontSize: 20,
 textAlign: 'center',
 },
+availableForRentContainer: {
+  marginTop: 20,
+  marginBottom: 20,
+},
+availableForRentText: {
+  fontWeight: 'bold',
+  fontSize: 20,
+  color: 'black',
+  marginBottom: 10,
+},
+availableForRentButtons: {
+flexDirection: 'row',
+justifyContent: 'space-between',
+},
+availableForRentButton: {
+backgroundColor: 'white',
+borderWidth: 0.5,
+borderColor: 'lightgray',
+borderRadius: 5,
+paddingHorizontal: 20,
+paddingVertical: 10,
+flexGrow: 1,
+marginRight: 10,
+},
+selectedAvailableForRentButton: {
+borderWidth: 1,
+borderColor: 'black',
+backgroundColor: 'lightgray',
+},
+availableForRentButtonText: {
+fontWeight: 'bold',
+fontSize: 18,
+color: 'black',
+textAlign: 'center',
+},
+datePickerHeader: {
+  backgroundColor: '#f8f8f8',
+  padding: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: '#ccc',
+},
+datePickerHeaderText: {
+  fontSize: 18,
+  textAlign: 'center',
+},
+customHeader: {
+  backgroundColor: '#f5f5f5',
+  padding: 16,
+},
+customHeaderText: {
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+homeownerNameContainer: {
+  flexDirection: 'column',
+  marginTop: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+homeownerNameText: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#333',
+},
+homeownerNameInput: {
+  marginTop: 10,
+  width: '90%',
+  height: 40,
+  borderColor: 'gray',
+  borderWidth: 1,
+  borderRadius: 5,
+  paddingHorizontal: 10,
+},
+
 });
 
 export default OnboardingScreen12;

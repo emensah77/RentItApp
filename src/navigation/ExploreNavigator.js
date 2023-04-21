@@ -32,6 +32,7 @@ import OnboardingScreen12 from '../screens/OnboardingScreen12';
 import OnboardingScreen13 from '../screens/OnboardingScreen13';
 import HeatMapScreen from '../screens/HeatMapScreen';
 import MarketerDashboard from '../screens/MarketerDashboard';
+import DashboardScreen from '../screens/DashboardScreen';
 
 
 const Stack = createStackNavigator();
@@ -231,6 +232,13 @@ const Router = (props) => {
             <Stack.Screen
                 name={'MarketerDashboard'}
                 component={MarketerDashboard}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name={'Dashboard'}
+                component={DashboardScreen}
                 options={{
                     headerShown: false,
                 }}

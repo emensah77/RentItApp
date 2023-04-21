@@ -31,6 +31,8 @@ export const onCreateReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        availabilityDate
+        homeownerName
         negotiable
         furnished
         loyaltyProgram
@@ -110,6 +112,8 @@ export const onUpdateReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        availabilityDate
+        homeownerName
         negotiable
         furnished
         loyaltyProgram
@@ -189,6 +193,8 @@ export const onDeleteReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        availabilityDate
+        homeownerName
         negotiable
         furnished
         loyaltyProgram
@@ -252,6 +258,7 @@ export const onCreateViewing = /* GraphQL */ `
       userId
       status
       assignedRep
+      comments
       createdAt
       updatedAt
     }
@@ -271,6 +278,7 @@ export const onUpdateViewing = /* GraphQL */ `
       userId
       status
       assignedRep
+      comments
       createdAt
       updatedAt
     }
@@ -290,6 +298,7 @@ export const onDeleteViewing = /* GraphQL */ `
       userId
       status
       assignedRep
+      comments
       createdAt
       updatedAt
     }
@@ -318,6 +327,8 @@ export const onCreateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          availabilityDate
+          homeownerName
           negotiable
           furnished
           loyaltyProgram
@@ -386,6 +397,8 @@ export const onUpdateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          availabilityDate
+          homeownerName
           negotiable
           furnished
           loyaltyProgram
@@ -454,6 +467,8 @@ export const onDeleteUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          availabilityDate
+          homeownerName
           negotiable
           furnished
           loyaltyProgram
@@ -543,6 +558,8 @@ export const onCreatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      availabilityDate
+      homeownerName
       negotiable
       furnished
       loyaltyProgram
@@ -614,6 +631,8 @@ export const onUpdatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      availabilityDate
+      homeownerName
       negotiable
       furnished
       loyaltyProgram
@@ -685,6 +704,8 @@ export const onDeletePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      availabilityDate
+      homeownerName
       negotiable
       furnished
       loyaltyProgram

@@ -13,7 +13,8 @@ const fetchHighDemandPlaces = async () => {
 
   // Calculate the date 30 days ago
   const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 365);
+  console.log('30 days ago:', thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 365));
 
   // Fetch rental inquiries from the last 30 days
   const rentalInquiriesSnapshot = await db

@@ -604,7 +604,7 @@ const DetailedPost = props => {
 
 <View style={{ flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" }}>
   <View style={{ flexDirection: "column" }}>
-    <Pressable
+    {/* <Pressable
       onPress={sendWhatsApp}
       style={{
         flexDirection: "row",
@@ -618,7 +618,7 @@ const DetailedPost = props => {
     >
       <Fontisto name="whatsapp" size={20} />
       <Text>Chat to Rent</Text>
-    </Pressable>
+    </Pressable> */}
     
     <View style={styles.container1}>
     <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>

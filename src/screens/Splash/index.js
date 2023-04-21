@@ -8,7 +8,7 @@ const Splash = ({
         
         setTimeout(() => {
             navigation.replace("Onboarding")
-        }, 3000);
+        }, 1000);
 
     }, [])
     return (

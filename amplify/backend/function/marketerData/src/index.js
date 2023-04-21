@@ -8,38 +8,47 @@ admin.initializeApp({
 });
 
 const storeLocationData = async (locationData) => {
-    const db = admin.firestore();
-  
-    // Store location data in the "marketerData" collection, using the user's uid as the document ID
-    const docRef = db.collection('marketerData').doc(locationData.userID);
-  
-    const doc = await docRef.get();
-  
-    if (doc.exists) {
-      // If the document exists, update the location data array with the new location
-      await docRef.update({
-        isOnline: locationData.isOnline,
-        locations: admin.firestore.FieldValue.arrayUnion({
+  const db = admin.firestore();
+
+  // Get the user document from the "users" collection
+  const userDocRef = db.collection('users').doc(locationData.userID);
+  const userDoc = await userDocRef.get();
+
+  // Check if the user document exists and retrieve the phoneNumber, otherwise use the default value "not available"
+  const phoneNumber = userDoc.exists ? userDoc.data().phoneNumber : "not available";
+
+  // Store location data in the "marketerData" collection, using the user's uid as the document ID
+  const docRef = db.collection('marketerData').doc(locationData.userID);
+
+  const doc = await docRef.get();
+
+  if (doc.exists) {
+    // If the document exists, update the location data array with the new location
+    await docRef.update({
+      isOnline: locationData.isOnline,
+      phoneNumber: phoneNumber,
+      locations: admin.firestore.FieldValue.arrayUnion({
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        timestamp: locationData.timestamp,
+      }),
+    });
+  } else {
+    // If the document doesn't exist, create a new document with the initial location data array
+    await docRef.set({
+      userID: locationData.userID,
+      userName: locationData.userName,
+      phoneNumber: phoneNumber,
+      isOnline: locationData.isOnline,
+      locations: [
+        {
           latitude: locationData.latitude,
           longitude: locationData.longitude,
           timestamp: locationData.timestamp,
-        }),
-      });
-    } else {
-      // If the document doesn't exist, create a new document with the initial location data array
-      await docRef.set({
-        userID: locationData.userID,
-        userName: locationData.userName,
-        isOnline: locationData.isOnline,
-        locations: [
-          {
-            latitude: locationData.latitude,
-            longitude: locationData.longitude,
-            timestamp: locationData.timestamp,
-          },
-        ],
-      });
-    }
+        },
+      ],
+    });
+  }
   
     console.log('Location data stored:', locationData);
   };
@@ -87,6 +96,7 @@ exports.handler = async (event) => {
         longitude: requestData.longitude,
         timestamp: requestData.timestamp,
         isOnline: requestData.isOnline,
+            
       };
 
       await storeLocationData(locationData);

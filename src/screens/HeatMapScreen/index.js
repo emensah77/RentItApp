@@ -323,7 +323,7 @@ const HeatMapScreen = ({ navigation }) => {
   
     try {
       const userID = auth().currentUser.uid; // Replace with the actual userId
-      const userName = 'example_username'; // Replace with the actual username
+      const userName = auth().currentUser.displayName; // Replace with the actual username
       const timestamp = new Date().toISOString();
       const action = 'storeLocationData';
   

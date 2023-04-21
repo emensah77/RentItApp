@@ -8,6 +8,10 @@ import auth from "@react-native-firebase/auth";
 import { AuthContext } from "../../navigation/AuthProvider";
 import Geolocation from 'react-native-geolocation-service';
 
+const LAMBDA_URL = 'https://buzkhgifcsw5ylapunfcpc23jm0owcpr.lambda-url.us-east-2.on.aws/';
+
+
+
 const MarketerDashboard = () => {
   const [locations, setLocations] = useState([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -17,6 +21,7 @@ const MarketerDashboard = () => {
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [defaultRegion, setRegion] = useState(null);
+  const [nearbyBuildings, setNearbyBuildings] = useState([]);
 
   const onUserLocationChange = (event) => {
     setUserLocation(event.nativeEvent.coordinate);
@@ -37,6 +42,38 @@ const MarketerDashboard = () => {
     { "latitude": 5.5855215, "longitude": -0.2325184 },
   ];
   
+  const fetchNearbyBuildings = async (latitude, longitude) => {
+    try {
+      const response = await fetch(LAMBDA_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          latitude,
+          longitude,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error fetching nearby buildings');
+      }
+
+      const data = await response.json();
+      setNearbyBuildings(data.nearbyBuildings);
+    } catch (error) {
+      console.error('Error fetching nearby buildings:', error);
+    }
+  };
+
+
+  // Call fetchNearbyBuildings when userLocation is updated
+  useEffect(() => {
+    if (userLocation) {
+      fetchNearbyBuildings(userLocation.latitude, userLocation.longitude);
+    }
+    console.log("Nearby buildings:", nearbyBuildings)
+  }, [userLocation]);
   
   useEffect(() => {
     Geolocation.getCurrentPosition(

@@ -161,7 +161,7 @@ const GuestsScreen = props => {
                     <View style={{ marginHorizontal: 10 }}>
                         <Text style={{ fontWeight: 'bold' }}>Price Range</Text>
                         <Text style={{ color: 'darkgray' }}>
-                            ${priceRange[0]} - ${priceRange[1]}
+                            {priceRange[0]} - {priceRange[1]}
                         </Text>
                     </View>
                     <View style={{ paddingHorizontal: 10, marginHorizontal: 10 }}>
