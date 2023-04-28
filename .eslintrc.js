@@ -8,14 +8,6 @@ module.exports = {
     'plugin:import/warnings',
   ],
   plugins: ['react', 'prettier', 'sort-keys-fix', 'jsx-a11y', '@babel'],
-  parser: '@babel/eslint-parser',
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 12,
-    sourceType: 'module',
-  },
   rules: {
     'react/jsx-indent': ['error', 2],
     'react/jsx-indent-props': ['error', 2],
