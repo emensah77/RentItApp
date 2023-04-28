@@ -1,0 +1,30 @@
+name: Verify Lint
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  verify_lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Force use of Node.js 18.11.0
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.11.0
+
+      - name: Installation
+        run: |
+          sudo npm install --global yarn@1.22.5
+          yarn install
+
+      - name: Lint
+        run: |
+          npx eslint --no-inline-config --fix-dry-run .

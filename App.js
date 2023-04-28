@@ -29,6 +29,14 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {withAuthenticator, AmplifyTheme} from 'aws-amplify-react-native';
+import {Authenticator} from 'aws-amplify-react-native/dist/Auth';
+import Amplify from '@aws-amplify/core';
+import Geocoder from 'react-native-geocoding';
+
+import {ApplicationProvider} from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
+import * as Sentry from '@sentry/react-native';
 import awsconfig from './src/aws-exports';
 import HomeScreen from './src/screens/Home';
 import Post from './src/components/Post';
@@ -37,29 +45,20 @@ import SearchResultsScreen from './src/screens/SearchResults';
 import DestinationSearchScreen from './src/screens/DestinationSearch';
 import GuestsScreen from './src/screens/GuestsScreen';
 import Router from './src/navigation/Router';
-import {withAuthenticator} from 'aws-amplify-react-native';
-import {Authenticator} from 'aws-amplify-react-native/dist/Auth';
-import Amplify from '@aws-amplify/core';
 import Onboarding from './src/screens/Onboarding';
 import Providers from './src/navigation/Providers';
 import ActivityLoader from './src/components/ActivityLoader';
-import Geocoder from 'react-native-geocoding';
-import {AmplifyTheme} from 'aws-amplify-react-native';
 import requestUserPermission, {
   notificationListener,
 } from './src/utils/notificationService';
-Amplify.configure(awsconfig);
 
-import {ApplicationProvider} from '@ui-kitten/components';
-import * as eva from '@eva-design/eva';
 import {WishListProvider} from './src/context/WishlistContext';
 
-import * as Sentry from '@sentry/react-native';
+Amplify.configure(awsconfig);
 
-Sentry.init({ 
-  dsn: 'https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972', 
+Sentry.init({
+  dsn: 'https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972',
 });
-
 
 const myTheme = StyleSheet.create({
   container: {
@@ -212,11 +211,11 @@ const App = () => {
         <WishListProvider>
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-          {/*<ActivityLoader/>*/}
+          {/* <ActivityLoader/> */}
 
           <Providers />
 
-          {/*<Router />*/}
+          {/* <Router /> */}
         </WishListProvider>
       </ApplicationProvider>
     </>

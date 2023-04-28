@@ -1,4 +1,4 @@
-import React, { useEffect,Component } from 'react';
+import React, {useEffect, Component} from 'react';
 import {
   View,
   Text,
@@ -8,101 +8,96 @@ import {
   Dimensions,
   TouchableOpacity,
   Pressable,
-  
 } from 'react-native';
 import Swiper from 'react-native-swiper';
-import {useNavigation} from "@react-navigation/native";
-import SplashScreen from 'react-native-splash-screen'
+import {useNavigation} from '@react-navigation/native';
+import SplashScreen from 'react-native-splash-screen';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-
-
-
-
-const Onboarding = (props) =>  {
-
+const Onboarding = props => {
   useEffect(() => {
     SplashScreen.hide();
-  }, [])
+  }, []);
 
   const navigation = useNavigation();
 
-  const goto = () =>{
-    navigation.navigate("LocationPermissions");
-  }
-  
-  
-    return (
-      <View style={styles.container}>
-        <StatusBar hidden={true} />
-        <Text style={styles.logo}>RentIt</Text>
-        <Text style={styles.subtitle}>find your next home</Text>
-        <Swiper autoplay={true}>
-          <View style={styles.slide}>
-            <Image
-              source={{uri: "https://www.zillowstatic.com/s3/homepage/static/Buy_a_home.png"}}
-              style={styles.image}
-            />
-          </View>
-          <View style={styles.slide}>
-            <Image
-              source={{uri: "https://www.zillowstatic.com/s3/homepage/static/Rent_a_home.png"}}
-              style={styles.image}
-            />
-          </View>
-          <View style={styles.slide}>
-            <Image
-              source={{uri:"https://www.zillowstatic.com/s3/homepage/static/Sell_a_home.png"}}
-              style={styles.image}
-            />
-          </View>
-        </Swiper>
-        <View style={styles.textContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Buy, Sell, Rent a Home.</Text>
-          </View>
-          
+  const goto = () => {
+    navigation.navigate('LocationPermissions');
+  };
+
+  return (
+    <View style={styles.container}>
+      <StatusBar hidden />
+      <Text style={styles.logo}>RentIt</Text>
+      <Text style={styles.subtitle}>find your next home</Text>
+      <Swiper autoplay>
+        <View style={styles.slide}>
+          <Image
+            source={{
+              uri: 'https://www.zillowstatic.com/s3/homepage/static/Buy_a_home.png',
+            }}
+            style={styles.image}
+          />
         </View>
-        <View style={styles.buttonContainer}>
-          
-          <Pressable onPress={goto}>
-            <View style={styles.loginContainer}>
-              <Text style={styles.login}>Begin</Text>
-            </View>
-          </Pressable>
+        <View style={styles.slide}>
+          <Image
+            source={{
+              uri: 'https://www.zillowstatic.com/s3/homepage/static/Rent_a_home.png',
+            }}
+            style={styles.image}
+          />
+        </View>
+        <View style={styles.slide}>
+          <Image
+            source={{
+              uri: 'https://www.zillowstatic.com/s3/homepage/static/Sell_a_home.png',
+            }}
+            style={styles.image}
+          />
+        </View>
+      </Swiper>
+      <View style={styles.textContainer}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Buy, Sell, Rent a Home.</Text>
         </View>
       </View>
-    );
-  
+      <View style={styles.buttonContainer}>
+        <Pressable onPress={goto}>
+          <View style={styles.loginContainer}>
+            <Text style={styles.login}>Begin</Text>
+          </View>
+        </Pressable>
+      </View>
+    </View>
+  );
 };
 export default Onboarding;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo:{
-    fontWeight:"normal",
-    fontSize:50,
-    color:"blue",
+  logo: {
+    fontWeight: 'normal',
+    fontSize: 50,
+    color: 'blue',
     top: 50,
-    fontFamily: 'Montserrat-Bold'
+    fontFamily: 'Montserrat-Bold',
   },
   slide: {
-    
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   image: {
     flex: 1,
-    width: width,
-    height: height,
-    resizeMode: "contain",
+    width,
+    height,
+    resizeMode: 'contain',
   },
   textContainer: {
     position: 'absolute',
@@ -110,34 +105,34 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     height: 120,
     alignItems: 'flex-start',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   titleContainer: {
     width: 300,
     height: 70,
-    
+
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   title: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 20,
     color: 'blue',
     fontWeight: 'normal',
-    position: 'absolute'
+    position: 'absolute',
   },
   subTitleContainer: {
     width: 100,
     height: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   subtitle: {
     fontFamily: 'Montserrat-Medium',
     fontSize: 24,
     color: 'blue',
     top: 50,
-    position: 'relative'
+    position: 'relative',
   },
   buttonContainer: {
     position: 'absolute',
@@ -147,7 +142,7 @@ const styles = StyleSheet.create({
     height: 60,
     marginHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   signupContainer: {
     width: 180,
@@ -155,13 +150,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
     borderRadius: 90,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   signup: {
     fontFamily: 'Helvetica',
     fontWeight: 'bold',
     fontSize: 20,
-    color: 'white'
+    color: 'white',
   },
   loginContainer: {
     width: 180,
@@ -170,12 +165,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'blue',
-   
   },
   login: {
     fontFamily: 'Montserrat-ExtraBold',
     fontWeight: 'normal',
     fontSize: 20,
-    color: 'white'
-  }
+    color: 'white',
+  },
 });

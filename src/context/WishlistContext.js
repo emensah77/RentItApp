@@ -1,6 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
-import FirebaseRepo from '../repositry/FirebaseRepo';
 import auth from '@react-native-firebase/auth';
+import FirebaseRepo from '../repositry/FirebaseRepo';
 
 // ----------------------------------------------------------------------
 
@@ -59,9 +59,7 @@ function WishListProvider({children}) {
     }
   };
 
-  const checkIsFav = homeId => {
-    return favorite[homeId];
-  };
+  const checkIsFav = homeId => favorite[homeId];
 
   return (
     <WishListContext.Provider

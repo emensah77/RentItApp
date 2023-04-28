@@ -1,4 +1,40 @@
 module.exports = {
   root: true,
-  extends: '@react-native-community',
+  extends: [
+    'airbnb',
+    'plugin:react/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    '@react-native-community',
+  ],
+  plugins: ['react', 'prettier', 'sort-keys-fix', 'jsx-a11y', '@babel'],
+  rules: {
+    'react/jsx-indent': ['error', 2],
+    'react/jsx-indent-props': ['error', 2],
+    'no-confusing-arrow': [0],
+    indent: [
+      'error',
+      2,
+      {
+        ignoredNodes: [
+          'TemplateLiteral',
+          'JSXElement',
+          'JSXElement > *',
+          'JSXAttribute',
+          'JSXIdentifier',
+          'JSXNamespacedName',
+          'JSXMemberExpression',
+          'JSXSpreadAttribute',
+          'JSXExpressionContainer',
+          'JSXOpeningElement',
+          'JSXClosingElement',
+          'JSXText',
+          'JSXEmptyExpression',
+          'JSXSpreadChild',
+        ],
+      },
+    ],
+    'react/no-did-update-set-state': [0],
+    'react/jsx-filename-extension': [0],
+  },
 };

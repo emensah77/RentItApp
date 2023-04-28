@@ -1,12 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
-import { navigate } from '../navigation/Router';
+import {navigate} from '../navigation/Router';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED;
+  authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
     console.log('Authorization status:', authStatus);
@@ -15,7 +14,7 @@ async function requestUserPermission() {
 }
 
 export const getFcmToken = async () => {
-  let fcmToken = await AsyncStorage.getItem('fcmToken');
+  const fcmToken = await AsyncStorage.getItem('fcmToken');
   console.log('old Token', fcmToken);
   if (!fcmToken) {
     try {
@@ -37,7 +36,7 @@ export const notificationListener = async () => {
       'Notification caused app to open from background state:',
       remoteMessage,
     );
-    navigate('Post', remoteMessage.data)
+    navigate('Post', remoteMessage.data);
   });
   messaging().onMessage(async remoteMessage =>
     console.log('received in foreground', remoteMessage),
@@ -51,7 +50,7 @@ export const notificationListener = async () => {
           'Notification caused app to open from quit state:',
           remoteMessage,
         );
-        navigate('Post', remoteMessage.data)
+        navigate('Post', remoteMessage.data);
       }
     });
 };

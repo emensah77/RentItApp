@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk');
+
 const S3 = new AWS.S3();
 const Sharp = require('sharp');
+
 const DynamoDB = new AWS.DynamoDB.DocumentClient();
 
 let counter = 0;
@@ -8,7 +10,7 @@ let counter = 0;
 async function isImageProcessed(imageKey) {
   const params = {
     TableName: 'ProcessedImages',
-    Key: { imageKey },
+    Key: {imageKey},
   };
 
   try {
@@ -23,7 +25,7 @@ async function isImageProcessed(imageKey) {
 async function markImageAsProcessed(imageKey) {
   const params = {
     TableName: 'ProcessedImages',
-    Item: { imageKey },
+    Item: {imageKey},
   };
 
   try {
@@ -33,13 +35,15 @@ async function markImageAsProcessed(imageKey) {
   }
 }
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   console.log('Received event:', event);
 
   try {
     const bucket = event.Records[0].s3.bucket.name;
-    const subfolder = event.subfolder;
-    const key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
+    const {subfolder} = event;
+    const key = decodeURIComponent(
+      event.Records[0].s3.object.key.replace(/\+/g, ' '),
+    );
     console.log('Object key:', key);
     const fullKey = key.startsWith(subfolder) ? key : `${subfolder}/${key}`;
     console.log('Full key:', fullKey);
@@ -49,27 +53,32 @@ exports.handler = async (event) => {
       console.log(`Image ${fullKey} has already been processed.`);
       return {
         statusCode: 300,
-        body: JSON.stringify({ message: `Image ${fullKey} has already been processed.` }),
-        };
+        body: JSON.stringify({
+          message: `Image ${fullKey} has already been processed.`,
+        }),
+      };
     }
 
-    const imageObject = await S3.getObject({ Bucket: bucket, Key: fullKey, }).promise();
+    const imageObject = await S3.getObject({
+      Bucket: bucket,
+      Key: fullKey,
+    }).promise();
     const inputImageBuffer = imageObject.Body;
 
     const imageMetadata = await Sharp(inputImageBuffer).metadata();
     console.log(`Image format: ${imageMetadata.format}`);
 
-
     if (['jpeg', 'png', 'webp', 'tiff'].includes(imageMetadata.format)) {
       try {
         const optimizedImageBuffer = await Sharp(inputImageBuffer)
-          .resize(1024, 683, { withoutEnlargement: true, fit: 'inside' })
-          .jpeg({ quality: 75 })
+          .resize(1024, 683, {withoutEnlargement: true, fit: 'inside'})
+          .jpeg({quality: 75})
           .toBuffer();
 
         const originalSize = inputImageBuffer.length;
         const optimizedSize = optimizedImageBuffer.length;
-        const sizeReductionPercentage = ((originalSize - optimizedSize) / originalSize) * 100;
+        const sizeReductionPercentage =
+          ((originalSize - optimizedSize) / originalSize) * 100;
         const optimizedUrl = `https://${bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${fullKey}`;
 
         await S3.putObject({
@@ -82,14 +91,20 @@ exports.handler = async (event) => {
         await markImageAsProcessed(fullKey);
         counter++;
 
-        console.log(`Optimized image uploaded to ${bucket}/${fullKey}. Size reduction: ${sizeReductionPercentage.toFixed(2)}%`);
+        console.log(
+          `Optimized image uploaded to ${bucket}/${fullKey}. Size reduction: ${sizeReductionPercentage.toFixed(
+            2,
+          )}%`,
+        );
         return {
           statusCode: 200,
           body: JSON.stringify({
-            message: `Optimized image uploaded to ${bucket}/${fullKey}. Size reduction: ${sizeReductionPercentage.toFixed(2)}%`,
-            optimizedUrl: optimizedUrl,
-            originalSize: originalSize,
-            optimizedSize: optimizedSize,
+            message: `Optimized image uploaded to ${bucket}/${fullKey}. Size reduction: ${sizeReductionPercentage.toFixed(
+              2,
+            )}%`,
+            optimizedUrl,
+            originalSize,
+            optimizedSize,
             sizeReduction: sizeReductionPercentage.toFixed(2),
             optimizedCount: counter,
           }),
@@ -98,25 +113,28 @@ exports.handler = async (event) => {
         console.error('Error during image processing:', error);
         const response = {
           statusCode: 500,
-          body: JSON.stringify({ message: 'An error occurred during image processing' }),
+          body: JSON.stringify({
+            message: 'An error occurred during image processing',
+          }),
         };
         return response;
-     
+      }
+    } else {
+      console.log(`Skipping unsupported image format: ${imageMetadata.format}`);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          message: `Skipped unsupported image format: ${imageMetadata.format}`,
+        }),
+      };
     }
-} else {
-  console.log(`Skipping unsupported image format: ${imageMetadata.format}`);
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: `Skipped unsupported image format: ${imageMetadata.format}` }),
-  };
-}
-} catch (error) {
+  } catch (error) {
     console.error('Error in handler:', error);
     console.log(`Error processing image: ${fullKey}`);
 
     return {
-    statusCode: 500,
-    body: JSON.stringify({ message: error }),
+      statusCode: 500,
+      body: JSON.stringify({message: error}),
     };
-    }
-    };
+  }
+};

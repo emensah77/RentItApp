@@ -3,30 +3,32 @@ const uuid = require('uuid');
 
 const s3 = new AWS.S3();
 
-exports.handler = async (event) => {
-  if (!event.queryStringParameters) { // If queryStringParameters does not exist, use the old method
+exports.handler = async event => {
+  if (!event.queryStringParameters) {
+    // If queryStringParameters does not exist, use the old method
     return await getPresignedUrlForOldMethod();
   }
 
-  const { method, partNumber } = event.queryStringParameters;
+  const {method, partNumber} = event.queryStringParameters;
 
   if (method === 'initiate') {
     return await initiateMultipartUpload();
-  } else if (method === 'part') {
-    return await getPresignedUrlForPart(event, partNumber);
-  } else if (method === 'complete') {
-    const { uploadId, parts } = JSON.parse(event.body);
-    return await completeMultipartUpload(event, uploadId, parts);
-  } else {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: 'Invalid method provided.' }),
-    };
   }
+  if (method === 'part') {
+    return await getPresignedUrlForPart(event, partNumber);
+  }
+  if (method === 'complete') {
+    const {uploadId, parts} = JSON.parse(event.body);
+    return await completeMultipartUpload(event, uploadId, parts);
+  }
+  return {
+    statusCode: 400,
+    body: JSON.stringify({message: 'Invalid method provided.'}),
+  };
 };
 
 async function initiateMultipartUpload() {
-  const fileName = uuid.v4() + '.mp4';
+  const fileName = `${uuid.v4()}.mp4`;
 
   const params = {
     Bucket: 'videosrentit',
@@ -40,7 +42,7 @@ async function initiateMultipartUpload() {
       statusCode: 200,
       body: JSON.stringify({
         message: 'Multipart upload initiated successfully.',
-        fileName: fileName,
+        fileName,
         uploadId: response.UploadId,
       }),
     };
@@ -56,7 +58,7 @@ async function initiateMultipartUpload() {
 }
 
 async function getPresignedUrlForPart(event, partNumber) {
-  const { fileName, uploadId } = event.queryStringParameters;
+  const {fileName, uploadId} = event.queryStringParameters;
 
   const params = {
     Bucket: 'videosrentit',
@@ -71,7 +73,7 @@ async function getPresignedUrlForPart(event, partNumber) {
       statusCode: 200,
       body: JSON.stringify({
         message: 'Pre-signed URL for part generated successfully.',
-        preSignedUrl: preSignedUrl,
+        preSignedUrl,
       }),
     };
   } catch (error) {
@@ -79,14 +81,15 @@ async function getPresignedUrlForPart(event, partNumber) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: 'An error occurred while generating the pre-signed URL for part.',
+        message:
+          'An error occurred while generating the pre-signed URL for part.',
       }),
     };
   }
 }
 
 async function getPresignedUrlForOldMethod() {
-  const fileName = uuid.v4() + '.mp4';
+  const fileName = `${uuid.v4()}.mp4`;
 
   const params = {
     Bucket: 'videosrentit',
@@ -101,8 +104,8 @@ async function getPresignedUrlForOldMethod() {
       statusCode: 200,
       body: JSON.stringify({
         message: 'Pre-signed URL generated successfully.',
-        fileName: fileName,
-        preSignedUrl: preSignedUrl,
+        fileName,
+        preSignedUrl,
       }),
     };
   } catch (error) {
@@ -117,7 +120,7 @@ async function getPresignedUrlForOldMethod() {
 }
 
 async function completeMultipartUpload(event, uploadId, parts) {
-  const { fileName } = event.queryStringParameters;
+  const {fileName} = event.queryStringParameters;
 
   const params = {
     Bucket: 'videosrentit',
@@ -147,4 +150,3 @@ async function completeMultipartUpload(event, uploadId, parts) {
     };
   }
 }
-

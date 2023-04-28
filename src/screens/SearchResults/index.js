@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, {useEffect, useRef, useState, useLayoutEffect} from 'react';
 import {
   View,
   FlatList,
@@ -8,20 +8,20 @@ import {
   Platform,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
-import Post from '../../components/Post';
-import { API, graphqlOperation } from 'aws-amplify';
-import { listPosts, listPostsCount } from '../../graphql/queries';
-import { Dimensions } from 'react-native';
+import {API, graphqlOperation} from 'aws-amplify';
+
 import Feather from 'react-native-vector-icons/Feather';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import reactotron from 'reactotron-react-native';
 import _ from 'lodash';
-import { HOME_STATUS } from '../../variables';
+import {listPosts, listPostsCount} from '../../graphql/queries';
+import Post from '../../components/Post';
+import {HOME_STATUS} from '../../variables';
 
-
-const SearchResultsScreen = ({ guests, viewport }) => {
+const SearchResultsScreen = ({guests, viewport}) => {
   const [loading, setLoading] = useState(true);
   const [datalist, setDatalist] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,6 @@ const SearchResultsScreen = ({ guests, viewport }) => {
   const [homeCountState, setHomeCountState] = useState(0);
   const homeCount = useRef(0);
   const callOnScrollEnd = useRef(false);
-  
 
   const navigation = useNavigation();
 
@@ -46,7 +45,7 @@ const SearchResultsScreen = ({ guests, viewport }) => {
       status: 'For Rent',
       id: 2,
     },
-    { status: 'For Sale', id: 3 },
+    {status: 'For Sale', id: 3},
   ];
 
   const categories = [
@@ -80,10 +79,10 @@ const SearchResultsScreen = ({ guests, viewport }) => {
       id: 7,
     },
   ];
-  
+
   const fetchCount = async nextToken => {
     try {
-      let query = {
+      const query = {
         limit: 100000,
         filter: {
           and: {
@@ -99,7 +98,7 @@ const SearchResultsScreen = ({ guests, viewport }) => {
             longitude: {
               between: [viewport.southwest.lng, viewport.northeast.lng],
             },
-            status: { eq: HOME_STATUS.APPROVED }
+            status: {eq: HOME_STATUS.APPROVED},
           },
         },
         nextToken,
@@ -110,10 +109,8 @@ const SearchResultsScreen = ({ guests, viewport }) => {
       if (nextToken === null) {
         delete query.nextToken;
       }
-      const postsResult = await API.graphql(
-        graphqlOperation(listPosts, query),
-      );
-      homeCount.current = (homeCount.current + postsResult?.data?.listPosts?.items?.length);
+      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+      homeCount.current += postsResult?.data?.listPosts?.items?.length;
       if (postsResult?.data?.listPosts?.nextToken !== null) {
         console.log(postsResult?.data?.listPosts?.items?.length, 'homeCount');
         fetchCount(postsResult.data.listPosts.nextToken);
@@ -128,7 +125,6 @@ const SearchResultsScreen = ({ guests, viewport }) => {
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [reachedEnd, setReachedEnd] = useState(false);
   const [filteredLoading, setFilteredLoading] = useState(false);
-
 
   const fetchFilteredPosts = async (status, token, items = []) => {
     setFilteredLoading(true);
@@ -153,15 +149,15 @@ const SearchResultsScreen = ({ guests, viewport }) => {
           },
         },
       };
-  
+
       if (status === 'All') {
         delete query.filter.and.type;
       }
-  
+
       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
       const newItems = items.concat(postsResult.data.listPosts.items);
       const newNextToken = postsResult.data.listPosts.nextToken;
-  
+
       if (newNextToken) {
         fetchFilteredPosts(status, newNextToken, newItems);
       } else {
@@ -173,21 +169,17 @@ const SearchResultsScreen = ({ guests, viewport }) => {
       setFilteredLoading(false);
     }
   };
-  
-  
-  
 
-
-  const fetchPosts = async (isReset) => {
+  const fetchPosts = async isReset => {
     if (reachedEnd) {
       hideAllLoader();
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
-      let query = {
+      const query = {
         limit: 50,
         filter: {
           and: {
@@ -207,33 +199,35 @@ const SearchResultsScreen = ({ guests, viewport }) => {
         },
         nextToken,
       };
-  
+
       if (status === 'All') {
         delete query.filter.and.type;
       }
-  
+
       let previousList = datalist;
       if (isReset) {
         delete query.nextToken;
         previousList = [];
       }
-  
+
       const fetchBatch = async (query, results = []) => {
-        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+        const postsResult = await API.graphql(
+          graphqlOperation(listPosts, query),
+        );
         results.push(...postsResult.data.listPosts.items);
-  
+
         if (postsResult.data.listPosts.nextToken) {
           if (results.length < 20) {
             query.nextToken = postsResult.data.listPosts.nextToken;
             return fetchBatch(query, results);
           }
         }
-  
-        return { results, nextToken: postsResult.data.listPosts.nextToken };
+
+        return {results, nextToken: postsResult.data.listPosts.nextToken};
       };
-  
-      const { results, nextToken } = await fetchBatch(query);
-  
+
+      const {results, nextToken} = await fetchBatch(query);
+
       // Compare currentDataIndex to the fetched results length
       if (currentDataIndex < results.length - 1) {
         setDatalist([...previousList, ...results]);
@@ -242,16 +236,14 @@ const SearchResultsScreen = ({ guests, viewport }) => {
       } else {
         setReachedEnd(true);
       }
-  
+
       hideAllLoader();
-  
     } catch (e) {
       console.log(e);
       hideAllLoader();
     }
   };
-  
-  
+
   const hideAllLoader = () => {
     if (loading) {
       setLoading(false);
@@ -261,13 +253,12 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     }
   };
 
-  const renderLoader = () => {
-    return isLoading && datalist.length !== 0 ? (
-      <View style={{ marginVertical: 16, alignItems: 'center' }}>
-        <ActivityIndicator size={'large'} color="blue" />
+  const renderLoader = () =>
+    isLoading && datalist.length !== 0 ? (
+      <View style={{marginVertical: 16, alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
-  };
 
   const loadMore = _.debounce(isReset => {
     fetchPosts(isReset);
@@ -280,8 +271,6 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     setStatus(status);
     fetchFilteredPosts(status);
   };
-  
-  
 
   useEffect(() => {
     loadMore(true);
@@ -289,7 +278,6 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     setHomeCountState(0);
     homeCount.current = 0;
   }, [status]);
-
 
   const setModeFilter = modeStatus => {
     if (modeStatus !== 'Everything') {
@@ -302,86 +290,77 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     setModeStatus(modeStatus);
   };
 
-  const renderItem = ({ item, index }) => {
-    return (
-      <View key={item}>
-        <Post post={item} />
-      </View>
-    );
-  };
+  const renderItem = ({item, index}) => (
+    <View key={item}>
+      <Post post={item} />
+    </View>
+  );
 
-  const renderNoHome = () => {
-    return (
-      <View
+  const renderNoHome = () => (
+    <View
+      style={{
+        flex: 1,
+        padding: 15,
+        backgroundColor: 'white',
+      }}>
+      <Text
         style={{
-          flex: 1,
-          padding: 15,
-          backgroundColor: 'white',
+          fontFamily: 'Montserrat-Bold',
+          fontSize: 20,
+        }}>
+        No Homes Here
+      </Text>
+      <View style={{paddingVertical: 10}}>
+        <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+          There are no homes in the area you searched. Try expanding your search
+          to include other towns and cities near this area.
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderWidth: 1,
+          borderColor: 'black',
+          width: '40%',
+          backgroundColor: 'black',
+          paddingVertical: 13,
+          borderRadius: 10,
         }}>
         <Text
           style={{
+            fontSize: 16,
             fontFamily: 'Montserrat-Bold',
-            fontSize: 20,
+            color: 'white',
           }}>
-          No Homes Here
+          Search Again
         </Text>
-        <View style={{ paddingVertical: 10 }}>
-          <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
-            There are no homes in the area you searched. Try expanding your
-            search to include other towns and cities near this area.
-          </Text>
-        </View>
-  
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderWidth: 1,
-            borderColor: 'black',
-            width: '40%',
-            backgroundColor: 'black',
-            paddingVertical: 13,
-            borderRadius: 10,
-          }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: 'Montserrat-Bold',
-              color: 'white',
-            }}>
-            Search Again
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-  
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <View
-      style={{ paddingBottom: 100, marginBottom: 100, backgroundColor: 'white' }}>
+      style={{paddingBottom: 100, marginBottom: 100, backgroundColor: 'white'}}>
       {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
             {modes.map((mode) => (
-                
 
                 <TouchableOpacity onPress={() => setModeFilter(mode.status)}
                                     style={[styless.button,
                                     modeStatus === mode.status && styless.btnTabActive,
-                                    
+
                                     ]}
-                                    
+
                                     >
-                                
+
                                         <Text style={styless.textTab, modeStatus === mode.status && styless.textTabActive}>{mode.status}</Text>
-                                    
-                                    
+
                         </TouchableOpacity>
 
-                    
-                    
                 ))}
                 </View> */}
-              
 
       {!loading ? (
         <View>
@@ -445,57 +424,66 @@ const SearchResultsScreen = ({ guests, viewport }) => {
               top: 20,
               zIndex: 1,
             }}>
-            <Feather name="home" size={25} color={'white'} />
+            <Feather name="home" size={25} color="white" />
             <Text
-            style={{
-              color: 'white',
-              fontSize: 18,
-              fontWeight: 'bold',
-            }}>
-            {loading ? 'Loading...' : + ' ' + homeCount.current + ' homes to rent'}
-          </Text>
-
+              style={{
+                color: 'white',
+                fontSize: 18,
+                fontWeight: 'bold',
+              }}>
+              {loading
+                ? 'Loading...'
+                : `${+' ' + homeCount.current} homes to rent`}
+            </Text>
           </View>
-          <View style={{ marginBottom: 10, top: 80, backgroundColor: 'white' }}>
-          {filteredLoading ? (
-  <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-    <ActivityIndicator size={'large'} color="blue" />
-  </View>
-) : (
-            <FlatList
-              removeClippedSubviews={true}
-              data={datalist}
-              maxToRenderPerBatch={1}
-              initialNumToRender={1}
-              contentContainerStyle={{ paddingBottom: 40 }}
-              onEndReached={() => callOnScrollEnd.current = true}
-              onMomentumScrollEnd={() => {
-                callOnScrollEnd.current && loadMore(false);
-                callOnScrollEnd.current = false
-              }}
-              // onEndReached={({distanceFromEnd}) => {
-              // }}
-              keyExtractor={(item, index) => {
-                return index.toString();
-              }}
-              getItemLayout={(data, index) => ({
-                length: 380,
-                offset: 380 * index,
-                index,
-              })}
-              ListEmptyComponent={renderNoHome()}
-              renderItem={renderItem}
-              ListFooterComponent={renderLoader}
-              // getItemCount={data => data.length}
-              windowSize={3}
-              updateCellsBatchingPeriod={100}
-            //renderItem={({item}) => <Post post={item}/>}
-            />
-      )}
+          <View style={{marginBottom: 10, top: 80, backgroundColor: 'white'}}>
+            {filteredLoading ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 20,
+                }}>
+                <ActivityIndicator size="large" color="blue" />
+              </View>
+            ) : (
+              <FlatList
+                removeClippedSubviews
+                data={datalist}
+                maxToRenderPerBatch={1}
+                initialNumToRender={1}
+                contentContainerStyle={{paddingBottom: 40}}
+                onEndReached={() => (callOnScrollEnd.current = true)}
+                onMomentumScrollEnd={() => {
+                  callOnScrollEnd.current && loadMore(false);
+                  callOnScrollEnd.current = false;
+                }}
+                // onEndReached={({distanceFromEnd}) => {
+                // }}
+                keyExtractor={(item, index) => index.toString()}
+                getItemLayout={(data, index) => ({
+                  length: 380,
+                  offset: 380 * index,
+                  index,
+                })}
+                ListEmptyComponent={renderNoHome()}
+                renderItem={renderItem}
+                ListFooterComponent={renderLoader}
+                // getItemCount={data => data.length}
+                windowSize={3}
+                updateCellsBatchingPeriod={100}
+                // renderItem={({item}) => <Post post={item}/>}
+              />
+            )}
           </View>
         </View>
       ) : (
-        <View style={{ backgroundColor:'white',alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
           <AnimatedEllipsis
             animationDelay={100}
             style={{
@@ -535,7 +523,7 @@ const styless = StyleSheet.create({
     marginHorizontal: 10,
     height: 35,
     shadowColor: '#000',
-    shadowOffset: { width: 10, height: 10 },
+    shadowOffset: {width: 10, height: 10},
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 30,

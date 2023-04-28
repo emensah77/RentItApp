@@ -42,7 +42,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
       const result = await Share.share({
         title: 'Check this home on RentIt',
         message: `https://rentit.homes/rooms/room/${postId}`,
-        //message: `rentit://post/${postId}`
+        // message: `rentit://post/${postId}`
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -77,8 +77,8 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         snapToInterval={Dimensions.get('screen').width}
-        snapToAlignment={'center'}
-        decelerationRate={'fast'}
+        snapToAlignment="center"
+        decelerationRate="fast"
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}
@@ -155,13 +155,18 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           width: 60,
         }}>
         <Text
-          style={{margin: 5, color: 'white', fontSize: 15, fontWeight: 'bold'}}>
+          style={{
+            margin: 5,
+            color: 'white',
+            fontSize: 15,
+            fontWeight: 'bold',
+          }}>
           {activeIndex + 1}/{images.length}
         </Text>
       </View>
 
       {/* <View style={styles.dots}> */}
-        {/* {images.map((image, index) => (
+      {/* {images.map((image, index) => (
           // <View
           //   style={[
           //     styles.dot,
@@ -171,15 +176,14 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           //       width: index === activeIndex ? 10 : 6,
           //       height: index === activeIndex ? 10 : 6,
           //       aspectRatio: index === activeIndex ? 1.2 : 1,
-                
-                
+
           //     },
           //   ]}
           // />
-          
+
         ))} */}
 
-        {/* <PaginationDot
+      {/* <PaginationDot
           activeDotColor={'#FF007F'}
           curPage={activeIndex}
           maxPage={images.length}

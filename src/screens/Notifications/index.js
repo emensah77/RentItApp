@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StatusBar,
   View,
@@ -6,13 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  Linking,
+  PermissionsAndroid,
+  Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import Permissions from 'react-native-permissions';
-import { Linking } from 'react-native';
-import { PermissionsAndroid } from 'react-native';
-import { Image } from 'react-native';
 
 const Notifications = () => {
   const navigation = useNavigation();
@@ -26,8 +26,8 @@ const Notifications = () => {
         } else {
           const authStatus = await messaging().requestPermission();
           const enabled =
-            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED;
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
           setNotification(enabled);
         }
       });
@@ -40,8 +40,8 @@ const Notifications = () => {
           } else {
             const authStatus = await messaging().hasPermission();
             const enabled =
-              authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-              authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+              authStatus === messaging.AuthorizationStatus.AUTHORIZED;
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
             setNotification(enabled);
           }
         },
@@ -51,7 +51,7 @@ const Notifications = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden={true} />
+      <StatusBar hidden />
       <View
         style={{
           flex: 1,
@@ -61,16 +61,16 @@ const Notifications = () => {
         }}>
         <Image
           source={require('../../../assets/data/images/notifications.png')}
-          style={{ width: 300, height: 380 }}
+          style={{width: 300, height: 380}}
         />
-        <View style={{ paddingHorizontal: 15 }}>
+        <View style={{paddingHorizontal: 15}}>
           <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
               marginVertical: 10,
             }}>
-            <Text style={{ fontSize: 18, fontWeight: '800' }}>
+            <Text style={{fontSize: 18, fontWeight: '800'}}>
               Enable Notifications
             </Text>
           </View>
@@ -83,7 +83,7 @@ const Notifications = () => {
             Don't miss important notifications like new coming homes and
             updates.
           </Text>
-          <View style={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+          <View style={{justifyContent: 'flex-end', alignItems: 'center'}}>
             <TouchableOpacity
               disabled={notification}
               onPress={() => {
