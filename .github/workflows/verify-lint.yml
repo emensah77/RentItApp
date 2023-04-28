@@ -1,0 +1,22 @@
+name: Verify Lint
+
+on:
+  push: 
+    branches: 
+      - '*'
+
+jobs:
+  verify_lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Installation
+        run: |
+          sudo npm install --global yarn@1.22.5
+          yarn install
+
+      - name: Lint
+        run: |
+          npx eslint --fix-dry-run .
