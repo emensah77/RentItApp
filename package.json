@@ -10,6 +10,7 @@
     "lint": "prettier --write . && eslint --fix ."
   },
   "dependencies": {
+    "@aws-amplify/core": "^5.1.13",
     "@bam.tech/react-native-image-resizer": "^3.0.5",
     "@eva-design/eva": "^2.1.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -135,18 +136,6 @@
     "prettier": "^2.8.8",
     "react-test-renderer": "17.0.2",
     "reactotron-react-native": "^5.0.2",
-    "@babel/eslint-parser": "^7.12.1",
-    "@babel/eslint-plugin": "^7.12.1",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/preset-env": "^7.12.7",
-    "@babel/preset-react": "^7.12.7",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-css-modules": "^2.11.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-sort-keys-fix": "^1.1.1",
     "typescript": "^3.3.1"
   },
   "jest": {
