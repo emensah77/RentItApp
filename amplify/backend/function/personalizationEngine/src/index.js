@@ -35,21 +35,27 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
   
     // Calculate the distance between the user location and filtered homes
     const distances = filteredHomes.map(home => {
-      const distance = haversineDistance(userLocation.latitude, userLocation.longitude, home.latitude, home.longitude);
-      return { home, distance };
+      const distance = userLocation
+        ? haversineDistance(userLocation.latitude, userLocation.longitude, home.latitude, home.longitude)
+        : 0;
+      return { home, distance: (distance !== 0) ? (1 / distance) : Number.MAX_VALUE }; // Inverse of distance or a very large value if distance is 0
     });
+    
   
     // Define weights for distance, price, and created time
-    const distanceWeight = 0.7;
+    const distanceWeight = 0.5;
     const priceWeight = 0.15;
-    const timeWeight = 0.15;
+    const timeWeight = 0.35;
   
+    // Get the current timestamp
+    const currentTime = new Date().getTime();
     // Calculate the similarity score for each home
     distances.forEach(item => {
-      item.score = (distanceWeight * item.distance) +
+      item.score = (distanceWeight * item.distance) + // Use the inverse distance directly, as it was already calculated in the previous step
                    (priceWeight * item.home.newPrice) +
-                   (timeWeight * new Date(item.home.createdAt).getTime());
+                   (timeWeight * (currentTime - new Date(item.home.createdAt).getTime()));
     });
+    
   
     // Sort the homes by similarity score (lower score = better match)
     distances.sort((a, b) => a.score - b.score);

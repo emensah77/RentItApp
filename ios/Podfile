@@ -12,6 +12,10 @@ target 'AirbnbClone' do
   pod 'GoogleSignIn', '~> 5.0.2'
   pod 'RNScreens', :path => '../node_modules/react-native-screens'  
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+  # Add the video package for FFmpegKit
+  pod 'ffmpeg-kit-react-native', :subspecs => ['full-gpl'], :podspec => '../node_modules/ffmpeg-kit-react-native/ffmpeg-kit-react-native.podspec'
+
+
   config = use_native_modules!
 
   # React Native Maps dependencies
@@ -21,7 +25,7 @@ target 'AirbnbClone' do
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
 
-
+   
   # Flags change depending on the env values.
   flags = get_default_flags()
 

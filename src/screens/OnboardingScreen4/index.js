@@ -226,6 +226,7 @@ const OnboardingScreen4 = (props) => {
         ImagePicker.openCamera({
             width: 1024,
             height: 683,
+            mediaType: 'photo',
           }).then(image => {
                 console.log(image);
                 const fileURL = convertPathToFileURL(image.path);
@@ -269,6 +270,7 @@ const OnboardingScreen4 = (props) => {
             height: 683,
             multiple: true,
             maxFiles: Platform.OS === 'ios' ? 10 : null,
+            mediaType: 'photo',
           }).then(async image => {
                 image.map(item => {
                   const fileURL = convertPathToFileURL(item.path);

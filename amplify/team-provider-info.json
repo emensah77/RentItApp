@@ -34,7 +34,7 @@
         },
         "personalizationEngine": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/personalizationEngine-7872586d32512f636658-build.zip"
+          "s3Key": "amplify-builds/personalizationEngine-494f43766474416b5978-build.zip"
         },
         "imageOptimizer": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -79,6 +79,10 @@
         "homeData": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
           "s3Key": "amplify-builds/homeData-55732b4c74307661672b-build.zip"
+        },
+        "homeDashboard": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/homeDashboard-6f7773592f455438424f-build.zip"
         }
       },
       "storage": {

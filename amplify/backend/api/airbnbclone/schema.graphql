@@ -28,9 +28,20 @@ type Viewing @model {
   userId: String
   status: String
   assignedRep: String
-  comments: [String]
-
+  comments: [Comment] @connection(keyName: "byViewing", fields: ["id"])
 }
+
+type Comment @model @key(name: "byViewing", fields: ["viewingId"]) {
+  id: ID!
+  content: String
+  author: String
+  createdAt: String
+  updatedAt: String
+  viewing: Viewing @connection(fields: ["viewingId"])
+  viewingId: ID
+}
+
+
 
 
 type User @model {

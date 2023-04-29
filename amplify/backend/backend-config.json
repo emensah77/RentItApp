@@ -58,6 +58,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "homeDashboard": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "homeData": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -159,6 +164,22 @@
         {
           "category": "function",
           "resourceName": "createpaystack"
+        }
+      ]
+    },
+    "AMPLIFY_function_homeDashboard_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeDashboard"
+        }
+      ]
+    },
+    "AMPLIFY_function_homeDashboard_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeDashboard"
         }
       ]
     },
