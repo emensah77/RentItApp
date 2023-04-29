@@ -1,21 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StatusBar, View, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Post from '../../components/Post';
-import { AuthContext } from '../../navigation/AuthProvider';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Post from '../../components/Post';
+import {AuthContext} from '../../navigation/AuthProvider';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
-import { ActivityIndicator } from 'react-native';
 
 const Wishlists = () => {
-  const { user } = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const navigation = useNavigation();
 
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     const wishList = await FirebaseRepo.getWishlist(user.uid);
     const temp = {};
     const uniquePosts = [];
@@ -25,15 +30,15 @@ const Wishlists = () => {
       }
     });
     setPosts(uniquePosts);
-    setLoading(false)
-  };
+    setLoading(false);
+  }, [user.uid]);
 
   useEffect(() => {
     if (!user.uid) {
-      return
+      return;
     }
     fetchPosts();
-  }, []);
+  }, [fetchPosts, user.uid]);
 
   return (
     <View
@@ -45,8 +50,8 @@ const Wishlists = () => {
       <StatusBar hidden={true} />
       <LinearGradient
         colors={['purple', 'deeppink']}
-        start={{ x: 0.1, y: 0.2 }}
-        end={{ x: 1, y: 0.5 }}
+        start={{x: 0.1, y: 0.2}}
+        end={{x: 1, y: 0.5}}
         style={[
           {
             height: '25%',
@@ -56,7 +61,7 @@ const Wishlists = () => {
             justifyContent: 'center',
           },
         ]}>
-        <View style={{ paddingTop: 15 }}>
+        <View style={{paddingTop: 15}}>
           <Text
             style={{
               fontSize: 32,
@@ -71,7 +76,7 @@ const Wishlists = () => {
       <View>
         {posts.length !== 0 ? (
           <>
-            <View style={{ padding: 15 }}>
+            <View style={{padding: 15}}>
               <Text
                 style={{
                   fontFamily: 'Montserrat-Bold',
@@ -82,12 +87,19 @@ const Wishlists = () => {
             </View>
             <FlatList
               data={posts}
-              renderItem={({ item }) => <Post post={item} />}
+              renderItem={({item}) => <Post post={item} />}
             />
           </>
         ) : (
-          <View style={{ padding: 15 }}>
-            {loading ? <ActivityIndicator animating={true} size="large" color="blue" style={{ opacity: 1 }} /> :
+          <View style={{padding: 15}}>
+            {loading ? (
+              <ActivityIndicator
+                animating={true}
+                size="large"
+                color="blue"
+                style={{opacity: 1}}
+              />
+            ) : (
               <>
                 <Text
                   style={{
@@ -96,10 +108,11 @@ const Wishlists = () => {
                   }}>
                   No saves yet
                 </Text>
-                <View style={{ padding: 10 }}>
-                  <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
-                    Start looking for homes to rent or buy: As you search, tap the
-                    heart icon to save your favorite homes to rent or buy.
+                <View style={{padding: 10}}>
+                  <Text
+                    style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+                    Start looking for homes to rent or buy: As you search, tap
+                    the heart icon to save your favorite homes to rent or buy.
                   </Text>
                 </View>
 
@@ -124,11 +137,10 @@ const Wishlists = () => {
                   </Text>
                 </TouchableOpacity>
               </>
-            }
+            )}
           </View>
         )}
       </View>
-
     </View>
   );
 };

@@ -1,4 +1,11 @@
-import React, {useContext, useState, useEffect, useRef, memo} from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  memo,
+  useCallback,
+} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import DestinationSearchScreen from '../screens/DestinationSearch';
@@ -28,15 +35,18 @@ const Router = () => {
   const {loading, setLoading} = useContext(AuthContext);
   const routeNameRef = useRef();
 
-  const onAuthStateChanged = user => {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  };
+  const onAuthStateChanged = useCallback(
+    user => {
+      setUser(user);
+      if (initializing) setInitializing(false);
+    },
+    [initializing, setUser],
+  );
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
-  }, []);
+  }, [onAuthStateChanged]);
   if (initializing) return null;
 
   if (!user) {

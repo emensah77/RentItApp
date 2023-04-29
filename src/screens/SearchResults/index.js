@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useLayoutEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   View,
   FlatList,
@@ -10,18 +17,17 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Post from '../../components/Post';
-import { API, graphqlOperation } from 'aws-amplify';
-import { listPosts, listPostsCount } from '../../graphql/queries';
-import { Dimensions } from 'react-native';
+import {API, graphqlOperation} from 'aws-amplify';
+import {listPosts, listPostsCount} from '../../graphql/queries';
+import {Dimensions} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import reactotron from 'reactotron-react-native';
 import _ from 'lodash';
-import { HOME_STATUS } from '../../variables';
+import {HOME_STATUS} from '../../variables';
 
-
-const SearchResultsScreen = ({ guests, viewport }) => {
+const SearchResultsScreen = ({guests, viewport}) => {
   const [loading, setLoading] = useState(true);
   const [datalist, setDatalist] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,241 +39,277 @@ const SearchResultsScreen = ({ guests, viewport }) => {
   const [homeCountState, setHomeCountState] = useState(0);
   const homeCount = useRef(0);
   const callOnScrollEnd = useRef(false);
-  
 
   const navigation = useNavigation();
 
-  const modes = [
-    {
-      status: 'Everything',
-      id: 1,
-    },
-    {
-      status: 'For Rent',
-      id: 2,
-    },
-    { status: 'For Sale', id: 3 },
-  ];
+  const modes = useMemo(
+    () => [
+      {
+        status: 'Everything',
+        id: 1,
+      },
+      {
+        status: 'For Rent',
+        id: 2,
+      },
+      {status: 'For Sale', id: 3},
+    ],
+    [],
+  );
 
-  const categories = [
-    {
-      status: 'All',
-      id: 1,
-    },
+  const categories = useMemo(
+    () => [
+      {
+        status: 'All',
+        id: 1,
+      },
 
-    {
-      status: 'Entire Flat',
-      id: 2,
-    },
-    {
-      status: 'Apartment',
-      id: 3,
-    },
-    {
-      status: 'Mansion',
-      id: 4,
-    },
-    {
-      status: 'Self-Contained',
-      id: 5,
-    },
-    {
-      status: 'Single Room',
-      id: 6,
-    },
-    {
-      status: 'Full Home',
-      id: 7,
-    },
-  ];
-  
-  const fetchCount = async nextToken => {
-    try {
-      let query = {
-        limit: 100000,
-        filter: {
-          and: {
-            maxGuests: {
-              ge: guests,
+      {
+        status: 'Entire Flat',
+        id: 2,
+      },
+      {
+        status: 'Apartment',
+        id: 3,
+      },
+      {
+        status: 'Mansion',
+        id: 4,
+      },
+      {
+        status: 'Self-Contained',
+        id: 5,
+      },
+      {
+        status: 'Single Room',
+        id: 6,
+      },
+      {
+        status: 'Full Home',
+        id: 7,
+      },
+    ],
+    [],
+  );
+
+  const fetchCount = useCallback(
+    async nextToken => {
+      try {
+        let query = {
+          limit: 100000,
+          filter: {
+            and: {
+              maxGuests: {
+                ge: guests,
+              },
+              type: {
+                eq: status,
+              },
+              latitude: {
+                between: [viewport.southwest.lat, viewport.northeast.lat],
+              },
+              longitude: {
+                between: [viewport.southwest.lng, viewport.northeast.lng],
+              },
+              status: {eq: HOME_STATUS.APPROVED},
             },
-            type: {
-              eq: status,
-            },
-            latitude: {
-              between: [viewport.southwest.lat, viewport.northeast.lat],
-            },
-            longitude: {
-              between: [viewport.southwest.lng, viewport.northeast.lng],
-            },
-            status: { eq: HOME_STATUS.APPROVED }
           },
-        },
-        nextToken,
-      };
-      if (status === 'All') {
-        delete query.filter.and.type;
+          nextToken,
+        };
+        if (status === 'All') {
+          delete query.filter.and.type;
+        }
+        if (nextToken === null) {
+          delete query.nextToken;
+        }
+        const postsResult = await API.graphql(
+          graphqlOperation(listPosts, query),
+        );
+        homeCount.current =
+          homeCount.current + postsResult?.data?.listPosts?.items?.length;
+        if (postsResult?.data?.listPosts?.nextToken !== null) {
+          console.log(postsResult?.data?.listPosts?.items?.length, 'homeCount');
+          fetchCount(postsResult.data.listPosts.nextToken);
+        } else {
+          setHomeCountState(homeCount.current);
+        }
+      } catch (error) {
+        console.log(error);
       }
-      if (nextToken === null) {
-        delete query.nextToken;
-      }
-      const postsResult = await API.graphql(
-        graphqlOperation(listPosts, query),
-      );
-      homeCount.current = (homeCount.current + postsResult?.data?.listPosts?.items?.length);
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        console.log(postsResult?.data?.listPosts?.items?.length, 'homeCount');
-        fetchCount(postsResult.data.listPosts.nextToken);
-      } else {
-        setHomeCountState(homeCount.current);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [
+      guests,
+      status,
+      viewport.northeast.lat,
+      viewport.northeast.lng,
+      viewport.southwest.lat,
+      viewport.southwest.lng,
+    ],
+  );
 
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [reachedEnd, setReachedEnd] = useState(false);
   const [filteredLoading, setFilteredLoading] = useState(false);
 
-
-  const fetchFilteredPosts = async (status, token, items = []) => {
-    setFilteredLoading(true);
-    try {
-      const query = {
-        limit: 1000,
-        nextToken: token,
-        filter: {
-          and: {
-            maxGuests: {
-              ge: guests,
-            },
-            type: {
-              eq: status,
-            },
-            latitude: {
-              between: [viewport.southwest.lat, viewport.northeast.lat],
-            },
-            longitude: {
-              between: [viewport.southwest.lng, viewport.northeast.lng],
+  const fetchFilteredPosts = useCallback(
+    async (status, token, items = []) => {
+      setFilteredLoading(true);
+      try {
+        const query = {
+          limit: 1000,
+          nextToken: token,
+          filter: {
+            and: {
+              maxGuests: {
+                ge: guests,
+              },
+              type: {
+                eq: status,
+              },
+              latitude: {
+                between: [viewport.southwest.lat, viewport.northeast.lat],
+              },
+              longitude: {
+                between: [viewport.southwest.lng, viewport.northeast.lng],
+              },
             },
           },
-        },
-      };
-  
-      if (status === 'All') {
-        delete query.filter.and.type;
-      }
-  
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      const newItems = items.concat(postsResult.data.listPosts.items);
-      const newNextToken = postsResult.data.listPosts.nextToken;
-  
-      if (newNextToken) {
-        fetchFilteredPosts(status, newNextToken, newItems);
-      } else {
-        setDatalist(newItems);
+        };
+
+        if (status === 'All') {
+          delete query.filter.and.type;
+        }
+
+        const postsResult = await API.graphql(
+          graphqlOperation(listPosts, query),
+        );
+        const newItems = items.concat(postsResult.data.listPosts.items);
+        const newNextToken = postsResult.data.listPosts.nextToken;
+
+        if (newNextToken) {
+          fetchFilteredPosts(status, newNextToken, newItems);
+        } else {
+          setDatalist(newItems);
+          setFilteredLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
         setFilteredLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-      setFilteredLoading(false);
-    }
-  };
-  
-  
-  
+    },
+    [
+      guests,
+      viewport.northeast.lat,
+      viewport.northeast.lng,
+      viewport.southwest.lat,
+      viewport.southwest.lng,
+    ],
+  );
 
+  const fetchPosts = useCallback(
+    async isReset => {
+      if (reachedEnd) {
+        hideAllLoader();
+        return;
+      }
 
-  const fetchPosts = async (isReset) => {
-    if (reachedEnd) {
-      hideAllLoader();
-      return;
-    }
-  
-    setIsLoading(true);
-  
-    try {
-      let query = {
-        limit: 50,
-        filter: {
-          and: {
-            maxGuests: {
-              ge: guests,
-            },
-            type: {
-              eq: status,
-            },
-            latitude: {
-              between: [viewport.southwest.lat, viewport.northeast.lat],
-            },
-            longitude: {
-              between: [viewport.southwest.lng, viewport.northeast.lng],
+      setIsLoading(true);
+
+      try {
+        let query = {
+          limit: 50,
+          filter: {
+            and: {
+              maxGuests: {
+                ge: guests,
+              },
+              type: {
+                eq: status,
+              },
+              latitude: {
+                between: [viewport.southwest.lat, viewport.northeast.lat],
+              },
+              longitude: {
+                between: [viewport.southwest.lng, viewport.northeast.lng],
+              },
             },
           },
-        },
-        nextToken,
-      };
-  
-      if (status === 'All') {
-        delete query.filter.and.type;
-      }
-  
-      let previousList = datalist;
-      if (isReset) {
-        delete query.nextToken;
-        previousList = [];
-      }
-  
-      const fetchBatch = async (query, results = []) => {
-        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-        results.push(...postsResult.data.listPosts.items);
-  
-        if (postsResult.data.listPosts.nextToken) {
-          if (results.length < 20) {
-            query.nextToken = postsResult.data.listPosts.nextToken;
-            return fetchBatch(query, results);
-          }
+          nextToken,
+        };
+
+        if (status === 'All') {
+          delete query.filter.and.type;
         }
-  
-        return { results, nextToken: postsResult.data.listPosts.nextToken };
-      };
-  
-      const { results, nextToken } = await fetchBatch(query);
-  
-      // Compare currentDataIndex to the fetched results length
-      if (currentDataIndex < results.length - 1) {
-        setDatalist([...previousList, ...results]);
-        setNextToken(nextToken);
-        setCurrentDataIndex(currentDataIndex + 1); // Increment the index
-      } else {
-        setReachedEnd(true);
+
+        let previousList = datalist;
+        if (isReset) {
+          delete query.nextToken;
+          previousList = [];
+        }
+
+        const fetchBatch = useCallback(async (query, results = []) => {
+          const postsResult = await API.graphql(
+            graphqlOperation(listPosts, query),
+          );
+          results.push(...postsResult.data.listPosts.items);
+
+          if (postsResult.data.listPosts.nextToken) {
+            if (results.length < 20) {
+              query.nextToken = postsResult.data.listPosts.nextToken;
+              return fetchBatch(query, results);
+            }
+          }
+
+          return {results, nextToken: postsResult.data.listPosts.nextToken};
+        }, []);
+
+        const {results, nextToken} = await fetchBatch(query);
+
+        // Compare currentDataIndex to the fetched results length
+        if (currentDataIndex < results.length - 1) {
+          setDatalist([...previousList, ...results]);
+          setNextToken(nextToken);
+          setCurrentDataIndex(currentDataIndex + 1); // Increment the index
+        } else {
+          setReachedEnd(true);
+        }
+
+        hideAllLoader();
+      } catch (e) {
+        console.log(e);
+        hideAllLoader();
       }
-  
-      hideAllLoader();
-  
-    } catch (e) {
-      console.log(e);
-      hideAllLoader();
-    }
-  };
-  
-  
-  const hideAllLoader = () => {
+    },
+    [
+      currentDataIndex,
+      datalist,
+      guests,
+      hideAllLoader,
+      reachedEnd,
+      status,
+      viewport.northeast.lat,
+      viewport.northeast.lng,
+      viewport.southwest.lat,
+      viewport.southwest.lng,
+    ],
+  );
+
+  const hideAllLoader = useCallback(() => {
     if (loading) {
       setLoading(false);
     }
     if (isLoading) {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const renderLoader = () => {
+  const renderLoader = useCallback(() => {
     return isLoading && datalist.length !== 0 ? (
-      <View style={{ marginVertical: 16, alignItems: 'center' }}>
+      <View style={{marginVertical: 16, alignItems: 'center'}}>
         <ActivityIndicator size={'large'} color="blue" />
       </View>
     ) : null;
-  };
+  }, [datalist.length, isLoading]);
 
   const loadMore = _.debounce(isReset => {
     fetchPosts(isReset);
@@ -280,8 +322,6 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     setStatus(status);
     fetchFilteredPosts(status);
   };
-  
-  
 
   useEffect(() => {
     loadMore(true);
@@ -290,27 +330,29 @@ const SearchResultsScreen = ({ guests, viewport }) => {
     homeCount.current = 0;
   }, [status]);
 
+  const setModeFilter = useCallback(
+    modeStatus => {
+      if (modeStatus !== 'Everything') {
+        setDatalist([
+          ...datalist.filter(category => category.mode === modeStatus),
+        ]);
+      } else {
+        setDatalist(datalist);
+      }
+      setModeStatus(modeStatus);
+    },
+    [datalist],
+  );
 
-  const setModeFilter = modeStatus => {
-    if (modeStatus !== 'Everything') {
-      setDatalist([
-        ...datalist.filter(category => category.mode === modeStatus),
-      ]);
-    } else {
-      setDatalist(datalist);
-    }
-    setModeStatus(modeStatus);
-  };
-
-  const renderItem = ({ item, index }) => {
+  const renderItem = useCallback(({item, index}) => {
     return (
       <View key={item}>
         <Post post={item} />
       </View>
     );
-  };
+  }, []);
 
-  const renderNoHome = () => {
+  const renderNoHome = useCallback(() => {
     return (
       <View
         style={{
@@ -325,13 +367,13 @@ const SearchResultsScreen = ({ guests, viewport }) => {
           }}>
           No Homes Here
         </Text>
-        <View style={{ paddingVertical: 10 }}>
-          <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Regular' }}>
+        <View style={{paddingVertical: 10}}>
+          <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
             There are no homes in the area you searched. Try expanding your
             search to include other towns and cities near this area.
           </Text>
         </View>
-  
+
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -355,11 +397,11 @@ const SearchResultsScreen = ({ guests, viewport }) => {
         </TouchableOpacity>
       </View>
     );
-  };
-  
+  }, [navigation]);
+
   return (
     <View
-      style={{ paddingBottom: 100, marginBottom: 100, backgroundColor: 'white' }}>
+      style={{paddingBottom: 100, marginBottom: 100, backgroundColor: 'white'}}>
       {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
             {modes.map((mode) => (
                 
@@ -381,7 +423,6 @@ const SearchResultsScreen = ({ guests, viewport }) => {
                     
                 ))}
                 </View> */}
-              
 
       {!loading ? (
         <View>
@@ -447,55 +488,66 @@ const SearchResultsScreen = ({ guests, viewport }) => {
             }}>
             <Feather name="home" size={25} color={'white'} />
             <Text
-            style={{
-              color: 'white',
-              fontSize: 18,
-              fontWeight: 'bold',
-            }}>
-            {loading ? 'Loading...' : + ' ' + homeCount.current + ' homes to rent'}
-          </Text>
-
+              style={{
+                color: 'white',
+                fontSize: 18,
+                fontWeight: 'bold',
+              }}>
+              {loading
+                ? 'Loading...'
+                : +' ' + homeCount.current + ' homes to rent'}
+            </Text>
           </View>
-          <View style={{ marginBottom: 10, top: 80, backgroundColor: 'white' }}>
-          {filteredLoading ? (
-  <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
-    <ActivityIndicator size={'large'} color="blue" />
-  </View>
-) : (
-            <FlatList
-              removeClippedSubviews={true}
-              data={datalist}
-              maxToRenderPerBatch={1}
-              initialNumToRender={1}
-              contentContainerStyle={{ paddingBottom: 40 }}
-              onEndReached={() => callOnScrollEnd.current = true}
-              onMomentumScrollEnd={() => {
-                callOnScrollEnd.current && loadMore(false);
-                callOnScrollEnd.current = false
-              }}
-              // onEndReached={({distanceFromEnd}) => {
-              // }}
-              keyExtractor={(item, index) => {
-                return index.toString();
-              }}
-              getItemLayout={(data, index) => ({
-                length: 380,
-                offset: 380 * index,
-                index,
-              })}
-              ListEmptyComponent={renderNoHome()}
-              renderItem={renderItem}
-              ListFooterComponent={renderLoader}
-              // getItemCount={data => data.length}
-              windowSize={3}
-              updateCellsBatchingPeriod={100}
-            //renderItem={({item}) => <Post post={item}/>}
-            />
-      )}
+          <View style={{marginBottom: 10, top: 80, backgroundColor: 'white'}}>
+            {filteredLoading ? (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 20,
+                }}>
+                <ActivityIndicator size={'large'} color="blue" />
+              </View>
+            ) : (
+              <FlatList
+                removeClippedSubviews={true}
+                data={datalist}
+                maxToRenderPerBatch={1}
+                initialNumToRender={1}
+                contentContainerStyle={{paddingBottom: 40}}
+                onEndReached={() => (callOnScrollEnd.current = true)}
+                onMomentumScrollEnd={() => {
+                  callOnScrollEnd.current && loadMore(false);
+                  callOnScrollEnd.current = false;
+                }}
+                // onEndReached={({distanceFromEnd}) => {
+                // }}
+                keyExtractor={(item, index) => {
+                  return index.toString();
+                }}
+                getItemLayout={(data, index) => ({
+                  length: 380,
+                  offset: 380 * index,
+                  index,
+                })}
+                ListEmptyComponent={renderNoHome()}
+                renderItem={renderItem}
+                ListFooterComponent={renderLoader}
+                // getItemCount={data => data.length}
+                windowSize={3}
+                updateCellsBatchingPeriod={100}
+                //renderItem={({item}) => <Post post={item}/>}
+              />
+            )}
           </View>
         </View>
       ) : (
-        <View style={{ backgroundColor:'white',alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
           <AnimatedEllipsis
             animationDelay={100}
             style={{
@@ -535,7 +587,7 @@ const styless = StyleSheet.create({
     marginHorizontal: 10,
     height: 35,
     shadowColor: '#000',
-    shadowOffset: { width: 10, height: 10 },
+    shadowOffset: {width: 10, height: 10},
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 30,

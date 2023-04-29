@@ -1,4 +1,13 @@
-import React, {useState, useContext, useEffect, useRef, useCallback} from 'react';
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   View,
   Modal,
@@ -89,11 +98,10 @@ import mixpanel from '../../../src/MixpanelConfig';
 import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
 import Video from 'react-native-video';
 
-
 mixpanel.init();
 
 const HomeScreen = props => {
-  const { trackDwellTime } = useDwellTimeTracking();
+  const {trackDwellTime} = useDwellTimeTracking();
   useEffect(trackDwellTime, [trackDwellTime]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -157,17 +165,6 @@ const HomeScreen = props => {
   const [videoVersion, setVideoVersion] = useState(0); // Initialize videoVersion state
   const [videoLoading, setIsVideoLoading] = useState(false);
 
-
-
-
-
-
-
-
-
-
-
-
   const bgGeoEventSubscriptions = [];
   /// State.
   const [events, setEvents] = React.useState([]);
@@ -185,18 +182,21 @@ const HomeScreen = props => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [initBackgroundGeolocation, navigation, unsubscribe]);
 
-  const subscribe = subscription => {
-    bgGeoEventSubscriptions?.push(subscription);
-  };
+  const subscribe = useCallback(
+    subscription => {
+      bgGeoEventSubscriptions?.push(subscription);
+    },
+    [bgGeoEventSubscriptions],
+  );
 
-  const unsubscribe = () => {
+  const unsubscribe = useCallback(() => {
     bgGeoEventSubscriptions?.forEach(subscription => subscription?.remove());
-  };
+  }, [bgGeoEventSubscriptions]);
 
   /// Configure the BackgroundGeolocation plugin.
-  const initBackgroundGeolocation = async () => {
+  const initBackgroundGeolocation = useCallback(async () => {
     subscribe(
       BackgroundGeolocation.onProviderChange(event => {
         //console.log('[onProviderChange]', event);
@@ -209,18 +209,15 @@ const HomeScreen = props => {
         location => {
           //console.log('[onLocation]', location);
 
-          if (user) {   
-            // console.log('userID', user.uid);         
-            firestore()
-              .collection('marketers')
-              .doc(user.uid)
-              .update({
-                createdAt: new Date(),
-                uid: user.uid,
-                displayName: user.displayName,
-                lat: location.coords.latitude,
-                long: location.coords.longitude,
-              });
+          if (user) {
+            // console.log('userID', user.uid);
+            firestore().collection('marketers').doc(user.uid).update({
+              createdAt: new Date(),
+              uid: user.uid,
+              displayName: user.displayName,
+              lat: location.coords.latitude,
+              long: location.coords.longitude,
+            });
           }
           addEvent('onLocation', location);
           return location;
@@ -230,7 +227,7 @@ const HomeScreen = props => {
         },
       ),
     );
-    
+
     subscribe(
       BackgroundGeolocation.onMotionChange(location => {
         //console.log('[onMotionChange]', location);
@@ -358,9 +355,9 @@ const HomeScreen = props => {
       ),
     );
     setEnabled(state.enabled);
-  };
+  }, [subscribe, user]);
 
-  const initBackgroundFetch = async () => {
+  const initBackgroundFetch = useCallback(async () => {
     await BackgroundFetch.configure(
       {
         minimumFetchInterval: 15,
@@ -375,10 +372,10 @@ const HomeScreen = props => {
         BackgroundFetch.finish(taskId);
       },
     );
-  };
+  }, []);
 
   /// Adds events to List
-  const addEvent = (name, params) => {
+  const addEvent = useCallback((name, params) => {
     let timestamp = new Date();
     const event = {
       expanded: false,
@@ -387,80 +384,86 @@ const HomeScreen = props => {
       params: JSON.stringify(params, null, 2),
     };
     setEvents(previous => [...previous, event]);
-  };
+  }, []);
 
-  const items = [
-    {
-      name: 'Air Conditioner',
-      id: 'Air Conditioner',
-    },
-    {
-      name: 'WiFi',
-      id: 'WiFi',
-    },
-    {
-      name: 'Kitchen',
-      id: 'Kitchen',
-    },
-    {
-      name: 'Water',
-      id: 'Water',
-    },
-    {
-      name: 'Toilet',
-      id: 'Toilet',
-    },
+  const items = useMemo(
+    () => [
+      {
+        name: 'Air Conditioner',
+        id: 'Air Conditioner',
+      },
+      {
+        name: 'WiFi',
+        id: 'WiFi',
+      },
+      {
+        name: 'Kitchen',
+        id: 'Kitchen',
+      },
+      {
+        name: 'Water',
+        id: 'Water',
+      },
+      {
+        name: 'Toilet',
+        id: 'Toilet',
+      },
 
-    {
-      name: 'Bathroom',
-      id: 'Bathroom',
-    },
-  ];
+      {
+        name: 'Bathroom',
+        id: 'Bathroom',
+      },
+    ],
+    [],
+  );
 
-  const categories = [
-    {
-      //   status: 'All',
-      //   id: 1,
-      //   icon: faDoorClosed
-      // },
+  const categories = useMemo(
+    () => [
+      {
+        //   status: 'All',
+        //   id: 1,
+        //   icon: faDoorClosed
+        // },
 
-      status: 'Entire Flat',
-      id: 2,
-      icon: faIgloo,
-    },
-    {
-      status: 'Apartment',
-      id: 3,
-      icon: faCity,
-    },
-    {
-      status: 'Chamber and Hall',
-      id: 3,
-      icon: faCampground,
-    },
-    {
-      status: 'Mansion',
-      id: 4,
-      icon: faHotel,
-    },
-    {
-      status: 'Self-Contained',
-      id: 5,
-      icon: faArchway,
-    },
-    {
-      status: 'Single Room',
-      id: 6,
-      icon: faDoorClosed,
-    },
-    {
-      status: 'Full Home',
-      id: 7,
-      icon: faLandmark,
-    },
-  ];
+        status: 'Entire Flat',
+        id: 2,
+        icon: faIgloo,
+      },
+      {
+        status: 'Apartment',
+        id: 3,
+        icon: faCity,
+      },
+      {
+        status: 'Chamber and Hall',
+        id: 3,
+        icon: faCampground,
+      },
+      {
+        status: 'Mansion',
+        id: 4,
+        icon: faHotel,
+      },
+      {
+        status: 'Self-Contained',
+        id: 5,
+        icon: faArchway,
+      },
+      {
+        status: 'Single Room',
+        id: 6,
+        icon: faDoorClosed,
+      },
+      {
+        status: 'Full Home',
+        id: 7,
+        icon: faLandmark,
+      },
+    ],
+    [],
+  );
 
-  const shuffle = array => {
+  const shuffle = useCallback(array => {
     var m = array.length,
       t,
       i;
@@ -477,8 +480,9 @@ const HomeScreen = props => {
     }
 
     return array;
-  };
-  const setStatusFilter = status => {
+  }, []);
+
+  const setStatusFilter = useCallback(status => {
     //setObserving(true);
     //setIsLoadingType(true);
     setStatus(status);
@@ -489,14 +493,17 @@ const HomeScreen = props => {
     //console.log('isreset', observing)
     //setObserving(false);
     //setIsLoadingType(false);
-  };
+  }, []);
 
-  const onSelectedItemsChange = selectedItems => {
-    setSelectedItems(selectedItems);
-    filterPosts(status);
-  };
+  const onSelectedItemsChange = useCallback(
+    selectedItems => {
+      setSelectedItems(selectedItems);
+      filterPosts(status);
+    },
+    [filterPosts, status],
+  );
 
-  const hasPermissionIOS = async () => {
+  const hasPermissionIOS = useCallback(async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
         Alert.alert('Unable to open settings');
@@ -524,16 +531,17 @@ const HomeScreen = props => {
     }
 
     return false;
-  };
-  const renderLoader = () => {
+  }, []);
+
+  const renderLoader = useCallback(() => {
     return !loading ? (
       <View style={{marginVertical: 100, alignItems: 'center'}}>
         <ActivityIndicator size={'large'} color="blue" />
       </View>
     ) : null;
-  };
+  }, [loading]);
 
-  const hasLocationPermission = async () => {
+  const hasLocationPermission = useCallback(async () => {
     if (Platform.OS === 'ios') {
       const hasPermission = await hasPermissionIOS();
       return hasPermission;
@@ -572,9 +580,9 @@ const HomeScreen = props => {
     }
 
     return false;
-  };
+  }, [hasPermissionIOS]);
 
-  const getLocation = async () => {
+  const getLocation = useCallback(async () => {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
@@ -616,8 +624,15 @@ const HomeScreen = props => {
         showLocationDialog: locationDialog,
       },
     );
-  };
-  const makeCall1 = () => {
+  }, [
+    forceLocation,
+    hasLocationPermission,
+    highAccuracy,
+    locationDialog,
+    useLocationManager,
+  ]);
+
+  const makeCall1 = useCallback(() => {
     const phoneNumbers = ['0256744112'];
 
     let phoneNumber =
@@ -631,10 +646,11 @@ const HomeScreen = props => {
     try {
       Linking.openURL(phoneNumber);
     } catch (e) {
-     // console.log(e);
+      // console.log(e);
     }
-  };
-  const makeCall = () => {
+  }, []);
+
+  const makeCall = useCallback(() => {
     const phoneNumbers = [
       '0552618521',
       '0597285059',
@@ -656,9 +672,9 @@ const HomeScreen = props => {
     } catch (e) {
       //console.log(e);
     }
-  };
+  }, []);
 
-  const fetchMorePosts = async token => {
+  const fetchMorePosts = useCallback(async token => {
     try {
       let query = {
         limit: 1000000,
@@ -689,17 +705,18 @@ const HomeScreen = props => {
     } catch (error) {
       //console.log('error2', error);
     }
-  };
+  }, []);
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     setIsLoadingMore(true);
     await personalizedHomes(latitude, longitude, status, nextToken);
     setIsLoadingMore(false);
-  };
-  
-  function selectColor() {
+  }, [latitude, longitude, nextToken, status]);
+
+  const selectColor = useCallback(() => {
     setcolor(colors[Math.floor(Math.random() * colors.length)]);
-  }
+  }, []);
+
   const [images, setimages] = useState([
     {
       image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/Kejetia_Kumasi.jpeg',
@@ -747,7 +764,7 @@ const HomeScreen = props => {
       key: '1',
     },
   ]);
-  const fetchPostsType = async status => {
+  const fetchPostsType = useCallback(async status => {
     try {
       let query = {
         limit: 100000,
@@ -778,9 +795,9 @@ const HomeScreen = props => {
     } catch (error) {
       //console.log('error1', error);
     }
-  };
+  }, []);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       const postsResult = await API.graphql(
         graphqlOperation(listPosts, {
@@ -798,9 +815,9 @@ const HomeScreen = props => {
     } catch (e) {
       //console.log(e);
     }
-  };
+  }, [nextToken]);
 
-  const getLatestPost = async () => {
+  const getLatestPost = useCallback(async () => {
     try {
       const postsResult = await API.graphql(
         graphqlOperation(listPosts, {
@@ -813,14 +830,13 @@ const HomeScreen = props => {
     } catch (e) {
       console.log(e);
     }
-  };
+  }, []);
 
-  
-  const userDetails = async () => {
+  const userDetails = useCallback(async () => {
     var user = await firestore()
       .collection('users')
       .doc(auth().currentUser.uid);
-  
+
     user.get().then(doc => {
       if (doc.exists) {
         if (doc.data().phoneNumber === null || doc.data().phoneNumber === '') {
@@ -833,10 +849,9 @@ const HomeScreen = props => {
         }
       }
     });
-  };
+  }, [navigation]);
 
-  
-  const _getUserData = async ID => {
+  const _getUserData = useCallback(async ID => {
     try {
       const userDB = await API.graphql(
         graphqlOperation(getUser, {
@@ -867,12 +882,7 @@ const HomeScreen = props => {
     } catch (e) {
       console.log(e);
     }
-  };
-
-
-
-
-
+  }, []);
 
   useEffect(() => {
     if (!hasWatchedVideo) {
@@ -880,61 +890,51 @@ const HomeScreen = props => {
     }
   }, [hasWatchedVideo]);
 
-
-
   useEffect(() => {
     setIsVideoLoading(true);
     const fetchUserDataAndVideoUrl = async () => {
-      
-      const response = await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'fetchVideoUrl',
-          userId: auth().currentUser.uid,
-        }),
-      });
-  
+      const response = await fetch(
+        'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            action: 'fetchVideoUrl',
+            userId: auth().currentUser.uid,
+          }),
+        },
+      );
+
       const data = await response.json();
       console.log('data', data);
       setHasWatchedVideo(data.hasWatchedVideo);
       setVideoUrl(data.videoUrl);
       setVideoVersion(data.videoVersion);
       setWatchedVideoVersion(data.watchedVideoVersion);
-      
+
       setIsVideoLoading(false); // Show the video after 10 seconds
-      
     };
-    
-  
-    
-      fetchUserDataAndVideoUrl();
-    
+
+    fetchUserDataAndVideoUrl();
   }, []);
 
-  
+  const handleVideoPlaybackComplete = useCallback(async () => {
+    await fetch(
+      'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
+      {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          action: 'updateWatchStatus',
+          userId: auth().currentUser.uid,
+          videoVersion, // Send the video version
+        }),
+      },
+    );
 
-
-  const handleVideoPlaybackComplete = async () => {
-    await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'updateWatchStatus',
-        userId: auth().currentUser.uid,
-        videoVersion: videoVersion, // Send the video version
-
-      }),
-    });
-  
     setHasWatchedVideo(true);
     setmodalVisible(false); // Add this line to close the modal
-
-  };
-  
-
-
-
+  }, [videoVersion]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -943,7 +943,7 @@ const HomeScreen = props => {
         const data = await personalizedHomes(latitude, longitude, status, null);
         if (data && data.homes) {
           setPosts(data.homes);
-          setCachedData((prevData) => ({ ...prevData, [status]: data.homes }));
+          setCachedData(prevData => ({...prevData, [status]: data.homes}));
           setNextToken(data.nextToken);
         } else {
           setPosts([]);
@@ -953,33 +953,22 @@ const HomeScreen = props => {
       }
       setIsLoadingType(false);
     };
-  
-    
-  
+
     // Reset posts and nextToken when status changes
     if (status !== prevStatus.current) {
       setPosts([]);
       setNextToken(null);
       prevStatus.current = status;
     }
-   
-    
+
     fetchInitialData();
-    
 
-    
-      
-
-    
     // setIsLoadingType(true);
     // console.log('latitude', latitude);
     // console.log('longitude', longitude);
     // personalizedHomes(latitude, longitude, status);
     // setIsLoadingType(false);
 
-   
-
-    
     _getUserData(auth().currentUser.uid);
 
     userDetails();
@@ -1007,195 +996,204 @@ const HomeScreen = props => {
 
     //console.log('This is latest',postLatest.map(item => (item.createdAt)));
     //clearInterval(selectColor);
-  }, [status, latitude, longitude]);
+  }, [status, latitude, longitude, _getUserData, userDetails, cachedData]);
   //    if (postLatest){
   //     postLatest.sort(function (a, b) {
   //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
   //       });
   //    }
   // Add controls for navigating between pages
-// Increment the page
+  // Increment the page
 
-
-async function fetchMoreData() {
-  if (nextToken && !fetchingMore) {
-    setFetchingMore(true);
-    const data = await personalizedHomes(latitude, longitude, status, nextToken);
-    const updatedData = [...posts, ...data.homes];
-    setPosts(updatedData);
-    setCachedData((prevData) => ({ ...prevData, [status]: updatedData }));
-    setNextToken(data.nextToken);
-    setFetchingMore(false);
-  }
-}
-
-
-
-
-
-
-
-
-
-
-useEffect(() => {
-  console.log('posts length updated:', posts.length);
-}, [posts]);
-
-async function personalizedHomes(userLatitude, userLongitude, homeType, nextToken) {
-  try {
-    //setIsLoadingType(true);
-    const response = await fetch('https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userLocation: {
-          latitude: userLatitude,
-          longitude: userLongitude
-        },
-        homeType,
-        nextToken
-        
-      })
-    });
-    
-    const data = await response.json();
-    //console.log("Response data:", data.homes.length); // Add console log here
-    console.log("Response token:", data.nextToken); // Add console log here
-  
-    return data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    //setIsLoadingType(false); // Set loading state to false
-  }
-}
-
-const onEndReached = () => {
-  fetchMoreData();
-};
-
-
-
-
-
-
+  const fetchMoreData = useCallback(async () => {
+    if (nextToken && !fetchingMore) {
+      setFetchingMore(true);
+      const data = await personalizedHomes(
+        latitude,
+        longitude,
+        status,
+        nextToken,
+      );
+      const updatedData = [...posts, ...data.homes];
+      setPosts(updatedData);
+      setCachedData(prevData => ({...prevData, [status]: updatedData}));
+      setNextToken(data.nextToken);
+      setFetchingMore(false);
+    }
+  }, [
+    fetchingMore,
+    latitude,
+    longitude,
+    nextToken,
+    personalizedHomes,
+    posts,
+    status,
+  ]);
 
   useEffect(() => {
-    
-      getLocation();
-   
-  }, []);
+    console.log('posts length updated:', posts.length);
+  }, [posts]);
 
-  const updateApp = () => {
+  const personalizedHomes = useCallback(
+    async (userLatitude, userLongitude, homeType, nextToken) => {
+      try {
+        //setIsLoadingType(true);
+        const response = await fetch(
+          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userLocation: {
+                latitude: userLatitude,
+                longitude: userLongitude,
+              },
+              homeType,
+              nextToken,
+            }),
+          },
+        );
+
+        const data = await response.json();
+        //console.log("Response data:", data.homes.length); // Add console log here
+        console.log('Response token:', data.nextToken); // Add console log here
+
+        return data;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        //setIsLoadingType(false); // Set loading state to false
+      }
+    },
+    [],
+  );
+
+  const onEndReached = useCallback(() => {
+    fetchMoreData();
+  }, [fetchMoreData]);
+
+  useEffect(() => {
+    getLocation();
+  }, [getLocation]);
+
+  const updateApp = useCallback(() => {
     Linking.openURL(updateUrl);
-  };
+  }, [updateUrl]);
 
-  const goToLocationSearch = () => {
+  const goToLocationSearch = useCallback(() => {
     navigation.navigate('House Type');
-  };
-  const hellod1 = text => {
+  }, [navigation]);
+
+  const filterPosts = useCallback(
+    async status => {
+      console.log(maximumvalue);
+      try {
+        let query = {
+          limit: 100000,
+          filter: {
+            and: {
+              type: {
+                eq: status,
+              },
+              mode: {
+                eq: selectedButton,
+              },
+              newPrice: {
+                le: maximumvalue,
+              },
+              wifi: {
+                eq: selectedItems.includes('WiFi') ? 'Yes' : 'No',
+              },
+              kitchen: {
+                eq: selectedItems.includes('Kitchen') ? 'Yes' : 'No',
+              },
+              toilet: {
+                eq: selectedItems.includes('Toilet') ? 'Yes' : 'No',
+              },
+              water: {
+                eq: selectedItems.includes('Water') ? 'Yes' : 'No',
+              },
+              aircondition: {
+                eq: selectedItems.includes('Air Conditioner') ? 'Yes' : 'No',
+              },
+              bathroom: {
+                eq: selectedItems.includes('Bathroom') ? 'Yes' : 'No',
+              },
+              latitude: {
+                between: [4.633900069140816, 11.17503079077031],
+              },
+              longitude: {
+                between: [-3.26078589558366, 1.199972025476763],
+              },
+            },
+          },
+        };
+
+        if (!selectedItems.includes('WiFi')) {
+          delete query.filter.and.wifi;
+        }
+        if (!selectedItems.includes('Water')) {
+          delete query.filter.and.water;
+        }
+        if (!selectedItems.includes('Kitchen')) {
+          delete query.filter.and.kitchen;
+        }
+        if (!selectedItems.includes('Toilet')) {
+          delete query.filter.and.toilet;
+        }
+        if (!selectedItems.includes('Bathroom')) {
+          delete query.filter.and.bathroom;
+        }
+        if (!selectedItems.includes('Air Conditioner')) {
+          delete query.filter.and.aircondition;
+        }
+        if (selectedButton === '') {
+          delete query.filter.and.mode;
+        }
+
+        const postsResult = await API.graphql(
+          graphqlOperation(listPosts, query),
+        );
+        //console.log('previouslist',previousList.length)
+
+        setPosts(postsResult.data.listPosts.items);
+        //setPosts(shuffle(posts));
+        if (postsResult?.data?.listPosts?.nextToken !== null) {
+          setNextToken(postsResult.data.listPosts.nextToken);
+        } else {
+          return;
+        }
+      } catch (error) {
+        console.log('error1', error);
+      }
+    },
+    [maximumvalue, selectedButton, selectedItems],
+  );
+
+  const hellod1 = useCallback(text => {
     setminValue(parseInt(text));
-  };
-  const hellod2 = text => {
+  }, []);
+  const hellod2 = useCallback(text => {
     setmaxValue(parseInt(text));
-  };
-  const handle = () => {
+  }, []);
+  const handle = useCallback(() => {
     setSelectedButton('For Rent');
     filterPosts(status);
     console.log(selectedButton);
-  };
-  const handle1 = () => {
+  }, [filterPosts, selectedButton, status]);
+
+  const handle1 = useCallback(() => {
     setSelectedButton('For Sale');
     filterPosts(status);
     console.log(selectedButton);
-  };
-  const filter = () => {
+  }, [filterPosts, selectedButton, status]);
+  const filter = useCallback(() => {
     filterPosts(status);
     setmodalvisible(false);
-  };
-  const filterPosts = async status => {
-    console.log(maximumvalue);
-    try {
-      let query = {
-        limit: 100000,
-        filter: {
-          and: {
-            type: {
-              eq: status,
-            },
-            mode: {
-              eq: selectedButton,
-            },
-            newPrice: {
-              le: maximumvalue,
-            },
-            wifi: {
-              eq: selectedItems.includes('WiFi') ? 'Yes' : 'No',
-            },
-            kitchen: {
-              eq: selectedItems.includes('Kitchen') ? 'Yes' : 'No',
-            },
-            toilet: {
-              eq: selectedItems.includes('Toilet') ? 'Yes' : 'No',
-            },
-            water: {
-              eq: selectedItems.includes('Water') ? 'Yes' : 'No',
-            },
-            aircondition: {
-              eq: selectedItems.includes('Air Conditioner') ? 'Yes' : 'No',
-            },
-            bathroom: {
-              eq: selectedItems.includes('Bathroom') ? 'Yes' : 'No',
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
-            },
-          },
-        },
-      };
+  }, [filterPosts, status]);
 
-      if (!selectedItems.includes('WiFi')) {
-        delete query.filter.and.wifi;
-      }
-      if (!selectedItems.includes('Water')) {
-        delete query.filter.and.water;
-      }
-      if (!selectedItems.includes('Kitchen')) {
-        delete query.filter.and.kitchen;
-      }
-      if (!selectedItems.includes('Toilet')) {
-        delete query.filter.and.toilet;
-      }
-      if (!selectedItems.includes('Bathroom')) {
-        delete query.filter.and.bathroom;
-      }
-      if (!selectedItems.includes('Air Conditioner')) {
-        delete query.filter.and.aircondition;
-      }
-      if (selectedButton === '') {
-        delete query.filter.and.mode;
-      }
-
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      //console.log('previouslist',previousList.length)
-
-      setPosts(postsResult.data.listPosts.items);
-      //setPosts(shuffle(posts));
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-        return;
-      }
-    } catch (error) {
-      console.log('error1', error);
-    }
-  };
   //  getting wishlists ================
 
   //  getting wishlists ================
@@ -1209,10 +1207,7 @@ const onEndReached = () => {
   };
 
   return (
-    <View style={{ backgroundColor: "white", flex: 1 }}>
-
-      
-
+    <View style={{backgroundColor: 'white', flex: 1}}>
       <Modal
         style={{
           flex: 1,
@@ -1549,9 +1544,6 @@ const onEndReached = () => {
             maxToRenderPerBatch={1}
             initialNumToRender={1}
             contentContainerStyle={{paddingBottom: 40}}
-            
-
-           
             keyExtractor={(item, index) => {
               return index.toString();
             }}
@@ -1564,78 +1556,67 @@ const onEndReached = () => {
             extraData={posts}
             renderItem={renderItem}
             onEndReachedThreshold={0.5}
-            onEndReached={onEndReached}          
+            onEndReached={onEndReached}
             ListFooterComponent={fetchingMore ? renderLoader : null}
             windowSize={3}
             updateCellsBatchingPeriod={100}
           />
         )}
       </View>
-      {videoUrl && (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
-
-          <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        //onRequestClose={closeModal}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-           
-          }}
+      {videoUrl &&
+      (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          //onRequestClose={closeModal}
         >
           <View
             style={{
-              width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height*.5,
-              backgroundColor: 'black',
-              borderRadius:30,
-              
-              borderColor:'white',
-             
-            }}
-          >
-           {videoLoading ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 30,
-          }}
-        >
-          <ActivityIndicator size={'large'} color="white" />
-        </View>
-      ) : (
-              <Video
-              ref={videoRef}
-              source={{ uri: videoUrl }}
-              resizeMode="cover"
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}>
+            <View
               style={{
                 width: Dimensions.get('window').width,
-                height: Dimensions.get('window').height,
-                borderRadius:30,
-            borderWidth:2,
-            borderColor:'white',
-              }}
-              onEnd={handleVideoPlaybackComplete}
-            />
-            )}
-              
-            
+                height: Dimensions.get('window').height * 0.5,
+                backgroundColor: 'black',
+                borderRadius: 30,
+
+                borderColor: 'white',
+              }}>
+              {videoLoading ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 30,
+                  }}>
+                  <ActivityIndicator size={'large'} color="white" />
+                </View>
+              ) : (
+                <Video
+                  ref={videoRef}
+                  source={{uri: videoUrl}}
+                  resizeMode="cover"
+                  style={{
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').height,
+                    borderRadius: 30,
+                    borderWidth: 2,
+                    borderColor: 'white',
+                  }}
+                  onEnd={handleVideoPlaybackComplete}
+                />
+              )}
+            </View>
           </View>
-        </View>
-      </Modal>
-      ) : (
-        null
-)}
-
+        </Modal>
+      ) : null}
     </View>
-
   );
 };
 

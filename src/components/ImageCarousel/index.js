@@ -37,7 +37,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
       setActiveIndex(viewableItems?.[0]?.index || 0);
     }
   }, []);
-  const onShare = async () => {
+  const onShare = useCallback(async () => {
     try {
       const result = await Share.share({
         title: 'Check this home on RentIt',
@@ -56,7 +56,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
     } catch (error) {
       alert(error.message);
     }
-  };
+  }, [postId]);
   const handleClick = () => {
     // handleChangeFavorite(post);
   };
@@ -161,7 +161,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
       </View>
 
       {/* <View style={styles.dots}> */}
-        {/* {images.map((image, index) => (
+      {/* {images.map((image, index) => (
           // <View
           //   style={[
           //     styles.dot,
@@ -179,7 +179,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           
         ))} */}
 
-        {/* <PaginationDot
+      {/* <PaginationDot
           activeDotColor={'#FF007F'}
           curPage={activeIndex}
           maxPage={images.length}
