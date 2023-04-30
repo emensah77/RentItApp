@@ -9,7 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   PermissionsAndroid,
-  Linking,,
+  Linking,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
