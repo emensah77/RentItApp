@@ -207,138 +207,160 @@ const OnboardingScreen4 = props => {
       });
   };
 
-  // const launchCamera = () => {
-  //     const options = {
-  //         storageOptions:{
-  //             path: 'images',
-  //             maxWidth: 1024,
-  //             maxHeight: 683,
+    
 
-  //         }
-  //     }
-  //     launchCamera(options, response => {
-  //         //console.log('Response = ', response);
-  //         if(response.didCancel){
+    // const launchCamera = () => {
+    //     const options = {
+    //         storageOptions:{
+    //             path: 'images',
+    //             maxWidth: 1024,
+    //             maxHeight: 683,
+                
 
-  //             return;
-  //         }
-  //         else if(response.errorCode === 'camera_unavailable'){
+    //         }
+    //     }
+    //     launchCamera(options, response => {
+    //         //console.log('Response = ', response);
+    //         if(response.didCancel){
+                
+    //             return;
+    //         }
+    //         else if(response.errorCode === 'camera_unavailable'){
+                
+    //             return;
+    //         }
+    //         else if(response.customButton){
+                
+    //             return;
+    //         }
+    //         else {
+    //         const img = {
+    //             uri: response.assets[0].uri,
+    //             type: response.assets[0].type,
+    //             name: uuid.v4(),
+    //         };
+            
+    //         setImages(prevImages => prevImages.concat(img));
+    //         uploadResource(img);
+            
+    //     }
+    //     })
+        
+        
+        
+  
+    // }
+    const openCamera = () => {
+        ImagePicker.openCamera({
+            width: 1024,
+            height: 683,
+            mediaType: 'photo',
+          }).then(image => {
+                console.log(image);
+                const fileURL = convertPathToFileURL(image.path);
 
-  //             return;
-  //         }
-  //         else if(response.customButton){
+                (async () => {
+                  resizeImage(fileURL, 1024, 683, 'JPEG', 80).then(resizedImage => {
+                    if (resizedImage) {                      
+                      const img = {
+                        uri: resizedImage.uri,
+                        type: image.mime,
+                        name: uuid.v4(),
+                      };
+                      uploadResource(img);
+                      setImages(prevImages => prevImages.concat(img));
+                    }
+                  }).catch(err => console.error('Error obtaining resized image:', err));
 
-  //             return;
-  //         }
-  //         else {
-  //         const img = {
-  //             uri: response.assets[0].uri,
-  //             type: response.assets[0].type,
-  //             name: uuid.v4(),
-  //         };
+                  })();
 
-  //         setImages(prevImages => prevImages.concat(img));
-  //         uploadResource(img);
+                         
+                // image.map(item => {
+                //     let img = {
+                //         uri: item.sourceURL,
+                //         type: item.mime,
+                //         name: uuid.v4(),
+                //         };
+                //         uploadResource(img);
+                        
+                //         setImages(prevImages => prevImages.concat(img));
+                       
+                // })
+                
+                    
+            
+            
+          });
+    }
+    const openPicker = () => {
+        ImagePicker.openPicker({
+            width: 1024,
+            height: 683,
+            multiple: true,
+            maxFiles: Platform.OS === 'ios' ? 10 : null,
+            mediaType: 'photo',
+          }).then(async image => {
+                image.map(item => {
+                  const fileURL = convertPathToFileURL(item.path);
+                  (async () => {
+                    resizeImage(fileURL, 1024, 683, 'JPEG', 80).then(resizedImage => {
+                      if (resizedImage) {
+                    let img = {
+                      uri: resizedImage.uri,
+                      type: item.mime,
+                      name: uuid.v4(),
+                    }
+                    
+                    uploadResource(img);
+                    setImages(prevImages => prevImages.concat(img));
+                  }}).catch(err => console.error('Error obtaining resized image:', err));
 
-  //     }
-  //     })
+                })();
+                  
+                        
+                })
 
-  // }
-  const openCamera = () => {
-    ImagePicker.openCamera({
-      width: 1024,
-      height: 683,
-    }).then(image => {
-      console.log(image);
-      const fileURL = convertPathToFileURL(image.path);
+                
+                
+                    
+            
+            
+          });
+    }
+    // const openLibrary = () => {
+        
+    //     launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
+    //         //console.log('Response = ', response);
+    //         if(response.didCancel){
+    //             return;
+    //         }
+    //         else if(response.error){
+    //             return;
+    //         }
+    //         else if(response.customButton){
+                
+    //             return;
+    //         }
+    //         else{
+    //         const img = {
+    //             uri: response.assets[0].uri,
+    //             type: response.assets[0].type,
+    //             name: uuid.v4(),
+    //             };
+    //             // pathToImageFile(img.uri);
+                
+    //             setImages(prevImages => prevImages.concat(img));
+    //             uploadResource(img);
+                
 
-      (async () => {
-        resizeImage(fileURL, 1024, 683, 'JPEG', 80)
-          .then(resizedImage => {
-            if (resizedImage) {
-              const img = {
-                uri: resizedImage.uri,
-                type: image.mime,
-                name: uuid.v4(),
-              };
-              uploadResource(img);
-              setImages(prevImages => prevImages.concat(img));
-            }
-          })
-          .catch(err => console.error('Error obtaining resized image:', err));
-      })();
-
-      // image.map(item => {
-      //     let img = {
-      //         uri: item.sourceURL,
-      //         type: item.mime,
-      //         name: uuid.v4(),
-      //         };
-      //         uploadResource(img);
-
-      //         setImages(prevImages => prevImages.concat(img));
-
-      // })
-    });
-  };
-  const openPicker = () => {
-    ImagePicker.openPicker({
-      width: 1024,
-      height: 683,
-      multiple: true,
-      maxFiles: Platform.OS === 'ios' ? 10 : null,
-    }).then(async image => {
-      image.map(item => {
-        const fileURL = convertPathToFileURL(item.path);
-        (async () => {
-          resizeImage(fileURL, 1024, 683, 'JPEG', 80)
-            .then(resizedImage => {
-              if (resizedImage) {
-                const img = {
-                  uri: resizedImage.uri,
-                  type: item.mime,
-                  name: uuid.v4(),
-                };
-
-                uploadResource(img);
-                setImages(prevImages => prevImages.concat(img));
-              }
-            })
-            .catch(err => console.error('Error obtaining resized image:', err));
-        })();
-      });
-    });
-  };
-  // const openLibrary = () => {
-
-  //     launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
-  //         //console.log('Response = ', response);
-  //         if(response.didCancel){
-  //             return;
-  //         }
-  //         else if(response.error){
-  //             return;
-  //         }
-  //         else if(response.customButton){
-
-  //             return;
-  //         }
-  //         else{
-  //         const img = {
-  //             uri: response.assets[0].uri,
-  //             type: response.assets[0].type,
-  //             name: uuid.v4(),
-  //             };
-  //             // pathToImageFile(img.uri);
-
-  //             setImages(prevImages => prevImages.concat(img));
-  //             uploadResource(img);
-
-  //         }
-
-  //     })
-
-  // }
+    //         }
+        
+    //     })
+        
+        
+        
+  
+    // }
 
   if (isLoading) {
     return (

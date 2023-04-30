@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   PermissionsAndroid,
+  Linking,,
 } from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -20,8 +21,14 @@ import {check, request, RESULTS, PERMISSIONS} from 'react-native-permissions';
 import auth from '@react-native-firebase/auth';
 import RNFS from 'react-native-fs';
 import base64 from 'base64-js';
+import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native';
 
-const OnboardingScreen13 = props => {
+
+
+
+
+
+const OnboardingScreen13 = (props) => {
   const navigation = useNavigation();
   const route = useRoute();
   const [videoPath, setVideoPath] = useState(null);
@@ -29,11 +36,57 @@ const OnboardingScreen13 = props => {
   const [isMuted, setIsMuted] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [videoUploaded, setVideoUploaded] = useState(false);
+  const [compressing, setCompressing] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const chunkSize = 5 * 1024 * 1024; // 5MB
   const apiUrl =
     'https://byagcgy5qbw4mfwgej3n7rr4ty0xvteq.lambda-url.us-east-2.on.aws/';
 
   const videoRef = useRef(null);
+  const openAppSettings = async () => {
+    const appSettingsURL = Platform.OS === 'ios' ? 'app-settings:' : 'app-settings:';
+    await Linking.openURL(appSettingsURL);
+  };
+  const compressVideo = async (inputVideoPath) => {
+    setCompressing(true);
+
+    // Create an output path for the compressed video
+    const timestamp = new Date().getTime();
+    const outputVideoPath = `${RNFS.CachesDirectoryPath}/compressed_video_${timestamp}.mp4`;
+  
+    // Use FFmpegKit to compress the video
+    try {
+      const command = `-i ${inputVideoPath} -c:v libx264 -preset ultrafast -b:v 1000k -vf "scale=-2:480" -acodec aac -b:a 128k -ar 44100 -metadata:s:v rotate=0 ${outputVideoPath}`;
+      const session = await FFmpegKit.execute(command);
+      const returnCode = await session.getReturnCode();
+  
+      if (ReturnCode.isSuccess(returnCode)) {
+        setCompressing(false);
+
+        console.log('Compressed video path:', outputVideoPath);
+        return outputVideoPath;
+
+      } else if (ReturnCode.isCancel(returnCode)) {
+        console.error('Compression canceled');
+        throw new Error('Compression canceled');
+      } else {
+        setCompressing(false);
+
+        console.error('Error compressing video');
+        console.error('Return Code:', returnCode);
+        console.error('FFmpegKit Session:', session);
+        console.error('FFmpegKit Session Output:', await session.getAllLogsAsString());
+        throw new Error('Error compressing video');
+      }
+    } catch (error) {
+      console.error('Error compressing video:', error);
+      throw error;
+    }
+  };
+  
+  
+  
   const requestCameraPermission = async () => {
     try {
       const cameraPermission = Platform.select({
@@ -53,6 +106,28 @@ const OnboardingScreen13 = props => {
       if (result === RESULTS.GRANTED) {
         console.log('Camera permission granted');
         return true;
+      } else {
+        if (result !== RESULTS.GRANTED) {
+          Alert.alert(
+            'Camera Permission Required',
+            'Please enable camera permission in your app settings to continue.',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {
+                text: 'Open Settings',
+                onPress: () => openAppSettings(),
+              },
+            ],
+            { cancelable: false }
+          );
+          return false;
+        }
+        console.log('Camera permission denied');
+        return false;
       }
       console.log('Camera permission denied');
       return false;
@@ -70,19 +145,17 @@ const OnboardingScreen13 = props => {
         {
           text: 'Record a video',
           onPress: async () => {
-            const permissionGranted = await requestCameraPermission();
-            if (permissionGranted) {
+            
               launchCameraWithOptions();
-            }
+            
           },
         },
         {
           text: 'Select from library',
           onPress: async () => {
-            const permissionGranted = await requestCameraPermission();
-            if (permissionGranted) {
+            
               launchImageLibraryWithOptions();
-            }
+            
           },
         },
         {
@@ -94,26 +167,46 @@ const OnboardingScreen13 = props => {
     );
   };
 
-  const handleVideoResponse = response => {
+  const contentUriToFileUri = async (contentUri) => {
+    try {
+      const fileName = `temp_video_${new Date().getTime()}.mp4`;
+      const tempFilePath = `${RNFS.CachesDirectoryPath}/${fileName}`;
+  
+      await RNFS.copyFile(contentUri, tempFilePath);
+      return `file://${tempFilePath}`;
+    } catch (error) {
+      console.error('Error converting content URI to file URI:', error);
+      return null;
+    }
+  };
+  
+  
+  const handleVideoResponse = async (response) => {
     if (response.didCancel) {
       console.log('User cancelled video picker');
     } else if (response.error) {
       console.log('ImagePicker Error: ', response.error);
     } else {
       console.log('Setting videoPath to:', response);
-
+  
       if (response.assets && response.assets.length > 0) {
-        setVideoPath(response.assets[0].uri);
+        const fileUri = await contentUriToFileUri(response.assets[0].uri);
+        if (fileUri) {
+          setVideoPath(fileUri);
+        } else {
+          console.log('Failed to convert content URI to file URI');
+        }
       } else {
         console.log('No video assets found in the response object:', response);
       }
     }
   };
+  
 
   const launchCameraWithOptions = () => {
     const options = {
       mediaType: 'video',
-      videoQuality: 'low',
+      videoQuality: 'high',
       durationLimit: 30,
       noData: true,
     };
@@ -142,9 +235,32 @@ const OnboardingScreen13 = props => {
       setVideoPath(null);
     }
   };
-
+  const calculateReductionPercentage = async (originalVideoPath, compressedVideoPath) => {
+    try {
+      const originalVideoSize = await RNFS.stat(originalVideoPath);
+      const compressedVideoSize = await RNFS.stat(compressedVideoPath);
+      
+      const reductionPercentage = (
+        (originalVideoSize.size - compressedVideoSize.size) /
+        originalVideoSize.size
+      ) * 100;
+      
+      console.log(`Video size reduced by ${reductionPercentage.toFixed(2)}%`);
+      return reductionPercentage;
+    } catch (error) {
+      console.error('Error calculating reduction percentage:', error);
+    }
+  };
+  
   const handleUpload = async () => {
     try {
+      // Compress the video before uploading
+      const compressedVideoPath = await compressVideo(videoPath);
+
+      // Calculate the reduction percentage
+    const reductionPercentage = await calculateReductionPercentage(videoPath, compressedVideoPath);
+    console.log(`Video size reduced by ${reductionPercentage.toFixed(2)}%`);
+
       setUploading(true);
 
       // Initialize the multipart upload
@@ -157,7 +273,8 @@ const OnboardingScreen13 = props => {
       }
 
       const {fileName, uploadId} = initResponse.data;
-      const fileUri = videoPath;
+      // Use compressedVideoPath instead of videoPath when uploading
+      const fileUri = compressedVideoPath;
       const fileBase64 = await RNFS.readFile(fileUri, 'base64');
       const fileArrayBuffer = base64.toByteArray(fileBase64).buffer;
       const fileSize = fileArrayBuffer.byteLength;
@@ -192,6 +309,7 @@ const OnboardingScreen13 = props => {
           headers: {'Content-Type': 'video/mp4'},
           body: chunk,
         });
+        setUploadProgress((i + 1) / chunkCount * 100);
 
         if (uploadResponse.status !== 200) {
           throw new Error('Error uploading part');
@@ -327,11 +445,19 @@ const OnboardingScreen13 = props => {
           />
         </TouchableOpacity>
       </View>
+{compressing && (
+  <View style={styles.loadingContainer}>
+          <View style={styles.loadingWrapper}> 
+          <ActivityIndicator size="large" color="black" />      
+           <Text style={styles.loadingText}>Compressing and Enhancing video...</Text>
+      </View>
+      </View>
+    )}
       {uploading && (
         <View style={styles.loadingContainer}>
           <View style={styles.loadingWrapper}>
             <ActivityIndicator size="large" color="black" />
-            <Text style={styles.loadingText}>Uploading...</Text>
+            <Text style={styles.loadingText}>Uploading...{uploadProgress.toFixed(0)}%</Text>
           </View>
         </View>
       )}
@@ -433,6 +559,18 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     color: 'black',
+    fontSize: 18,
+  },
+  compressingOverlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  compressingText: {
+    color: '#fff',
     fontSize: 18,
   },
 });

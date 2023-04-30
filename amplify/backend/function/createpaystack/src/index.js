@@ -28,20 +28,20 @@ function httpsRequest(options) {
   });
 }
 
-exports.handler = async event => {
-  const {typeName, arguments} = event;
+exports.handler = async (event) => {
+    const { typeName, args } = event;
 
   if (typeName !== 'Mutation') {
     throw new Error('Request is not a mutation');
   }
 
-  if (!arguments?.amount) {
-    throw new Error('Amount argument is required');
-  }
-  const params = JSON.stringify({
-    email: 'customer@email.com',
-    amount: '20000',
-  });
+    if (!args?.amount) {
+        throw new Error('Amount argument is required');
+    }
+    const params = JSON.stringify({
+        "email": "customer@email.com",
+        "amount": "20000"
+      })
 
   const options = {
     hostname: 'api.paystack.co',
