@@ -4,52 +4,56 @@ import {navigate} from '../navigation/Router';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
-  const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED;
-  authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    console.log('Authorization status:', authStatus);
+    console.debug('Authorization Status:', authStatus);
     getFcmToken();
   }
 }
 
 export const getFcmToken = async () => {
   const fcmToken = await AsyncStorage.getItem('fcmToken');
-  console.log('old Token', fcmToken);
+
   if (!fcmToken) {
     try {
-      const fcmToken = await messaging().getToken();
+      const newFcmToken = await messaging().getToken();
       // logic for the new installed app on device
-      if (fcmToken) {
-        await AsyncStorage.setItem('fcmToken', fcmToken);
-        console.log('The new token', fcmToken);
+      if (newFcmToken) {
+        await AsyncStorage.setItem('fcmToken', newFcmToken);
+        console.debug('New Token:', newFcmToken);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
+  } else {
+    console.debug('Old Token:', fcmToken);
   }
 };
 
 export const notificationListener = async () => {
   messaging().onNotificationOpenedApp(remoteMessage => {
-    console.log(
-      'Notification caused app to open from background state:',
-      remoteMessage,
-    );
+    // console.debug(
+    //   'Notification caused app to open from background state:',
+    //   remoteMessage,
+    // );
     navigate('Post', remoteMessage.data);
   });
-  messaging().onMessage(async remoteMessage =>
-    console.log('received in foreground', remoteMessage),
-  );
+
+  messaging().onMessage(async (/* remoteMessage */) => {
+    // console.debug('received in foreground', remoteMessage),
+  });
 
   messaging()
     .getInitialNotification()
     .then(remoteMessage => {
       if (remoteMessage) {
-        console.log(
-          'Notification caused app to open from quit state:',
-          remoteMessage,
-        );
+        // console.debug(
+        //   'Notification caused app to open from quit state:',
+        //   remoteMessage,
+        // );
         navigate('Post', remoteMessage.data);
       }
     });

@@ -45,9 +45,6 @@ type Comment @model @key(name: "byViewing", fields: ["viewingId"]) {
   viewingId: ID
 }
 
-
-
-
 type User @model {
   id: String!
   username: String

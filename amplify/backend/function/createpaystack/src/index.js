@@ -4,9 +4,9 @@ function httpsRequest(options) {
   return new Promise((resolve, reject) => {
     const req = https.request(options, res => {
       if (res.statusCode < 200 || res.statusCode >= 300) {
-        return reject(new Error('statusCode=' + res.statusCode));
+        return reject(new Error(`statusCode=${res.statusCode}`));
       }
-      var body = [];
+      let body = [];
       res.on('data', function (chunk) {
         body.push(chunk);
       });
@@ -28,20 +28,20 @@ function httpsRequest(options) {
   });
 }
 
-exports.handler = async (event) => {
-    const { typeName, args } = event;
+exports.handler = async event => {
+  const {typeName, args} = event;
 
   if (typeName !== 'Mutation') {
     throw new Error('Request is not a mutation');
   }
 
-    if (!args?.amount) {
-        throw new Error('Amount argument is required');
-    }
-    const params = JSON.stringify({
-        "email": "customer@email.com",
-        "amount": "20000"
-      })
+  if (!args?.amount) {
+    throw new Error('Amount argument is required');
+  }
+  const params = JSON.stringify({
+    email: 'customer@email.com',
+    amount: '20000',
+  });
 
   const options = {
     hostname: 'api.paystack.co',
