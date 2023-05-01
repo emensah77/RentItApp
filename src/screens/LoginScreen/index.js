@@ -1,53 +1,26 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
-  Animated,
-  FlatList,
-  Dimensions,
   Platform,
   StyleSheet,
   ScrollView,
   StatusBar,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import Swiper from 'react-native-swiper';
-import {AppleButton} from '@invertase/react-native-apple-authentication';
-import {
-  faFacebook,
-  faApple,
-  faGoogle,
-} from '@fortawesome/free-brands-svg-icons';
+import {faApple, faGoogle} from '@fortawesome/free-brands-svg-icons';
 import SplashScreen from 'react-native-splash-screen';
-import FormInput from '../../components/FormInput';
-import FormButton from '../../components/FormButton';
+
 import SocialButton from '../../components/SocialButton';
 import {AuthContext} from '../../navigation/AuthProvider';
 
-const {width, height} = Dimensions.get('screen');
-const ITEM_WIDTH = width * 0.76;
-const ITEM_HEIGHT = ITEM_WIDTH * 1.47;
+import rentItImage from '../../../assets/data/images/rentitpic1.png';
+import home from '../../../assets/data/images/home.png';
 
-const images = [
-  'https://d5w4alzj7ppu4.cloudfront.net/house1/house1.jpg',
-  'https://d5w4alzj7ppu4.cloudfront.net/house1/house2.jpg',
-  'https://d5w4alzj7ppu4.cloudfront.net/house1/house3.jpg',
-  'https://d5w4alzj7ppu4.cloudfront.net/house1/house4.jpg',
-  'https://d5w4alzj7ppu4.cloudfront.net/house1/house5.jpg',
-];
-const data = images.map((image, index) => ({
-  key: String(index),
-  photo: image,
-}));
+const LoginScreen = () => {
+  const {googleLogin /* , fbLogin */, appleLogin} = useContext(AuthContext);
 
-const LoginScreen = ({navigation}) => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const {login, googleLogin, fbLogin, appleLogin} = useContext(AuthContext);
-
-  const scrollX = React.useRef(new Animated.Value(0)).current;
   useEffect(() => {
     SplashScreen.hide();
   });
@@ -60,13 +33,8 @@ const LoginScreen = ({navigation}) => {
           <Animatable.Image
             animation="fadeInDownBig"
             duraton={1500}
-            source={require('../../../assets/data/images/rentitpic1.png')}
-            style={{
-              height: 200,
-              width: 200,
-              justifyContent: 'center',
-              alignSelf: 'center',
-            }}
+            source={rentItImage}
+            style={styles.rentitImage}
             resizeMode="contain"
           />
           <Text style={styles.text_header}> Welcome </Text>
@@ -78,27 +46,24 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.title}>Find your next home</Text>
 
           <View style={styles.button}>
-            <Image
-              source={require('../../../assets/data/images/home.png')}
-              style={{width: 300, height: 150}}
-            />
+            <Image source={home} style={styles.home} />
 
             {Platform.OS === 'ios' ? (
               <View>
                 {/* <SocialButton
-            buttonTitle="Continue with Facebook"
-            btnType={faFacebook}
-            color="blue"
-            backgroundColor="white"
-            onPress={() => fbLogin()}
-          /> */}
+                  buttonTitle="Continue with Facebook"
+                  btnType={faFacebook}
+                  color="blue"
+                  backgroundColor="white"
+                  onPress={() => fbLogin()}
+                /> */}
 
                 <SocialButton
                   buttonTitle="Continue with Apple"
                   btnType={faApple}
                   color="black"
                   backgroundColor="white"
-                  onPress={() => appleLogin()}
+                  onPress={appleLogin}
                 />
 
                 <SocialButton
@@ -106,24 +71,24 @@ const LoginScreen = ({navigation}) => {
                   btnType={faGoogle}
                   color="deeppink"
                   backgroundColor="white"
-                  onPress={() => googleLogin()}
+                  onPress={googleLogin}
                 />
               </View>
             ) : (
               <View>
                 {/* <SocialButton
-          buttonTitle="Continue with Facebook"
-          btnType={faFacebook}
-          color="blue"
-          backgroundColor="white"
-          onPress={() => fbLogin()}
-        /> */}
+                  buttonTitle="Continue with Facebook"
+                  btnType={faFacebook}
+                  color="blue"
+                  backgroundColor="white"
+                  onPress={() => fbLogin()}
+                /> */}
                 <SocialButton
                   buttonTitle="Continue with Google"
                   btnType={faGoogle}
                   color="deeppink"
                   backgroundColor="white"
-                  onPress={() => googleLogin()}
+                  onPress={googleLogin}
                 />
               </View>
             )}
@@ -246,21 +211,12 @@ const LoginScreen = ({navigation}) => {
   );
 };
 
-export default LoginScreen;
-
 const styles = StyleSheet.create({
   containerFlat: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  text: {
-    fontFamily: 'Mo',
-    fontSize: 28,
-    marginBottom: 10,
-    color: '#051d5f',
   },
   navButton: {
     marginTop: 15,
@@ -325,11 +281,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     borderRadius: 8,
-  },
-  text: {
-    color: '#fff',
-    fontSize: 40,
-    fontWeight: 'bold',
   },
   header: {
     flex: 1,
@@ -409,4 +360,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Montserrat-Bold',
   },
+  rentItImage: {
+    height: 200,
+    width: 200,
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  home: {width: 300, height: 150},
 });
+
+export default LoginScreen;

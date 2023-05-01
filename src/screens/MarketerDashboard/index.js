@@ -23,7 +23,6 @@ const MarketerDashboard = () => {
   const [nearbyBuildings, setNearbyBuildings] = useState([]);
   const [mapType, setMapType] = useState('standard'); // 'standard' or 'satellite'
 
-
   const onUserLocationChange = event => {
     setUserLocation(event.nativeEvent.coordinate);
   };
@@ -158,18 +157,20 @@ const MarketerDashboard = () => {
     hideDatePicker();
   };
   const toggleMapType = () => {
-    setMapType((prevMapType) => (prevMapType === 'standard' ? 'satellite' : 'standard'));
+    setMapType(prevMapType =>
+      prevMapType === 'standard' ? 'satellite' : 'standard',
+    );
   };
   const zoomIn = () => {
-    setRegion((prevRegion) => ({
+    setRegion(prevRegion => ({
       ...prevRegion,
       latitudeDelta: prevRegion.latitudeDelta / 2,
       longitudeDelta: prevRegion.longitudeDelta / 2,
     }));
   };
-  
+
   const zoomOut = () => {
-    setRegion((prevRegion) => ({
+    setRegion(prevRegion => ({
       ...prevRegion,
       latitudeDelta: prevRegion.latitudeDelta * 2,
       longitudeDelta: prevRegion.longitudeDelta * 2,
@@ -181,9 +182,7 @@ const MarketerDashboard = () => {
       mapRef.current.animateToRegion(defaultRegion, 1000);
     }
   }, [defaultRegion]);
-  
-  
-  
+
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -196,10 +195,7 @@ const MarketerDashboard = () => {
         region={defaultRegion}
         onUserLocationChange={onUserLocationChange}
         mapType={mapType}
-        onRegionChangeComplete={(region) => setRegion(region)}
-
-
-      >
+        onRegionChangeComplete={region => setRegion(region)}>
         {locations.length > 0 &&
           locations.map((location, index) => (
             <Marker
@@ -220,15 +216,14 @@ const MarketerDashboard = () => {
           />
         )}
         {userLocation && (
-        <Circle
-        center={userLocation}
-        radius={2} // Adjust the size of the circle as needed
-        fillColor="blue"
-        zIndex={2} // To ensure the circle is displayed above other map elements
-        strokeWidth={0}
-        />
-    )}
-
+          <Circle
+            center={userLocation}
+            radius={2} // Adjust the size of the circle as needed
+            fillColor="blue"
+            zIndex={2} // To ensure the circle is displayed above other map elements
+            strokeWidth={0}
+          />
+        )}
       </MapView>
       <View style={styles.zoomButtonsContainer}>
         <TouchableOpacity onPress={zoomIn} style={styles.zoomButton}>
@@ -243,9 +238,7 @@ const MarketerDashboard = () => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={100}
-        style={styles.footer}
-      >
-        
+        style={styles.footer}>
         <View style={styles.datePickerContainer}>
           <Button
             title="Select Start Date"
@@ -256,9 +249,11 @@ const MarketerDashboard = () => {
             onPress={() => showDatePicker('end')}
           />
         </View>
-        <TouchableOpacity onPress={toggleMapType} style={styles.toggleMapTypeButton}>
-    <Text style={styles.toggleMapTypeText}>Toggle Map Type</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={toggleMapType}
+          style={styles.toggleMapTypeButton}>
+          <Text style={styles.toggleMapTypeText}>Toggle Map Type</Text>
+        </TouchableOpacity>
 
         {startDate && endDate && (
           <Text style={styles.dateRangeText}>
