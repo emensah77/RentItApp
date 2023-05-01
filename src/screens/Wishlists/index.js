@@ -12,6 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Post from '../../components/Post';
 import {AuthContext} from '../../navigation/AuthProvider';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
+import BackButton from '../../components/BackButton/BackButton';
 
 const Wishlists = () => {
   const {user} = useContext(AuthContext);
@@ -62,10 +63,21 @@ const Wishlists = () => {
           },
         ]}>
         <View style={{paddingTop: 15}}>
+          <View
+            style={{
+              transform: [
+                {
+                  translateY: 20,
+                },
+              ],
+            }}>
+            <BackButton />
+          </View>
           <Text
             style={{
               fontSize: 32,
               color: 'white',
+              paddingTop: 25,
               fontFamily: 'Montserrat-Bold',
             }}>
             Wishlists

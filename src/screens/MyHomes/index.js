@@ -12,6 +12,7 @@ import {getUserHomes} from '../../graphql/customQueries';
 import {AuthContext} from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
 import {useNavigation} from '@react-navigation/native';
+import BackButton from '../../components/BackButton/BackButton';
 
 const MyHomes = () => {
   const {user} = useContext(AuthContext);
@@ -110,6 +111,7 @@ const MyHomes = () => {
             width: '100%',
           }}>
           <View style={{flex: 1, alignItems: 'center'}}>
+            <BackButton />
             <Text
               style={{
                 fontSize: 24,
