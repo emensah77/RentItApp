@@ -1,6 +1,6 @@
 const https = require('https')
 
-function httpsRequest(options) {
+function httpsRequest(options, postData) {
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
             if (res.statusCode < 200 || res.statusCode >= 300) {
@@ -24,6 +24,9 @@ function httpsRequest(options) {
             reject(e.message);
         });
         
+        if (postData) {
+            req.write(postData);
+        }
         req.end();
     });
 }
@@ -41,45 +44,31 @@ exports.handler = async (event) => {
     const params = JSON.stringify({
         "email": "customer@email.com",
         "amount": "20000"
-      })
+    })
 
-      const options = {
+    const options = {
         hostname: 'api.paystack.co',
         port: 443,
         path: '/transaction/initialize',
         method: 'POST',
         headers: {
-          Authorization: 'Bearer SECRET_KEY',
-          'Content-Type': 'application/json'
+            Authorization: 'Bearer SECRET_KEY',
+            'Content-Type': 'application/json'
         }
-      }
+    }
 
-      try {
-        const postBody = await httpsRequest(options);
+    let postBody;
+    try {
+        postBody = await httpsRequest(options, params);
         // The console.log below will not run until the POST request above finishes
         console.log('POST response body:', postBody);
-        
+
     } catch (err) {
         console.error('POST request failed, error:', err);
     }
-    //   const req = https.request(options, res => {
-    //     let data = ''
-    //     res.on('data', (chunk) => {
-    //       data += chunk
-    //     });
-    //     res.on('end', () => {
-    //       console.log(JSON.parse(data))
-    //     })
-    //   }).on('error', error => {
-    //     console.error(error)
-    //   })
-    //   req.write(params)
-    //   req.end()
 
     // create payment intent
     return {
         authorizationUrl: postBody,
     }
-    
-    
 };

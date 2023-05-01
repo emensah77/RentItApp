@@ -7,13 +7,7 @@ exports.handler = async (event) => {
     nextToken,
     limit,
     postId,
-    price,
-    titleHouses,
-    homeStatus,
-    loyaltyProgram,
-    locality,
-    subLocality,
-    available,
+    
   } = event;
 
   const filterExpressions = [];
