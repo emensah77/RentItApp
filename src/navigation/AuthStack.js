@@ -74,10 +74,6 @@ const AuthStack = () => {
   let routeName;
 
   useEffect(() => {
-    AsyncStorage.clear();
-  }, []);
-
-  useEffect(() => {
     AsyncStorage.getItem('alreadyLaunched').then(value => {
       if (value == null) {
         // No need to wait for `setItem` to finish, although you might want to handle errors
