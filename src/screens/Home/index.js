@@ -593,16 +593,31 @@ const HomeScreen = props => {
       async position => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
-        await firestore()
+
+        const res = await firestore()
           .collection('marketers')
           .doc(auth().currentUser.uid)
-          .update({
-            createdAt: new Date(),
-            uid: auth().currentUser.uid,
-            displayName: auth().currentUser.displayName,
-            lat: position.coords.latitude,
-            long: position.coords.longitude,
-          });
+          .get();
+
+        const data = {
+          createdAt: new Date(),
+          uid: auth().currentUser.uid,
+          displayName: auth().currentUser.displayName,
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+        };
+
+        if (res.exists) {
+          await firestore()
+            .collection('marketers')
+            .doc(auth().currentUser.uid)
+            .update(data);
+        } else {
+          await firestore()
+            .collection('marketers')
+            .doc(auth().currentUser.uid)
+            .set(data);
+        }
       },
       error => {
         Alert.alert(`Code ${error.code}`, error.message);
