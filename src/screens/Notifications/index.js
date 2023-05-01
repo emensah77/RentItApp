@@ -36,27 +36,22 @@ const Notifications = () => {
       });
     } else {
       // Request permission to send notifications
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS).then(
-        async granted => {
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            // Permission granted
-            console.debug('Permission for notification granted.');
-          } else {
-            const authStatus = await messaging().hasPermission();
-            const enabled =
-              authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-              authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-            setNotification(enabled);
-          }
-        },
-      );
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS).then(async granted => {
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Permission granted
+          console.debug('Permission for notification granted.');
+        } else {
+          const authStatus = await messaging().hasPermission();
+          const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+          setNotification(enabled);
+        }
+      });
     }
   }, []);
 
-  const goToLogin = useCallback(
-    () => navigation.navigate('Login'),
-    [navigation],
-  );
+  const goToLogin = useCallback(() => navigation.navigate('Login'), [navigation]);
 
   const onPress = useCallback(() => {
     if (!notification) {
@@ -77,8 +72,7 @@ const Notifications = () => {
             <Text style={styles.heading}>Enable Notifications</Text>
           </View>
           <Text style={styles.subHeading}>
-            Don&pos;t miss important notifications like new coming homes and
-            updates.
+            Don&pos;t miss important notifications like new coming homes and updates.
           </Text>
           <View style={styles.actionContainer}>
             <TouchableOpacity
@@ -89,12 +83,8 @@ const Notifications = () => {
                 {notification ? 'Already Enabled' : 'Turn on'}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={goToLogin}
-              style={styles.negativeActionTextWrapper}>
-              <Text style={styles.negativeActionText}>
-                {notification ? 'Skip' : 'Later'}
-              </Text>
+            <TouchableOpacity onPress={goToLogin} style={styles.negativeActionTextWrapper}>
+              <Text style={styles.negativeActionText}>{notification ? 'Skip' : 'Later'}</Text>
             </TouchableOpacity>
           </View>
         </View>

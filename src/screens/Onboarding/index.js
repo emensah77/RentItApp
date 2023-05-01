@@ -1,13 +1,5 @@
 import React, {useEffect, useCallback} from 'react';
-import {
-  View,
-  Text,
-  StatusBar,
-  StyleSheet,
-  Image,
-  Dimensions,
-  Pressable,
-} from 'react-native';
+import {View, Text, StatusBar, StyleSheet, Image, Dimensions, Pressable} from 'react-native';
 import Swiper from 'react-native-swiper';
 import {useNavigation} from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';

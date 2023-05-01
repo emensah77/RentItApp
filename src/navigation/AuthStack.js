@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, {useState, useEffect, useContext, useMemo, useCallback} from 'react';
 import {View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -85,8 +79,7 @@ const AuthStack = () => {
     }); // Add some error handling, also you can simply do setIsFirstLaunch(null)
 
     GoogleSignin.configure({
-      webClientId:
-        '953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com',
+      webClientId: '953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com',
     });
   }, []);
 
@@ -107,28 +100,14 @@ const AuthStack = () => {
   }
 
   return (
-    <Stack.Navigator
-      initialRouteName={routeName}
-      onStateChange={onNavigationStateChange(user)}>
-      <Stack.Screen
-        name="Onboarding"
-        component={OnboardingScreen}
-        options={header}
-      />
+    <Stack.Navigator initialRouteName={routeName} onStateChange={onNavigationStateChange(user)}>
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} options={header} />
 
       <Stack.Screen name="Login" component={LoginScreen} options={header} />
 
-      <Stack.Screen
-        name="LocationPermissions"
-        component={LocationPermissions}
-        options={noHeader}
-      />
+      <Stack.Screen name="LocationPermissions" component={LocationPermissions} options={noHeader} />
 
-      <Stack.Screen
-        name="Notifications"
-        component={Notifications}
-        options={noHeader}
-      />
+      <Stack.Screen name="Notifications" component={Notifications} options={noHeader} />
 
       <Stack.Screen name="Signup" component={SignupScreen} options={options} />
     </Stack.Navigator>

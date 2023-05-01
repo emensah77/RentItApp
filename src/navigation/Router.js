@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from 'react';
+import React, {useContext, useState, useEffect, useRef, useCallback} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {ActivityIndicator} from 'react-native';
@@ -49,13 +43,10 @@ const Router = () => {
         screen_class: currentRouteName.replace(/\s/g, ''),
       });
 
-      await analytics().logEvent(
-        `Page_${currentRouteName.replace(/\s/g, '')}`,
-        {
-          userId: user.displayName,
-          item: user.uid,
-        },
-      );
+      await analytics().logEvent(`Page_${currentRouteName.replace(/\s/g, '')}`, {
+        userId: user.displayName,
+        item: user.uid,
+      });
     }
     routeNameRef.current = currentRouteName;
   }, [user]);

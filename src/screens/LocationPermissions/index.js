@@ -1,13 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {
-  StatusBar,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import {StatusBar, View, Text, StyleSheet, TouchableOpacity, Image, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 // import BackgroundFetch from 'react-native-background-fetch';
@@ -28,10 +20,7 @@ const LocationPermissions = () => {
     setAllow(true);
   }, []);
 
-  const goToNotifications = useCallback(
-    () => navigation.navigate('Notifications'),
-    [navigation],
-  );
+  const goToNotifications = useCallback(() => navigation.navigate('Notifications'), [navigation]);
 
   // Configure the BackgroundGeolocation plugin.
   const initBackgroundGeolocation = useCallback(async () => {
@@ -243,10 +232,9 @@ const LocationPermissions = () => {
             <Text style={styles.enableGeoLocation}>Enable Geolocation</Text>
           </View>
           <Text style={styles.locationDescription}>
-            Rentit uses your location to provide you with relevant
-            recommendations about homes near you, and notifications for price
-            changes in homes near you, including when the app is in the
-            background.
+            Rentit uses your location to provide you with relevant recommendations about homes near
+            you, and notifications for price changes in homes near you, including when the app is in
+            the background.
           </Text>
           <View style={styles.options}>
             <TouchableOpacity onPress={onPress} style={styles.allow}>

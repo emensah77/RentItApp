@@ -36,17 +36,9 @@ const AppStack = () => {
 
   return (
     <Stack.Navigator onStateChange={onNavigationStateChange(user)}>
-      <Stack.Screen
-        name="Home"
-        component={HomeTabNavigator}
-        options={noHeader}
-      />
+      <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 
-      <Stack.Screen
-        name="WelcomeScreen"
-        component={WelcomeScreen}
-        options={noHeader}
-      />
+      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />
 
       <Stack.Screen
         name="Destination Search"
@@ -57,16 +49,8 @@ const AppStack = () => {
         }}
       />
 
-      <Stack.Screen
-        name="Number of Guests"
-        component={GuestsScreen}
-        options={noHeader}
-      />
-      <Stack.Screen
-        name="House Type"
-        component={HouseTypeScreen}
-        options={noHeader}
-      />
+      <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
+      <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} />
 
       <Stack.Screen name="Post" component={PostScreen} options={noHeader} />
 

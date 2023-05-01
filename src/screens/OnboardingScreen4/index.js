@@ -97,22 +97,19 @@ const OnboardingScreen4 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -135,8 +132,7 @@ const OnboardingScreen4 = props => {
       console.log('Resized Size:', resizedSize, 'bytes');
       console.log('Original Size:', originalSize, 'bytes');
 
-      const reductionPercentage =
-        ((originalSize - resizedSize) / originalSize) * 100;
+      const reductionPercentage = ((originalSize - resizedSize) / originalSize) * 100;
       console.log('Size Reduction:', reductionPercentage.toFixed(2), '%');
       return resizedImage;
     } catch (err) {
@@ -154,9 +150,7 @@ const OnboardingScreen4 = props => {
   };
 
   const handleDeleteImage = imageToDelete => {
-    setImages(prevImages =>
-      prevImages.filter(image => image.name !== imageToDelete.name),
-    );
+    setImages(prevImages => prevImages.filter(image => image.name !== imageToDelete.name));
   };
 
   useEffect(() => {
@@ -371,12 +365,7 @@ const OnboardingScreen4 = props => {
             }}>
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>Uploading...</Text>
 
-            <ActivityIndicator
-              animating
-              size="large"
-              color="blue"
-              style={{opacity: 1}}
-            />
+            <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
           </View>
         </View>
       </Modal>
@@ -390,18 +379,11 @@ const OnboardingScreen4 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
-        <Text style={styles.text_header}>
-          {' '}
-          Let's take pictures {'\n'} of your home{' '}
-        </Text>
+        <Text style={styles.text_header}> Let's take pictures {'\n'} of your home </Text>
       </View>
 
       <Animatable.View
@@ -516,8 +498,7 @@ const OnboardingScreen4 = props => {
         ) : (
           <ScrollView>
             <Text style={{fontSize: 18, fontWeight: '600', marginBottom: 10}}>
-              The first picture should be of the house or the living room, not
-              the bathroom!
+              The first picture should be of the house or the living room, not the bathroom!
             </Text>
             <TouchableOpacity
               onPress={() => openPicker()}
@@ -538,11 +519,7 @@ const OnboardingScreen4 = props => {
               </View>
 
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <FontAwesomeIcon
-                  icon={faArrowAltCircleUp}
-                  size={30}
-                  color="black"
-                />
+                <FontAwesomeIcon icon={faArrowAltCircleUp} size={30} color="black" />
               </View>
             </TouchableOpacity>
 

@@ -1,13 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Platform,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
+import {View, Text, Image, Platform, StyleSheet, ScrollView, StatusBar} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {faApple, faGoogle} from '@fortawesome/free-brands-svg-icons';
 import SplashScreen from 'react-native-splash-screen';
@@ -39,10 +31,7 @@ const LoginScreen = () => {
           />
           <Text style={styles.text_header}> Welcome </Text>
         </View>
-        <Animatable.View
-          animation="fadeInUpBig"
-          duration={1500}
-          style={styles.footer}>
+        <Animatable.View animation="fadeInUpBig" duration={1500} style={styles.footer}>
           <Text style={styles.title}>Find your next home</Text>
 
           <View style={styles.button}>

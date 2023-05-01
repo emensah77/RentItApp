@@ -7,14 +7,7 @@ module.exports = {
     'plugin:import/warnings',
     '@react-native-community',
   ],
-  plugins: [
-    'react',
-    'prettier',
-    'sort-keys-fix',
-    'jsx-a11y',
-    '@babel',
-    'react-hooks',
-  ],
+  plugins: ['react', 'prettier', 'sort-keys-fix', 'jsx-a11y', '@babel', 'react-hooks'],
   rules: {
     indent: [
       'error',
@@ -40,10 +33,7 @@ module.exports = {
     ],
     'no-confusing-arrow': [0],
     'no-console': ['error', {allow: ['debug', 'error']}],
-    'no-unused-vars': [
-      'error',
-      {vars: 'all', args: 'all', ignoreRestSiblings: false},
-    ],
+    'no-unused-vars': ['error', {vars: 'all', args: 'all', ignoreRestSiblings: false}],
     'react/jsx-filename-extension': [0],
     'react/jsx-indent': ['error', 2],
     'react/jsx-indent-props': ['error', 2],

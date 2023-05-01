@@ -29,15 +29,9 @@ const SignupScreen = ({navigation}) => {
     [],
   );
 
-  const signup = useCallback(
-    () => register(email, password),
-    [email, password, register],
-  );
+  const signup = useCallback(() => register(email, password), [email, password, register]);
 
-  const goToLogin = useCallback(
-    () => navigation.navigate('Login'),
-    [navigation],
-  );
+  const goToLogin = useCallback(() => navigation.navigate('Login'), [navigation]);
 
   const showAlert = useCallback(text => alert(text), []);
 
@@ -78,14 +72,10 @@ const SignupScreen = ({navigation}) => {
           By registering, you confirm that you accept our{' '}
         </Text>
         <TouchableOpacity onPress={showAlert('Terms Clicked')}>
-          <Text style={[styles.color_textPrivate, styles.dimColor]}>
-            Terms of service
-          </Text>
+          <Text style={[styles.color_textPrivate, styles.dimColor]}>Terms of service</Text>
         </TouchableOpacity>
         <Text style={styles.color_textPrivate}> and </Text>
-        <Text style={[styles.color_textPrivate, styles.dimColor]}>
-          Privacy Policy
-        </Text>
+        <Text style={[styles.color_textPrivate, styles.dimColor]}>Privacy Policy</Text>
       </View>
 
       {Platform.OS === 'android' ? (

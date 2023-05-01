@@ -176,18 +176,11 @@ export const AuthProvider = ({children}) => {
 
           // Ensure Apple returned a user identityToken
           if (!appleAuthRequestResponse.identityToken) {
-            throw new Error(
-              'Apple Sign-In failed - no identify token returned',
-            );
+            throw new Error('Apple Sign-In failed - no identify token returned');
           }
 
           // Create a Firebase credential from the response
-          const {
-            identityToken,
-            nonce,
-            email,
-            user: newUser,
-          } = appleAuthRequestResponse;
+          const {identityToken, nonce, email, user: newUser} = appleAuthRequestResponse;
           const appleCredential = auth.AppleAuthProvider.credential(
             identityToken,
             nonce,
@@ -251,10 +244,7 @@ export const AuthProvider = ({children}) => {
       fbLogin: async () => {
         try {
           // Attempt login with permissions
-          const result = await LoginManager.logInWithPermissions([
-            'public_profile',
-            'email',
-          ]);
+          const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
           if (result.isCancelled) {
             throw new Error('User cancelled the login process');
@@ -268,9 +258,7 @@ export const AuthProvider = ({children}) => {
           }
 
           // Create a Firebase credential with the AccessToken
-          const facebookCredential = auth.FacebookAuthProvider.credential(
-            data.accessToken,
-          );
+          const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
           // Sign-in the user with the credential
           setLoading(true);
@@ -319,10 +307,7 @@ export const AuthProvider = ({children}) => {
                 })
                 // ensure we catch any errors at this stage to advise us if something does go wrong
                 .catch(error => {
-                  console.error(
-                    'Something went wrong with adding user to firestore: ',
-                    error,
-                  );
+                  console.error('Something went wrong with adding user to firestore: ', error);
                 });
             })
             // we need to catch the whole sign up process if it fails too.
@@ -355,12 +340,7 @@ export const AuthProvider = ({children}) => {
   if (loading) {
     return (
       <View style={styles.loadingView}>
-        <ActivityIndicator
-          animating
-          size="large"
-          color="blue"
-          style={styles.activityOpacity}
-        />
+        <ActivityIndicator animating size="large" color="blue" style={styles.activityOpacity} />
       </View>
     );
   }

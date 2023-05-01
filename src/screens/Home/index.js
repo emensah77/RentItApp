@@ -1,10 +1,8 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  useCallback,
-} from 'react';
+/* eslint-disable no-shadow */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-unused-vars */
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {
   View,
   Modal,
@@ -20,134 +18,68 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  ToastAndroid,
 } from 'react-native';
-import FontAwesome, {SolidIcons, phone} from 'react-native-fontawesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
-import {FlatListSlider} from 'react-native-flatlist-slider';
-import {OptimizedFlatList} from 'react-native-optimized-flatlist';
-import FastImage from 'react-native-fast-image';
-import VersionCheck from 'react-native-version-check';
+import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import {API, graphqlOperation} from 'aws-amplify';
-import Geocoder from 'react-native-geocoding';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Paystack} from 'react-native-paystack-webview';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
-  faBuilding,
   faArrowLeft,
   faFilter,
-  faBars,
-  faStore,
-  faMountain,
   faCity,
   faDoorClosed,
-  faCaravan,
   faLandmark,
   faArchway,
   faHotel,
   faIgloo,
-  faWarehouse,
-  faBed,
-  faToilet,
   faCampground,
-  faBinoculars,
 } from '@fortawesome/free-solid-svg-icons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import CheckBox from '@react-native-community/checkbox';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import BackgroundGeolocation, {
-  Location,
-  Subscription,
-} from 'react-native-background-geolocation';
+import BackgroundGeolocation from 'react-native-background-geolocation';
 import BackgroundFetch from 'react-native-background-fetch';
 import Video from 'react-native-video';
 import {registerTransistorAuthorizationListener} from './Authorization';
-import {HOME_STATUS} from '../../variables';
-import FirebaseRepo from '../../repositry/FirebaseRepo';
-import useWishlist from '../../hooks/useWishlist';
 import mixpanel from '../../MixpanelConfig';
 import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
 import Post from '../../components/Post';
 import {AuthContext} from '../../navigation/AuthProvider';
-import PaymentScreen from '../PaymentScreen';
-import {createUser} from '../../graphql/mutations';
 import {listPosts, getUser} from '../../graphql/queries';
 import styles from './styles';
 
-const image = {uri: 'https://d5w4alzj7ppu4.cloudfront.net/cities/night.jpeg'};
-const colors = [
-  'magenta',
-  'lime',
-  'fuchsia',
-  'crimson',
-  'aqua',
-  'blue',
-  'red',
-  'yellow',
-  'green',
-  'white',
-  'deeppink',
-];
-
 mixpanel.init();
 
-const HomeScreen = props => {
+const HomeScreen = () => {
   const {trackDwellTime} = useDwellTimeTracking();
   useEffect(trackDwellTime, [trackDwellTime]);
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const {user, logout} = useContext(AuthContext);
-  const userEmail = user.email;
+  const {user} = useContext(AuthContext);
   const [selectedButton, setSelectedButton] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
-  const [updateNeeded, setUpdateNeeded] = useState(false);
-  const [updateUrl, setUpdateUrl] = useState('');
   const [posts, setPosts] = useState([]);
-  const [postLatest, setLatest] = useState([]);
-  const [addresss, setaddress] = useState('');
-  const [forceLocation, setForceLocation] = useState(true);
-  const [highAccuracy, setHighAccuracy] = useState(true);
-  const [locationDialog, setLocationDialog] = useState(true);
-  const [significantChanges, setSignificantChanges] = useState(false);
-  const [observing, setObserving] = useState(false);
-  const [foregroundService, setForegroundService] = useState(false);
-  const [useLocationManager, setUseLocationManager] = useState(false);
+  const [forceLocation] = useState(true);
+  const [highAccuracy] = useState(true);
+  const [locationDialog] = useState(true);
+  const [useLocationManager] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [alreadyPaid, setalreadyPaid] = useState(null);
-  const [color, setcolor] = useState('white');
   const [status, setStatus] = useState('Entire Flat');
-  const [isReset, setIsReset] = useState(false);
   const [loadingType, setIsLoadingType] = useState(false);
-  const map = useRef();
-  const route = useRoute();
-  const title = route.params?.title;
-  const type = route.params?.type;
-  const description = route.params?.description;
-  const bed = route.params?.bed;
-  const bedroom = route.params?.bedroom;
-  const bathroom = route.params?.bathroom;
-  const imageUrls = route.params?.imageUrls;
-  const homeprice = route.params?.homeprice;
-  const mode = route.params?.mode;
-  const amenities = route.params?.amenities;
   const [modalvisible, setmodalvisible] = useState(false);
   const [modalVisible, setmodalVisible] = useState(false);
-  const [minimumvalue, setMinimumValue] = useState(1);
+  const [minimumvalue] = useState(1);
   const [maximumvalue, setMaximumValue] = useState(100000);
+  // eslint-disable-next-line no-unused-vars
   const [minvalue, setminValue] = useState('');
   const [maxvalue, setmaxValue] = useState('');
   const [nextToken, setNextToken] = useState(null);
   const [loading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 50;
   const [cachedData, setCachedData] = useState({});
   const [loadingMore, setIsLoadingMore] = useState(false);
   const [fetchMore, setFetchMore] = useState(false);
@@ -217,7 +149,7 @@ const HomeScreen = props => {
           addEvent('onLocation', location);
           return location;
         },
-        error => {
+        () => {
           // console.warn('[onLocation] ERROR: ', error);
         },
       ),
@@ -259,7 +191,7 @@ const HomeScreen = props => {
     );
 
     subscribe(
-      BackgroundGeolocation.onLocation(location => {
+      BackgroundGeolocation.onLocation(() => {
         // console.log(`Latitude: ${location.coords.latitude}`);
         // console.log(`Longitude: ${location.coords.longitude}`);
       }),
@@ -282,7 +214,6 @@ const HomeScreen = props => {
     /// Configure the plugin.
     const state = await BackgroundGeolocation.ready(
       {
-        debug: true,
         logLevel: BackgroundGeolocation.LOG_LEVEL_NONE,
         distanceFilter: 10,
         stopOnTerminate: false,
@@ -311,6 +242,7 @@ const HomeScreen = props => {
         },
         debug: false,
       },
+      // eslint-disable-next-line no-shadow
       state => {
         if (!state.enabled) {
           BackgroundGeolocation.start(() => {
@@ -342,7 +274,7 @@ const HomeScreen = props => {
 
     subscribe(
       BackgroundGeolocation.watchPosition(
-        position => {},
+        () => {},
         // error => console.log(error),
         {
           interval: 5000,
@@ -452,24 +384,6 @@ const HomeScreen = props => {
     },
   ];
 
-  const shuffle = array => {
-    let m = array.length;
-    let t;
-    let i;
-
-    // While there remain elements to shuffle…
-    while (m) {
-      // Pick a remaining element…
-      i = Math.floor(Math.random() * m--);
-
-      // And swap it with the current element.
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
-    }
-
-    return array;
-  };
   const setStatusFilter = status => {
     // setObserving(true);
     // setIsLoadingType(true);
@@ -505,14 +419,10 @@ const HomeScreen = props => {
     }
 
     if (status === 'disabled') {
-      Alert.alert(
-        'Turn on Location Services to allow "RentIt" to determine your location.',
-        '',
-        [
-          {text: 'Go to Settings', onPress: openSetting},
-          {text: "Don't Use Location", onPress: () => {}},
-        ],
-      );
+      Alert.alert('Turn on Location Services to allow "RentIt" to determine your location.', '', [
+        {text: 'Go to Settings', onPress: openSetting},
+        {text: "Don't Use Location", onPress: () => {}},
+      ]);
     }
 
     return false;
@@ -542,6 +452,7 @@ const HomeScreen = props => {
       return true;
     }
 
+    // eslint-disable-next-line no-shadow
     const status = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
@@ -551,15 +462,9 @@ const HomeScreen = props => {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(
-        'Location permission denied by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(
-        'Location permission revoked by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
     }
 
     return false;
@@ -576,16 +481,13 @@ const HomeScreen = props => {
       async position => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
-        await firestore()
-          .collection('marketers')
-          .doc(auth().currentUser.uid)
-          .update({
-            createdAt: new Date(),
-            uid: auth().currentUser.uid,
-            displayName: auth().currentUser.displayName,
-            lat: position.coords.latitude,
-            long: position.coords.longitude,
-          });
+        await firestore().collection('marketers').doc(auth().currentUser.uid).update({
+          createdAt: new Date(),
+          uid: auth().currentUser.uid,
+          displayName: auth().currentUser.displayName,
+          lat: position.coords.latitude,
+          long: position.coords.longitude,
+        });
       },
       error => {
         Alert.alert(`Code ${error.code}`, error.message);
@@ -608,88 +510,7 @@ const HomeScreen = props => {
       },
     );
   };
-  const makeCall1 = () => {
-    const phoneNumbers = ['0256744112'];
 
-    let phoneNumber =
-      phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
-
-    if (Platform.OS === 'android') {
-      phoneNumber = `tel:${phoneNumber}`;
-    } else {
-      phoneNumber = `telprompt:${phoneNumber}`;
-    }
-    try {
-      Linking.openURL(phoneNumber);
-    } catch (e) {
-      // console.log(e);
-    }
-  };
-  const makeCall = () => {
-    const phoneNumbers = [
-      '0552618521',
-      '0597285059',
-      '0597285099',
-      '0205200706',
-      '0579535484',
-    ];
-
-    let phoneNumber =
-      phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
-
-    if (Platform.OS === 'android') {
-      phoneNumber = `tel:${phoneNumber}`;
-    } else {
-      phoneNumber = `telprompt:${phoneNumber}`;
-    }
-    try {
-      Linking.openURL(phoneNumber);
-    } catch (e) {
-      // console.log(e);
-    }
-  };
-
-  const fetchMorePosts = async token => {
-    try {
-      const query = {
-        limit: 1000000,
-        filter: {
-          and: {
-            type: {
-              eq: status,
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
-            },
-            status: {eq: HOME_STATUS.APPROVED},
-          },
-        },
-        nextToken: token,
-      };
-
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      setPosts([...posts, ...postsResult.data.listPosts.items]);
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-      }
-    } catch (error) {
-      // console.log('error2', error);
-    }
-  };
-
-  const loadMore = async () => {
-    setIsLoadingMore(true);
-    await personalizedHomes(latitude, longitude, status, nextToken);
-    setIsLoadingMore(false);
-  };
-
-  function selectColor() {
-    setcolor(colors[Math.floor(Math.random() * colors.length)]);
-  }
   const [images, setimages] = useState([
     {
       image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/Kejetia_Kumasi.jpeg',
@@ -737,6 +558,7 @@ const HomeScreen = props => {
       key: '1',
     },
   ]);
+  // eslint-disable-next-line no-shadow
   const fetchPostsType = async status => {
     try {
       const query = {
@@ -769,45 +591,8 @@ const HomeScreen = props => {
     }
   };
 
-  const fetchPosts = async () => {
-    try {
-      const postsResult = await API.graphql(
-        graphqlOperation(listPosts, {
-          limit: 20,
-
-          nextToken,
-        }),
-      );
-
-      setPosts(postsResult.data.listPosts.items);
-      if (postsResult.data.listPosts.nextToken) {
-        setNextToken(postsResult.data.listPosts.nextToken);
-        // console.log('nexttoken',nextToken);
-      }
-    } catch (e) {
-      // console.log(e);
-    }
-  };
-
-  const getLatestPost = async () => {
-    try {
-      const postsResult = await API.graphql(
-        graphqlOperation(listPosts, {
-          limit: 2,
-        }),
-      );
-
-      setLatest(postsResult.data.listPosts.items);
-      // console.log('posts',posts.length)
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const userDetails = async () => {
-    const user = await firestore()
-      .collection('users')
-      .doc(auth().currentUser.uid);
+    const user = await firestore().collection('users').doc(auth().currentUser.uid);
 
     user.get().then(doc => {
       if (doc.exists) {
@@ -817,7 +602,6 @@ const HomeScreen = props => {
           }
           // Do nothing for iOS
         } else {
-          console.log('User already has phone number');
         }
       }
     });
@@ -831,29 +615,11 @@ const HomeScreen = props => {
         }),
       );
       if (userDB.data.getUser !== null) {
-        console.log('User already in dynamodb');
-        // console.log("User", userDB);
       } else {
         try {
-          const input = {
-            id: ID,
-            email: auth().currentUser.email,
-            username: auth().currentUser.displayName,
-            imageuri: auth().currentUser.photoURL,
-          };
-          const addedUser = await API.graphql(
-            graphqlOperation(createUser, {
-              input,
-            }),
-          );
-          // console.log("User has been added to dynamodb", addedUser)
-        } catch (e) {
-          console.log('Error adding User to DynamoDB', e);
-        }
+        } catch (e) {}
       }
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -878,7 +644,6 @@ const HomeScreen = props => {
       );
 
       const data = await response.json();
-      console.log('data', data);
       setHasWatchedVideo(data.hasWatchedVideo);
       setVideoUrl(data.videoUrl);
       setVideoVersion(data.videoVersion);
@@ -891,18 +656,15 @@ const HomeScreen = props => {
   }, []);
 
   const handleVideoPlaybackComplete = async () => {
-    await fetch(
-      'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
-      {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          action: 'updateWatchStatus',
-          userId: auth().currentUser.uid,
-          videoVersion, // Send the video version
-        }),
-      },
-    );
+    await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        action: 'updateWatchStatus',
+        userId: auth().currentUser.uid,
+        videoVersion, // Send the video version
+      }),
+    });
 
     setHasWatchedVideo(true);
     setmodalVisible(false); // Add this line to close the modal
@@ -980,12 +742,7 @@ const HomeScreen = props => {
   async function fetchMoreData() {
     if (nextToken && !fetchingMore) {
       setFetchingMore(true);
-      const data = await personalizedHomes(
-        latitude,
-        longitude,
-        status,
-        nextToken,
-      );
+      const data = await personalizedHomes(latitude, longitude, status, nextToken);
       const updatedData = [...posts, ...data.homes];
       setPosts(updatedData);
       setCachedData(prevData => ({...prevData, [status]: updatedData}));
@@ -994,16 +751,10 @@ const HomeScreen = props => {
     }
   }
 
-  useEffect(() => {
-    console.log('posts length updated:', posts.length);
-  }, [posts]);
+  useEffect(() => {}, [posts]);
 
-  async function personalizedHomes(
-    userLatitude,
-    userLongitude,
-    homeType,
-    nextToken,
-  ) {
+  // eslint-disable-next-line no-shadow
+  async function personalizedHomes(userLatitude, userLongitude, homeType, nextToken) {
     try {
       // setIsLoadingType(true);
       const response = await fetch(
@@ -1025,8 +776,6 @@ const HomeScreen = props => {
       );
 
       const data = await response.json();
-      // console.log("Response data:", data.homes.length); // Add console log here
-      console.log('Response token:', data.nextToken); // Add console log here
 
       return data;
     } catch (error) {
@@ -1044,35 +793,26 @@ const HomeScreen = props => {
     getLocation();
   }, []);
 
-  const updateApp = () => {
-    Linking.openURL(updateUrl);
-  };
-
-  const goToLocationSearch = () => {
-    navigation.navigate('House Type');
-  };
   const hellod1 = text => {
-    setminValue(parseInt(text));
+    setminValue(parseInt(text, 10));
   };
   const hellod2 = text => {
-    setmaxValue(parseInt(text));
+    setmaxValue(parseInt(text, 10));
   };
   const handle = () => {
     setSelectedButton('For Rent');
     filterPosts(status);
-    console.log(selectedButton);
   };
   const handle1 = () => {
     setSelectedButton('For Sale');
     filterPosts(status);
-    console.log(selectedButton);
   };
   const filter = () => {
     filterPosts(status);
     setmodalvisible(false);
   };
+  // eslint-disable-next-line no-shadow
   const filterPosts = async status => {
-    console.log(maximumvalue);
     try {
       const query = {
         limit: 100000,
@@ -1145,17 +885,14 @@ const HomeScreen = props => {
       if (postsResult?.data?.listPosts?.nextToken !== null) {
         setNextToken(postsResult.data.listPosts.nextToken);
       } else {
-        return;
       }
-    } catch (error) {
-      console.log('error1', error);
-    }
+    } catch (error) {}
   };
   //  getting wishlists ================
 
   //  getting wishlists ================
 
-  const renderItem = ({item, index}) => (
+  const renderItem = ({item}) => (
     <View key={item}>
       <Post post={item} />
     </View>
@@ -1185,15 +922,11 @@ const HomeScreen = props => {
               justifyContent: 'space-evenly',
             }}>
             <View style={{marginTop: 20}}>
-              <Pressable
-                onPress={() => setmodalvisible(false)}
-                style={{margin: 10}}>
+              <Pressable onPress={() => setmodalvisible(false)} style={{margin: 10}}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
               </Pressable>
               <View style={{flex: 1, alignSelf: 'center'}}>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>
-                  Price range
-                </Text>
+                <Text style={{fontWeight: 'bold', fontSize: 20}}>Price range</Text>
                 <MultiSlider
                   min={minimumvalue}
                   max={maximumvalue}
@@ -1244,9 +977,7 @@ const HomeScreen = props => {
             </View>
 
             <View style={{padding: 15}}>
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>
-                Status of Home
-              </Text>
+              <Text style={{fontWeight: 'bold', fontSize: 20}}>Status of Home</Text>
 
               <Pressable
                 style={{
@@ -1260,14 +991,11 @@ const HomeScreen = props => {
                   paddingHorizontal: 20,
                   marginHorizontal: 20,
                   flex: 1,
-                  backgroundColor:
-                    selectedButton === 'For Rent' ? 'lightgray' : 'white',
+                  backgroundColor: selectedButton === 'For Rent' ? 'lightgray' : 'white',
                 }}
                 onPress={handle}>
                 <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 15, fontWeight: '600'}}>
-                    For Rent
-                  </Text>
+                  <Text style={{fontSize: 15, fontWeight: '600'}}>For Rent</Text>
                   <Text style={{fontSize: 12, paddingTop: 5}}>
                     You are looking for homes that are available for rent only
                   </Text>
@@ -1286,14 +1014,11 @@ const HomeScreen = props => {
                   paddingHorizontal: 20,
                   marginHorizontal: 20,
                   flex: 1,
-                  backgroundColor:
-                    selectedButton === 'For Sale' ? 'lightgray' : 'white',
+                  backgroundColor: selectedButton === 'For Sale' ? 'lightgray' : 'white',
                 }}
                 onPress={handle1}>
                 <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 15, fontWeight: '600'}}>
-                    For Sale
-                  </Text>
+                  <Text style={{fontSize: 15, fontWeight: '600'}}>For Sale</Text>
                   <Text style={{fontSize: 12, paddingTop: 5}}>
                     You are looking for homes that are available for sale only
                   </Text>
@@ -1305,9 +1030,6 @@ const HomeScreen = props => {
 
               <SectionedMultiSelect
                 styles={{
-                  chipText: {
-                    maxWidth: Dimensions.get('screen').width - 90,
-                  },
                   container: {
                     margin: 20,
                   },
@@ -1331,6 +1053,7 @@ const HomeScreen = props => {
                   chipText: {
                     color: 'black',
                     fontSize: 16,
+                    maxWidth: Dimensions.get('screen').width - 90,
                   },
 
                   itemText: {
@@ -1386,9 +1109,7 @@ const HomeScreen = props => {
               height: 50,
               opacity: posts.length === 0 ? 0.6 : 1,
             }}>
-            <Text style={{alignSelf: 'center', color: 'white'}}>
-              Show {posts.length} homes
-            </Text>
+            <Text style={{alignSelf: 'center', color: 'white'}}>Show {posts.length} homes</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -1397,9 +1118,7 @@ const HomeScreen = props => {
         {/* {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center',}}>
                 <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
             </TouchableOpacity>: null} */}
-        <Pressable
-          style={styles.searchButton}
-          onPress={() => navigation.navigate('House Type')}>
+        <Pressable style={styles.searchButton} onPress={() => navigation.navigate('House Type')}>
           <Fontisto name="search" size={20} color="deeppink" />
           <Text adjustsFontSizeToFit style={styles.searchButtonText}>
             Where do you want to rent?
@@ -1458,12 +1177,10 @@ const HomeScreen = props => {
         </TouchableOpacity>
         {categories.map((category, index) => (
           <TouchableOpacity
+            // eslint-disable-next-line react/no-array-index-key
             key={index.toString()}
             onPress={() => setStatusFilter(category.status)}
-            style={[
-              styles.button1,
-              status === category.status && styles.btnTabActive,
-            ]}>
+            style={[styles.button1, status === category.status && styles.btnTabActive]}>
             <FontAwesomeIcon
               icon={category.icon}
               style={[
@@ -1518,8 +1235,7 @@ const HomeScreen = props => {
           />
         )}
       </View>
-      {videoUrl &&
-      (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
+      {videoUrl && (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
         <Modal
           animationType="slide"
           transparent
