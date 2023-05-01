@@ -14,7 +14,6 @@ import {
   Dimensions,
   Button,
 } from 'react-native';
-import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -40,12 +39,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {API, graphqlOperation} from 'aws-amplify';
+import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
 import {createPost} from '../../graphql/mutations';
 import {AuthContext} from '../../navigation/AuthProvider';
-import axios from 'axios';
 import {HOME_STATUS} from '../../variables.js';
-import firestore from '@react-native-firebase/firestore';
-
+import styles from './styles.js';
 
 const OnboardingScreen7 = props => {
   const navigation = useNavigation();
@@ -67,9 +66,11 @@ const OnboardingScreen7 = props => {
   const locality = route.params?.locality || progressData?.locality;
   const sublocality = route.params?.sublocality || progressData?.sublocality;
   const address = route.params?.address || progressData?.address;
-  const marketerNumber = route.params?.marketerNumber || progressData?.marketerNumber;
+  const marketerNumber =
+    route.params?.marketerNumber || progressData?.marketerNumber;
   const currency = route.params?.currency || progressData?.currency;
-  const loyaltyProgram = route.params?.loyaltyProgram || progressData?.loyaltyProgram;
+  const loyaltyProgram =
+    route.params?.loyaltyProgram || progressData?.loyaltyProgram;
   const negotiable = route.params?.negotiable || progressData?.negotiable;
   const furnished = route.params?.furnished || progressData?.furnished;
   const videoUrl = route.params?.videoUrl || progressData?.videoUrl;
@@ -78,48 +79,48 @@ const OnboardingScreen7 = props => {
   const [progressData, setProgressData] = useState(null);
   const [mergedData, setMergedData] = useState({});
 
-
   const uploadusers = [
     'UWHvpJ1XoObsFYTFR48zYe6jscJ2',
     '7WGODlIhvkXGhjpngLXxAnQihTK2',
     'lvtDmH13IRW1njCJKZyKsO2okKr1',
   ];
 
-  const loadProgress = async (userId) => {
-
+  const loadProgress = async userId => {
     try {
-      const response = await fetch(`https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
-  
+      );
+
       const progressData = await response.json();
-  
+
       if (progressData) {
         return progressData;
-      } else {
-        throw new Error('No progress data found');
       }
+      throw new Error('No progress data found');
     } catch (error) {
       console.error('Error loading progress:', error);
       return null;
     }
   };
-  const getUser = async() => {
+  const getUser = async () => {
     await firestore()
-    .collection('users')
-    .doc(user.uid)
-    .get()
-    .then((documentSnapshot) => {
-      if( documentSnapshot.exists ) {
-        console.log('User Data', documentSnapshot.data());
-        setUserData(documentSnapshot.data());
-      }
-    })
-  }
-  
+      .collection('users')
+      .doc(user.uid)
+      .get()
+      .then(documentSnapshot => {
+        if (documentSnapshot.exists) {
+          console.log('User Data', documentSnapshot.data());
+          setUserData(documentSnapshot.data());
+        }
+      });
+  };
+
   const fetchProgressData = async () => {
     const data = await loadProgress(user.uid);
     if (data) {
@@ -127,69 +128,68 @@ const OnboardingScreen7 = props => {
       setProgressData(data);
     }
   };
-  
+
   useEffect(() => {
     getUser();
-    console.log('userData', userData)
+    console.log('userData', userData);
     fetchProgressData();
   }, []);
-  
+
   useEffect(() => {
     if (progressData) {
       const sanitizedRouteParams = Object.fromEntries(
-        Object.entries(route.params).filter(([key, value]) => value !== undefined)
+        Object.entries(route.params).filter(
+          ([key, value]) => value !== undefined,
+        ),
       );
-  
+
       const merged = {
         ...progressData,
         ...sanitizedRouteParams,
         ...progressData.progressData,
       };
-  
+
       const unwantedKeys = ['progressData', 'screenName'];
-  
+
       const sanitizedMergedData = Object.keys(merged).reduce((acc, key) => {
         if (!unwantedKeys.includes(key)) {
           acc[key] = merged[key];
         }
         return acc;
       }, {});
-  
+
       setMergedData(sanitizedMergedData);
     }
-    console.log('mergedData', mergedData)
+    console.log('mergedData', mergedData);
   }, [progressData]);
-  
+
   useEffect(() => {
-   
     console.log({
-      title: title,
-      bedroom: bedroom,
-      bathroom: bathroom,
-      bed: bed,
-      type: type,
-      description: description,
-      imageUrls: imageUrls,
-      homeprice: homeprice,
-      latitude: latitude,
-      longitude: longitude,
-      mode: mode,
-      amenities: amenities,
-      phoneNumber: phoneNumber,
-      locality: locality,
-      sublocality: sublocality,
+      title,
+      bedroom,
+      bathroom,
+      bed,
+      type,
+      description,
+      imageUrls,
+      homeprice,
+      latitude,
+      longitude,
+      mode,
+      amenities,
+      phoneNumber,
+      locality,
+      sublocality,
       userId: user.uid,
-      marketerNumber: marketerNumber,
-      currency: currency,
-      loyaltyProgram: loyaltyProgram,
-      negotiable: negotiable,
-      furnished: furnished,
-      address: address,
-      videoUrl: videoUrl,
+      marketerNumber,
+      currency,
+      loyaltyProgram,
+      negotiable,
+      furnished,
+      address,
+      videoUrl,
     });
   }, []);
-
-
 
   const searchApi = async data => {
     const {search, postId, title, description, image} = data;
@@ -206,19 +206,22 @@ const OnboardingScreen7 = props => {
 
   async function clearProgressData(userId) {
     try {
-      const response = await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            action: 'clear',
+          }),
         },
-        body: JSON.stringify({
-          userId: userId,
-          action: 'clear',
-        }),
-      });
-  
+      );
+
       const result = await response.json();
-  
+
       if (response.status === 200) {
         console.log('Progress data cleared successfully:', result);
       } else {
@@ -228,12 +231,10 @@ const OnboardingScreen7 = props => {
       console.error('Error clearing progress data:', error);
     }
   }
-  
-  
 
   const uploadHome = async id => {
     try {
-      let input = {
+      const input = {
         image: mergedData?.imageUrls[0],
         bed: mergedData.bed,
         bedroom: mergedData.bedroom,
@@ -252,7 +253,9 @@ const OnboardingScreen7 = props => {
         longitude: mergedData.longitude,
         oldPrice: Math.round(mergedData.homeprice * 12),
         newPrice: Math.round(mergedData.homeprice * 12),
-        aircondition: mergedData.amenities.includes('Air Conditioner') ? 'Yes' : 'No',
+        aircondition: mergedData.amenities.includes('Air Conditioner')
+          ? 'Yes'
+          : 'No',
         wifi: mergedData.amenities.includes('WiFi') ? 'Yes' : 'No',
         kitchen: mergedData.amenities.includes('Kitchen') ? 'Yes' : 'No',
         bathroom: mergedData.amenities.includes('Bathroom') ? 'Yes' : 'No',
@@ -320,11 +323,8 @@ const OnboardingScreen7 = props => {
     launchCamera(options, response => {
       console.log('Response = ', response);
       if (response.didCancel) {
-        return;
       } else if (response.errorCode === 'camera_unavailable') {
-        return;
       } else if (response.customButton) {
-        return;
       } else {
         const img = {
           uri: response.assets[0].uri,
@@ -341,11 +341,8 @@ const OnboardingScreen7 = props => {
     launchImageLibrary({maxWidth: 1024, maxHeight: 683}, response => {
       console.log('Response = ', response);
       if (response.didCancel) {
-        return;
       } else if (response.error) {
-        return;
       } else if (response.customButton) {
-        return;
       } else {
         const img = {
           uri: response.assets[0].uri,
@@ -365,7 +362,7 @@ const OnboardingScreen7 = props => {
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
       style={styles.container}>
-      <StatusBar hidden={true} />
+      <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto
           name="angle-left"
@@ -382,7 +379,7 @@ const OnboardingScreen7 = props => {
       </View>
 
       <Animatable.View
-        useNativeDriver={true}
+        useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
         style={styles.footer}>
@@ -407,11 +404,7 @@ const OnboardingScreen7 = props => {
                 Add {images.length >= 5 ? 'more' : 'at least 5'} photos
               </Text>
               <TouchableOpacity onPress={() => openLibrary()}>
-                <FontAwesomeIcon
-                  icon={faPlusCircle}
-                  size={25}
-                  color={'black'}
-                />
+                <FontAwesomeIcon icon={faPlusCircle} size={25} color="black" />
               </TouchableOpacity>
             </TouchableOpacity>
 
@@ -443,7 +436,7 @@ const OnboardingScreen7 = props => {
             />
 
             <TouchableOpacity
-              disabled={images.length < 5 ? true : false}
+              disabled={images.length < 5}
               onPress={goHome}
               style={{
                 left: 250,
@@ -492,7 +485,7 @@ const OnboardingScreen7 = props => {
                 <FontAwesomeIcon
                   icon={faArrowAltCircleUp}
                   size={30}
-                  color={'black'}
+                  color="black"
                 />
               </View>
             </TouchableOpacity>
@@ -518,60 +511,54 @@ const OnboardingScreen7 = props => {
               </View>
 
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <FontAwesomeIcon icon={faCamera} size={30} color={'black'} />
+                <FontAwesomeIcon icon={faCamera} size={30} color="black" />
               </View>
             </TouchableOpacity>
-            {userData?.marketer_status === 'ACCEPTED' ? 
-            
-            <TouchableOpacity
-            onPress={goHome}
-            style={{
-              left: 250,
-              width: 100,
-              backgroundColor: 'deeppink',
-              borderRadius: 20,
-              alignItems: 'center',
-              paddingHorizontal: 20,
-              paddingVertical: 20,
-            }}>
-            <Text
-              style={{
-                color: 'white',
-                fontFamily: 'Montserrat-Bold',
-                fontSize: 14,
-              }}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-            
-            
-            :
-
+            {userData?.marketer_status === 'ACCEPTED' ? (
               <TouchableOpacity
-              disabled={images.length === 0 ? true : false}
-              onPress={goHome}
-              style={{
-                left: 250,
-                width: 100,
-                backgroundColor: 'deeppink',
-                opacity: images.length === 0 ? 0.4 : 1,
-                borderRadius: 20,
-                alignItems: 'center',
-                paddingHorizontal: 20,
-                paddingVertical: 20,
-              }}>
-              <Text
+                onPress={goHome}
                 style={{
-                  color: 'white',
-                  fontFamily: 'Montserrat-Bold',
-                  fontSize: 14,
+                  left: 250,
+                  width: 100,
+                  backgroundColor: 'deeppink',
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  paddingVertical: 20,
                 }}>
-                Submit
-              </Text>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'Montserrat-Bold',
+                    fontSize: 14,
+                  }}>
+                  Submit
+                </Text>
               </TouchableOpacity>
-            
-            }
-            
+            ) : (
+              <TouchableOpacity
+                disabled={images.length === 0}
+                onPress={goHome}
+                style={{
+                  left: 250,
+                  width: 100,
+                  backgroundColor: 'deeppink',
+                  opacity: images.length === 0 ? 0.4 : 1,
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  paddingVertical: 20,
+                }}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontFamily: 'Montserrat-Bold',
+                    fontSize: 14,
+                  }}>
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            )}
           </ScrollView>
         )}
       </Animatable.View>

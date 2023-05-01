@@ -1,19 +1,27 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, Dimensions, StyleSheet, TextInput} from 'react-native';
-import {ScrollView} from 'react-native';
-import {View, Text} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import ImageCarousel from '../../components/ImageCarousel';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {TouchableOpacity} from 'react-native';
+
 import {API, graphqlOperation} from 'aws-amplify';
+import ImageCarousel from '../../components/ImageCarousel';
 import {updatePost} from '../../graphql/mutations';
 
 const EditHome = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const homeInfo = route.params.homeInfo;
+  const {homeInfo} = route.params;
   const [selectedItems, setSelectedItems] = useState();
   const [title, setTitle] = useState(homeInfo?.title);
   const [description, setDescription] = useState(homeInfo?.description);
@@ -66,8 +74,6 @@ const EditHome = () => {
       .map((single, index) => {
         if (single?.value === 'Yes') {
           return single?.name;
-        } else {
-          return;
         }
       })
       .filter(notUndefined => notUndefined !== undefined);
@@ -117,14 +123,14 @@ const EditHome = () => {
           <TextInput
             value={title}
             style={styles.input}
-            editable={true}
+            editable
             onChangeText={text => setTitle(text)}
           />
           <Text style={{...styles.label, marginTop: 10}}>Description</Text>
           <TextInput
             value={description}
             style={[styles.input, {height: 100}]}
-            editable={true}
+            editable
             onChangeText={text => setDescription(text)}
             multiline
           />
@@ -132,7 +138,7 @@ const EditHome = () => {
           <TextInput
             value={maxGuests}
             style={styles.input}
-            editable={true}
+            editable
             onChangeText={text => setMaxGuests(text)}
             keyboardType="numeric"
           />
@@ -140,7 +146,7 @@ const EditHome = () => {
           <TextInput
             value={price}
             style={styles.input}
-            editable={true}
+            editable
             keyboardType="number-pad"
             onChangeText={text => setPrice(text)}
           />
@@ -196,11 +202,11 @@ const EditHome = () => {
                 scrollView: {paddingHorizontal: 0},
               }}
               items={items}
-              showChips={true}
+              showChips
               uniqueKey="id"
               IconRenderer={Icon}
               selectText="Choose amenities in your home"
-              showDropDowns={true}
+              showDropDowns
               modalAnimationType="fade"
               readOnlyHeadings={false}
               onSelectedItemsChange={onSelectedItemsChange}

@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import mixpanel from '../../src/MixpanelConfig';
+import {useCallback} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import mixpanel from '../MixpanelConfig';
 
 const useDwellTimeTracking = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const trackDwellTime = useCallback(() => {
-    let startTime = {};
+    const startTime = {};
 
     const focusHandler = () => {
       const screenName = route.name;
@@ -33,7 +33,7 @@ const useDwellTimeTracking = () => {
     };
   }, [navigation, route]);
 
-  return { trackDwellTime };
+  return {trackDwellTime};
 };
 
 export default useDwellTimeTracking;

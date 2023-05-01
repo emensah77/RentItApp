@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   const {
     nextToken,
     limit,
@@ -35,15 +35,19 @@ exports.handler = async (event) => {
     // Prepare the response object
     const response = {
       items: result.Items,
-      nextToken: result.LastEvaluatedKey ? JSON.stringify(result.LastEvaluatedKey) : null,
+      nextToken: result.LastEvaluatedKey
+        ? JSON.stringify(result.LastEvaluatedKey)
+        : null,
     };
 
     return {
       statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,GET,POST,PUT,DELETE,PATCH,HEAD,CONNECT,TRACE',
-        'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
+        'Access-Control-Allow-Methods':
+          'OPTIONS,GET,POST,PUT,DELETE,PATCH,HEAD,CONNECT,TRACE',
+        'Access-Control-Allow-Headers':
+          'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
       },
       body: JSON.stringify(response),
     };
@@ -53,10 +57,12 @@ exports.handler = async (event) => {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,GET,POST,PUT,DELETE,PATCH,HEAD,CONNECT,TRACE',
-        'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
+        'Access-Control-Allow-Methods':
+          'OPTIONS,GET,POST,PUT,DELETE,PATCH,HEAD,CONNECT,TRACE',
+        'Access-Control-Allow-Headers':
+          'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
       },
-      body: JSON.stringify({ message: 'Error fetching items' }),
+      body: JSON.stringify({message: 'Error fetching items'}),
     };
   }
 };
