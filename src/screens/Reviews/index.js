@@ -7,12 +7,13 @@ import {
   StatusBar,
   TouchableOpacity,
   View,
+  Text,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
-import {Text} from 'react-native';
-import CardCommentPhoto from './ReviewCard/CardCommentPhoto';
+
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import CardCommentPhoto from './ReviewCard/CardCommentPhoto';
 
 const EReviewsData = [
   {
@@ -53,7 +54,7 @@ const Review = props => {
 
   return (
     <View style={{flex: 1}} edges={['right', 'top', 'left']}>
-      <StatusBar hidden={true} />
+      <StatusBar hidden />
       <LinearGradient
         colors={['purple', 'deeppink']}
         start={{x: 0.1, y: 0.2}}
@@ -93,7 +94,7 @@ const Review = props => {
           refreshControl={
             <RefreshControl
               colors={['blue']}
-              tintColor={'deeppink'}
+              tintColor="deeppink"
               refreshing={false}
               onRefresh={() => {}}
             />

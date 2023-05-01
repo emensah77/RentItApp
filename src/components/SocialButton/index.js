@@ -1,10 +1,17 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { Dimensions } from 'react-native';
-import { faFacebook } from "@fortawesome/free-brands-svg-icons"
+
+import {faFacebook} from '@fortawesome/free-brands-svg-icons';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const SocialButton = ({
@@ -14,16 +21,21 @@ const SocialButton = ({
   backgroundColor,
   ...rest
 }) => {
-  let bgColor = backgroundColor;
+  const bgColor = backgroundColor;
   return (
     <TouchableOpacity
       style={[styles.buttonContainer, {backgroundColor: bgColor}]}
       {...rest}>
       <View style={styles.iconWrapper}>
-        <FontAwesomeIcon icon={btnType} style={styles.icon} size={22} color={color} />
+        <FontAwesomeIcon
+          icon={btnType}
+          style={styles.icon}
+          size={22}
+          color={color}
+        />
       </View>
       <View style={styles.btnTxtWrapper}>
-        <Text style={[styles.buttonText, {color: color}]}>{buttonTitle}</Text>
+        <Text style={[styles.buttonText, {color}]}>{buttonTitle}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -39,8 +51,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: 'row',
     borderRadius: 15,
-    borderColor:'black',
-    borderWidth:.5
+    borderColor: 'black',
+    borderWidth: 0.5,
   },
   iconWrapper: {
     width: 30,
@@ -57,7 +69,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color:"black",
+    color: 'black',
     fontWeight: 'bold',
     fontFamily: 'Montserrat-Bold',
   },

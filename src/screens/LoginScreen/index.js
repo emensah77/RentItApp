@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,15 +13,20 @@ import {
   StatusBar,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import Swiper from 'react-native-swiper';
+import {AppleButton} from '@invertase/react-native-apple-authentication';
+import {
+  faFacebook,
+  faApple,
+  faGoogle,
+} from '@fortawesome/free-brands-svg-icons';
+import SplashScreen from 'react-native-splash-screen';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import SocialButton from '../../components/SocialButton';
-import { AuthContext } from '../../navigation/AuthProvider';
-import Swiper from 'react-native-swiper';
-import { AppleButton } from '@invertase/react-native-apple-authentication';
-import { faFacebook, faApple, faGoogle } from '@fortawesome/free-brands-svg-icons';
-import SplashScreen from 'react-native-splash-screen'
-const { width, height } = Dimensions.get('screen');
+import {AuthContext} from '../../navigation/AuthProvider';
+
+const {width, height} = Dimensions.get('screen');
 const ITEM_WIDTH = width * 0.76;
 const ITEM_HEIGHT = ITEM_WIDTH * 1.47;
 
@@ -35,30 +40,33 @@ const images = [
 const data = images.map((image, index) => ({
   key: String(index),
   photo: image,
-
 }));
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const { login, googleLogin, fbLogin, appleLogin } = useContext(AuthContext);
+  const {login, googleLogin, fbLogin, appleLogin} = useContext(AuthContext);
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   useEffect(() => {
     SplashScreen.hide();
-  })
+  });
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <StatusBar hidden={true} />
+      <StatusBar hidden />
       <View style={styles.container}>
-
         <View style={styles.header}>
           <Animatable.Image
             animation="fadeInDownBig"
             duraton={1500}
             source={require('../../../assets/data/images/rentitpic1.png')}
-            style={{ height: 200, width: 200, justifyContent: 'center', alignSelf: "center" }}
+            style={{
+              height: 200,
+              width: 200,
+              justifyContent: 'center',
+              alignSelf: 'center',
+            }}
             resizeMode="contain"
           />
           <Text style={styles.text_header}> Welcome </Text>
@@ -66,16 +74,17 @@ const LoginScreen = ({ navigation }) => {
         <Animatable.View
           animation="fadeInUpBig"
           duration={1500}
-          style={styles.footer}
-        >
+          style={styles.footer}>
           <Text style={styles.title}>Find your next home</Text>
 
           <View style={styles.button}>
-            <Image source={require('../../../assets/data/images/home.png')} style={{ width: 300, height: 150 }} />
+            <Image
+              source={require('../../../assets/data/images/home.png')}
+              style={{width: 300, height: 150}}
+            />
 
             {Platform.OS === 'ios' ? (
               <View>
-
                 {/* <SocialButton
             buttonTitle="Continue with Facebook"
             btnType={faFacebook}
@@ -99,9 +108,9 @@ const LoginScreen = ({ navigation }) => {
                   backgroundColor="white"
                   onPress={() => googleLogin()}
                 />
-              </View>) :
+              </View>
+            ) : (
               <View>
-
                 {/* <SocialButton
           buttonTitle="Continue with Facebook"
           btnType={faFacebook}
@@ -117,14 +126,9 @@ const LoginScreen = ({ navigation }) => {
                   onPress={() => googleLogin()}
                 />
               </View>
-
-            }
-
+            )}
           </View>
         </Animatable.View>
-
-
-
       </View>
       {/*
       <Text style={styles.text}>RN Social App</Text>
@@ -161,7 +165,7 @@ const LoginScreen = ({ navigation }) => {
         <Text style={{color:"blue", fontSize:38, fontFamily:'Montserrat-Bold'}}>RentIt</Text>
          <Text style={{color:'blue', fontSize:21, fontFamily:'Montserrat-Regular'}}>find your next home</Text>
      </View>
-        
+
          <View style={styles.containerFlat}>
           <Animated.FlatList */}
       {/* //           horizontal
@@ -205,7 +209,7 @@ const LoginScreen = ({ navigation }) => {
       //                      overflow:'hidden',
       //                      alignItems:'center',
       //                      borderRadius: 18,
-                          
+
       //                   }}>
       //                     <Animated.Image source={{uri: item.photo}}
       //                     style={{
@@ -217,19 +221,17 @@ const LoginScreen = ({ navigation }) => {
 
       //                       },
       //                     ],
-                        
+
       //                     }}/>
       //                   </View>
 
       //                   </View>
-                        
+
       //                 </View>
       //               )
       //           }}
       //           />
       //     </View> */}
-
-
 
       {/*
       <TouchableOpacity
@@ -252,9 +254,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-
   },
-
 
   text: {
     fontFamily: 'Mo',
@@ -329,13 +329,13 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontSize: 40,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   header: {
     flex: 1,
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
-    paddingBottom: 50
+    paddingBottom: 50,
   },
   footer: {
     flex: 1.5,
@@ -344,30 +344,29 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 30,
-
   },
   text_header: {
     color: '#fff',
-    fontFamily: "Montserrat-Bold",
-    fontSize: 30
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 30,
   },
   text_footer: {
     color: '#05375a',
-    fontSize: 18
+    fontSize: 18,
   },
   action: {
     flexDirection: 'row',
     marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
-    paddingBottom: 5
+    paddingBottom: 5,
   },
   actionError: {
     flexDirection: 'row',
     marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#FF0000',
-    paddingBottom: 5
+    paddingBottom: 5,
   },
   textInput: {
     flex: 1,
@@ -381,34 +380,33 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    marginTop: 50
+    marginTop: 50,
   },
   signIn: {
     width: '100%',
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10
+    borderRadius: 10,
   },
   textSign: {
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,
-    backgroundColor: 'blue'
+    backgroundColor: 'blue',
   },
   title: {
     color: 'blue',
     fontSize: 25,
 
-    fontFamily: 'Montserrat-Bold'
+    fontFamily: 'Montserrat-Bold',
   },
   text: {
     color: 'blue',
     marginTop: 5,
     fontSize: 20,
-    fontFamily: 'Montserrat-Bold'
+    fontFamily: 'Montserrat-Bold',
   },
-
 });

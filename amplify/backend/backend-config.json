@@ -27,10 +27,7 @@
     "tinggPaymentGateway": {
       "dependsOn": [
         {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
+          "attributes": ["Name", "Arn"],
           "category": "function",
           "resourceName": "tinggPaymentGateway"
         }

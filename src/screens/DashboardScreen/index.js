@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ScrollView,ActivityIndicator,Dimensions, TouchableOpacity } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  ActivityIndicator,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+import {Calendar} from 'react-native-calendars';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
-
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -19,47 +27,44 @@ const DashboardScreen = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
-  
   const fetchAssignedReps = async () => {
     try {
       const result = await firebase.firestore().collection('assignedReps');
       const newAssignedReps = [];
-      
-      await result.get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+
+      await result.get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
           newAssignedReps.push(doc.data());
         });
       });
-  
+
       setAssignedReps(newAssignedReps);
       console.log('Assigned Reps', newAssignedReps);
     } catch (error) {
       console.error('Error fetching assigned reps:', error);
     }
   };
-  
-
-  
 
   useEffect(() => {
     fetchViewingsWithoutAssignedRep();
     fetchAssignedReps();
   }, []);
-  
-  
 
   const upcomingViewings = viewings?.filter(
-    (viewing) =>
+    viewing =>
       new Date(viewing.viewingDate).toDateString() ===
       new Date().toDateString(),
   );
-  const fetchViewingsByAssignedRep = async (assignedRep) => {
+  const fetchViewingsByAssignedRep = async assignedRep => {
     try {
-      const response = await fetch('https://xzafkcsbjnpqggobduiqseeyqm0qnkhl.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'fetchByAssignedRep', assignedRep }),
-      });
+      const response = await fetch(
+        'https://xzafkcsbjnpqggobduiqseeyqm0qnkhl.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({action: 'fetchByAssignedRep', assignedRep}),
+        },
+      );
       const data = await response.json();
       setViewings(data.viewings);
       setLoading(false);
@@ -68,14 +73,17 @@ const DashboardScreen = () => {
       setLoading(false);
     }
   };
-  
+
   const fetchViewingsWithoutAssignedRep = async () => {
     try {
-      const response = await fetch('https://xzafkcsbjnpqggobduiqseeyqm0qnkhl.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'fetchAllWithoutAssignedRep' }),
-      });
+      const response = await fetch(
+        'https://xzafkcsbjnpqggobduiqseeyqm0qnkhl.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({action: 'fetchAllWithoutAssignedRep'}),
+        },
+      );
       const data = await response.json();
       setViewings(data.viewings);
       setLoading(false);
@@ -84,13 +92,11 @@ const DashboardScreen = () => {
       setLoading(false);
     }
   };
-  
-  
 
   const processViewingsForCalendar = () => {
     const markedDates = {};
 
-    viewings.forEach((viewing) => {
+    viewings.forEach(viewing => {
       markedDates[viewing.viewingDate] = {
         selected: true,
         marked: true,
@@ -100,7 +106,7 @@ const DashboardScreen = () => {
     return markedDates;
   };
 
-  const filteredViewings = viewings.filter((viewing) => {
+  const filteredViewings = viewings.filter(viewing => {
     const dateFilter = viewing.viewingDate === selectedDate;
     const repFilter = !selectedRep || viewing.assignedRep === selectedRep;
     return dateFilter && repFilter;
@@ -108,7 +114,7 @@ const DashboardScreen = () => {
   const loadMoreViewings = () => {
     setVisibleViewings(visibleViewings + 6);
   };
-  const statusColor = (status) => {
+  const statusColor = status => {
     switch (status) {
       case 'In Progress':
         return 'deeppink';
@@ -122,7 +128,6 @@ const DashboardScreen = () => {
         return 'gray';
     }
   };
-  
 
   if (loading) {
     return (
@@ -132,65 +137,77 @@ const DashboardScreen = () => {
     );
   }
 
-  const renderItem = ({ item }) => (
-    <View style={[
-        styles.viewingCard,
-        { backgroundColor: statusColor(item.status) },
-      ]}>
+  const renderItem = ({item}) => (
+    <View
+      style={[styles.viewingCard, {backgroundColor: statusColor(item.status)}]}>
       <Text style={styles.viewingCardTitle}>{item.username}</Text>
       <Text style={styles.viewingCardDetails}>
-        {item.viewingDate} at {item.viewingTime}
+        {item.viewingDate} at
+        {item.viewingTime}
       </Text>
-      <Text style={styles.viewingCardDetails}>Contact: {item.usercontact}</Text>
-      <Text style={styles.viewingCardDetails}>Location: {item.userlocation}</Text>
-      <Text style={styles.viewingCardDetails}>rep: {item.assignedRep}</Text>
+      <Text style={styles.viewingCardDetails}>
+        Contact:
+        {item.usercontact}
+      </Text>
+      <Text style={styles.viewingCardDetails}>
+        Location: {item.userlocation}
+      </Text>
+      <Text style={styles.viewingCardDetails}>
+        rep:
+        {item.assignedRep}
+      </Text>
 
       <TouchableOpacity>
-      <Text style={styles.viewingCardStatus}>Status: {item.status}</Text>
-
+        <Text style={styles.viewingCardStatus}>
+          Status:
+          {item.status}
+        </Text>
       </TouchableOpacity>
     </View>
   );
-  
 
   return (
     <LinearGradient
       colors={['deeppink', 'blue']}
-      start={{ x: 0.1, y: 0.2 }}
-      end={{ x: 1, y: 0.5 }}
-      style={styles.container}
-    >
+      start={{x: 0.1, y: 0.2}}
+      end={{x: 1, y: 0.5}}
+      style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>My Dashboard</Text>
         </View>
         <View style={styles.repPickerContainer}>
-        {assignedReps.length > 0 && (
-          <DropDownPicker
-          open={open}
-          value={value}
-          items={assignedReps.map((rep) => ({ label: rep.name, value: rep.name }))}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={(items) => setAssignedReps(items.map((item) => ({ name: item.label, value: item.value })))}
-          containerStyle={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            
-            width: 150, // Set the width of the container
-          }}
-          labelStyle={{
-            color:"blue"
-          }}
-          style={{
-            backgroundColor: "#f0f0f0",
-          }}
-          dropDownStyle={{ backgroundColor: '#fafafa' }}
-        />
-        
-        )}
+          {assignedReps.length > 0 && (
+            <DropDownPicker
+              open={open}
+              value={value}
+              items={assignedReps.map(rep => ({
+                label: rep.name,
+                value: rep.name,
+              }))}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={items =>
+                setAssignedReps(
+                  items.map(item => ({name: item.label, value: item.value})),
+                )
+              }
+              containerStyle={{
+                position: 'absolute',
+                top: 10,
+                right: 10,
 
+                width: 150, // Set the width of the container
+              }}
+              labelStyle={{
+                color: 'blue',
+              }}
+              style={{
+                backgroundColor: '#f0f0f0',
+              }}
+              dropDownStyle={{backgroundColor: '#fafafa'}}
+            />
+          )}
         </View>
 
         <View style={styles.upcomingViewingsContainer}>
@@ -208,7 +225,7 @@ const DashboardScreen = () => {
           <Text style={styles.calendarTitle}>Calendar</Text>
           <Calendar
             markedDates={processViewingsForCalendar()}
-            onDayPress={(day) => {
+            onDayPress={day => {
               setSelectedDate(day.dateString);
             }}
           />
@@ -223,8 +240,7 @@ const DashboardScreen = () => {
             filteredViewings.length > visibleViewings ? (
               <TouchableOpacity
                 style={styles.loadMoreButton}
-                onPress={loadMoreViewings}
-              >
+                onPress={loadMoreViewings}>
                 <Text style={styles.loadMoreButtonText}>Load More</Text>
               </TouchableOpacity>
             ) : null
@@ -244,13 +260,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
-},
-headerText: {
-fontSize: 24,
-fontWeight: 'bold',
-color: '#fff',
-},
-headerContainer: {
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -270,17 +286,17 @@ headerContainer: {
     fontWeight: 'bold',
     fontSize: 16,
   },
-calendarContainer: {
-backgroundColor: 'transparent',
-padding: 20,
-},
-calendarTitle: {
-fontSize: 20,
-fontWeight: 'bold',
-marginBottom: 15,
-color: '#fff',
-},
-viewingCard: {
+  calendarContainer: {
+    backgroundColor: 'transparent',
+    padding: 20,
+  },
+  calendarTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#fff',
+  },
+  viewingCard: {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
@@ -288,39 +304,37 @@ viewingCard: {
     width: screenWidth * 0.8,
     height: screenWidth * 0.3,
     justifyContent: 'space-between',
-    borderWidth: .5,
+    borderWidth: 0.5,
     borderColor: 'white',
-
-  
-},
-viewingCardStatus: {
+  },
+  viewingCardStatus: {
     fontSize: 14,
     fontWeight: 'bold',
     color: 'white',
   },
-viewingCardTitle: {
-fontSize: 16,
-fontWeight: 'bold',
-color: 'white',
-},
-viewingCardDetails: {
-fontSize: 14,
-color: 'white',
-},
-loadMoreButton: {
-backgroundColor: '#FF5A5F',
-borderRadius: 20,
-padding: 10,
-paddingHorizontal: 20,
-marginTop: 20,
-alignSelf: 'center',
-},
-loadMoreButtonText: {
-color: 'white',
-fontWeight: 'bold',
-fontSize: 16,
-},
-scrollViewContainer: {
+  viewingCardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  viewingCardDetails: {
+    fontSize: 14,
+    color: 'white',
+  },
+  loadMoreButton: {
+    backgroundColor: '#FF5A5F',
+    borderRadius: 20,
+    padding: 10,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  loadMoreButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  scrollViewContainer: {
     paddingBottom: 20,
   },
 

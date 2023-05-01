@@ -3,7 +3,7 @@ module.exports = {
   plugins: ['react-native-reanimated/plugin'],
   env: {
     production: {
-      plugins: ["transform-remove-console"],     //removing consoles.log from app during release (production) versions
+      plugins: ['transform-remove-console'], // removing consoles.log from app during release (production) versions
     },
   },
 };

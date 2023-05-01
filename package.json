@@ -10,6 +10,7 @@
     "lint": "prettier --write . && eslint --fix ."
   },
   "dependencies": {
+    "@aws-amplify/core": "^5.1.13",
     "@bam.tech/react-native-image-resizer": "^3.0.5",
     "@eva-design/eva": "^2.1.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -105,6 +106,7 @@
     "react-native-video": "^5.2.1",
     "react-native-webview": "^11.26.0",
     "react-navigation-shared-element": "^3.1.3",
+    "reactotron-react-native": "^5.0.2",
     "sharp": "^0.31.3",
     "stripe": "^8.177.0"
   },
@@ -119,6 +121,7 @@
     "@react-native-community/eslint-config": "^2.0.0",
     "babel-jest": "^26.6.3",
     "babel-plugin-transform-remove-console": "^6.9.4",
+    "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^6.15.0",
@@ -127,12 +130,15 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-sort-keys-fix": "^1.1.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "jest": "^26.6.3",
     "metro": "^0.72.3",
     "metro-core": "^0.72.3",
     "metro-react-native-babel-preset": "^0.67.0",
+    "prettier": "^2.8.8",
     "react-test-renderer": "17.0.2",
-    "reactotron-react-native": "^5.0.2"
+    "typescript": "^3.3.1"
   },
   "jest": {
     "preset": "react-native"

@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, Platform, StyleSheet} from 'react-native';
 import FormInput from '../../components/FormInput';
 import FormButton from '../../components/FormButton';
 import SocialButton from '../../components/SocialButton';
-import { AuthContext } from '../../navigation/AuthProvider';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState();
@@ -18,7 +18,7 @@ const SignupScreen = ({navigation}) => {
 
       <FormInput
         labelValue={email}
-        onChangeText={(userEmail) => setEmail(userEmail)}
+        onChangeText={userEmail => setEmail(userEmail)}
         placeholderText="Email"
         iconType="user"
         keyboardType="email-address"
@@ -28,18 +28,18 @@ const SignupScreen = ({navigation}) => {
 
       <FormInput
         labelValue={password}
-        onChangeText={(userPassword) => setPassword(userPassword)}
+        onChangeText={userPassword => setPassword(userPassword)}
         placeholderText="Password"
         iconType="lock"
-        secureTextEntry={true}
+        secureTextEntry
       />
 
       <FormInput
         labelValue={confirmPassword}
-        onChangeText={(userPassword) => setConfirmPassword(userPassword)}
+        onChangeText={userPassword => setConfirmPassword(userPassword)}
         placeholderText="Confirm Password"
         iconType="lock"
-        secureTextEntry={true}
+        secureTextEntry
       />
 
       <FormButton
@@ -71,7 +71,7 @@ const SignupScreen = ({navigation}) => {
             backgroundColor="#e6eaf4"
             onPress={() => {}}
           />
-    
+
           <SocialButton
             buttonTitle="Sign Up with Google"
             btnType="google"
