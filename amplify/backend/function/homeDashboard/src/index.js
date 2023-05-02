@@ -3,7 +3,9 @@ const AWS = require('aws-sdk');
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async event => {
+
   const {nextToken, limit, postId} = event;
+
 
   const filterExpressions = [];
   const expressionAttributeValues = {};
