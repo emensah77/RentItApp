@@ -15,6 +15,7 @@ import {WishListProvider} from './src/context/WishlistContext';
 Amplify.configure(awsconfig);
 Sentry.init({
   dsn: 'https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972',
+  environment: __DEV__ ? 'development' : 'production',
 });
 
 const App = () => {
