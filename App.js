@@ -25,7 +25,7 @@ const App = () => {
     requestUserPermission();
     notificationListener();
 
-    AppState.addEventListener('memoryWarning', (state) => {
+    AppState.addEventListener('memoryWarning', state => {
       console.debug('Your memory is currently warning.', state);
     });
   }, []);
