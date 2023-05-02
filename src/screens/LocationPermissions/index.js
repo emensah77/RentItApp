@@ -1,111 +1,110 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  StatusBar,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Platform,
-} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StatusBar, View, Text, StyleSheet, TouchableOpacity, Image, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
-import BackgroundFetch from 'react-native-background-fetch';
+// import BackgroundFetch from 'react-native-background-fetch';
+
+import locationPin from '../../../assets/data/images/locationPin.png';
 
 const LocationPermissions = () => {
   const navigation = useNavigation();
   const [allow, setAllow] = useState(false);
 
-  const subscribe = subscription => {};
+  const subscribe = (/* subscription */) => {};
 
   const unsubscribe = () => {};
 
-  const addEvent = (name, params) => {};
-  /// Configure the BackgroundGeolocation plugin.
-  const initBackgroundGeolocation = async () => {
-    subscribe(
-      BackgroundGeolocation.onProviderChange(event => {
-        console.log('[onProviderChange]', event);
-        addEvent('onProviderChange', event);
-      }),
-    );
+  const addEvent = (/* name, params */) => {};
 
-    subscribe(
-      BackgroundGeolocation.onLocation(
-        location => {
-          console.log('[onLocation]', location);
-          addEvent('onLocation', location);
-        },
-        error => {
-          console.warn('[onLocation] ERROR: ', error);
-        },
-      ),
-    );
+  const onPress = useCallback(() => {
+    setAllow(true);
+  }, []);
 
-    subscribe(
-      BackgroundGeolocation.onMotionChange(location => {
-        console.log('[onMotionChange]', location);
-        addEvent('onMotionChange', location);
-      }),
-    );
+  const goToNotifications = useCallback(() => navigation.navigate('Notifications'), [navigation]);
 
-    subscribe(
-      BackgroundGeolocation.onGeofence(event => {
-        console.log('[onGeofence]', event);
-        addEvent('onGeofence', event);
-      }),
-    );
+  // Configure the BackgroundGeolocation plugin.
+  const initBackgroundGeolocation = useCallback(async () => {
+    // subscribe(
+    //   BackgroundGeolocation.onProviderChange(event => {
+    //     console.log('[onProviderChange]', event);
+    //     addEvent('onProviderChange', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onConnectivityChange(event => {
-        console.log('[onConnectivityChange]', event);
-        addEvent('onConnectivityChange', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onLocation(
+    //     location => {
+    //       console.log('[onLocation]', location);
+    //       addEvent('onLocation', location);
+    //     },
+    //     error => {
+    //       console.error('[onLocation] ERROR: ', error);
+    //     },
+    //   ),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onEnabledChange(enabled => {
-        console.log('[onEnabledChange]', enabled);
-        addEvent('onEnabledChange', {enabled});
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onMotionChange(location => {
+    //     console.log('[onMotionChange]', location);
+    //     addEvent('onMotionChange', location);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onHttp(event => {
-        console.log('[onHttp]', event);
-        addEvent('onHttp', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onGeofence(event => {
+    //     console.log('[onGeofence]', event);
+    //     addEvent('onGeofence', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onLocation(location => {
-        // console.log(`Latitude: ${location.coords.latitude}`);
-        // console.log(`Longitude: ${location.coords.longitude}`);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onConnectivityChange(event => {
+    //     console.log('[onConnectivityChange]', event);
+    //     addEvent('onConnectivityChange', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onActivityChange(event => {
-        console.log('[onActivityChange]', event);
-        addEvent('onActivityChange', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onEnabledChange(enabled => {
+    //     console.log('[onEnabledChange]', enabled);
+    //     addEvent('onEnabledChange', {enabled});
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onPowerSaveChange(enabled => {
-        console.log('[onPowerSaveChange]', enabled);
-        addEvent('onPowerSaveChange', {isPowerSaveMode: enabled});
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onHttp(event => {
+    //     console.log('[onHttp]', event);
+    //     addEvent('onHttp', event);
+    //   }),
+    // );
+
+    // subscribe(
+    //   BackgroundGeolocation.onLocation(() => {
+    //     // console.log(`Latitude: ${location.coords.latitude}`);
+    //     // console.log(`Longitude: ${location.coords.longitude}`);
+    //   }),
+    // );
+
+    // subscribe(
+    //   BackgroundGeolocation.onActivityChange(event => {
+    //     console.log('[onActivityChange]', event);
+    //     addEvent('onActivityChange', event);
+    //   }),
+    // );
+
+    // subscribe(
+    //   BackgroundGeolocation.onPowerSaveChange(enabled => {
+    //     console.log('[onPowerSaveChange]', enabled);
+    //     addEvent('onPowerSaveChange', {isPowerSaveMode: enabled});
+    //   }),
+    // );
 
     /// Configure the plugin.
     const state = await BackgroundGeolocation.ready(
       {
-        debug: true,
         logLevel: BackgroundGeolocation.LOG_LEVEL_NONE,
         distanceFilter: 10,
         stopOnTerminate: false,
-        startOnBoot: true,
         disableMotionActivityUpdates: true,
         backgroundPermissionRationale: {
           title:
@@ -116,7 +115,6 @@ const LocationPermissions = () => {
           negativeAction: 'Cancel',
         },
         startOnBoot: false,
-
         desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
         stopTimeout: 5,
         batchSync: false,
@@ -131,10 +129,11 @@ const LocationPermissions = () => {
         },
         debug: false,
       },
-      state => {
-        if (!state.enabled) {
+      _state => {
+        if (!_state.enabled) {
           BackgroundGeolocation.start(() => {
-            console.log(' - Start success');
+            // Background Geolocation Started
+            console.debug('Success enabled the background geolocation');
           });
         }
       },
@@ -171,136 +170,78 @@ const LocationPermissions = () => {
     subscribe(
       BackgroundGeolocation.watchPosition(
         position => position,
-        error => console.log(error),
+        error => console.error(error),
         {
           interval: 1000,
         },
       ),
     );
-    setTimeout(() => {
-      navigation.navigate('Notifications');
-    }, 4000);
-  };
-  const initBackgroundFetch = async () => {
-    await BackgroundFetch.configure(
-      {
-        minimumFetchInterval: 15,
-        stopOnTerminate: true,
-      },
-      taskId => {
-        console.log('[BackgroundFetch] ', taskId);
-        BackgroundFetch.finish(taskId);
-      },
-      taskId => {
-        console.log('[BackgroundFetch] TIMEOUT: ', taskId);
-        BackgroundFetch.finish(taskId);
-      },
-    );
-  };
+
+    setTimeout(goToNotifications, 4000);
+  }, [goToNotifications]);
+
+  // const initBackgroundFetch = useCallback(async () => {
+  //   await BackgroundFetch.configure(
+  //     {
+  //       minimumFetchInterval: 15,
+  //       stopOnTerminate: true,
+  //     },
+  //     taskId => {
+  //       console.log('[BackgroundFetch] ', taskId);
+  //       BackgroundFetch.finish(taskId);
+  //     },
+  //     taskId => {
+  //       console.log('[BackgroundFetch] TIMEOUT: ', taskId);
+  //       BackgroundFetch.finish(taskId);
+  //     },
+  //   );
+  // }, []);
 
   useEffect(() => {
-    // getLocation();
+    BackgroundGeolocation.start();
+
     if (Platform.OS === 'ios') {
-      BackgroundGeolocation.start();
-      setTimeout(() => {
-        navigation.navigate('Notifications');
-      }, 10000);
+      setTimeout(goToNotifications, 10000);
     } else {
-      BackgroundGeolocation.start();
-      initBackgroundFetch();
+      // initBackgroundFetch();
       initBackgroundGeolocation();
-      setTimeout(() => {
-        navigation.navigate('Notifications');
-      }, 10000);
+      setTimeout(goToNotifications, 10000);
     }
+
     if (allow) {
-      navigation.navigate('Notifications');
+      goToNotifications();
     }
 
     return () => {
       unsubscribe();
     };
-  }, [allow]);
+  }, [
+    allow,
+    // initBackgroundFetch,
+    initBackgroundGeolocation,
+    goToNotifications,
+  ]);
 
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 30,
-        }}>
-        <Image
-          source={require('../../../assets/data/images/locationPin.png')}
-          style={{width: 300, height: 380}}
-        />
-        <View style={{paddingHorizontal: 15}}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginVertical: 10,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '800'}}>
-              Enable Geolocation
-            </Text>
+      <View style={styles.innerContainer}>
+        <Image source={locationPin} style={styles.locationPin} />
+        <View style={styles.horizontalPadding}>
+          <View style={styles.geolocationContainer}>
+            <Text style={styles.enableGeoLocation}>Enable Geolocation</Text>
           </View>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '500',
-              marginTop: 20,
-            }}>
-            Rentit uses your location to provide you with relevant
-            recommendations about homes near you, and notifications for price
-            changes in homes near you, including when the app is in the
-            background.
+          <Text style={styles.locationDescription}>
+            Rentit uses your location to provide you with relevant recommendations about homes near
+            you, and notifications for price changes in homes near you, including when the app is in
+            the background.
           </Text>
-          <View style={{justifyContent: 'flex-end', alignItems: 'center'}}>
-            <TouchableOpacity
-              onPress={() => {
-                setAllow(true);
-              }}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderWidth: 1,
-                borderColor: 'blue',
-                width: '90%',
-                height: '23%',
-                backgroundColor: 'blue',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontFamily: 'Montserrat-Bold',
-                  color: 'white',
-                }}>
-                Allow
-              </Text>
+          <View style={styles.options}>
+            <TouchableOpacity onPress={onPress} style={styles.allow}>
+              <Text style={styles.allowText}>Allow</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Notifications')}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderWidth: 0,
-                width: '30%',
-                height: '20%',
-                marginTop: 20,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: 'Montserrat-Bold',
-                  color: 'blue',
-                }}>
-                Later
-              </Text>
+            <TouchableOpacity onPress={goToNotifications} style={styles.later}>
+              <Text style={styles.laterText}>Later</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -313,6 +254,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  horizontalPadding: {paddingHorizontal: 15},
+  locationPin: {width: 300, height: 380},
+  geoLocationContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  locationDescription: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: 20,
+  },
+  enableGeoLocation: {fontSize: 18, fontWeight: '800'},
+  allow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'blue',
+    width: '90%',
+    height: '23%',
+    backgroundColor: 'blue',
+    borderRadius: 10,
+  },
+  options: {justifyContent: 'flex-end', alignItems: 'center'},
+  allowText: {
+    fontSize: 20,
+    fontFamily: 'Montserrat-Bold',
+    color: 'white',
+  },
+  later: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 0,
+    width: '30%',
+    height: '20%',
+    marginTop: 20,
+    borderRadius: 10,
+  },
+  laterText: {
+    fontSize: 16,
+    fontFamily: 'Montserrat-Bold',
+    color: 'blue',
   },
 });
 

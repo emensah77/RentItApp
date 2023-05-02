@@ -9,9 +9,7 @@ import * as Sentry from '@sentry/react-native';
 
 import awsconfig from './src/aws-exports';
 import Providers from './src/navigation/Providers';
-import requestUserPermission, {
-  notificationListener,
-} from './src/utils/notificationService';
+import requestUserPermission, {notificationListener} from './src/utils/notificationService';
 import {WishListProvider} from './src/context/WishlistContext';
 
 Amplify.configure(awsconfig);

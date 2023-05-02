@@ -95,10 +95,7 @@ const styles = StyleSheet.create({
     elevation: 30,
     borderWidth: 1,
     borderColor: 'lightgrey',
-    shadowOpacity: 1,
     shadowRadius: 10,
-    elevation: 30,
-    shadowColor: 'white',
     shadowOffset: {
       width: 10,
       height: 10,
