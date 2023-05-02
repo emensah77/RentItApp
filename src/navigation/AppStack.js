@@ -1,8 +1,10 @@
-import React, {useMemo, useContext, lazy} from 'react';
+import React, {useMemo, useContext, lazy, Suspense} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import {AuthContext} from './AuthProvider';
 import mixpanel from '../MixpanelConfig';
+
+import PageSpinner from '../components/PageSpinner';
 
 const DestinationSearchScreen = lazy(() => import('../screens/DestinationSearch'));
 const GuestsScreen = lazy(() => import('../screens/GuestsScreen'));
@@ -36,29 +38,31 @@ const AppStack = () => {
   );
 
   return (
-    <Stack.Navigator onStateChange={onNavigationStateChange(user)}>
-      <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
+    <Suspense fallback={<PageSpinner />}>
+      <Stack.Navigator onStateChange={onNavigationStateChange(user)}>
+        <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 
-      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />
+        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />
 
-      <Stack.Screen
-        name="Destination Search"
-        component={DestinationSearchScreen}
-        options={{
-          title: 'Search your destination',
-          headerShown: false,
-        }}
-      />
+        <Stack.Screen
+          name="Destination Search"
+          component={DestinationSearchScreen}
+          options={{
+            title: 'Search your destination',
+            headerShown: false,
+          }}
+        />
 
-      <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
-      <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} />
+        <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
+        <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} />
 
-      <Stack.Screen name="Post" component={PostScreen} options={noHeader} />
+        <Stack.Screen name="Post" component={PostScreen} options={noHeader} />
 
-      <Stack.Screen name="Reviews" component={Review} options={noHeader} />
+        <Stack.Screen name="Reviews" component={Review} options={noHeader} />
 
-      <Stack.Screen name="Feedback" component={EFeedback} options={noHeader} />
-    </Stack.Navigator>
+        <Stack.Screen name="Feedback" component={EFeedback} options={noHeader} />
+      </Stack.Navigator>
+    </Suspense>
   );
 };
 
