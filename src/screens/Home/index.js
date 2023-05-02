@@ -1098,10 +1098,9 @@ const HomeScreen = () => {
           <FontAwesomeIcon icon={faFilter} />
           <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
-        {categories.map((category, index) => (
+        {categories.map(category => (
           <TouchableOpacity
-            // eslint-disable-next-line react/no-array-index-key
-            key={index.toString()}
+            key={category.id}
             onPress={setStatusFilter(category.status)}
             style={[styles.button1, status === category.status && styles.btnTabActive]}>
             <FontAwesomeIcon
