@@ -1,16 +1,11 @@
-import React, {useContext, useState, useEffect, useRef, useCallback} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
 import analytics from '@react-native-firebase/analytics';
-
-import AuthStack from './AuthStack';
+import auth from '@react-native-firebase/auth';
+import {NavigationContainer} from '@react-navigation/native';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {ActivityIndicator} from 'react-native';
 import AppStack from './AppStack';
 import {AuthContext} from './AuthProvider';
-import {firebase} from '@react-native-firebase/auth';
-import {ActivityIndicator} from 'react-native';
-import analytics from '@react-native-firebase/analytics';
-import {View, Image, Text} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import AuthStack from './AuthStack';
 import linking from './linking';
 
 export const navigationRef = React.createRef();
