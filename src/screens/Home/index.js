@@ -425,7 +425,7 @@ const HomeScreen = () => {
   };
   const renderLoader = () =>
     !loading ? (
-      <View style={{marginVertical: 100, alignItems: 'center'}}>
+      <View style={styles.loader}>
         <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
@@ -889,32 +889,58 @@ const HomeScreen = () => {
 
   const goToHouseType = useCallback(() => navigation.navigate('House Type'), [navigation]);
 
+  const rentStyle = useMemo(
+    () => ({
+      borderWidth: selectedButton === 'For Rent' ? 2 : 1,
+      backgroundColor: selectedButton === 'For Rent' ? 'lightgray' : 'white',
+    }),
+    [selectedButton],
+  );
+
+  const saleStyle = useMemo(
+    () => ({
+      borderWidth: selectedButton === 'For Sale' ? 2 : 1,
+      backgroundColor: selectedButton === 'For Sale' ? 'lightgray' : 'white',
+    }),
+    [selectedButton],
+  );
+
+  const contentContainerStyle = useMemo(
+    () => ({
+      paddingRight: Platform.OS === 'android' ? 20 : 0,
+      backgroundColor: 'white',
+    }),
+    [],
+  );
+
+  const videoDimensions = useMemo(
+    () => ({
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height * 0.5,
+    }),
+    [],
+  );
+
+  const mainScrollViewTop = useMemo(() => ({top: Platform.OS === 'ios' ? 120 : 90}), []);
+
+  const showHomesOpacity = useMemo(() => ({opacity: posts.length === 0 ? 0.6 : 1}), [posts]);
+
   return (
-    <View style={{backgroundColor: 'white', flex: 1}}>
+    <View style={styles.container}>
       <Modal
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: 'white',
-          padding: 20,
-        }}
+        style={styles.modal}
         animationType="slide"
         transparent={false}
         visible={modalvisible}
         onRequestClose={close}>
-        <View style={{paddingTop: 10}}>
-          <ScrollView
-            contentContainerStyle={{
-              flexGrow: 1,
-              flexDirection: 'column',
-              justifyContent: 'space-evenly',
-            }}>
-            <View style={{marginTop: 20}}>
-              <Pressable onPress={close} style={{margin: 10}}>
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={styles.modalScrollView}>
+            <View style={styles.marginTop10}>
+              <Pressable onPress={close} style={styles.margin10}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
               </Pressable>
-              <View style={{flex: 1, alignSelf: 'center'}}>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Price range</Text>
+              <View style={styles.priceRangeContainer}>
+                <Text style={styles.priceText}>Price range</Text>
                 <MultiSlider
                   min={minimumvalue}
                   max={maximumvalue}
@@ -924,34 +950,15 @@ const HomeScreen = () => {
                 />
               </View>
 
-              <View
-                style={{
-                  paddingHorizontal: 20,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    width: 50,
-                    padding: 5,
-                    borderWidth: 1,
-                    borderColor: 'black',
-                  }}>
+              <View style={styles.valueContainer}>
+                <View style={styles.valueInnerContainer}>
                   <TextInput
                     keyboardType="numeric"
                     onChangeText={hellod1}
                     placeholder={minimumvalue.toLocaleString()}
                   />
                 </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    width: 100,
-                    padding: 5,
-                    borderWidth: 1,
-                    borderColor: 'black',
-                  }}>
+                <View style={styles.textWrapper}>
                   <TextInput
                     keyboardType="numeric"
                     onChangeText={hellod2}
@@ -961,57 +968,29 @@ const HomeScreen = () => {
               </View>
             </View>
 
-            <View style={{padding: 15}}>
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>Status of Home</Text>
+            <View style={styles.statusOfHome}>
+              <Text style={styles.statusOfHomeText}>Status of Home</Text>
 
-              <Pressable
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: 20,
-                  borderWidth: selectedButton === 'For Rent' ? 2 : 1,
-                  borderColor: 'black',
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  paddingHorizontal: 20,
-                  marginHorizontal: 20,
-                  flex: 1,
-                  backgroundColor: selectedButton === 'For Rent' ? 'lightgray' : 'white',
-                }}
-                onPress={handle}>
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 15, fontWeight: '600'}}>For Rent</Text>
-                  <Text style={{fontSize: 12, paddingTop: 5}}>
+              <Pressable style={[styles.rentPressable, rentStyle]} onPress={handle}>
+                <View style={styles.rentContainer}>
+                  <Text style={styles.forRent}>For Rent</Text>
+                  <Text style={styles.forRentDesc}>
                     You are looking for homes that are available for rent only
                   </Text>
                 </View>
               </Pressable>
 
-              <Pressable
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: 20,
-                  borderWidth: selectedButton === 'For Sale' ? 2 : 1,
-                  borderColor: 'black',
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  paddingHorizontal: 20,
-                  marginHorizontal: 20,
-                  flex: 1,
-                  backgroundColor: selectedButton === 'For Sale' ? 'lightgray' : 'white',
-                }}
-                onPress={handle1}>
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 15, fontWeight: '600'}}>For Sale</Text>
-                  <Text style={{fontSize: 12, paddingTop: 5}}>
+              <Pressable style={[styles.salePressable, saleStyle]} onPress={handle1}>
+                <View style={styles.forSale}>
+                  <Text style={styles.forSaleText}>For Sale</Text>
+                  <Text style={styles.forSaleDesc}>
                     You are looking for homes that are available for sale only
                   </Text>
                 </View>
               </Pressable>
             </View>
-            <View style={{marginBottom: 40, padding: 15}}>
-              <Text style={{fontSize: 18, fontWeight: 'bold'}}>Amenities</Text>
+            <View style={styles.amenitiesContainer}>
+              <Text style={styles.amenitiesText}>Amenities</Text>
 
               <SectionedMultiSelect
                 styles={{
@@ -1080,21 +1059,8 @@ const HomeScreen = () => {
           <TouchableOpacity
             disabled={posts.length === 0}
             onPress={filter}
-            style={{
-              flex: 1,
-              alignSelf: 'center',
-              borderRadius: 20,
-              alignItems: 'center',
-              borderColor: 'white',
-              borderWidth: 1,
-              width: '90%',
-              backgroundColor: 'black',
-              position: 'absolute',
-              bottom: 0,
-              height: 50,
-              opacity: posts.length === 0 ? 0.6 : 1,
-            }}>
-            <Text style={{alignSelf: 'center', color: 'white'}}>Show {posts.length} homes</Text>
+            style={[styles.showHomes, showHomesOpacity]}>
+            <Text style={styles.showHomesText}>Show {posts.length} homes</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -1119,13 +1085,7 @@ const HomeScreen = () => {
         snapToAlignment="center"
         decelerationRate="fast"
         height={50}
-        style={{
-          flex: 1,
-          position: 'absolute',
-          top: Platform.OS === 'ios' ? 120 : 90,
-          paddingHorizontal: 10,
-          backgroundColor: 'white',
-        }}
+        style={[styles.mainScrollView, mainScrollViewTop]}
         contentInset={{
           // ios only
           top: 0,
@@ -1133,32 +1093,10 @@ const HomeScreen = () => {
           bottom: 0,
           right: 20,
         }}
-        contentContainerStyle={{
-          paddingRight: Platform.OS === 'android' ? 20 : 0,
-          backgroundColor: 'white',
-        }}>
-        <TouchableOpacity
-          onPress={open}
-          style={{
-            flexDirection: 'column',
-            backgroundColor: 'white',
-            borderRadius: 20,
-            padding: 8,
-            paddingHorizontal: 20,
-            marginHorizontal: 10,
-            height: 40,
-            shadowColor: 'white',
-            shadowOffset: {width: 10, height: 10},
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 30,
-            alignItems: 'center',
-            borderWidth: 0.8,
-            borderColor: 'black',
-            justifyContent: 'space-evenly',
-          }}>
+        contentContainerStyle={contentContainerStyle}>
+        <TouchableOpacity onPress={open} style={styles.filterPressable}>
           <FontAwesomeIcon icon={faFilter} />
-          <Text style={{fontWeight: '600', paddingTop: 5}}>Filter</Text>
+          <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
         {categories.map((category, index) => (
           <TouchableOpacity
@@ -1169,14 +1107,14 @@ const HomeScreen = () => {
             <FontAwesomeIcon
               icon={category.icon}
               style={[
-                {paddingBottom: 14},
+                styles.padding14,
                 styles.textTab,
                 status === category.status && styles.textTabActive,
               ]}
             />
             <Text
               style={[
-                {paddingTop: 2},
+                styles.padding2,
                 styles.textTab,
                 status === category.status && styles.textTabActive,
               ]}>
@@ -1185,15 +1123,9 @@ const HomeScreen = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View
-        style={{
-          flex: 1,
-          marginBottom: 10,
-          top: Platform.OS === 'android' ? 150 : 200,
-          backgroundColor: 'white',
-        }}>
+      <View style={styles.loadingIndicator}>
         {loadingType === true ? (
-          <View style={{marginVertical: 100, alignItems: 'center'}}>
+          <View style={styles.loaderList}>
             <ActivityIndicator size="large" color="deeppink" />
           </View>
         ) : (
@@ -1202,7 +1134,7 @@ const HomeScreen = () => {
             data={posts}
             maxToRenderPerBatch={1}
             initialNumToRender={1}
-            contentContainerStyle={{paddingBottom: 40}}
+            contentContainerStyle={styles.padding40}
             keyExtractor={keyExtractor}
             getItemLayout={getItemLayout}
             // ListEmptyComponent={renderNoHome()}
@@ -1223,30 +1155,10 @@ const HomeScreen = () => {
           visible={modalVisible}
           // onRequestClose={closeModal}
         >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}>
-            <View
-              style={{
-                width: Dimensions.get('window').width,
-                height: Dimensions.get('window').height * 0.5,
-                backgroundColor: 'black',
-                borderRadius: 30,
-
-                borderColor: 'white',
-              }}>
+          <View style={styles.videoContainer}>
+            <View style={[styles.videoInnerContainer, videoDimensions]}>
               {videoLoading ? (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 30,
-                  }}>
+                <View style={styles.videoLoading}>
                   <ActivityIndicator size="large" color="white" />
                 </View>
               ) : (
@@ -1254,13 +1166,7 @@ const HomeScreen = () => {
                   ref={videoRef}
                   source={{uri: videoUrl}}
                   resizeMode="cover"
-                  style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height,
-                    borderRadius: 30,
-                    borderWidth: 2,
-                    borderColor: 'white',
-                  }}
+                  style={styles.video}
                   onEnd={handleVideoPlaybackComplete}
                 />
               )}
