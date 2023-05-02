@@ -66,13 +66,11 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
   },
-  
+
   zoomButtonText: {
     color: 'black',
     fontSize: 25,
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  
-  
 });

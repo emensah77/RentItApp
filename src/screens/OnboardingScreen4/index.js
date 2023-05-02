@@ -97,22 +97,19 @@ const OnboardingScreen4 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -135,8 +132,7 @@ const OnboardingScreen4 = props => {
       console.log('Resized Size:', resizedSize, 'bytes');
       console.log('Original Size:', originalSize, 'bytes');
 
-      const reductionPercentage =
-        ((originalSize - resizedSize) / originalSize) * 100;
+      const reductionPercentage = ((originalSize - resizedSize) / originalSize) * 100;
       console.log('Size Reduction:', reductionPercentage.toFixed(2), '%');
       return resizedImage;
     } catch (err) {
@@ -154,9 +150,7 @@ const OnboardingScreen4 = props => {
   };
 
   const handleDeleteImage = imageToDelete => {
-    setImages(prevImages =>
-      prevImages.filter(image => image.name !== imageToDelete.name),
-    );
+    setImages(prevImages => prevImages.filter(image => image.name !== imageToDelete.name));
   };
 
   useEffect(() => {
@@ -207,160 +201,140 @@ const OnboardingScreen4 = props => {
       });
   };
 
-    
+  // const launchCamera = () => {
+  //     const options = {
+  //         storageOptions:{
+  //             path: 'images',
+  //             maxWidth: 1024,
+  //             maxHeight: 683,
 
-    // const launchCamera = () => {
-    //     const options = {
-    //         storageOptions:{
-    //             path: 'images',
-    //             maxWidth: 1024,
-    //             maxHeight: 683,
-                
+  //         }
+  //     }
+  //     launchCamera(options, response => {
+  //         //console.log('Response = ', response);
+  //         if(response.didCancel){
 
-    //         }
-    //     }
-    //     launchCamera(options, response => {
-    //         //console.log('Response = ', response);
-    //         if(response.didCancel){
-                
-    //             return;
-    //         }
-    //         else if(response.errorCode === 'camera_unavailable'){
-                
-    //             return;
-    //         }
-    //         else if(response.customButton){
-                
-    //             return;
-    //         }
-    //         else {
-    //         const img = {
-    //             uri: response.assets[0].uri,
-    //             type: response.assets[0].type,
-    //             name: uuid.v4(),
-    //         };
-            
-    //         setImages(prevImages => prevImages.concat(img));
-    //         uploadResource(img);
-            
-    //     }
-    //     })
-        
-        
-        
-  
-    // }
-    const openCamera = () => {
-        ImagePicker.openCamera({
-            width: 1024,
-            height: 683,
-            mediaType: 'photo',
-          }).then(image => {
-                console.log(image);
-                const fileURL = convertPathToFileURL(image.path);
+  //             return;
+  //         }
+  //         else if(response.errorCode === 'camera_unavailable'){
 
-                (async () => {
-                  resizeImage(fileURL, 1024, 683, 'JPEG', 80).then(resizedImage => {
-                    if (resizedImage) {                      
-                      const img = {
-                        uri: resizedImage.uri,
-                        type: image.mime,
-                        name: uuid.v4(),
-                      };
-                      uploadResource(img);
-                      setImages(prevImages => prevImages.concat(img));
-                    }
-                  }).catch(err => console.error('Error obtaining resized image:', err));
+  //             return;
+  //         }
+  //         else if(response.customButton){
 
-                  })();
+  //             return;
+  //         }
+  //         else {
+  //         const img = {
+  //             uri: response.assets[0].uri,
+  //             type: response.assets[0].type,
+  //             name: uuid.v4(),
+  //         };
 
-                         
-                // image.map(item => {
-                //     let img = {
-                //         uri: item.sourceURL,
-                //         type: item.mime,
-                //         name: uuid.v4(),
-                //         };
-                //         uploadResource(img);
-                        
-                //         setImages(prevImages => prevImages.concat(img));
-                       
-                // })
-                
-                    
-            
-            
-          });
-    }
-    const openPicker = () => {
-        ImagePicker.openPicker({
-            width: 1024,
-            height: 683,
-            multiple: true,
-            maxFiles: Platform.OS === 'ios' ? 10 : null,
-            mediaType: 'photo',
-          }).then(async image => {
-                image.map(item => {
-                  const fileURL = convertPathToFileURL(item.path);
-                  (async () => {
-                    resizeImage(fileURL, 1024, 683, 'JPEG', 80).then(resizedImage => {
-                      if (resizedImage) {
-                    let img = {
-                      uri: resizedImage.uri,
-                      type: item.mime,
-                      name: uuid.v4(),
-                    }
-                    
-                    uploadResource(img);
-                    setImages(prevImages => prevImages.concat(img));
-                  }}).catch(err => console.error('Error obtaining resized image:', err));
+  //         setImages(prevImages => prevImages.concat(img));
+  //         uploadResource(img);
 
-                })();
-                  
-                        
-                })
+  //     }
+  //     })
 
-                
-                
-                    
-            
-            
-          });
-    }
-    // const openLibrary = () => {
-        
-    //     launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
-    //         //console.log('Response = ', response);
-    //         if(response.didCancel){
-    //             return;
-    //         }
-    //         else if(response.error){
-    //             return;
-    //         }
-    //         else if(response.customButton){
-                
-    //             return;
-    //         }
-    //         else{
-    //         const img = {
-    //             uri: response.assets[0].uri,
-    //             type: response.assets[0].type,
-    //             name: uuid.v4(),
-    //             };
-    //             // pathToImageFile(img.uri);
-                
-    //             setImages(prevImages => prevImages.concat(img));
-    //             uploadResource(img);
-                
+  // }
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      width: 1024,
+      height: 683,
+      mediaType: 'photo',
+    }).then(image => {
+      console.log(image);
+      const fileURL = convertPathToFileURL(image.path);
 
-    //         }
-        
-    //     })
-        
-        
-        
-  
-    // }
+      (async () => {
+        resizeImage(fileURL, 1024, 683, 'JPEG', 80)
+          .then(resizedImage => {
+            if (resizedImage) {
+              const img = {
+                uri: resizedImage.uri,
+                type: image.mime,
+                name: uuid.v4(),
+              };
+              uploadResource(img);
+              setImages(prevImages => prevImages.concat(img));
+            }
+          })
+          .catch(err => console.error('Error obtaining resized image:', err));
+      })();
+
+      // image.map(item => {
+      //     let img = {
+      //         uri: item.sourceURL,
+      //         type: item.mime,
+      //         name: uuid.v4(),
+      //         };
+      //         uploadResource(img);
+
+      //         setImages(prevImages => prevImages.concat(img));
+
+      // })
+    });
+  };
+  const openPicker = () => {
+    ImagePicker.openPicker({
+      width: 1024,
+      height: 683,
+      multiple: true,
+      maxFiles: Platform.OS === 'ios' ? 10 : null,
+      mediaType: 'photo',
+    }).then(async image => {
+      image.map(item => {
+        const fileURL = convertPathToFileURL(item.path);
+        (async () => {
+          resizeImage(fileURL, 1024, 683, 'JPEG', 80)
+            .then(resizedImage => {
+              if (resizedImage) {
+                const img = {
+                  uri: resizedImage.uri,
+                  type: item.mime,
+                  name: uuid.v4(),
+                };
+
+                uploadResource(img);
+                setImages(prevImages => prevImages.concat(img));
+              }
+            })
+            .catch(err => console.error('Error obtaining resized image:', err));
+        })();
+      });
+    });
+  };
+  // const openLibrary = () => {
+
+  //     launchImageLibrary({maxWidth:1024, maxHeight:683}, response => {
+  //         //console.log('Response = ', response);
+  //         if(response.didCancel){
+  //             return;
+  //         }
+  //         else if(response.error){
+  //             return;
+  //         }
+  //         else if(response.customButton){
+
+  //             return;
+  //         }
+  //         else{
+  //         const img = {
+  //             uri: response.assets[0].uri,
+  //             type: response.assets[0].type,
+  //             name: uuid.v4(),
+  //             };
+  //             // pathToImageFile(img.uri);
+
+  //             setImages(prevImages => prevImages.concat(img));
+  //             uploadResource(img);
+
+  //         }
+
+  //     })
+
+  // }
 
   if (isLoading) {
     return (
@@ -391,12 +365,7 @@ const OnboardingScreen4 = props => {
             }}>
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>Uploading...</Text>
 
-            <ActivityIndicator
-              animating
-              size="large"
-              color="blue"
-              style={{opacity: 1}}
-            />
+            <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
           </View>
         </View>
       </Modal>
@@ -410,18 +379,11 @@ const OnboardingScreen4 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
-        <Text style={styles.text_header}>
-          {' '}
-          Let's take pictures {'\n'} of your home{' '}
-        </Text>
+        <Text style={styles.text_header}> Let's take pictures {'\n'} of your home </Text>
       </View>
 
       <Animatable.View
@@ -536,8 +498,7 @@ const OnboardingScreen4 = props => {
         ) : (
           <ScrollView>
             <Text style={{fontSize: 18, fontWeight: '600', marginBottom: 10}}>
-              The first picture should be of the house or the living room, not
-              the bathroom!
+              The first picture should be of the house or the living room, not the bathroom!
             </Text>
             <TouchableOpacity
               onPress={() => openPicker()}
@@ -558,11 +519,7 @@ const OnboardingScreen4 = props => {
               </View>
 
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <FontAwesomeIcon
-                  icon={faArrowAltCircleUp}
-                  size={30}
-                  color="black"
-                />
+                <FontAwesomeIcon icon={faArrowAltCircleUp} size={30} color="black" />
               </View>
             </TouchableOpacity>
 

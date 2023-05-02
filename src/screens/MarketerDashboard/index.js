@@ -8,8 +8,7 @@ import Geolocation from 'react-native-geolocation-service';
 import styles from './styles';
 import {AuthContext} from '../../navigation/AuthProvider';
 
-const LAMBDA_URL =
-  'https://buzkhgifcsw5ylapunfcpc23jm0owcpr.lambda-url.us-east-2.on.aws/';
+const LAMBDA_URL = 'https://buzkhgifcsw5ylapunfcpc23jm0owcpr.lambda-url.us-east-2.on.aws/';
 
 const MarketerDashboard = () => {
   const [locations, setLocations] = useState([]);
@@ -22,7 +21,6 @@ const MarketerDashboard = () => {
   const [defaultRegion, setRegion] = useState(null);
   const [nearbyBuildings, setNearbyBuildings] = useState([]);
   const [mapType, setMapType] = useState('standard'); // 'standard' or 'satellite'
-
 
   const onUserLocationChange = event => {
     setUserLocation(event.nativeEvent.coordinate);
@@ -121,17 +119,10 @@ const MarketerDashboard = () => {
 
         // Calculate the average latitude and longitude
         const avgLatitude =
-          fetchedLocations.reduce((sum, loc) => sum + loc.latitude, 0) /
-          fetchedLocations.length;
+          fetchedLocations.reduce((sum, loc) => sum + loc.latitude, 0) / fetchedLocations.length;
         const avgLongitude =
-          fetchedLocations.reduce((sum, loc) => sum + loc.longitude, 0) /
-          fetchedLocations.length;
-        console.log(
-          'Average latitude:',
-          avgLatitude,
-          'Average longitude:',
-          avgLongitude,
-        );
+          fetchedLocations.reduce((sum, loc) => sum + loc.longitude, 0) / fetchedLocations.length;
+        console.log('Average latitude:', avgLatitude, 'Average longitude:', avgLongitude);
         // Animate the map to the new region
         mapRef.current.animateToRegion(defaultRegion, 1000);
       }
@@ -158,18 +149,18 @@ const MarketerDashboard = () => {
     hideDatePicker();
   };
   const toggleMapType = () => {
-    setMapType((prevMapType) => (prevMapType === 'standard' ? 'satellite' : 'standard'));
+    setMapType(prevMapType => (prevMapType === 'standard' ? 'satellite' : 'standard'));
   };
   const zoomIn = () => {
-    setRegion((prevRegion) => ({
+    setRegion(prevRegion => ({
       ...prevRegion,
       latitudeDelta: prevRegion.latitudeDelta / 2,
       longitudeDelta: prevRegion.longitudeDelta / 2,
     }));
   };
-  
+
   const zoomOut = () => {
-    setRegion((prevRegion) => ({
+    setRegion(prevRegion => ({
       ...prevRegion,
       latitudeDelta: prevRegion.latitudeDelta * 2,
       longitudeDelta: prevRegion.longitudeDelta * 2,
@@ -181,9 +172,7 @@ const MarketerDashboard = () => {
       mapRef.current.animateToRegion(defaultRegion, 1000);
     }
   }, [defaultRegion]);
-  
-  
-  
+
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -196,10 +185,7 @@ const MarketerDashboard = () => {
         region={defaultRegion}
         onUserLocationChange={onUserLocationChange}
         mapType={mapType}
-        onRegionChangeComplete={(region) => setRegion(region)}
-
-
-      >
+        onRegionChangeComplete={region => setRegion(region)}>
         {locations.length > 0 &&
           locations.map((location, index) => (
             <Marker
@@ -213,22 +199,17 @@ const MarketerDashboard = () => {
             />
           ))}
         {locations.length > 0 && (
-          <Polyline
-            coordinates={locations}
-            strokeWidth={4}
-            strokeColor="blue"
-          />
+          <Polyline coordinates={locations} strokeWidth={4} strokeColor="blue" />
         )}
         {userLocation && (
-        <Circle
-        center={userLocation}
-        radius={2} // Adjust the size of the circle as needed
-        fillColor="blue"
-        zIndex={2} // To ensure the circle is displayed above other map elements
-        strokeWidth={0}
-        />
-    )}
-
+          <Circle
+            center={userLocation}
+            radius={2} // Adjust the size of the circle as needed
+            fillColor="blue"
+            zIndex={2} // To ensure the circle is displayed above other map elements
+            strokeWidth={0}
+          />
+        )}
       </MapView>
       <View style={styles.zoomButtonsContainer}>
         <TouchableOpacity onPress={zoomIn} style={styles.zoomButton}>
@@ -239,31 +220,18 @@ const MarketerDashboard = () => {
         </TouchableOpacity>
       </View>
 
-      <Animatable.View
-        useNativeDriver
-        animation="fadeInUpBig"
-        duration={100}
-        style={styles.footer}
-      >
-        
+      <Animatable.View useNativeDriver animation="fadeInUpBig" duration={100} style={styles.footer}>
         <View style={styles.datePickerContainer}>
-          <Button
-            title="Select Start Date"
-            onPress={() => showDatePicker('start')}
-          />
-          <Button
-            title="Select End Date"
-            onPress={() => showDatePicker('end')}
-          />
+          <Button title="Select Start Date" onPress={() => showDatePicker('start')} />
+          <Button title="Select End Date" onPress={() => showDatePicker('end')} />
         </View>
         <TouchableOpacity onPress={toggleMapType} style={styles.toggleMapTypeButton}>
-    <Text style={styles.toggleMapTypeText}>Toggle Map Type</Text>
-      </TouchableOpacity>
+          <Text style={styles.toggleMapTypeText}>Toggle Map Type</Text>
+        </TouchableOpacity>
 
         {startDate && endDate && (
           <Text style={styles.dateRangeText}>
-            Location history from {startDate.toDateString()} to{' '}
-            {endDate.toDateString()}
+            Location history from {startDate.toDateString()} to {endDate.toDateString()}
           </Text>
         )}
         {startDate && endDate && (

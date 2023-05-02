@@ -1,30 +1,19 @@
-import React, {useEffect, Component} from 'react';
-import {
-  View,
-  Text,
-  StatusBar,
-  StyleSheet,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
+import React, {useEffect, useCallback} from 'react';
+import {View, Text, StatusBar, StyleSheet, Image, Dimensions, Pressable} from 'react-native';
 import Swiper from 'react-native-swiper';
 import {useNavigation} from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';
 
-const {width, height} = Dimensions.get('window');
-
-const Onboarding = props => {
+const Onboarding = () => {
   useEffect(() => {
     SplashScreen.hide();
   }, []);
 
   const navigation = useNavigation();
 
-  const goto = () => {
+  const goTo = useCallback(() => {
     navigation.navigate('LocationPermissions');
-  };
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -63,7 +52,7 @@ const Onboarding = props => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <Pressable onPress={goto}>
+        <Pressable onPress={goTo}>
           <View style={styles.loginContainer}>
             <Text style={styles.login}>Begin</Text>
           </View>
@@ -72,7 +61,8 @@ const Onboarding = props => {
     </View>
   );
 };
-export default Onboarding;
+
+const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -173,3 +163,5 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+export default Onboarding;

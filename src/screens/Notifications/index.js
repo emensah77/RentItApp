@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   StatusBar,
   View,
@@ -14,6 +14,8 @@ import {useNavigation} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import Permissions from 'react-native-permissions';
 
+import notificationImage from '../../../assets/data/images/notifications.png';
+
 const Notifications = () => {
   const navigation = useNavigation();
   const [notification, setNotification] = useState();
@@ -23,114 +25,66 @@ const Notifications = () => {
       Permissions.request('notification').then(async response => {
         if (response === 'authorized') {
           // Permission granted
+          console.debug('Permission for notification granted.');
         } else {
           const authStatus = await messaging().requestPermission();
           const enabled =
-            authStatus === messaging.AuthorizationStatus.AUTHORIZED;
-          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
           setNotification(enabled);
         }
       });
     } else {
       // Request permission to send notifications
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS).then(
-        async granted => {
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('android check yes');
-          } else {
-            const authStatus = await messaging().hasPermission();
-            const enabled =
-              authStatus === messaging.AuthorizationStatus.AUTHORIZED;
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS).then(async granted => {
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Permission granted
+          console.debug('Permission for notification granted.');
+        } else {
+          const authStatus = await messaging().hasPermission();
+          const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
             authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-            setNotification(enabled);
-          }
-        },
-      );
+          setNotification(enabled);
+        }
+      });
     }
   }, []);
+
+  const goToLogin = useCallback(() => navigation.navigate('Login'), [navigation]);
+
+  const onPress = useCallback(() => {
+    if (!notification) {
+      Linking.openSettings();
+      goToLogin();
+    } else {
+      console.error('Notification already enabled.');
+    }
+  }, [goToLogin, notification]);
 
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 30,
-        }}>
-        <Image
-          source={require('../../../assets/data/images/notifications.png')}
-          style={{width: 300, height: 380}}
-        />
-        <View style={{paddingHorizontal: 15}}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginVertical: 10,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: '800'}}>
-              Enable Notifications
-            </Text>
+      <View style={styles.innerContainer}>
+        <Image source={notificationImage} style={styles.notificationImage} />
+        <View style={styles.headContainer}>
+          <View style={styles.enableNotification}>
+            <Text style={styles.heading}>Enable Notifications</Text>
           </View>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '500',
-              marginTop: 20,
-            }}>
-            Don't miss important notifications like new coming homes and
-            updates.
+          <Text style={styles.subHeading}>
+            Don&pos;t miss important notifications like new coming homes and updates.
           </Text>
-          <View style={{justifyContent: 'flex-end', alignItems: 'center'}}>
+          <View style={styles.actionContainer}>
             <TouchableOpacity
               disabled={notification}
-              onPress={() => {
-                if (!notification) {
-                  Linking.openSettings();
-                  navigation.navigate('Login');
-                } else {
-                  console.log('notification are enabled');
-                }
-              }}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderWidth: 1,
-                borderColor: 'blue',
-                width: '90%',
-                height: '22%',
-                backgroundColor: 'blue',
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontFamily: 'Montserrat-Bold',
-                  color: 'white',
-                }}>
+              onPress={onPress}
+              style={styles.positiveActionTextWrapper}>
+              <Text style={styles.positiveActionText}>
                 {notification ? 'Already Enabled' : 'Turn on'}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '30%',
-                height: '23%',
-                marginTop: 20,
-                borderRadius: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: 'Montserrat-Bold',
-                  color: 'blue',
-                }}>
-                {notification ? 'Skip' : 'Later'}
-              </Text>
+            <TouchableOpacity onPress={goToLogin} style={styles.negativeActionTextWrapper}>
+              <Text style={styles.negativeActionText}>{notification ? 'Skip' : 'Later'}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -143,6 +97,54 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  headContainer: {paddingHorizontal: 15},
+  notificationImage: {width: 300, height: 380},
+  enableNotification: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  actionContainer: {justifyContent: 'flex-end', alignItems: 'center'},
+  positiveActionTextWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'blue',
+    width: '90%',
+    height: '22%',
+    backgroundColor: 'blue',
+    borderRadius: 10,
+  },
+  negativeActionTextWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30%',
+    height: '23%',
+    marginTop: 20,
+    borderRadius: 10,
+  },
+  positiveActionText: {
+    fontSize: 18,
+    fontFamily: 'Montserrat-Bold',
+    color: 'white',
+  },
+  negativeActionText: {
+    fontSize: 16,
+    fontFamily: 'Montserrat-Bold',
+    color: 'blue',
+  },
+  heading: {fontSize: 18, fontWeight: '800'},
+  subHeading: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: 20,
   },
 });
 
