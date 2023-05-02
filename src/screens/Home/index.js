@@ -1,13 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, {useState, useContext, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Modal,
@@ -520,10 +513,7 @@ const HomeScreen = () => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
 
-        const res = await firestore()
-          .collection('marketers')
-          .doc(auth().currentUser.uid)
-          .get();
+        const res = await firestore().collection('marketers').doc(auth().currentUser.uid).get();
 
         const data = {
           createdAt: new Date(),
@@ -534,15 +524,9 @@ const HomeScreen = () => {
         };
 
         if (res.exists) {
-          await firestore()
-            .collection('marketers')
-            .doc(auth().currentUser.uid)
-            .update(data);
+          await firestore().collection('marketers').doc(auth().currentUser.uid).update(data);
         } else {
-          await firestore()
-            .collection('marketers')
-            .doc(auth().currentUser.uid)
-            .set(data);
+          await firestore().collection('marketers').doc(auth().currentUser.uid).set(data);
         }
       },
       error => {
@@ -565,19 +549,12 @@ const HomeScreen = () => {
         showLocationDialog: locationDialog,
       },
     );
-  }, [
-    forceLocation,
-    hasLocationPermission,
-    highAccuracy,
-    locationDialog,
-    useLocationManager,
-  ]);
+  }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
 
   const makeCall1 = useCallback(() => {
     const phoneNumbers = ['0256744112'];
 
-    let phoneNumber =
-      phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
+    let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
 
     if (Platform.OS === 'android') {
       phoneNumber = `tel:${phoneNumber}`;
@@ -592,16 +569,9 @@ const HomeScreen = () => {
   }, []);
 
   const makeCall = useCallback(() => {
-    const phoneNumbers = [
-      '0552618521',
-      '0597285059',
-      '0597285099',
-      '0205200706',
-      '0579535484',
-    ];
+    const phoneNumbers = ['0552618521', '0597285059', '0597285099', '0205200706', '0579535484'];
 
-    let phoneNumber =
-      phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
+    let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
 
     if (Platform.OS === 'android') {
       phoneNumber = `tel:${phoneNumber}`;
@@ -772,9 +742,7 @@ const HomeScreen = () => {
   }, []);
 
   const userDetails = useCallback(async () => {
-    var user = await firestore()
-      .collection('users')
-      .doc(auth().currentUser.uid);
+    var user = await firestore().collection('users').doc(auth().currentUser.uid);
 
     user.get().then(doc => {
       if (doc.exists) {
@@ -840,18 +808,15 @@ const HomeScreen = () => {
   }, []);
 
   const handleVideoPlaybackComplete = useCallback(async () => {
-    await fetch(
-      'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
-      {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          action: 'updateWatchStatus',
-          userId: auth().currentUser.uid,
-          videoVersion, // Send the video version
-        }),
-      },
-    );
+    await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        action: 'updateWatchStatus',
+        userId: auth().currentUser.uid,
+        videoVersion, // Send the video version
+      }),
+    });
 
     setHasWatchedVideo(true);
     setmodalVisible(false); // Add this line to close the modal
@@ -936,15 +901,7 @@ const HomeScreen = () => {
       setNextToken(data.nextToken);
       setFetchingMore(false);
     }
-  }, [
-    fetchingMore,
-    latitude,
-    longitude,
-    nextToken,
-    personalizedHomes,
-    posts,
-    status,
-  ]);
+  }, [fetchingMore, latitude, longitude, nextToken, personalizedHomes, posts, status]);
 
   useEffect(() => {}, [posts]);
 
@@ -992,9 +949,9 @@ const HomeScreen = () => {
     getLocation();
   }, [getLocation]);
 
-  const updateApp = useCallback(() => {
-    Linking.openURL(updateUrl);
-  }, [updateUrl]);
+  //   const updateApp = useCallback(() => {
+  //     Linking.openURL(updateUrl);
+  //   }, [updateUrl]);
 
   const goToLocationSearch = useCallback(() => {
     navigation.navigate('House Type');
@@ -1067,9 +1024,7 @@ const HomeScreen = () => {
           delete query.filter.and.mode;
         }
 
-        const postsResult = await API.graphql(
-          graphqlOperation(listPosts, query),
-        );
+        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
         //console.log('previouslist',previousList.length)
 
         setPosts(postsResult.data.listPosts.items);
