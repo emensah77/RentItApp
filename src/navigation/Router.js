@@ -1,11 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-  memo,
-  useCallback,
-} from 'react';
+import React, {useContext, useState, useEffect, useRef, memo, useCallback} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import DestinationSearchScreen from '../screens/DestinationSearch';
@@ -21,6 +14,7 @@ import {firebase} from '@react-native-firebase/auth';
 import {ActivityIndicator} from 'react-native';
 import analytics from '@react-native-firebase/analytics';
 import {View, Image, Text} from 'react-native';
+import auth from '@react-native-firebase/auth';
 import linking from './linking';
 
 const Stack = createStackNavigator();
@@ -73,13 +67,10 @@ const Router = () => {
           });
         }
         if (previousRouteName !== currentRouteName) {
-          await analytics().logEvent(
-            `Page_${currentRouteName.replace(/\s/g, '')}`,
-            {
-              userId: user.displayName,
-              item: user.uid,
-            },
-          );
+          await analytics().logEvent(`Page_${currentRouteName.replace(/\s/g, '')}`, {
+            userId: user.displayName,
+            item: user.uid,
+          });
         }
         routeNameRef.current = currentRouteName;
       }}

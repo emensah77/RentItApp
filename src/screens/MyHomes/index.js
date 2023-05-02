@@ -2,23 +2,21 @@ import {API, graphqlOperation} from 'aws-amplify';
 import React, {useContext, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Button,
   FlatList,
-  TouchableOpacity,
-  StatusBar,
-  View,
-  Text,
-  StyleSheet,
   Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
+import BackButton from '../../components/BackButton/BackButton';
+import Post from '../../components/Post';
 import {getUserHomes} from '../../graphql/customQueries';
 import {AuthContext} from '../../navigation/AuthProvider';
-import Post from '../../components/Post';
-import {useNavigation} from '@react-navigation/native';
-import BackButton from '../../components/BackButton/BackButton';
 
 const MyHomes = () => {
   const {user} = useContext(AuthContext);
@@ -161,9 +159,7 @@ const MyHomes = () => {
             </View>
           ) : (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
-              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>
-                No Homes Found
-              </Text>
+              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>No Homes Found</Text>
             </View>
           )}
         </View>

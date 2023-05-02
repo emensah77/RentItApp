@@ -1,31 +1,22 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useLayoutEffect,
-  useMemo,
-  useCallback,
-} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {API, graphqlOperation} from 'aws-amplify';
+import _ from 'lodash';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  ScrollView,
-  Platform,
-  TouchableOpacity,
   ActivityIndicator,
   Dimensions,
+  FlatList,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import Post from '../../components/Post';
-import {API, graphqlOperation} from 'aws-amplify';
-import {listPosts, listPostsCount} from '../../graphql/queries';
-import {Dimensions} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
-import {useNavigation} from '@react-navigation/native';
-import reactotron from 'reactotron-react-native';
-import _ from 'lodash';
+import Feather from 'react-native-vector-icons/Feather';
+import Post from '../../components/Post';
+import {listPosts} from '../../graphql/queries';
 import {HOME_STATUS} from '../../variables';
 
 const SearchResultsScreen = ({guests, viewport}) => {
@@ -123,11 +114,8 @@ const SearchResultsScreen = ({guests, viewport}) => {
         if (nextToken === null) {
           delete query.nextToken;
         }
-        const postsResult = await API.graphql(
-          graphqlOperation(listPosts, query),
-        );
-        homeCount.current =
-          homeCount.current + postsResult?.data?.listPosts?.items?.length;
+        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+        homeCount.current = homeCount.current + postsResult?.data?.listPosts?.items?.length;
         if (postsResult?.data?.listPosts?.nextToken !== null) {
           console.log(postsResult?.data?.listPosts?.items?.length, 'homeCount');
           fetchCount(postsResult.data.listPosts.nextToken);
@@ -181,9 +169,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
           delete query.filter.and.type;
         }
 
-        const postsResult = await API.graphql(
-          graphqlOperation(listPosts, query),
-        );
+        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
         const newItems = items.concat(postsResult.data.listPosts.items);
         const newNextToken = postsResult.data.listPosts.nextToken;
 
@@ -249,9 +235,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
         }
 
         const fetchBatch = useCallback(async (query, results = []) => {
-          const postsResult = await API.graphql(
-            graphqlOperation(listPosts, query),
-          );
+          const postsResult = await API.graphql(graphqlOperation(listPosts, query));
           results.push(...postsResult.data.listPosts.items);
 
           if (postsResult.data.listPosts.nextToken) {
@@ -334,9 +318,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
   const setModeFilter = useCallback(
     modeStatus => {
       if (modeStatus !== 'Everything') {
-        setDatalist([
-          ...datalist.filter(category => category.mode === modeStatus),
-        ]);
+        setDatalist([...datalist.filter(category => category.mode === modeStatus)]);
       } else {
         setDatalist(datalist);
       }
@@ -376,8 +358,8 @@ const SearchResultsScreen = ({guests, viewport}) => {
         </Text>
         <View style={{paddingVertical: 10}}>
           <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-            There are no homes in the area you searched. Try expanding your
-            search to include other towns and cities near this area.
+            There are no homes in the area you searched. Try expanding your search to include other
+            towns and cities near this area.
           </Text>
         </View>
 
@@ -407,8 +389,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
   }, [navigation]);
 
   return (
-    <View
-      style={{paddingBottom: 100, marginBottom: 100, backgroundColor: 'white'}}>
+    <View style={{paddingBottom: 100, marginBottom: 100, backgroundColor: 'white'}}>
       {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
             {modes.map((mode) => (
 
@@ -460,15 +441,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
               <TouchableOpacity
                 key={index.toString()}
                 onPress={() => setStatusFilter(category.status)}
-                style={[
-                  styless.button,
-                  status === category.status && styless.btnTabActive,
-                ]}>
+                style={[styless.button, status === category.status && styless.btnTabActive]}>
                 <Text
-                  style={[
-                    styless.textTab,
-                    status === category.status && styless.textTabActive,
-                  ]}>
+                  style={[styless.textTab, status === category.status && styless.textTabActive]}>
                   {category.status}
                 </Text>
               </TouchableOpacity>
@@ -496,9 +471,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 fontSize: 18,
                 fontWeight: 'bold',
               }}>
-              {loading
-                ? 'Loading...'
-                : +' ' + homeCount.current + ' homes to rent'}
+              {loading ? 'Loading...' : +' ' + homeCount.current + ' homes to rent'}
             </Text>
           </View>
           <View style={{marginBottom: 10, top: 80, backgroundColor: 'white'}}>

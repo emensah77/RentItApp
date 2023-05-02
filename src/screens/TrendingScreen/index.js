@@ -22,8 +22,6 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
 import LinearGradient from 'react-native-linear-gradient';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-import {AuthContext} from '../../navigation/AuthProvider';
-import Post from '../../components/Post';
 
 const Trending = props => {
   const {user, logout} = useContext(AuthContext);
@@ -181,10 +179,7 @@ const Trending = props => {
           </View>
         ) : (
           <View>
-            <FlatList
-              data={posts}
-              renderItem={({item}) => <Post post={item} />}
-            />
+            <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
           </View>
         )}
       </View>
@@ -232,8 +227,8 @@ const Trending = props => {
           </Text>
           <View style={{padding: 10}}>
             <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-              As you browse through the listings, be sure to love your Favorites
-              and check back here to see the properties our community loves.
+              As you browse through the listings, be sure to love your Favorites and check back here
+              to see the properties our community loves.
             </Text>
           </View>
 

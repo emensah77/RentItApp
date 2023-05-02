@@ -1,24 +1,12 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  StatusBar,
-  TextInput,
-  FlatList,
-  Pressable,
-} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {ImageBackground, Pressable, Text, TouchableOpacity} from 'react-native';
 import styles from './styles.js';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import {useNavigation} from '@react-navigation/native';
 
-import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import auth from '@react-native-firebase/auth';
-import styles from './styles.js';
+import * as Animatable from 'react-native-animatable';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 const HouseUploadScreen = props => {
   const navigation = useNavigation();
@@ -99,10 +87,7 @@ const HouseUploadScreen = props => {
         animation="fadeInUpBig"
         duration={1500}
         style={styles.footer}>
-        <Text style={styles.text_header}>
-          {' '}
-          Upload your home in {'\n'} 10 easy steps{' '}
-        </Text>
+        <Text style={styles.text_header}> Upload your home in {'\n'} 10 easy steps </Text>
         <TouchableOpacity
           onPress={() => {
             if (uploadInProgress && lastScreen) {
