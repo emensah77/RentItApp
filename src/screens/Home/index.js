@@ -274,7 +274,7 @@ const HomeScreen = () => {
 
     subscribe(
       BackgroundGeolocation.watchPosition(
-        () => {},
+        position => position,
         // error => console.log(error),
         {
           interval: 5000,
