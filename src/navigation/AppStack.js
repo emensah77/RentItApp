@@ -1,16 +1,17 @@
-import React, {useMemo, useContext} from 'react';
+import React, {useMemo, useContext, lazy} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import DestinationSearchScreen from '../screens/DestinationSearch';
-import GuestsScreen from '../screens/GuestsScreen';
-import PostScreen from '../screens/PostScreen';
-import HouseTypeScreen from '../screens/HouseTypeScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
-import EFeedback from '../screens/Feedback';
-import Review from '../screens/Reviews';
-import HomeTabNavigator from './HomeTabNavigator';
 import {AuthContext} from './AuthProvider';
 import mixpanel from '../MixpanelConfig';
+
+const DestinationSearchScreen = lazy(() => import('../screens/DestinationSearch'));
+const GuestsScreen = lazy(() => import('../screens/GuestsScreen'));
+const PostScreen = lazy(() => import('../screens/PostScreen'));
+const HouseTypeScreen = lazy(() => import('../screens/HouseTypeScreen'));
+const WelcomeScreen = lazy(() => import('../screens/WelcomeScreen'));
+const EFeedback = lazy(() => import('../screens/Feedback'));
+const Review = lazy(() => import('../screens/Reviews'));
+const HomeTabNavigator = lazy(() => import('./HomeTabNavigator'));
 
 const Stack = createStackNavigator();
 

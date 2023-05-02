@@ -1,8 +1,5 @@
-/* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable no-unused-vars */
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, {useState, useContext, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Modal,
@@ -74,19 +71,12 @@ const HomeScreen = () => {
   const [modalVisible, setmodalVisible] = useState(false);
   const [minimumvalue] = useState(1);
   const [maximumvalue, setMaximumValue] = useState(100000);
-  // eslint-disable-next-line no-unused-vars
-  const [minvalue, setminValue] = useState('');
-  const [maxvalue, setmaxValue] = useState('');
+  // const [minvalue, setminValue] = useState('');
+  // const [maxvalue, setmaxValue] = useState('');
   const [nextToken, setNextToken] = useState(null);
-  const [loading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  // const [loading, setIsLoading] = useState(false);
   const [cachedData, setCachedData] = useState({});
-  const [loadingMore, setIsLoadingMore] = useState(false);
-  const [fetchMore, setFetchMore] = useState(false);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const prevStatus = useRef(null);
-  const [fetchedPosts, setFetchedPosts] = useState([]);
-  const [refresh, setRefresh] = React.useState(false);
   const [fetchingMore, setFetchingMore] = useState(false);
   const [hasWatchedVideo, setHasWatchedVideo] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
@@ -95,14 +85,12 @@ const HomeScreen = () => {
   const [videoVersion, setVideoVersion] = useState(0); // Initialize videoVersion state
   const [videoLoading, setIsVideoLoading] = useState(false);
 
-  const bgGeoEventSubscriptions = [];
-  /// State.
-  const [events, setEvents] = React.useState([]);
-  const [enabled, setEnabled] = React.useState(true);
+  const bgGeoEventSubscriptions = useMemo(() => [], []);
+  const loading = useMemo(() => false, []);
 
   /// Init BackgroundGeolocation when view renders.
   /// Return a function to .removeListeners() When view is removed.
-  React.useEffect(() => {
+  useEffect(() => {
     BackgroundGeolocation.start();
     initBackgroundFetch();
     setTimeout(() => {
@@ -112,18 +100,21 @@ const HomeScreen = () => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [initBackgroundGeolocation, navigation, unsubscribe]);
 
-  const subscribe = subscription => {
-    bgGeoEventSubscriptions?.push(subscription);
-  };
+  const subscribe = useCallback(
+    subscription => {
+      bgGeoEventSubscriptions?.push(subscription);
+    },
+    [bgGeoEventSubscriptions],
+  );
 
-  const unsubscribe = () => {
+  const unsubscribe = useCallback(() => {
     bgGeoEventSubscriptions?.forEach(subscription => subscription?.remove());
-  };
+  }, [bgGeoEventSubscriptions]);
 
   /// Configure the BackgroundGeolocation plugin.
-  const initBackgroundGeolocation = async () => {
+  const initBackgroundGeolocation = useCallback(async () => {
     subscribe(
       BackgroundGeolocation.onProviderChange(event => {
         // console.log('[onProviderChange]', event);
@@ -177,9 +168,9 @@ const HomeScreen = () => {
     );
 
     subscribe(
-      BackgroundGeolocation.onEnabledChange(enabled => {
+      BackgroundGeolocation.onEnabledChange(_enabled => {
         // ('[onEnabledChange]', enabled);
-        addEvent('onEnabledChange', {enabled});
+        addEvent('onEnabledChange', {enabled: _enabled});
       }),
     );
 
@@ -205,9 +196,9 @@ const HomeScreen = () => {
     );
 
     subscribe(
-      BackgroundGeolocation.onPowerSaveChange(enabled => {
+      BackgroundGeolocation.onPowerSaveChange(isPowerSaveMode => {
         // console.log('[onPowerSaveChange]', enabled);
-        addEvent('onPowerSaveChange', {isPowerSaveMode: enabled});
+        addEvent('onPowerSaveChange', {isPowerSaveMode});
       }),
     );
 
@@ -242,9 +233,8 @@ const HomeScreen = () => {
         },
         debug: false,
       },
-      // eslint-disable-next-line no-shadow
-      state => {
-        if (!state.enabled) {
+      newState => {
+        if (!newState.enabled) {
           BackgroundGeolocation.start(() => {
             // console.log(' - Start success');
           });
@@ -281,8 +271,9 @@ const HomeScreen = () => {
         },
       ),
     );
-    setEnabled(state.enabled);
-  };
+
+    // setEnabled(state.enabled);
+  }, [subscribe, user]);
 
   const initBackgroundFetch = async () => {
     await BackgroundFetch.configure(
@@ -302,15 +293,15 @@ const HomeScreen = () => {
   };
 
   /// Adds events to List
-  const addEvent = (name, params) => {
-    const timestamp = new Date();
-    const event = {
-      expanded: false,
-      timestamp: `${timestamp.getMonth()}-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`,
-      name,
-      params: JSON.stringify(params, null, 2),
-    };
-    setEvents(previous => [...previous, event]);
+  const addEvent = (/* name, params */) => {
+    // const timestamp = new Date();
+    // const event = {
+    //   expanded: false,
+    //   timestamp: `${timestamp.getMonth()}-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`,
+    //   name,
+    //   params: JSON.stringify(params, null, 2),
+    // };
+    // setEvents(previous => [...previous, event]);
   };
 
   const items = [
@@ -384,23 +375,29 @@ const HomeScreen = () => {
     },
   ];
 
-  const setStatusFilter = status => {
-    // setObserving(true);
-    // setIsLoadingType(true);
-    setStatus(status);
-    // setNextToken(null);
-    // setPosts([]);
-    fetchPostsType();
-    // console.log('status',status)
-    // console.log('isreset', observing)
-    // setObserving(false);
-    // setIsLoadingType(false);
-  };
+  const setStatusFilter = useCallback(
+    _status => () => {
+      // setObserving(true);
+      // setIsLoadingType(true);
+      setStatus(_status);
+      // setNextToken(null);
+      // setPosts([]);
+      fetchPostsType();
+      // console.log('status',status)
+      // console.log('isreset', observing)
+      // setObserving(false);
+      // setIsLoadingType(false);
+    },
+    [],
+  );
 
-  const onSelectedItemsChange = selectedItems => {
-    setSelectedItems(selectedItems);
-    filterPosts(status);
-  };
+  const onSelectedItemsChange = useCallback(
+    newSelectedItems => {
+      setSelectedItems(newSelectedItems);
+      filterPosts(status);
+    },
+    [filterPosts, status],
+  );
 
   const hasPermissionIOS = async () => {
     const openSetting = () => {
@@ -408,17 +405,17 @@ const HomeScreen = () => {
         Alert.alert('Unable to open settings');
       });
     };
-    const status = await Geolocation.requestAuthorization('whenInUse');
+    const newStatus = await Geolocation.requestAuthorization('whenInUse');
 
-    if (status === 'granted') {
+    if (newStatus === 'granted') {
       return true;
     }
 
-    if (status === 'denied') {
+    if (newStatus === 'denied') {
       Alert.alert('Location permission denied');
     }
 
-    if (status === 'disabled') {
+    if (newStatus === 'disabled') {
       Alert.alert('Turn on Location Services to allow "RentIt" to determine your location.', '', [
         {text: 'Go to Settings', onPress: openSetting},
         {text: "Don't Use Location", onPress: () => {}},
@@ -434,7 +431,7 @@ const HomeScreen = () => {
       </View>
     ) : null;
 
-  const hasLocationPermission = async () => {
+  const hasLocationPermission = useCallback(async () => {
     if (Platform.OS === 'ios') {
       const hasPermission = await hasPermissionIOS();
       return hasPermission;
@@ -452,25 +449,24 @@ const HomeScreen = () => {
       return true;
     }
 
-    // eslint-disable-next-line no-shadow
-    const status = await PermissionsAndroid.request(
+    const newStatus = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
 
-    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+    if (newStatus === PermissionsAndroid.RESULTS.GRANTED) {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
+    if (newStatus === PermissionsAndroid.RESULTS.DENIED) {
       ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+    } else if (newStatus === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
       ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
     }
 
     return false;
-  };
+  }, []);
 
-  const getLocation = async () => {
+  const getLocation = useCallback(async () => {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
@@ -509,64 +505,16 @@ const HomeScreen = () => {
         showLocationDialog: locationDialog,
       },
     );
-  };
+  }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
 
-  const [images, setimages] = useState([
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/Kejetia_Kumasi.jpeg',
-      title: 'Kumasi',
-      key: '1',
-    },
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/accra.jpeg',
-      title: 'Accra',
-      key: '2',
-    },
-
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/capecoast.jpeg',
-      title: 'CapeCoast',
-      key: '3',
-    },
-  ]);
-
-  const [imagesApt, setimagesapt] = useState([
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/fullhome.png',
-      title: 'Full Homes',
-      key: '1',
-    },
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/1bedroom.jpeg',
-      title: '1 & 2 bedroom',
-      key: '2',
-    },
-
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg',
-      title: 'Apartment',
-      key: '3',
-    },
-  ]);
-
-  const [partner, setpartner] = useState([
-    {
-      image: {
-        uri: 'https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg',
-      },
-      title: 'Full Homes',
-      key: '1',
-    },
-  ]);
-  // eslint-disable-next-line no-shadow
-  const fetchPostsType = async status => {
+  const fetchPostsType = async newStatus => {
     try {
       const query = {
         limit: 100000,
         filter: {
           and: {
             type: {
-              eq: status,
+              eq: newStatus,
             },
             latitude: {
               between: [4.633900069140816, 11.17503079077031],
@@ -591,10 +539,10 @@ const HomeScreen = () => {
     }
   };
 
-  const userDetails = async () => {
-    const user = await firestore().collection('users').doc(auth().currentUser.uid);
+  const userDetails = useCallback(async () => {
+    const selectedUser = await firestore().collection('users').doc(auth().currentUser.uid);
 
-    user.get().then(doc => {
+    selectedUser.get().then(doc => {
       if (doc.exists) {
         if (doc.data().phoneNumber === null || doc.data().phoneNumber === '') {
           if (Platform.OS === 'android') {
@@ -605,7 +553,7 @@ const HomeScreen = () => {
         }
       }
     });
-  };
+  }, [navigation]);
 
   const _getUserData = async ID => {
     try {
@@ -655,7 +603,7 @@ const HomeScreen = () => {
     fetchUserDataAndVideoUrl();
   }, []);
 
-  const handleVideoPlaybackComplete = async () => {
+  const handleVideoPlaybackComplete = useCallback(async () => {
     await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -668,7 +616,7 @@ const HomeScreen = () => {
 
     setHasWatchedVideo(true);
     setmodalVisible(false); // Add this line to close the modal
-  };
+  }, [videoVersion]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -730,7 +678,7 @@ const HomeScreen = () => {
 
     // console.log('This is latest',postLatest.map(item => (item.createdAt)));
     // clearInterval(selectColor);
-  }, [status, latitude, longitude]);
+  }, [status, latitude, longitude, userDetails, cachedData, personalizedHomes]);
   //    if (postLatest){
   //     postLatest.sort(function (a, b) {
   //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
@@ -739,7 +687,7 @@ const HomeScreen = () => {
   // Add controls for navigating between pages
   // Increment the page
 
-  async function fetchMoreData() {
+  const fetchMoreData = useCallback(async () => {
     if (nextToken && !fetchingMore) {
       setFetchingMore(true);
       const data = await personalizedHomes(latitude, longitude, status, nextToken);
@@ -749,154 +697,198 @@ const HomeScreen = () => {
       setNextToken(data.nextToken);
       setFetchingMore(false);
     }
-  }
+  }, [fetchingMore, latitude, longitude, nextToken, personalizedHomes, posts, status]);
 
   useEffect(() => {}, [posts]);
 
-  // eslint-disable-next-line no-shadow
-  async function personalizedHomes(userLatitude, userLongitude, homeType, nextToken) {
-    try {
-      // setIsLoadingType(true);
-      const response = await fetch(
-        'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userLocation: {
-              latitude: userLatitude,
-              longitude: userLongitude,
+  const personalizedHomes = useCallback(
+    async (userLatitude, userLongitude, homeType, newNextToken) => {
+      try {
+        // setIsLoadingType(true);
+        const response = await fetch(
+          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
             },
-            homeType,
-            nextToken,
-          }),
-        },
-      );
+            body: JSON.stringify({
+              userLocation: {
+                latitude: userLatitude,
+                longitude: userLongitude,
+              },
+              homeType,
+              nextToken: newNextToken,
+            }),
+          },
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      return data;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // setIsLoadingType(false); // Set loading state to false
-    }
-  }
+        return data;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        // setIsLoadingType(false); // Set loading state to false
+      }
+    },
+    [],
+  );
 
-  const onEndReached = () => {
+  const onEndReached = useCallback(() => {
     fetchMoreData();
-  };
+  }, [fetchMoreData]);
 
   useEffect(() => {
     getLocation();
-  }, []);
+  }, [getLocation]);
 
-  const hellod1 = text => {
-    setminValue(parseInt(text, 10));
-  };
-  const hellod2 = text => {
-    setmaxValue(parseInt(text, 10));
-  };
-  const handle = () => {
+  const hellod1 = useCallback(
+    (/* text */) => {
+      // setminValue(parseInt(text, 10));
+    },
+    [],
+  );
+
+  const hellod2 = useCallback(
+    (/* text */) => {
+      // setmaxValue(parseInt(text, 10));
+    },
+    [],
+  );
+
+  const handle = useCallback(() => {
     setSelectedButton('For Rent');
     filterPosts(status);
-  };
-  const handle1 = () => {
+  }, [filterPosts, status]);
+
+  const handle1 = useCallback(() => {
     setSelectedButton('For Sale');
     filterPosts(status);
-  };
-  const filter = () => {
+  }, [filterPosts, status]);
+
+  const filter = useCallback(() => {
     filterPosts(status);
     setmodalvisible(false);
-  };
-  // eslint-disable-next-line no-shadow
-  const filterPosts = async status => {
-    try {
-      const query = {
-        limit: 100000,
-        filter: {
-          and: {
-            type: {
-              eq: status,
-            },
-            mode: {
-              eq: selectedButton,
-            },
-            newPrice: {
-              le: maximumvalue,
-            },
-            wifi: {
-              eq: selectedItems.includes('WiFi') ? 'Yes' : 'No',
-            },
-            kitchen: {
-              eq: selectedItems.includes('Kitchen') ? 'Yes' : 'No',
-            },
-            toilet: {
-              eq: selectedItems.includes('Toilet') ? 'Yes' : 'No',
-            },
-            water: {
-              eq: selectedItems.includes('Water') ? 'Yes' : 'No',
-            },
-            aircondition: {
-              eq: selectedItems.includes('Air Conditioner') ? 'Yes' : 'No',
-            },
-            bathroom: {
-              eq: selectedItems.includes('Bathroom') ? 'Yes' : 'No',
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
+  }, [filterPosts, status]);
+
+  const filterPosts = useCallback(
+    async newStatus => {
+      try {
+        const query = {
+          limit: 100000,
+          filter: {
+            and: {
+              type: {
+                eq: newStatus,
+              },
+              mode: {
+                eq: selectedButton,
+              },
+              newPrice: {
+                le: maximumvalue,
+              },
+              wifi: {
+                eq: selectedItems.includes('WiFi') ? 'Yes' : 'No',
+              },
+              kitchen: {
+                eq: selectedItems.includes('Kitchen') ? 'Yes' : 'No',
+              },
+              toilet: {
+                eq: selectedItems.includes('Toilet') ? 'Yes' : 'No',
+              },
+              water: {
+                eq: selectedItems.includes('Water') ? 'Yes' : 'No',
+              },
+              aircondition: {
+                eq: selectedItems.includes('Air Conditioner') ? 'Yes' : 'No',
+              },
+              bathroom: {
+                eq: selectedItems.includes('Bathroom') ? 'Yes' : 'No',
+              },
+              latitude: {
+                between: [4.633900069140816, 11.17503079077031],
+              },
+              longitude: {
+                between: [-3.26078589558366, 1.199972025476763],
+              },
             },
           },
-        },
-      };
+        };
 
-      if (!selectedItems.includes('WiFi')) {
-        delete query.filter.and.wifi;
-      }
-      if (!selectedItems.includes('Water')) {
-        delete query.filter.and.water;
-      }
-      if (!selectedItems.includes('Kitchen')) {
-        delete query.filter.and.kitchen;
-      }
-      if (!selectedItems.includes('Toilet')) {
-        delete query.filter.and.toilet;
-      }
-      if (!selectedItems.includes('Bathroom')) {
-        delete query.filter.and.bathroom;
-      }
-      if (!selectedItems.includes('Air Conditioner')) {
-        delete query.filter.and.aircondition;
-      }
-      if (selectedButton === '') {
-        delete query.filter.and.mode;
-      }
+        if (!selectedItems.includes('WiFi')) {
+          delete query.filter.and.wifi;
+        }
+        if (!selectedItems.includes('Water')) {
+          delete query.filter.and.water;
+        }
+        if (!selectedItems.includes('Kitchen')) {
+          delete query.filter.and.kitchen;
+        }
+        if (!selectedItems.includes('Toilet')) {
+          delete query.filter.and.toilet;
+        }
+        if (!selectedItems.includes('Bathroom')) {
+          delete query.filter.and.bathroom;
+        }
+        if (!selectedItems.includes('Air Conditioner')) {
+          delete query.filter.and.aircondition;
+        }
+        if (selectedButton === '') {
+          delete query.filter.and.mode;
+        }
 
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      // console.log('previouslist',previousList.length)
+        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+        // console.log('previouslist',previousList.length)
 
-      setPosts(postsResult.data.listPosts.items);
-      // setPosts(shuffle(posts));
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-      }
-    } catch (error) {}
-  };
-  //  getting wishlists ================
-
-  //  getting wishlists ================
-
-  const renderItem = ({item}) => (
-    <View key={item}>
-      <Post post={item} />
-    </View>
+        setPosts(postsResult.data.listPosts.items);
+        // setPosts(shuffle(posts));
+        if (postsResult?.data?.listPosts?.nextToken !== null) {
+          setNextToken(postsResult.data.listPosts.nextToken);
+        } else {
+        }
+      } catch (error) {}
+    },
+    [maximumvalue, selectedButton, selectedItems],
   );
+
+  const renderItem = useCallback(
+    ({item}) => (
+      <View key={item}>
+        <Post post={item} />
+      </View>
+    ),
+    [],
+  );
+
+  const close = useCallback(() => {
+    setmodalvisible(false);
+  }, []);
+
+  const open = useCallback(() => {
+    setmodalvisible(true);
+  }, []);
+
+  const onValuesChange = useCallback(
+    value => {
+      setMaximumValue(value[0]);
+      filterPosts(status);
+    },
+    [filterPosts, status],
+  );
+
+  const getItemLayout = useCallback(
+    (_, index) => ({
+      length: 380,
+      offset: 380 * index,
+      index,
+    }),
+    [],
+  );
+
+  const keyExtractor = useCallback((_, index) => index.toString(), []);
+
+  const goToHouseType = useCallback(() => navigation.navigate('House Type'), [navigation]);
 
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
@@ -910,10 +902,7 @@ const HomeScreen = () => {
         animationType="slide"
         transparent={false}
         visible={modalvisible}
-        onRequestClose={() => {
-          setmodalvisible(false);
-          // console.log('Modal has been closed.');
-        }}>
+        onRequestClose={close}>
         <View style={{paddingTop: 10}}>
           <ScrollView
             contentContainerStyle={{
@@ -922,7 +911,7 @@ const HomeScreen = () => {
               justifyContent: 'space-evenly',
             }}>
             <View style={{marginTop: 20}}>
-              <Pressable onPress={() => setmodalvisible(false)} style={{margin: 10}}>
+              <Pressable onPress={close} style={{margin: 10}}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
               </Pressable>
               <View style={{flex: 1, alignSelf: 'center'}}>
@@ -932,10 +921,7 @@ const HomeScreen = () => {
                   max={maximumvalue}
                   step={100}
                   sliderLength={310}
-                  onValuesChange={value => {
-                    setMaximumValue(value[0]);
-                    filterPosts(status);
-                  }}
+                  onValuesChange={onValuesChange}
                 />
               </View>
 
@@ -955,7 +941,7 @@ const HomeScreen = () => {
                   }}>
                   <TextInput
                     keyboardType="numeric"
-                    onChangeText={text => hellod1(text)}
+                    onChangeText={hellod1}
                     placeholder={minimumvalue.toLocaleString()}
                   />
                 </View>
@@ -969,7 +955,7 @@ const HomeScreen = () => {
                   }}>
                   <TextInput
                     keyboardType="numeric"
-                    onChangeText={text => hellod2(text)}
+                    onChangeText={hellod2}
                     placeholder={maximumvalue.toLocaleString()}
                   />
                 </View>
@@ -1094,7 +1080,7 @@ const HomeScreen = () => {
 
           <TouchableOpacity
             disabled={posts.length === 0}
-            onPress={() => filter()}
+            onPress={filter}
             style={{
               flex: 1,
               alignSelf: 'center',
@@ -1118,7 +1104,7 @@ const HomeScreen = () => {
         {/* {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center',}}>
                 <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
             </TouchableOpacity>: null} */}
-        <Pressable style={styles.searchButton} onPress={() => navigation.navigate('House Type')}>
+        <Pressable style={styles.searchButton} onPress={goToHouseType}>
           <Fontisto name="search" size={20} color="deeppink" />
           <Text adjustsFontSizeToFit style={styles.searchButtonText}>
             Where do you want to rent?
@@ -1153,7 +1139,7 @@ const HomeScreen = () => {
           backgroundColor: 'white',
         }}>
         <TouchableOpacity
-          onPress={() => setmodalvisible(true)}
+          onPress={open}
           style={{
             flexDirection: 'column',
             backgroundColor: 'white',
@@ -1179,7 +1165,7 @@ const HomeScreen = () => {
           <TouchableOpacity
             // eslint-disable-next-line react/no-array-index-key
             key={index.toString()}
-            onPress={() => setStatusFilter(category.status)}
+            onPress={setStatusFilter(category.status)}
             style={[styles.button1, status === category.status && styles.btnTabActive]}>
             <FontAwesomeIcon
               icon={category.icon}
@@ -1218,12 +1204,8 @@ const HomeScreen = () => {
             maxToRenderPerBatch={1}
             initialNumToRender={1}
             contentContainerStyle={{paddingBottom: 40}}
-            keyExtractor={(item, index) => index.toString()}
-            getItemLayout={(data, index) => ({
-              length: 380,
-              offset: 380 * index,
-              index,
-            })}
+            keyExtractor={keyExtractor}
+            getItemLayout={getItemLayout}
             // ListEmptyComponent={renderNoHome()}
             extraData={posts}
             renderItem={renderItem}

@@ -5,6 +5,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  mapView: {width: '100%', height: '70%', backgroundColor: 'white'},
   footer: {
     flex: 1,
     backgroundColor: '#ffffff',
