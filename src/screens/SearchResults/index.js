@@ -15,6 +15,7 @@ import {
   Platform,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import Post from '../../components/Post';
 import {API, graphqlOperation} from 'aws-amplify';
@@ -356,16 +357,22 @@ const SearchResultsScreen = ({guests, viewport}) => {
     return (
       <View
         style={{
-          flex: 1,
-          padding: 15,
-          backgroundColor: 'white',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderWidth: 1,
+          borderColor: 'black',
+          width: '40%',
+          backgroundColor: 'black',
+          paddingVertical: 13,
+          borderRadius: 10,
         }}>
         <Text
           style={{
+            fontSize: 16,
             fontFamily: 'Montserrat-Bold',
-            fontSize: 20,
+            color: 'white',
           }}>
-          No Homes Here
+          Search Again
         </Text>
         <View style={{paddingVertical: 10}}>
           <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
@@ -404,23 +411,19 @@ const SearchResultsScreen = ({guests, viewport}) => {
       style={{paddingBottom: 100, marginBottom: 100, backgroundColor: 'white'}}>
       {/* <View style={{marginTop:10, flexDirection:'row', justifyContent:'space-between'}}>
             {modes.map((mode) => (
-                
 
                 <TouchableOpacity onPress={() => setModeFilter(mode.status)}
                                     style={[styless.button,
                                     modeStatus === mode.status && styless.btnTabActive,
-                                    
+
                                     ]}
-                                    
+
                                     >
-                                
+
                                         <Text style={styless.textTab, modeStatus === mode.status && styless.textTabActive}>{mode.status}</Text>
-                                    
-                                    
+
                         </TouchableOpacity>
 
-                    
-                    
                 ))}
                 </View> */}
 
@@ -486,7 +489,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
               top: 20,
               zIndex: 1,
             }}>
-            <Feather name="home" size={25} color={'white'} />
+            <Feather name="home" size={25} color="white" />
             <Text
               style={{
                 color: 'white',

@@ -22,6 +22,8 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
 import LinearGradient from 'react-native-linear-gradient';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import {AuthContext} from '../../navigation/AuthProvider';
+import Post from '../../components/Post';
 
 const Trending = props => {
   const {user, logout} = useContext(AuthContext);

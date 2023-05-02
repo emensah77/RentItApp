@@ -7,4 +7,5 @@ const Providers = () => (
     <Router />
   </AuthProvider>
 );
+
 export default Providers;

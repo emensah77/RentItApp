@@ -1,16 +1,16 @@
 import React, {useContext, useState} from 'react';
 import {View, Platform, Text, Pressable} from 'react-native';
-import styles from './styles.js';
 import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import firestore from '@react-native-firebase/firestore';
-import {AuthContext} from '../../navigation/AuthProvider';
 import FastImage from 'react-native-fast-image';
+import {AuthContext} from '../../navigation/AuthProvider';
+import styles from './styles.js';
 import useWishlist from '../../hooks/useWishlist.js';
 
 const Post = props => {
   const {checkIsFav, handleChangeFavorite} = useWishlist();
-  var docRefId;
+  let docRefId;
   let docId;
   const {user, logout} = useContext(AuthContext);
   const addToTrends = async () => {
@@ -59,9 +59,9 @@ const Post = props => {
       });
   };
 
-  var rand;
+  let rand;
   const addToFavorites = () => {
-    var randomString = (Math.random() * 1e32).toString(36);
+    const randomString = (Math.random() * 1e32).toString(36);
     rand = randomString;
     firestore()
       .collection('posts')
@@ -106,7 +106,7 @@ const Post = props => {
 
   const colorStyle = 'deeppink';
 
-  const post = props.post;
+  const {post} = props;
   const navigation = useNavigation();
   const goToPostPage = () => {
     navigation.navigate('Post', {postId: post.id});
@@ -117,7 +117,7 @@ const Post = props => {
       {/* Image */}
       <View>
         <FastImage
-          fallback={Platform.OS === 'android' ? true : false}
+          fallback={Platform.OS === 'android'}
           source={{
             uri: post.image,
             // headers: {Authorization: 'someAuthToken'},
@@ -167,9 +167,7 @@ const Post = props => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text
-            adjustsFontSizeToFit={true}
-            style={{fontSize: 14, fontWeight: 'bold'}}>
+          <Text adjustsFontSizeToFit style={{fontSize: 14, fontWeight: 'bold'}}>
             {post.mode === 'For Sale' ? 'FOR SALE' : 'FOR RENT'}
           </Text>
         </View>
@@ -180,17 +178,18 @@ const Post = props => {
       {/* Type and Description */}
       {post.locality != null ? (
         <Text style={{marginTop: 5, fontWeight: '400', fontSize: 14}}>
-          {post.type} in {post.locality}
+          {post.type} in
+          {post.locality}
         </Text>
       ) : (
         <Text
           style={{marginTop: 5, fontWeight: '400', fontSize: 14}}
           numberOfLines={2}>
-          {post.type} | {post.title}
+          {post.type} |{post.title}
         </Text>
       )}
       <Text style={styles.bedrooms}>
-        {post.bedroom} bedrooms | {post.bathroomNumber} bathrooms
+        {post.bedroom} bedrooms |{post.bathroomNumber} bathrooms
       </Text>
 
       {/* Old and new Price */}

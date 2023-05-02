@@ -48,7 +48,7 @@ const Wishlists = () => {
         flex: 1,
         paddingBottom: 180,
       }}>
-      <StatusBar hidden={true} />
+      <StatusBar hidden />
       <LinearGradient
         colors={['purple', 'deeppink']}
         start={{x: 0.1, y: 0.2}}

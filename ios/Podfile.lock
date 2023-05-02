@@ -338,11 +338,11 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AppAuth (1.6.0):
-    - AppAuth/Core (= 1.6.0)
-    - AppAuth/ExternalUserAgent (= 1.6.0)
-  - AppAuth/Core (1.6.0)
-  - AppAuth/ExternalUserAgent (1.6.0):
+  - AppAuth (1.6.1):
+    - AppAuth/Core (= 1.6.1)
+    - AppAuth/ExternalUserAgent (= 1.6.1)
+  - AppAuth/Core (1.6.1)
+  - AppAuth/ExternalUserAgent (1.6.1):
     - AppAuth/Core
   - BEMCheckBox (1.4.1)
   - boost (1.76.0)
@@ -381,6 +381,10 @@ PODS:
     - FBSDKCoreKit (= 13.2.0)
   - FBSDKShareKit (13.2.0):
     - FBSDKCoreKit (= 13.2.0)
+  - ffmpeg-kit-ios-full-gpl (5.1)
+  - ffmpeg-kit-react-native/full-gpl (5.1.0):
+    - ffmpeg-kit-ios-full-gpl (= 5.1)
+    - React-Core
   - Firebase/Analytics (8.8.0):
     - Firebase/Core
   - Firebase/Auth (8.8.0):
@@ -1096,6 +1100,7 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
+  - ffmpeg-kit-react-native/full-gpl (from `../node_modules/ffmpeg-kit-react-native/ffmpeg-kit-react-native.podspec`)
   - Firebase/Analytics
   - Flipper (= 0.147.1)
   - Flipper-Boost-iOSX (= 1.76.0.1.11)
@@ -1207,6 +1212,7 @@ SPEC REPOS:
     - FBSDKGamingServicesKit
     - FBSDKLoginKit
     - FBSDKShareKit
+    - ffmpeg-kit-ios-full-gpl
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -1263,6 +1269,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
+  ffmpeg-kit-react-native:
+    :podspec: "../node_modules/ffmpeg-kit-react-native/ffmpeg-kit-react-native.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   lottie-react-native:
@@ -1404,7 +1412,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
+  AppAuth: e48b432bb4ba88b10cb2bcc50d7f3af21e78b9c2
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
@@ -1420,6 +1428,8 @@ SPEC CHECKSUMS:
   FBSDKGamingServicesKit: 2af7e19dcfc3459581dec011a230d1eeddc17861
   FBSDKLoginKit: 19e2a878556c2ee4f20486dc406e582783cd7578
   FBSDKShareKit: 079497bb0cfeb049dc8ff6aee2702698680a2806
+  ffmpeg-kit-ios-full-gpl: 2682965e5b3e7f13a05836d46d302eafe6c5039e
+  ffmpeg-kit-react-native: 56ecfcd21536379dd123eade87c3b6fd55f12030
   Firebase: 629510f1a9ddb235f3a7c5c8ceb23ba887f0f814
   FirebaseABTesting: 10cbce8db9985ae2e3847ea44e9947dd18f94e10
   FirebaseAnalytics: 5506ea8b867d8423485a84b4cd612d279f7b0b8a
@@ -1534,6 +1544,6 @@ SPEC CHECKSUMS:
   Yoga: 17cd9a50243093b547c1e539c749928dd68152da
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: b9e69f06a41c3e9299a4c372409462bc3161ce1c
+PODFILE CHECKSUM: 2698d70901b0a93d6ebf34ebaacfe1a6a117e2f7
 
 COCOAPODS: 1.12.0

@@ -10,7 +10,6 @@ import {
   FlatList,
   Pressable,
 } from 'react-native';
-import styles from './styles.js';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {useNavigation} from '@react-navigation/native';
@@ -18,6 +17,7 @@ import auth from '@react-native-firebase/auth';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import styles from './styles.js';
 import {AuthContext} from '../../navigation/AuthProvider';
 
 const AccountManageScreen = props => {

@@ -1,8 +1,8 @@
 name: Verify Lint
 
 on:
-  push: 
-    branches: 
+  push:
+    branches:
       - '*'
   pull_request:
     branches:
@@ -27,4 +27,4 @@ jobs:
 
       - name: Lint
         run: |
-          npx eslint --fix-dry-run .
+          npx eslint --no-inline-config --fix-dry-run .

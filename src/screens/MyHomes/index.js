@@ -5,9 +5,15 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
+  StatusBar,
+  View,
+  Text,
+  StyleSheet,
+  Platform,
 } from 'react-native';
-import {StatusBar, View, Text, StyleSheet, Platform} from 'react-native';
+
 import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
 import {getUserHomes} from '../../graphql/customQueries';
 import {AuthContext} from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
@@ -41,44 +47,42 @@ const MyHomes = () => {
     fetchUserHome();
   }, [user]);
 
-  const renderItem = ({item, index}) => {
-    return (
-      <View key={item}>
-        <Post post={item} />
-        <View
+  const renderItem = ({item, index}) => (
+    <View key={item}>
+      <Post post={item} />
+      <View
+        style={{
+          marginTop: -50,
+          margin: 20,
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('EditHome', {homeInfo: item})}
           style={{
-            marginTop: -50,
-            margin: 20,
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
+            borderWidth: 5,
+            borderColor: 'blue',
+            backgroundColor: 'blue',
+            borderRadius: 10,
           }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('EditHome', {homeInfo: item})}
+          <Text
             style={{
-              borderWidth: 5,
-              borderColor: 'blue',
-              backgroundColor: 'blue',
-              borderRadius: 10,
+              fontSize: 17,
+              fontFamily: 'Montserrat-Bold',
+              color: 'white',
             }}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontFamily: 'Montserrat-Bold',
-                color: 'white',
-              }}>
-              Edit
-            </Text>
-          </TouchableOpacity>
-        </View>
+            Edit
+          </Text>
+        </TouchableOpacity>
       </View>
-    );
-  };
+    </View>
+  );
 
   const renderLoader = () =>
     loading ? (
       <View style={{marginVertical: 100, alignItems: 'center'}}>
-        <ActivityIndicator size={'large'} color="blue" />
+        <ActivityIndicator size="large" color="blue" />
       </View>
     ) : (
       <Text style={{alignSelf: 'center', fontSize: 17, fontWeight: 'bold'}}>
@@ -88,7 +92,7 @@ const MyHomes = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden={true} />
+      <StatusBar hidden />
       <LinearGradient
         colors={['purple', 'deeppink']}
         start={{x: 0.1, y: 0.2}}
@@ -132,19 +136,17 @@ const MyHomes = () => {
           }}>
           {loading ? (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
-              <ActivityIndicator size={'large'} color="deeppink" />
+              <ActivityIndicator size="large" color="deeppink" />
             </View>
           ) : posts?.length !== 0 ? (
             <View style={{flex: 1}}>
               <FlatList
-                removeClippedSubviews={true}
+                removeClippedSubviews
                 data={posts}
                 maxToRenderPerBatch={1}
                 initialNumToRender={1}
                 contentContainerStyle={{paddingBottom: 40}}
-                keyExtractor={(item, index) => {
-                  return index.toString();
-                }}
+                keyExtractor={(item, index) => index.toString()}
                 getItemLayout={(data, index) => ({
                   length: 380,
                   offset: 380 * index,

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   container: {
@@ -36,4 +36,43 @@ export default StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
   },
+  toggleMapTypeButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  toggleMapTypeText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  zoomButtonsContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 5,
+    padding: 5,
+  },
+  zoomButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  
+  zoomButtonText: {
+    color: 'black',
+    fontSize: 25,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  
+  
 });

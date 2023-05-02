@@ -24,40 +24,21 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import styles from './styles';
 import FontAwesome, {SolidIcons, phone} from 'react-native-fontawesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
-const image = {uri: 'https://d5w4alzj7ppu4.cloudfront.net/cities/night.jpeg'};
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {OptimizedFlatList} from 'react-native-optimized-flatlist';
 import FastImage from 'react-native-fast-image';
 import VersionCheck from 'react-native-version-check';
 import Geolocation from 'react-native-geolocation-service';
 import {API, graphqlOperation} from 'aws-amplify';
-import {listPosts, getUser} from '../../graphql/queries';
-import {createUser} from '../../graphql/mutations';
 import Geocoder from 'react-native-geocoding';
-const colors = [
-  'magenta',
-  'lime',
-  'fuchsia',
-  'crimson',
-  'aqua',
-  'blue',
-  'red',
-  'yellow',
-  'green',
-  'white',
-  'deeppink',
-];
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PaymentScreen from '../PaymentScreen';
 import {Paystack} from 'react-native-paystack-webview';
-import {AuthContext} from '../../navigation/AuthProvider';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faBuilding,
@@ -79,7 +60,6 @@ import {
   faCampground,
   faBinoculars,
 } from '@fortawesome/free-solid-svg-icons';
-import Post from '../../components/Post';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import CheckBox from '@react-native-community/checkbox';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -90,13 +70,19 @@ import BackgroundGeolocation, {
   Subscription,
 } from 'react-native-background-geolocation';
 import BackgroundFetch from 'react-native-background-fetch';
+import Video from 'react-native-video';
 import {registerTransistorAuthorizationListener} from './Authorization';
 import {HOME_STATUS} from '../../variables';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
 import useWishlist from '../../hooks/useWishlist';
-import mixpanel from '../../../src/MixpanelConfig';
-import useDwellTimeTracking from '../../../src/hooks/useDwellTimeTracking';
-import Video from 'react-native-video';
+import mixpanel from '../../MixpanelConfig';
+import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
+import Post from '../../components/Post';
+import {AuthContext} from '../../navigation/AuthProvider';
+import PaymentScreen from '../PaymentScreen';
+import {createUser} from '../../graphql/mutations';
+import {listPosts, getUser} from '../../graphql/queries';
+import styles from './styles';
 
 mixpanel.init();
 
@@ -199,7 +185,7 @@ const HomeScreen = props => {
   const initBackgroundGeolocation = useCallback(async () => {
     subscribe(
       BackgroundGeolocation.onProviderChange(event => {
-        //console.log('[onProviderChange]', event);
+        // console.log('[onProviderChange]', event);
         addEvent('onProviderChange', event);
       }),
     );
@@ -207,7 +193,7 @@ const HomeScreen = props => {
     subscribe(
       BackgroundGeolocation.onLocation(
         location => {
-          //console.log('[onLocation]', location);
+          // console.log('[onLocation]', location);
 
           if (user) {
             // console.log('userID', user.uid);
@@ -223,63 +209,63 @@ const HomeScreen = props => {
           return location;
         },
         error => {
-          //console.warn('[onLocation] ERROR: ', error);
+          // console.warn('[onLocation] ERROR: ', error);
         },
       ),
     );
 
     subscribe(
       BackgroundGeolocation.onMotionChange(location => {
-        //console.log('[onMotionChange]', location);
+        // console.log('[onMotionChange]', location);
         addEvent('onMotionChange', location);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onGeofence(event => {
-        //console.log('[onGeofence]', event);
+        // console.log('[onGeofence]', event);
         addEvent('onGeofence', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onConnectivityChange(event => {
-        //console.log('[onConnectivityChange]', event);
+        // console.log('[onConnectivityChange]', event);
         addEvent('onConnectivityChange', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onEnabledChange(enabled => {
-        //('[onEnabledChange]', enabled);
-        addEvent('onEnabledChange', {enabled: enabled});
+        // ('[onEnabledChange]', enabled);
+        addEvent('onEnabledChange', {enabled});
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onHttp(event => {
-        //('[onHttp]', event);
+        // ('[onHttp]', event);
         addEvent('onHttp', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onLocation(location => {
-        //console.log(`Latitude: ${location.coords.latitude}`);
-        //console.log(`Longitude: ${location.coords.longitude}`);
+        // console.log(`Latitude: ${location.coords.latitude}`);
+        // console.log(`Longitude: ${location.coords.longitude}`);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onActivityChange(event => {
-        //console.log('[onActivityChange]', event);
+        // console.log('[onActivityChange]', event);
         addEvent('onActivityChange', event);
       }),
     );
 
     subscribe(
       BackgroundGeolocation.onPowerSaveChange(enabled => {
-        //console.log('[onPowerSaveChange]', enabled);
+        // console.log('[onPowerSaveChange]', enabled);
         addEvent('onPowerSaveChange', {isPowerSaveMode: enabled});
       }),
     );
@@ -319,7 +305,7 @@ const HomeScreen = props => {
       state => {
         if (!state.enabled) {
           BackgroundGeolocation.start(() => {
-            //console.log(' - Start success');
+            // console.log(' - Start success');
           });
         }
       },
@@ -348,7 +334,7 @@ const HomeScreen = props => {
     subscribe(
       BackgroundGeolocation.watchPosition(
         position => {},
-        //error => console.log(error),
+        // error => console.log(error),
         {
           interval: 5000,
         },
@@ -364,11 +350,11 @@ const HomeScreen = props => {
         stopOnTerminate: true,
       },
       taskId => {
-        //console.log('[BackgroundFetch] ', taskId);
+        // console.log('[BackgroundFetch] ', taskId);
         BackgroundFetch.finish(taskId);
       },
       taskId => {
-        //console.log('[BackgroundFetch] TIMEOUT: ', taskId);
+        // console.log('[BackgroundFetch] TIMEOUT: ', taskId);
         BackgroundFetch.finish(taskId);
       },
     );
@@ -380,7 +366,7 @@ const HomeScreen = props => {
     const event = {
       expanded: false,
       timestamp: `${timestamp.getMonth()}-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`,
-      name: name,
+      name,
       params: JSON.stringify(params, null, 2),
     };
     setEvents(previous => [...previous, event]);
@@ -486,8 +472,8 @@ const HomeScreen = props => {
     //setObserving(true);
     //setIsLoadingType(true);
     setStatus(status);
-    //setNextToken(null);
-    //setPosts([]);
+    // setNextToken(null);
+    // setPosts([]);
     fetchPostsType();
     //console.log('status',status)
     //console.log('isreset', observing)
@@ -521,7 +507,7 @@ const HomeScreen = props => {
 
     if (status === 'disabled') {
       Alert.alert(
-        `Turn on Location Services to allow "RentIt" to determine your location.`,
+        'Turn on Location Services to allow "RentIt" to determine your location.',
         '',
         [
           {text: 'Go to Settings', onPress: openSetting},
@@ -536,7 +522,7 @@ const HomeScreen = props => {
   const renderLoader = useCallback(() => {
     return !loading ? (
       <View style={{marginVertical: 100, alignItems: 'center'}}>
-        <ActivityIndicator size={'large'} color="blue" />
+        <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
   }, [loading]);
@@ -623,7 +609,7 @@ const HomeScreen = props => {
         Alert.alert(`Code ${error.code}`, error.message);
         setLatitude(null);
         setLongitude(null);
-        //console.log(error);
+        // console.log(error);
       },
       {
         accuracy: {
@@ -685,13 +671,13 @@ const HomeScreen = props => {
     try {
       Linking.openURL(phoneNumber);
     } catch (e) {
-      //console.log(e);
+      // console.log(e);
     }
   }, []);
 
   const fetchMorePosts = useCallback(async token => {
     try {
-      let query = {
+      const query = {
         limit: 1000000,
         filter: {
           and: {
@@ -715,10 +701,9 @@ const HomeScreen = props => {
       if (postsResult?.data?.listPosts?.nextToken !== null) {
         setNextToken(postsResult.data.listPosts.nextToken);
       } else {
-        return;
       }
     } catch (error) {
-      //console.log('error2', error);
+      // console.log('error2', error);
     }
   }, []);
 
@@ -781,7 +766,7 @@ const HomeScreen = props => {
   ]);
   const fetchPostsType = useCallback(async status => {
     try {
-      let query = {
+      const query = {
         limit: 100000,
         filter: {
           and: {
@@ -799,16 +784,15 @@ const HomeScreen = props => {
       };
 
       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      //console.log('previouslist',previousList.length)
-      //setPosts(shuffle(postsResult.data.listPosts.items));
-      //setPosts(shuffle(posts));
+      // console.log('previouslist',previousList.length)
+      // setPosts(shuffle(postsResult.data.listPosts.items));
+      // setPosts(shuffle(posts));
       if (postsResult?.data?.listPosts?.nextToken !== null) {
         setNextToken(postsResult.data.listPosts.nextToken);
       } else {
-        return;
       }
     } catch (error) {
-      //console.log('error1', error);
+      // console.log('error1', error);
     }
   }, []);
 
@@ -825,10 +809,10 @@ const HomeScreen = props => {
       setPosts(postsResult.data.listPosts.items);
       if (postsResult.data.listPosts.nextToken) {
         setNextToken(postsResult.data.listPosts.nextToken);
-        //console.log('nexttoken',nextToken);
+        // console.log('nexttoken',nextToken);
       }
     } catch (e) {
-      //console.log(e);
+      // console.log(e);
     }
   }, [nextToken]);
 
@@ -841,7 +825,7 @@ const HomeScreen = props => {
       );
 
       setLatest(postsResult.data.listPosts.items);
-      //console.log('posts',posts.length)
+      // console.log('posts',posts.length)
     } catch (e) {
       console.log(e);
     }
@@ -875,10 +859,10 @@ const HomeScreen = props => {
       );
       if (userDB.data.getUser !== null) {
         console.log('User already in dynamodb');
-        //console.log("User", userDB);
+        // console.log("User", userDB);
       } else {
         try {
-          let input = {
+          const input = {
             id: ID,
             email: auth().currentUser.email,
             username: auth().currentUser.displayName,
@@ -889,7 +873,7 @@ const HomeScreen = props => {
               input,
             }),
           );
-          //console.log("User has been added to dynamodb", addedUser)
+          // console.log("User has been added to dynamodb", addedUser)
         } catch (e) {
           console.log('Error adding User to DynamoDB', e);
         }
@@ -992,7 +976,7 @@ const HomeScreen = props => {
     // setNextToken(null);
     // console.log('status', status);
     // console.log('nextToken', nextToken);
-    //setInterval(selectColor, 2000);
+    // setInterval(selectColor, 2000);
     // VersionCheck.needUpdate().then(async res => {
     //   //console.log(res.isNeeded);    // true
     //   if (res.isNeeded) {
@@ -1003,11 +987,11 @@ const HomeScreen = props => {
     //   }
     // });
 
-    //setIsLoadingType(true);
-    //fetchPostsType(status);
-    //setIsLoadingType(false);
-    //console.log('posts', posts);
-    //getLatestPost();
+    // setIsLoadingType(true);
+    // fetchPostsType(status);
+    // setIsLoadingType(false);
+    // console.log('posts', posts);
+    // getLatestPost();
 
     //console.log('This is latest',postLatest.map(item => (item.createdAt)));
     //clearInterval(selectColor);
@@ -1213,13 +1197,11 @@ const HomeScreen = props => {
 
   //  getting wishlists ================
 
-  const renderItem = ({item, index}) => {
-    return (
-      <View key={item}>
-        <Post post={item} />
-      </View>
-    );
-  };
+  const renderItem = ({item, index}) => (
+    <View key={item}>
+      <Post post={item} />
+    </View>
+  );
 
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
@@ -1230,12 +1212,12 @@ const HomeScreen = props => {
           backgroundColor: 'white',
           padding: 20,
         }}
-        animationType={'slide'}
+        animationType="slide"
         transparent={false}
         visible={modalvisible}
         onRequestClose={() => {
           setmodalvisible(false);
-          //console.log('Modal has been closed.');
+          // console.log('Modal has been closed.');
         }}>
         <View style={{paddingTop: 10}}>
           <ScrollView
@@ -1283,7 +1265,8 @@ const HomeScreen = props => {
                   <TextInput
                     keyboardType="numeric"
                     onChangeText={text => hellod1(text)}
-                    placeholder={minimumvalue.toLocaleString()}></TextInput>
+                    placeholder={minimumvalue.toLocaleString()}
+                  />
                 </View>
                 <View
                   style={{
@@ -1296,7 +1279,8 @@ const HomeScreen = props => {
                   <TextInput
                     keyboardType="numeric"
                     onChangeText={text => hellod2(text)}
-                    placeholder={maximumvalue.toLocaleString()}></TextInput>
+                    placeholder={maximumvalue.toLocaleString()}
+                  />
                 </View>
               </View>
             </View>
@@ -1412,11 +1396,11 @@ const HomeScreen = props => {
                   scrollView: {paddingHorizontal: 0},
                 }}
                 items={items}
-                showChips={true}
+                showChips
                 uniqueKey="id"
                 IconRenderer={Icon}
                 selectText="Choose amenities you want"
-                showDropDowns={true}
+                showDropDowns
                 modalAnimationType="fade"
                 readOnlyHeadings={false}
                 onSelectedItemsChange={onSelectedItemsChange}
@@ -1458,8 +1442,8 @@ const HomeScreen = props => {
         <Pressable
           style={styles.searchButton}
           onPress={() => navigation.navigate('House Type')}>
-          <Fontisto name="search" size={20} color={'deeppink'} />
-          <Text adjustsFontSizeToFit={true} style={styles.searchButtonText}>
+          <Fontisto name="search" size={20} color="deeppink" />
+          <Text adjustsFontSizeToFit style={styles.searchButtonText}>
             Where do you want to rent?
           </Text>
         </Pressable>
@@ -1550,11 +1534,11 @@ const HomeScreen = props => {
         }}>
         {loadingType === true ? (
           <View style={{marginVertical: 100, alignItems: 'center'}}>
-            <ActivityIndicator size={'large'} color="deeppink" />
+            <ActivityIndicator size="large" color="deeppink" />
           </View>
         ) : (
           <FlatList
-            removeClippedSubviews={true}
+            removeClippedSubviews
             data={posts}
             maxToRenderPerBatch={1}
             initialNumToRender={1}
@@ -1567,7 +1551,7 @@ const HomeScreen = props => {
               offset: 380 * index,
               index,
             })}
-            //ListEmptyComponent={renderNoHome()}
+            // ListEmptyComponent={renderNoHome()}
             extraData={posts}
             renderItem={renderItem}
             onEndReachedThreshold={0.5}

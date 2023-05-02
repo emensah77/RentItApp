@@ -1,11 +1,15 @@
 type Mutation {
-  createPaymentIntent(amount: Int!): PaymentIntent! @function(name: "CreatePaymentIntent-${env}")
+  createPaymentIntent(amount: Int!): PaymentIntent!
+    @function(name: "CreatePaymentIntent-${env}")
 }
 
 type PaymentIntent {
   clientSecret: String!
 }
-type Review @model @key(name: "byUser", fields: ["userID", "postId"]) @key(name: "byPost", fields: ["postId", "userID"]){
+type Review
+  @model
+  @key(name: "byUser", fields: ["userID", "postId"])
+  @key(name: "byPost", fields: ["postId", "userID"]) {
   id: ID!
   post: Post! @connection(fields: ["postId"])
   user: User! @connection(fields: ["userID"])
@@ -28,24 +32,38 @@ type Viewing @model {
   userId: String
   status: String
   assignedRep: String
-  comments: [String]
-
+  comments: [Comment] @connection(keyName: "byViewing", fields: ["id"])
 }
 
+type Comment @model @key(name: "byViewing", fields: ["viewingId"]) {
+  id: ID!
+  content: String
+  author: String
+  createdAt: String
+  updatedAt: String
+  viewing: Viewing @connection(fields: ["viewingId"])
+  viewingId: ID
+}
 
 type User @model {
   id: String!
   username: String
   email: String
   imageuri: String
-  posts: [Post] @connection(keyName: "byUser" , fields: ["id"])
-  reviews: [Review] @connection(keyName: "byUser" , fields: ["id"])
+  posts: [Post] @connection(keyName: "byUser", fields: ["id"])
+  reviews: [Review] @connection(keyName: "byUser", fields: ["id"])
 }
 
-type Post @model @key(name: "byUser", fields: ["userID"])
- @key(name: "byCreatedTime", fields: ["type", "createdTime"], queryField: "listPostsSortedByCreatedTime") {
+type Post
+  @model
+  @key(name: "byUser", fields: ["userID"])
+  @key(
+    name: "byCreatedTime"
+    fields: ["type", "createdTime"]
+    queryField: "listPostsSortedByCreatedTime"
+  ) {
   id: ID!
-  
+
   createdTime: AWSDateTime
   updatedTime: AWSDateTime
   userID: String
@@ -73,15 +91,15 @@ type Post @model @key(name: "byUser", fields: ["userID"])
   bedroom: Int!
   bathroomNumber: Int
   maxGuests: Int!
-  wifi: String!,
-  kitchen: String!,
-  bathroom: String!,
-  water: String!,
-  toilet: String!,
-  aircondition: String!,
-  locality: String,
-  sublocality: String,
-  videoUrl: String,
+  wifi: String!
+  kitchen: String!
+  bathroom: String!
+  water: String!
+  toilet: String!
+  aircondition: String!
+  locality: String
+  sublocality: String
+  videoUrl: String
 
   oldPrice: Float
   newPrice: Float!
@@ -90,8 +108,7 @@ type Post @model @key(name: "byUser", fields: ["userID"])
   longitude: Float!
 }
 
-type PostNew @model @key(fields: ["latitude", "longitude"])
-  {
+type PostNew @model @key(fields: ["latitude", "longitude"]) {
   id: ID!
 
   image: String
@@ -106,14 +123,14 @@ type PostNew @model @key(fields: ["latitude", "longitude"])
   bedroom: Int!
   bathroomNumber: Int
   maxGuests: Int!
-  wifi: String!,
-  kitchen: String!,
-  bathroom: String!,
-  water: String!,
-  toilet: String!,
-  aircondition: String!,
-  locality: String,
-  sublocality: String,
+  wifi: String!
+  kitchen: String!
+  bathroom: String!
+  water: String!
+  toilet: String!
+  aircondition: String!
+  locality: String
+  sublocality: String
 
   oldPrice: Float
   newPrice: Float!

@@ -90,6 +90,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>RentIt would like to access camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>RentIt would like to access your microphone for recording video</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSLocationAlwaysUsageDescription</key>

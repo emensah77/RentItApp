@@ -14,7 +14,6 @@ import HomeTabNavigator from './HomeTabNavigator';
 import PostScreen from '../screens/PostScreen';
 import Onboarding from '../screens/Onboarding';
 import Splash from '../screens/Splash';
-import auth from '@react-native-firebase/auth';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import {AuthContext} from './AuthProvider';
@@ -95,4 +94,4 @@ export function navigate(name, params) {
   navigationRef.current?.navigate(name, params);
 }
 
-export default memo(Router);
+export default Router;

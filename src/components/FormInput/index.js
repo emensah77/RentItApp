@@ -1,27 +1,26 @@
 import React from 'react';
 import {View, TextInput, Dimensions, StyleSheet} from 'react-native';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const FormInput = ({labelValue, placeholderText, iconType, ...rest}) => {
-  return (
-    <View style={styles.inputContainer}>
-      <View style={styles.iconStyle}>
-        <AntDesign name={iconType} size={25} color="#666" />
-      </View>
-      <TextInput
-        value={labelValue}
-        style={styles.input}
-        numberOfLines={1}
-        placeholder={placeholderText}
-        placeholderTextColor="#666"
-        {...rest}
-      />
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+const FormInput = ({labelValue, placeholderText, iconType, ...rest}) => (
+  <View style={styles.inputContainer}>
+    <View style={styles.iconStyle}>
+      <AntDesign name={iconType} size={25} color="#666" />
     </View>
-  );
-};
+    <TextInput
+      value={labelValue}
+      style={styles.input}
+      numberOfLines={1}
+      placeholder={placeholderText}
+      placeholderTextColor="#666"
+      {...rest}
+    />
+  </View>
+);
 
 export default FormInput;
 

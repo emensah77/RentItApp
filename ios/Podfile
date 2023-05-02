@@ -10,41 +10,31 @@ target 'AirbnbClone' do
   rn_maps_path = '../node_modules/react-native-maps'
   pod 'react-native-google-maps', :path => rn_maps_path
   pod 'GoogleSignIn', '~> 5.0.2'
-  pod 'RNScreens', :path => '../node_modules/react-native-screens'  
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+
+  # Add the video package for FFmpegKit
+  pod 'ffmpeg-kit-react-native', :subspecs => ['full-gpl'], :podspec => '../node_modules/ffmpeg-kit-react-native/ffmpeg-kit-react-native.podspec'
+
   config = use_native_modules!
 
-  # React Native Maps dependencies
   # The following line is only needed if building on an Apple silicon Mac without rosetta.
   pod 'Google-Maps-iOS-Utils', '= 2.1.0'
-
-  rn_maps_path = '../node_modules/react-native-maps'
-  pod 'react-native-google-maps', :path => rn_maps_path
-
 
   # Flags change depending on the env values.
   flags = get_default_flags()
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => flags[:hermes_enabled],
     :fabric_enabled => flags[:fabric_enabled],
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-
-
-
   permissions_path = '../node_modules/react-native-permissions/ios'
-  
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
-  # Recommended: Add the Firebase pod for Google Analytics
   pod 'Firebase/Analytics'
-
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
-
   pod 'RNSentry', :path => '../node_modules/@sentry/react-native'
 
   target 'AirbnbCloneTests' do
@@ -52,10 +42,6 @@ target 'AirbnbClone' do
     # Pods for testing
   end
 
-  # Enables Flipper.
-  #
-  # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable the next line.
   use_flipper!({ 'Flipper' => '0.147.1' })
 
   post_install do |installer|
@@ -71,7 +57,7 @@ target 'AirbnbClone' do
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['ENABLE_BITCODE'] = 'NO'
-          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       end
     end
     `sed -i -e $'s/__IPHONE_10_0/__IPHONE_12_0/' Pods/RCT-Folly/folly/portability/Time.h`

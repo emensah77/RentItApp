@@ -8,9 +8,9 @@ import {
   Platform,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {AuthContext} from '../../navigation/AuthProvider';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
 import BackButton from '../../components/BackButton/BackButton';
@@ -21,11 +21,13 @@ import {
   Icon,
   RangeCalendar,
   Text as Typography,
+  Button,
 } from '@ui-kitten/components';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import {ActivityIndicator} from 'react-native';
-import {Button} from '@ui-kitten/components';
+
 import axios from 'axios';
+import {Marketer_Status, ROLE} from '../../variables';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const Marketer = () => {
   const {user, updateProfile} = useContext(AuthContext);
@@ -72,8 +74,8 @@ const Marketer = () => {
   };
 
   useEffect(() => {
-    //fetchUserHome();
-    //console.log('Homes for user', posts);
+    // fetchUserHome();
+    // console.log('Homes for user', posts);
   }, [user]);
 
   const getFirebaseUser = async () => {
@@ -91,7 +93,8 @@ const Marketer = () => {
 
   const temp = {
     [Marketer_Status.inReview]: {
-      infoText: `Your request has been submitted, once admin approves, enjoy the experience of Marketer in Rentit.`,
+      infoText:
+        'Your request has been submitted, once admin approves, enjoy the experience of Marketer in Rentit.',
       buttonText: 'In Review',
       color: 'orange',
     },

@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
-const { v4: uuidv4 } = require('uuid');
+const {v4: uuidv4} = require('uuid');
+
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const currentDate = new Date().toISOString();
 const sns = new AWS.SNS();
@@ -39,21 +40,36 @@ async function findRepForUser(userId) {
 
   return null;
 }
-exports.handler = async (event) => {
-  const { postId, viewingDate, viewingTime, userName, userContact, userLocation, userId } = JSON.parse(event.body);
+exports.handler = async event => {
+  const {
+    postId,
+    viewingDate,
+    viewingTime,
+    userName,
+    userContact,
+    userLocation,
+    userId,
+  } = JSON.parse(event.body);
   const viewingDateTime = `${viewingDate}_${viewingTime}`;
 
   const bufferInMinutes = 30;
-  const viewingTimeMoment = new Date(viewingDate + 'T' + viewingTime);
-  const startTime = new Date(viewingTimeMoment.getTime() - bufferInMinutes * 60 * 1000);
-  const endTime = new Date(viewingTimeMoment.getTime() + bufferInMinutes * 60 * 1000);
-  const startTimeString = `${viewingDate}_${startTime.toISOString().substr(11, 8)}`;
+  const viewingTimeMoment = new Date(`${viewingDate}T${viewingTime}`);
+  const startTime = new Date(
+    viewingTimeMoment.getTime() - bufferInMinutes * 60 * 1000,
+  );
+  const endTime = new Date(
+    viewingTimeMoment.getTime() + bufferInMinutes * 60 * 1000,
+  );
+  const startTimeString = `${viewingDate}_${startTime
+    .toISOString()
+    .substr(11, 8)}`;
   const endTimeString = `${viewingDate}_${endTime.toISOString().substr(11, 8)}`;
 
   const params = {
     TableName: 'Viewing-k5j5uz5yp5d7tl2yzjyruz5db4-dev',
     IndexName: 'postId-viewingDateTime-index',
-    KeyConditionExpression: 'postId = :postId AND viewingDateTime BETWEEN :startTime AND :endTime',
+    KeyConditionExpression:
+      'postId = :postId AND viewingDateTime BETWEEN :startTime AND :endTime',
     ExpressionAttributeValues: {
       ':postId': postId,
       ':startTime': startTimeString,
@@ -68,35 +84,49 @@ exports.handler = async (event) => {
     if (result.Items.length > 0) {
       return {
         statusCode: 409,
-        body: JSON.stringify({ message: 'The selected date and time for this property are already scheduled.' }),
+        body: JSON.stringify({
+          message:
+            'The selected date and time for this property are already scheduled.',
+        }),
       };
     }
 
-    const reps = ['Lydia', 'Priscilla', 'Juliana', 'Jacqueline', 'Josephine', 'Violet', 'Memuna', 'Princess', 'Dzigbordi', 'Rosabell'];
+    const reps = [
+      'Lydia',
+      'Priscilla',
+      'Juliana',
+      'Jacqueline',
+      'Josephine',
+      'Violet',
+      'Memuna',
+      'Princess',
+      'Dzigbordi',
+      'Rosabell',
+    ];
 
-  // Check if the user has a rep assigned from a previous viewing
+    // Check if the user has a rep assigned from a previous viewing
     const previousRep = await findRepForUser(userId);
 
     // If the user has a previous rep assigned, use the same rep. Otherwise, assign a random rep.
-    const assignedRep = previousRep || reps[Math.floor(Math.random() * reps.length)];
-
+    const assignedRep =
+      previousRep || reps[Math.floor(Math.random() * reps.length)];
 
     const newItemParams = {
       TableName: 'Viewing-k5j5uz5yp5d7tl2yzjyruz5db4-dev',
       Item: {
         id: uuidv4(), // Add the id attribute with a unique value
-        postId: postId,
+        postId,
         username: userName,
         usercontact: userContact,
         userlocation: userLocation,
-        viewingDate: viewingDate,
-        viewingTime: viewingTime,
+        viewingDate,
+        viewingTime,
         createdAt: currentDate,
         updatedAt: currentDate,
-        viewingDateTime: viewingDateTime,
-        userId: userId,
+        viewingDateTime,
+        userId,
         status: 'Todo', // Add the status attribute with the default value 'Todo'
-        assignedRep: assignedRep, // Assign the viewing to a randomly selected rep
+        assignedRep, // Assign the viewing to a randomly selected rep
       },
     };
 
@@ -106,13 +136,15 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Viewing scheduled successfully.' }),
+      body: JSON.stringify({message: 'Viewing scheduled successfully.'}),
     };
   } catch (error) {
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'An error occurred while scheduling the viewing.' }),
+      body: JSON.stringify({
+        message: 'An error occurred while scheduling the viewing.',
+      }),
     };
   }
 };

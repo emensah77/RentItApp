@@ -1,12 +1,11 @@
 const AWS = require('aws-sdk');
+
 const s3 = new AWS.S3();
 
 const BUCKET_NAME = 'pics175634-dev';
 const GEOJSON_FILE = 'export.geojson';
 
-const toRadians = (degrees) => {
-  return degrees * (Math.PI / 180);
-};
+const toRadians = degrees => degrees * (Math.PI / 180);
 
 const haversineDistance = (location1, location2) => {
   const earthRadius = 6371e3; // Earth's radius in meters
@@ -18,21 +17,26 @@ const haversineDistance = (location1, location2) => {
   const deltaLatitude = latitude2 - latitude1;
   const deltaLongitude = longitude2 - longitude1;
 
-  const a =
-    Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
-    Math.cos(latitude1) * Math.cos(latitude2) * Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2);
+  const a = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2);
+  Math.cos(latitude1) *
+    Math.cos(latitude2) *
+    Math.sin(deltaLongitude / 2) *
+    Math.sin(deltaLongitude / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return earthRadius * c;
 };
 
-const getNearbyBuildings = (userLocation, buildingLocations, radiusInMeters = 500) => {
-  return buildingLocations.filter((building) => {
+const getNearbyBuildings = (
+  userLocation,
+  buildingLocations,
+  radiusInMeters = 500,
+) =>
+  buildingLocations.filter(building => {
     const distance = haversineDistance(userLocation, building);
     return distance <= radiusInMeters;
   });
-};
 
 const getGeoJSONData = async () => {
   const params = {
@@ -49,7 +53,7 @@ const getGeoJSONData = async () => {
   }
 };
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   const userLocation = {
     latitude: event.latitude,
     longitude: event.longitude,
@@ -58,8 +62,8 @@ exports.handler = async (event) => {
   try {
     const geoJSONData = await getGeoJSONData();
     const buildingLocations = geoJSONData.features
-      .filter((feature) => feature.properties.building)
-      .map((feature) => ({
+      .filter(feature => feature.properties.building)
+      .map(feature => ({
         latitude: feature.geometry.coordinates[1],
         longitude: feature.geometry.coordinates[0],
       }));

@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import auth from '@react-native-firebase/auth';
+import styles from './styles.js';
 
 const HouseUploadScreen = props => {
   const navigation = useNavigation();

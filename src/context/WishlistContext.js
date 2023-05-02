@@ -1,32 +1,25 @@
 import React, {createContext, useEffect, useState} from 'react';
-import FirebaseRepo from '../repositry/FirebaseRepo';
 import auth from '@react-native-firebase/auth';
+import FirebaseRepo from '../repositry/FirebaseRepo';
 
-// ----------------------------------------------------------------------
-
-const initialState = {
+const WishListContext = createContext({
   favorite: {},
   handleChangeFavorite: () => {},
   checkIsFav: () => {},
-};
-
-const WishListContext = createContext(initialState);
-
-// ----------------------------------------------------------------------
+});
 
 function WishListProvider({children}) {
   const user = auth().currentUser;
   const [favorite, setFavorite] = useState({});
 
   let rand = '';
-  let docRefId;
-  let docId;
 
   const fetchWishlist = async () => {
     const wishList = await FirebaseRepo.getWishlist(user?.uid);
     const temp = {};
     wishList?.map(single => {
       temp[single.id] = true;
+      return null;
     });
     setFavorite(temp);
   };
@@ -59,9 +52,7 @@ function WishListProvider({children}) {
     }
   };
 
-  const checkIsFav = homeId => {
-    return favorite[homeId];
-  };
+  const checkIsFav = homeId => favorite[homeId];
 
   return (
     <WishListContext.Provider
