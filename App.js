@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
 import React, {useEffect} from 'react';
-import {StatusBar, useColorScheme} from 'react-native';
+import {StatusBar, useColorScheme, AppState} from 'react-native';
 import Amplify from '@aws-amplify/core';
 import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
@@ -24,6 +24,10 @@ const App = () => {
     SplashScreen.hide();
     requestUserPermission();
     notificationListener();
+
+    AppState.addEventListener('memoryWarning', state => {
+      console.debug('Your memory is currently warning.', state);
+    });
   }, []);
 
   return (
