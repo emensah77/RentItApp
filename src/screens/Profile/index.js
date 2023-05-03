@@ -96,6 +96,7 @@ const ProfileScreen = ({route}) => {
     await firestore()
       .collection('users')
       .doc(route.params ? route?.params?.userId : user?.uid)
+      //   https://photizo.sentry.io/issues/3324565685/?project=6369972&query=is%3Aunresolved&referrer=issue-stream&statsPeriod=14d&stream_index=2
       .get()
       .then(documentSnapshot => {
         if (documentSnapshot.exists) {
