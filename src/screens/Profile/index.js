@@ -95,7 +95,7 @@ const ProfileScreen = ({route}) => {
   const getUser = async () => {
     await firestore()
       .collection('users')
-      .doc(route.params ? route.params.userId : user.uid)
+      .doc(route.params ? route?.params?.userId : user?.uid)
       .get()
       .then(documentSnapshot => {
         if (documentSnapshot.exists) {
