@@ -12,10 +12,10 @@ import {
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {AuthContext} from '../../navigation/AuthProvider';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {AuthContext} from '../../navigation/AuthProvider';
 import {isIOS} from '../../utils/constants';
 import BackButton from '../../components/BackButton/BackButton';
 

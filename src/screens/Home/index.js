@@ -1,5 +1,4 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-undef */
 import React, {useState, useContext, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
@@ -72,7 +71,6 @@ const HomeScreen = () => {
   const [modalVisible, setmodalVisible] = useState(false);
   const [minimumvalue] = useState(1);
   const [maximumvalue, setMaximumValue] = useState(100000);
-  // eslint-disable-next-line no-unused-vars
   const [minvalue, setminValue] = useState('');
   const [maxvalue, setmaxValue] = useState('');
   const [nextToken, setNextToken] = useState(null);
@@ -304,7 +302,7 @@ const HomeScreen = () => {
 
   /// Adds events to List
   const addEvent = useCallback((name, params) => {
-    let timestamp = new Date();
+    const timestamp = new Date();
     const event = {
       expanded: false,
       timestamp: `${timestamp.getMonth()}-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`,
@@ -391,37 +389,21 @@ const HomeScreen = () => {
     [],
   );
 
-  const shuffle = useCallback(array => {
-    var m = array.length,
-      t,
-      i;
-
-    // While there remain elements to shuffle…
-    while (m) {
-      // Pick a remaining element…
-      i = Math.floor(Math.random() * m--);
-
-      // And swap it with the current element.
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
-    }
-
-    return array;
-  }, []);
-
-  const setStatusFilter = useCallback(status => {
-    //setObserving(true);
-    //setIsLoadingType(true);
-    setStatus(status);
-    // setNextToken(null);
-    // setPosts([]);
-    fetchPostsType();
-    //console.log('status',status)
-    //console.log('isreset', observing)
-    //setObserving(false);
-    //setIsLoadingType(false);
-  }, []);
+  const setStatusFilter = useCallback(
+    status => {
+      // setObserving(true);
+      // setIsLoadingType(true);
+      setStatus(status);
+      // setNextToken(null);
+      // setPosts([]);
+      fetchPostsType();
+      // console.log('status',status)
+      // console.log('isreset', observing)
+      // setObserving(false);
+      // setIsLoadingType(false);
+    },
+    [fetchPostsType],
+  );
 
   const onSelectedItemsChange = useCallback(
     selectedItems => {
@@ -585,47 +567,47 @@ const HomeScreen = () => {
     }
   }, []);
 
-  const fetchMorePosts = useCallback(async token => {
-    try {
-      const query = {
-        limit: 1000000,
-        filter: {
-          and: {
-            type: {
-              eq: status,
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
-            },
-            status: {eq: HOME_STATUS.APPROVED},
-          },
-        },
-        nextToken: token,
-      };
+  //   const fetchMorePosts = useCallback(async token => {
+  //     try {
+  //       const query = {
+  //         limit: 1000000,
+  //         filter: {
+  //           and: {
+  //             type: {
+  //               eq: status,
+  //             },
+  //             latitude: {
+  //               between: [4.633900069140816, 11.17503079077031],
+  //             },
+  //             longitude: {
+  //               between: [-3.26078589558366, 1.199972025476763],
+  //             },
+  //             status: {eq: HOME_STATUS.APPROVED},
+  //           },
+  //         },
+  //         nextToken: token,
+  //       };
 
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      setPosts([...posts, ...postsResult.data.listPosts.items]);
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-      }
-    } catch (error) {
-      // console.log('error2', error);
-    }
-  }, []);
+  //       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+  //       setPosts([...posts, ...postsResult.data.listPosts.items]);
+  //       if (postsResult?.data?.listPosts?.nextToken !== null) {
+  //         setNextToken(postsResult.data.listPosts.nextToken);
+  //       } else {
+  //       }
+  //     } catch (error) {
+  //       // console.log('error2', error);
+  //     }
+  //   }, []);
 
   const loadMore = useCallback(async () => {
     setIsLoadingMore(true);
     await personalizedHomes(latitude, longitude, status, nextToken);
     setIsLoadingMore(false);
-  }, [latitude, longitude, nextToken, status]);
+  }, [latitude, longitude, nextToken, personalizedHomes, status]);
 
-  const selectColor = useCallback(() => {
-    setcolor(colors[Math.floor(Math.random() * colors.length)]);
-  }, []);
+  //   const selectColor = useCallback(() => {
+  //     setcolor(colors[Math.floor(Math.random() * colors.length)]);
+  //   }, []);
 
   const [images, setimages] = useState([
     {
@@ -726,23 +708,23 @@ const HomeScreen = () => {
     }
   }, [nextToken]);
 
-  const getLatestPost = useCallback(async () => {
-    try {
-      const postsResult = await API.graphql(
-        graphqlOperation(listPosts, {
-          limit: 2,
-        }),
-      );
+  //   const getLatestPost = useCallback(async () => {
+  //     try {
+  //       const postsResult = await API.graphql(
+  //         graphqlOperation(listPosts, {
+  //           limit: 2,
+  //         }),
+  //       );
 
-      setLatest(postsResult.data.listPosts.items);
-      // console.log('posts',posts.length)
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+  //     //   setLatest(postsResult.data.listPosts.items);
+  //       // console.log('posts',posts.length)
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }, []);
 
   const userDetails = useCallback(async () => {
-    var user = await firestore().collection('users').doc(auth().currentUser.uid);
+    const user = await firestore().collection('users').doc(auth().currentUser.uid);
 
     user.get().then(doc => {
       if (doc.exists) {
@@ -880,9 +862,9 @@ const HomeScreen = () => {
     // console.log('posts', posts);
     // getLatestPost();
 
-    //console.log('This is latest',postLatest.map(item => (item.createdAt)));
-    //clearInterval(selectColor);
-  }, [status, latitude, longitude, _getUserData, userDetails, cachedData]);
+    // console.log('This is latest',postLatest.map(item => (item.createdAt)));
+    // clearInterval(selectColor);
+  }, [status, latitude, longitude, _getUserData, userDetails, cachedData, personalizedHomes]);
   //    if (postLatest){
   //     postLatest.sort(function (a, b) {
   //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
@@ -908,7 +890,7 @@ const HomeScreen = () => {
   const personalizedHomes = useCallback(
     async (userLatitude, userLongitude, homeType, nextToken) => {
       try {
-        //setIsLoadingType(true);
+        // setIsLoadingType(true);
         const response = await fetch(
           'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
           {
@@ -928,14 +910,14 @@ const HomeScreen = () => {
         );
 
         const data = await response.json();
-        //console.log("Response data:", data.homes.length); // Add console log here
+        // console.log("Response data:", data.homes.length); // Add console log here
         console.log('Response token:', data.nextToken); // Add console log here
 
         return data;
       } catch (error) {
         console.error(error);
       } finally {
-        //setIsLoadingType(false); // Set loading state to false
+        // setIsLoadingType(false); // Set loading state to false
       }
     },
     [],
@@ -961,7 +943,7 @@ const HomeScreen = () => {
     async status => {
       console.log(maximumvalue);
       try {
-        let query = {
+        const query = {
           limit: 100000,
           filter: {
             and: {
@@ -1025,10 +1007,10 @@ const HomeScreen = () => {
         }
 
         const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-        //console.log('previouslist',previousList.length)
+        // console.log('previouslist',previousList.length)
 
         setPosts(postsResult.data.listPosts.items);
-        //setPosts(shuffle(posts));
+        // setPosts(shuffle(posts));
         if (postsResult?.data?.listPosts?.nextToken !== null) {
           setNextToken(postsResult.data.listPosts.nextToken);
         } else {
@@ -1350,10 +1332,9 @@ const HomeScreen = () => {
           <FontAwesomeIcon icon={faFilter} />
           <Text style={{fontWeight: '600', paddingTop: 5}}>Filter</Text>
         </TouchableOpacity>
-        {categories.map((category, index) => (
+        {categories.map(category => (
           <TouchableOpacity
-            // eslint-disable-next-line react/no-array-index-key
-            key={index.toString()}
+            key={category.id}
             onPress={() => setStatusFilter(category.status)}
             style={[styles.button1, status === category.status && styles.btnTabActive]}>
             <FontAwesomeIcon
@@ -1417,7 +1398,7 @@ const HomeScreen = () => {
           animationType="slide"
           transparent={true}
           visible={modalVisible}
-          //onRequestClose={closeModal}
+          // onRequestClose={closeModal}
         >
           <View
             style={{
@@ -1443,7 +1424,7 @@ const HomeScreen = () => {
                     alignItems: 'center',
                     borderRadius: 30,
                   }}>
-                  <ActivityIndicator size={'large'} color="white" />
+                  <ActivityIndicator size="large" color="white" />
                 </View>
               ) : (
                 <Video

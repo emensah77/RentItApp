@@ -1,13 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Post from '../../components/Post';
 import {AuthContext} from '../../navigation/AuthProvider';
@@ -25,7 +18,7 @@ const Wishlists = () => {
     const wishList = await FirebaseRepo.getWishlist(user.uid);
     const temp = {};
     const uniquePosts = [];
-    wishList?.map(single => {
+    wishList?.forEach(single => {
       if (!temp[single.id]) {
         uniquePosts.push(single);
       }
@@ -97,20 +90,12 @@ const Wishlists = () => {
                 Your Favorites
               </Text>
             </View>
-            <FlatList
-              data={posts}
-              renderItem={({item}) => <Post post={item} />}
-            />
+            <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
           </>
         ) : (
           <View style={{padding: 15}}>
             {loading ? (
-              <ActivityIndicator
-                animating={true}
-                size="large"
-                color="blue"
-                style={{opacity: 1}}
-              />
+              <ActivityIndicator animating={true} size="large" color="blue" style={{opacity: 1}} />
             ) : (
               <>
                 <Text
@@ -121,10 +106,9 @@ const Wishlists = () => {
                   No saves yet
                 </Text>
                 <View style={{padding: 10}}>
-                  <Text
-                    style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-                    Start looking for homes to rent or buy: As you search, tap
-                    the heart icon to save your favorite homes to rent or buy.
+                  <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+                    Start looking for homes to rent or buy: As you search, tap the heart icon to
+                    save your favorite homes to rent or buy.
                   </Text>
                 </View>
 

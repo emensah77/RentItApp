@@ -1,27 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StatusBar,
-  SafeAreaView,
-  Dimensions,
-  Image,
-  Text,
-  Pressable,
-  ImageBackground,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  Platform,
-} from 'react-native';
-import {Auth} from 'aws-amplify';
-import Swiper from 'react-native-swiper';
-import {listPosts} from '../../graphql/queries';
 import {API, graphqlOperation} from 'aws-amplify';
-import {OptimizedFlatList} from 'react-native-optimized-flatlist';
-import Post from '../../components/Post';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import React, {useEffect, useState} from 'react';
+import {Platform, StatusBar, StyleSheet, Text, View} from 'react-native';
+
 import LinearGradient from 'react-native-linear-gradient';
+import {OptimizedFlatList} from 'react-native-optimized-flatlist';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import Post from '../../components/Post';
+import {listPosts} from '../../graphql/queries';
+
 const LowPriceScreen = props => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,16 +27,10 @@ const LowPriceScreen = props => {
     };
 
     fetchPosts();
-  }, []);
+  }, [loading]);
   posts.sort(function (a, b) {
     return a.newPrice - b.newPrice;
   });
-  //console.log(posts[0].image);
-
-  var result = posts.map((a, b) => {
-    a.newPrice, b.image;
-  });
-  //console.log(result)
 
   return (
     <View
@@ -134,14 +114,12 @@ const LowPriceScreen = props => {
               {width: 90, height: 20, marginBottom: 20},
 
               // ...
-            ]}></SkeletonContent>
+            ]}
+          />
         </View>
       ) : (
         <View>
-          <OptimizedFlatList
-            data={posts}
-            renderItem={({item}) => <Post post={item} />}
-          />
+          <OptimizedFlatList data={posts} renderItem={({item}) => <Post post={item} />} />
         </View>
       )}
     </View>

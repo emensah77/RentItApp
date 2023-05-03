@@ -1,80 +1,61 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, {
-  useEffect,
-  useContext,
-  useState,
-  useRef,
-  useCallback,
-} from 'react';
+/* eslint-disable quotes */
 import {
-  View,
-  Image,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  Modal,
-  Text,
-  ScrollView,
-  Platform,
-  Linking,
-  Pressable,
-  StatusBar,
-  ActivityIndicator,
-  Alert,
-  RefreshControl,
-} from 'react-native';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import {FlatListSlider} from 'react-native-flatlist-slider';
-import {withAuthenticator} from 'aws-amplify-react-native';
-import Amplify from '@aws-amplify/core';
-import Feather from 'react-native-vector-icons/Feather';
-import {FontAwesomeIcon, Icon} from '@fortawesome/react-native-fontawesome';
-import {
-  faUtensils,
-  faFan,
-  faPencilAlt,
-  faFaucet,
   faBath,
   faBed,
-  faToilet,
-  faBackward,
-  faTimes,
-  faChair,
-  faIdBadge,
   faCalendar,
-  faHandshake,
-  faStar,
   faCheckCircle,
   faCouch,
-  faShieldAlt,
+  faFan,
+  faFaucet,
+  faHandshake,
   faPlusCircle,
+  faShieldAlt,
+  faToilet,
+  faUtensils,
 } from '@fortawesome/free-solid-svg-icons';
-import firebase from '@react-native-firebase/app';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import analytics from '@react-native-firebase/analytics';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import Swiper from 'react-native-swiper';
-import {SharedElement} from 'react-navigation-shared-element';
-import FastImage from 'react-native-fast-image';
+import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
-import moment from 'moment/moment.js';
-import Video from 'react-native-video';
+import moment from 'moment/moment';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Linking,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import Feather from 'react-native-vector-icons/Feather';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import Video from 'react-native-video';
 import {AuthContext} from '../../navigation/AuthProvider';
 // const uploadusers = ["17Kx04gVyJXkO8kZsIxUxRu4uJw1","Ye7iz2KN5Fbk5Y0Z91IEmzywNPh1","UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1", "JleriGZuTqXkAyO3xCiDsey1CCb2"]
-import mixpanel from '../../MixpanelConfig.js';
+import mixpanel from '../../MixpanelConfig';
 
 import {deletePost, updatePost} from '../../graphql/mutations';
-import useWishlist from '../../hooks/useWishlist.js';
-import StarRating from '../StarRating/index.js';
-import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto.js';
+import useWishlist from '../../hooks/useWishlist';
+import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto';
+import StarRating from '../StarRating/index';
 
 import ImageCarousel from '../ImageCarousel';
-import styles from './styles.js';
+import styles from './styles';
 
 const DetailedPost = props => {
-  const [post, setPost] = useState(props.post);
+  const [post, setPost] = useState(props?.post);
   const navigation = useNavigation();
   const route = useRoute();
   const {user, logout} = useContext(AuthContext);
@@ -196,9 +177,7 @@ const DetailedPost = props => {
   }, []);
 
   const loadMore = useCallback(() => {
-    setNumHomes(prevNumHomes =>
-      prevNumHomes + 10 > totalItems ? totalItems : prevNumHomes + 10,
-    );
+    setNumHomes(prevNumHomes => (prevNumHomes + 10 > totalItems ? totalItems : prevNumHomes + 10));
   }, [totalItems]);
   const handleProgress = useCallback(progress => {
     setPlaybackTime(progress.currentTime);
@@ -209,27 +188,27 @@ const DetailedPost = props => {
     setVideoLoading(false);
   }, []);
 
-  const handlePlaybackStatusUpdate = useCallback(
-    playbackStatus => {
-      if (playbackStatus.isPlaying) {
-        // Track the video view event
-        mixpanel.track('Video Viewed', {
-          'Home ID': post.id,
-          'Home VideoURL': post.videoURL,
-        });
-        playStartPosition.current = playbackStatus.positionMillis;
-      } else if (playbackStatus.didJustFinish) {
-        const playDurationSeconds =
-          (playbackStatus.positionMillis - playStartPosition.current) / 1000;
-        mixpanel.track('Video Played Duration', {
-          'Home ID': post.id,
-          'Home VideoURL': post.videoURL,
-          'Video PlayDuration': playDurationSeconds,
-        });
-      }
-    },
-    [post.id, post.videoURL],
-  );
+  //   const handlePlaybackStatusUpdate = useCallback(
+  //     playbackStatus => {
+  //       if (playbackStatus.isPlaying) {
+  //         // Track the video view event
+  //         mixpanel.track('Video Viewed', {
+  //           'Home ID': post.id,
+  //           'Home VideoURL': post.videoURL,
+  //         });
+  //         playStartPosition.current = playbackStatus.positionMillis;
+  //       } else if (playbackStatus.didJustFinish) {
+  //         const playDurationSeconds =
+  //           (playbackStatus.positionMillis - playStartPosition.current) / 1000;
+  //         mixpanel.track('Video Played Duration', {
+  //           'Home ID': post.id,
+  //           'Home VideoURL': post.videoURL,
+  //           'Video PlayDuration': playDurationSeconds,
+  //         });
+  //       }
+  //     },
+  //     [post.id, post.videoURL],
+  //   );
 
   const loadMoreButton = (
     <TouchableOpacity onPress={loadMore} style={styles.loadMoreButton}>
@@ -282,9 +261,7 @@ const DetailedPost = props => {
   );
 
   const getUsersWithPrivileges = useCallback(async () => {
-    const callers = await firebase
-      .firestore()
-      .collection('usersWithPrivileges');
+    const callers = await firebase.firestore().collection('usersWithPrivileges');
     callers.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         setUsersWithPrivileges(prev => [...prev, doc.data().userId]);
@@ -476,8 +453,7 @@ const DetailedPost = props => {
     const phoneWithCountryCode = `+233${
       phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)]
     }`;
-    const mobile =
-      Platform.OS == 'ios' ? phoneWithCountryCode : `+${phoneWithCountryCode}`;
+    const mobile = Platform.OS == 'ios' ? phoneWithCountryCode : `+${phoneWithCountryCode}`;
     if (mobile) {
       if (msg) {
         const url = `whatsapp://send?text=${msg}&phone=${mobile}`;
@@ -495,18 +471,17 @@ const DetailedPost = props => {
       alert('Please insert mobile no');
     }
   };
+
   const renderItem = useCallback(
     ({item}) => {
-      const monthlyPrice = item.newPrice
-        ? Math.floor((item.newPrice * 1.07) / 12)
-        : 0;
-      const currency = item.currency
-        ? item.currency[0] === 'usd'
-          ? '$'
-          : item.currency[0] === 'ghs'
-          ? 'GH₵'
-          : 'GH₵'
-        : 'GH₵';
+      const monthlyPrice = item.newPrice ? Math.floor((item.newPrice * 1.07) / 12) : 0;
+
+      const currency = () => {
+        const list = item?.currency ?? [];
+        if (Array.isArray(list) && list.length > 0 && list[0] === 'usd') return '$';
+
+        return 'GH₵';
+      };
 
       return (
         <Pressable
@@ -527,7 +502,7 @@ const DetailedPost = props => {
               {item.locality},{item.sublocality}
             </Text>
             <Text style={styles.price}>
-              {currency} {monthlyPrice} / month
+              {currency()} {monthlyPrice} / month
             </Text>
           </View>
         </Pressable>
@@ -545,9 +520,7 @@ const DetailedPost = props => {
         </View>
       )}
 
-      <ScrollView
-        contentContainerStyle={{paddingBottom: 150}}
-        showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{paddingBottom: 150}} showsVerticalScrollIndicator={false}>
         {/* Image */}
         <StatusBar hidden />
 
@@ -624,8 +597,7 @@ const DetailedPost = props => {
 
           <View style={styles.hairline} />
           <Text style={styles.bedrooms}>
-            {post.type} |{post.bedroom} bedrooms |{post.bathroomNumber}{' '}
-            bathrooms |
+            {post.type} |{post.bedroom} bedrooms |{post.bathroomNumber} bathrooms |
           </Text>
 
           <View
@@ -652,28 +624,18 @@ const DetailedPost = props => {
     </Pressable> */}
 
               <View style={styles.container1}>
-                <Pressable
-                  onPress={showDetailsModal}
-                  style={styles.scheduleButton}>
+                <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
-                  <Text style={{fontWeight: 'bold', color: 'white'}}>
-                    Schedule Viewing
-                  </Text>
+                  <Text style={{fontWeight: 'bold', color: 'white'}}>Schedule Viewing</Text>
                 </Pressable>
 
                 <Modal
                   visible={isDetailsModalVisible}
                   transparent
                   onRequestClose={hideDetailsModal}>
-                  <Pressable
-                    onPress={hideDetailsModal}
-                    style={styles.modalOverlay}>
-                    <View
-                      onStartShouldSetResponder={() => true}
-                      style={styles.modal}>
-                      <Text style={styles.modalTitle}>
-                        Enter your details.{' '}
-                      </Text>
+                  <Pressable onPress={hideDetailsModal} style={styles.modalOverlay}>
+                    <View onStartShouldSetResponder={() => true} style={styles.modal}>
+                      <Text style={styles.modalTitle}>Enter your details. </Text>
                       <Text style={{fontSize: 14}}>
                         {' '}
                         Click next and choose date and time to confirm Viewing
@@ -714,9 +676,7 @@ const DetailedPost = props => {
                   onConfirm={handleConfirm}
                   onCancel={hideDatePicker}
                   minimumDate={new Date(Date.now())}
-                  maximumDate={
-                    new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)
-                  } // Six months from now
+                  maximumDate={new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)} // Six months from now
                 />
               </View>
 
@@ -733,7 +693,6 @@ const DetailedPost = props => {
                       borderRadius: 5,
                       paddingHorizontal: 5,
                       paddingVertical: 5,
-                      marginVertical: 5,
                     }}>
                     <Fontisto
                       name="phone"
@@ -788,9 +747,7 @@ const DetailedPost = props => {
                           repeat
                           onProgress={handleProgress}
                           onLoad={handleLoad}
-                          onError={error =>
-                            console.log('Error playing video:', error)
-                          }
+                          onError={error => console.log('Error playing video:', error)}
                         />
                         {videoLoading && (
                           <ActivityIndicator
@@ -818,9 +775,7 @@ const DetailedPost = props => {
                           repeat
                           onProgress={handleProgress}
                           onLoad={handleLoad}
-                          onError={error =>
-                            console.log('Error playing video:', error)
-                          }
+                          onError={error => console.log('Error playing video:', error)}
                         />
                         {videoLoading && (
                           <ActivityIndicator
@@ -920,9 +875,7 @@ const DetailedPost = props => {
           </View>
 
           <Text style={styles.longDescription}>
-            {showFullDescription
-              ? post.description
-              : `${post.description.slice(0, 60)}...`}
+            {showFullDescription ? post.description : `${post.description.slice(0, 60)}...`}
           </Text>
           <TouchableOpacity
             style={{
@@ -955,29 +908,25 @@ const DetailedPost = props => {
                     color: '#555',
                     maxWidth: '90%',
                   }}>
-                  Every booking on RentIt comes with RentItGuarantee, if you
-                  don't like the property you get your money back.
+                  {`Every booking on RentIt comes with RentItGuarantee, if you don't like the property
+                  you get your money back.`}
                   {showMore ? (
                     <>
                       {'\n\n'}
-                      <Text style={{fontWeight: 'bold'}}>What's included?</Text>
+                      <Text style={{fontWeight: 'bold'}}>What{'&apos;'}s included?</Text>
                       {'\n\n'}
-                      Book with confidence: Our guarantee program gives you the
-                      option of getting a refund if you're not satisfied with
-                      the property you booked, or if the property doesn't meet
-                      your expectations.
+                      {` Book with confidence: Our guarantee program gives you the option of getting a
+                      refund if you're not satisfied with the property you booked, or if the
+                      property doesn't meet your expectations.`}
                       {'\n'}
                       {'\n\n'}
-                      Protection against scams: You can trust that the
-                      properties listed on our platform are legitimate and not
-                      fraudulent listings.
+                      Protection against scams: You can trust that the properties listed on our
+                      platform are legitimate and not fraudulent listings.
                       {'\n'}
                     </>
                   ) : null}
                 </Text>
-                <TouchableOpacity
-                  onPress={toggleShowMore}
-                  style={{marginTop: 8}}>
+                <TouchableOpacity onPress={toggleShowMore} style={{marginTop: 8}}>
                   <Text style={{color: 'blue', fontSize: 12}}>
                     {showMore ? 'Show less' : 'Show more'}
                   </Text>
@@ -994,9 +943,7 @@ const DetailedPost = props => {
                 }}>
                 <FontAwesomeIcon icon={faCouch} size={30} color="blue" />
                 <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                    Furnished
-                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Furnished</Text>
                   <Text
                     style={{
                       marginTop: 4,
@@ -1018,9 +965,7 @@ const DetailedPost = props => {
                 }}>
                 <FontAwesomeIcon icon={faHandshake} size={30} color="blue" />
                 <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                    Negotiable
-                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Negotiable</Text>
                   <Text
                     style={{
                       marginTop: 4,
@@ -1028,8 +973,7 @@ const DetailedPost = props => {
                       color: '#555',
                       maxWidth: '90%',
                     }}>
-                    The price of this property is open to negotiation with the
-                    owner.
+                    The price of this property is open to negotiation with the owner.
                   </Text>
                 </View>
               </View>
@@ -1047,9 +991,7 @@ const DetailedPost = props => {
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <FontAwesomeIcon icon={faCheckCircle} size={30} color="blue" />
                 <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                    Verified
-                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Verified</Text>
                   <Text
                     style={{
                       marginTop: 4,
@@ -1057,8 +999,8 @@ const DetailedPost = props => {
                       color: '#555',
                       maxWidth: '90%',
                     }}>
-                    This property has been verified by our team to ensure its
-                    authenticity and quality.
+                    This property has been verified by our team to ensure its authenticity and
+                    quality.
                   </Text>
                 </View>
               </View>
@@ -1066,8 +1008,7 @@ const DetailedPost = props => {
           </View>
 
           <View style={styles.hairline} />
-          <Text
-            style={{margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'}}>
+          <Text style={{margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'}}>
             Amenities available
           </Text>
           <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -1153,10 +1094,8 @@ const DetailedPost = props => {
                   starSize={13}
                   maxStars={5}
                   rating={
-                    post?.reviews?.items?.reduce(
-                      (acc, val) => acc + val.rating,
-                      0,
-                    ) / post?.reviews?.items?.length || 0
+                    post?.reviews?.items?.reduce((acc, val) => acc + val.rating, 0) /
+                      post?.reviews?.items?.length || 0
                   }
                   fullStarColor="orange"
                 />
@@ -1174,9 +1113,7 @@ const DetailedPost = props => {
                 }}>
                 <TouchableOpacity
                   style={{flexDirection: 'row', alignItems: 'center'}}
-                  onPress={() =>
-                    navigation.navigate('Feedback', {postID: post?.id, user})
-                  }>
+                  onPress={() => navigation.navigate('Feedback', {postID: post?.id, user})}>
                   <FontAwesomeIcon icon={faPlusCircle} size={18} color="blue" />
                   <Text
                     style={{
@@ -1255,26 +1192,16 @@ const DetailedPost = props => {
         }}>
         <View>
           {post.mode === 'For Sale' ? (
-            <Text
-              style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
-              {post.currency === null
-                ? 'GH₵'
-                : post.currency[0] === 'usd'
-                ? '$'
-                : 'GH₵'}
+            <Text style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
+              {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
               {Math.round(post.newPrice * 1.07)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
               {'\n'}
             </Text>
           ) : (
-            <Text
-              style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
-              {post.currency === null
-                ? 'GH₵'
-                : post.currency[0] === 'usd'
-                ? '$'
-                : 'GH₵'}
+            <Text style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
+              {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
               {Math.round((post.newPrice * 1.07) / 12)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}

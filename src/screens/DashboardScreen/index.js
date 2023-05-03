@@ -53,9 +53,7 @@ const DashboardScreen = () => {
   const upcomingViewings = useMemo(
     () =>
       viewings?.filter(
-        viewing =>
-          new Date(viewing.viewingDate).toDateString() ===
-          new Date().toDateString(),
+        viewing => new Date(viewing.viewingDate).toDateString() === new Date().toDateString(),
       ),
     [viewings],
   );
@@ -147,31 +145,20 @@ const DashboardScreen = () => {
     );
   }
 
-  const renderItem = useCallback(
-    ({item}) => (
-      <View
-        style={[
-          styles.viewingCard,
-          {backgroundColor: statusColor(item.status)},
-        ]}>
-        <Text style={styles.viewingCardTitle}>{item.username}</Text>
-        <Text style={styles.viewingCardDetails}>
-          {item.viewingDate} at {item.viewingTime}
-        </Text>
-        <Text style={styles.viewingCardDetails}>
-          Contact: {item.usercontact}
-        </Text>
-        <Text style={styles.viewingCardDetails}>
-          Location: {item.userlocation}
-        </Text>
-        <Text style={styles.viewingCardDetails}>rep: {item.assignedRep}</Text>
+  const renderItem = ({item}) => (
+    <View style={[styles.viewingCard, {backgroundColor: statusColor(item.status)}]}>
+      <Text style={styles.viewingCardTitle}>{item.username}</Text>
+      <Text style={styles.viewingCardDetails}>
+        {item.viewingDate} at {item.viewingTime}
+      </Text>
+      <Text style={styles.viewingCardDetails}>Contact: {item.usercontact}</Text>
+      <Text style={styles.viewingCardDetails}>Location: {item.userlocation}</Text>
+      <Text style={styles.viewingCardDetails}>rep: {item.assignedRep}</Text>
 
-        <TouchableOpacity>
-          <Text style={styles.viewingCardStatus}>Status: {item.status}</Text>
-        </TouchableOpacity>
-      </View>
-    ),
-    [statusColor],
+      <TouchableOpacity>
+        <Text style={styles.viewingCardStatus}>Status: {item.status}</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -196,9 +183,7 @@ const DashboardScreen = () => {
               setOpen={setOpen}
               setValue={setValue}
               setItems={items =>
-                setAssignedReps(
-                  items.map(item => ({name: item.label, value: item.value})),
-                )
+                setAssignedReps(items.map(item => ({name: item.label, value: item.value})))
               }
               containerStyle={{
                 position: 'absolute',
@@ -246,9 +231,7 @@ const DashboardScreen = () => {
           showsHorizontalScrollIndicator={false}
           ListFooterComponent={
             filteredViewings.length > visibleViewings ? (
-              <TouchableOpacity
-                style={styles.loadMoreButton}
-                onPress={loadMoreViewings}>
+              <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreViewings}>
                 <Text style={styles.loadMoreButtonText}>Load More</Text>
               </TouchableOpacity>
             ) : null

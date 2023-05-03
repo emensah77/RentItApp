@@ -458,66 +458,6 @@ const ProfileScreen = ({route}) => {
         <Text style={styles.userBtnTxt}>Logout</Text>
       </TouchableOpacity>
     </View>
-    //     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-    //     <ScrollView
-    //       style={styles.container}
-    //       contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
-    //       showsVerticalScrollIndicator={false}>
-    //       <Image
-    //         style={styles.userImg}
-    //         source={{uri: user ? user.photoURL || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
-    //       />
-    //       <Text style={styles.userName}>{user ? user.displayName || 'Test' : 'Test'}</Text>
-    //       {/* <Text>{route.params ? route.params.userId : user.uid}</Text> */}
-    //       <Text style={styles.aboutUser}>
-    //       {userData ? userData.about || 'No details added.' : ''}
-    //       </Text>
-    //       <View style={styles.userBtnWrapper}>
-    //         {route.params ? (
-    //           <>
-    //             <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
-    //               <Text style={styles.userBtnTxt}>Message</Text>
-    //             </TouchableOpacity>
-    //             <TouchableOpacity style={styles.userBtn} onPress={() => {}}>
-    //               <Text style={styles.userBtnTxt}>Follow</Text>
-    //             </TouchableOpacity>
-    //           </>
-    //         ) : (
-    //           <>
-    //             <TouchableOpacity
-    //               style={styles.userBtn}
-    //               onPress={() => {
-    //                 navigation.navigate('EditProfile');
-    //               }}>
-    //               <Text style={styles.userBtnTxt}>Edit</Text>
-    //             </TouchableOpacity>
-    //             <TouchableOpacity style={styles.userBtn} onPress={() => auth()
-    //             .signOut()
-    //             .then(() => navigation.navigate("Login"))
-    //             }>
-    //               <Text style={styles.userBtnTxt}>Logout</Text>
-    //             </TouchableOpacity>
-    //           </>
-    //         )}
-    //       </View>
-
-    //       <View style={styles.userInfoWrapper}>
-    //         <View style={styles.userInfoItem}>
-
-    //           <Text style={styles.userInfoSubTitle}>Posts</Text>
-    //         </View>
-    //         <View style={styles.userInfoItem}>
-    //           <Text style={styles.userInfoTitle}>10,000</Text>
-    //           <Text style={styles.userInfoSubTitle}>Followers</Text>
-    //         </View>
-    //         <View style={styles.userInfoItem}>
-    //           <Text style={styles.userInfoTitle}>100</Text>
-    //           <Text style={styles.userInfoSubTitle}>Following</Text>
-    //         </View>
-    //       </View>
-
-    //     </ScrollView>
-    //   </SafeAreaView>
   );
 };
 

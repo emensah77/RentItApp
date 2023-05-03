@@ -23,31 +23,15 @@ const SearchResultsScreen = ({guests, viewport}) => {
   const [loading, setLoading] = useState(true);
   const [datalist, setDatalist] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEnd, setEnd] = useState(false);
+  const [, setEnd] = useState(false);
 
   const [status, setStatus] = useState('All');
-  const [modeStatus, setModeStatus] = useState('Everything');
   const [nextToken, setNextToken] = useState(null);
-  const [homeCountState, setHomeCountState] = useState(0);
+  const [, setHomeCountState] = useState(0);
   const homeCount = useRef(0);
   const callOnScrollEnd = useRef(false);
 
   const navigation = useNavigation();
-
-  const modes = useMemo(
-    () => [
-      {
-        status: 'Everything',
-        id: 1,
-      },
-      {
-        status: 'For Rent',
-        id: 2,
-      },
-      {status: 'For Sale', id: 3},
-    ],
-    [],
-  );
 
   const categories = useMemo(
     () => [
@@ -87,7 +71,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
   const fetchCount = useCallback(
     async nextToken => {
       try {
-        let query = {
+        const query = {
           limit: 100000,
           filter: {
             and: {
@@ -115,7 +99,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
           delete query.nextToken;
         }
         const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-        homeCount.current = homeCount.current + postsResult?.data?.listPosts?.items?.length;
+        homeCount.current += postsResult?.data?.listPosts?.items?.length;
         if (postsResult?.data?.listPosts?.nextToken !== null) {
           console.log(postsResult?.data?.listPosts?.items?.length, 'homeCount');
           fetchCount(postsResult.data.listPosts.nextToken);
@@ -203,7 +187,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
       setIsLoading(true);
 
       try {
-        let query = {
+        const query = {
           limit: 50,
           filter: {
             and: {
@@ -234,21 +218,22 @@ const SearchResultsScreen = ({guests, viewport}) => {
           previousList = [];
         }
 
-        const fetchBatch = useCallback(async (query, results = []) => {
-          const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+        const fetchBatch = async (q, results = []) => {
+          const postsResult = await API.graphql(graphqlOperation(listPosts, q));
           results.push(...postsResult.data.listPosts.items);
 
+          const newQ = {...q};
           if (postsResult.data.listPosts.nextToken) {
             if (results.length < 20) {
-              query.nextToken = postsResult.data.listPosts.nextToken;
-              return fetchBatch(query, results);
+              newQ.nextToken = postsResult.data.listPosts.nextToken;
+              return fetchBatch(newQ, results);
             }
           }
 
           return {results, nextToken: postsResult.data.listPosts.nextToken};
-        }, []);
+        };
 
-        const {results, nextToken} = await fetchBatch(query);
+        const {results} = await fetchBatch(query);
 
         // Compare currentDataIndex to the fetched results length
         if (currentDataIndex < results.length - 1) {
@@ -270,6 +255,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
       datalist,
       guests,
       hideAllLoader,
+      nextToken,
       reachedEnd,
       status,
       viewport.northeast.lat,
@@ -286,12 +272,12 @@ const SearchResultsScreen = ({guests, viewport}) => {
     if (isLoading) {
       setIsLoading(false);
     }
-  }, []);
+  }, [isLoading, loading]);
 
   const renderLoader = useCallback(() => {
     return isLoading && datalist.length !== 0 ? (
       <View style={{marginVertical: 16, alignItems: 'center'}}>
-        <ActivityIndicator size={'large'} color="blue" />
+        <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
   }, [datalist.length, isLoading]);
@@ -300,34 +286,25 @@ const SearchResultsScreen = ({guests, viewport}) => {
     fetchPosts(isReset);
   }, 1000);
 
-  const setStatusFilter = status => {
-    setEnd(false);
-    callOnScrollEnd.current = false;
-    setNextToken(null);
-    setStatus(status);
-    fetchFilteredPosts(status);
-  };
+  const setStatusFilter = useCallback(
+    status => {
+      setEnd(false);
+      callOnScrollEnd.current = false;
+      setNextToken(null);
+      setStatus(status);
+      fetchFilteredPosts(status);
+    },
+    [fetchFilteredPosts],
+  );
 
   useEffect(() => {
     loadMore(true);
     fetchCount(null);
     setHomeCountState(0);
     homeCount.current = 0;
-  }, [status]);
+  }, [fetchCount, loadMore, status]);
 
-  const setModeFilter = useCallback(
-    modeStatus => {
-      if (modeStatus !== 'Everything') {
-        setDatalist([...datalist.filter(category => category.mode === modeStatus)]);
-      } else {
-        setDatalist(datalist);
-      }
-      setModeStatus(modeStatus);
-    },
-    [datalist],
-  );
-
-  const renderItem = useCallback(({item, index}) => {
+  const renderItem = useCallback(({item}) => {
     return (
       <View key={item}>
         <Post post={item} />
@@ -437,9 +414,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
               paddingRight: Platform.OS === 'android' ? 20 : 0,
               backgroundColor: 'white',
             }}>
-            {categories.map((category, index) => (
+            {categories.map(category => (
               <TouchableOpacity
-                key={index.toString()}
+                key={category.id}
                 onPress={() => setStatusFilter(category.status)}
                 style={[styless.button, status === category.status && styless.btnTabActive]}>
                 <Text
@@ -471,7 +448,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 fontSize: 18,
                 fontWeight: 'bold',
               }}>
-              {loading ? 'Loading...' : +' ' + homeCount.current + ' homes to rent'}
+              {loading ? 'Loading...' : `${+' ' + homeCount.current} homes to rent`}
             </Text>
           </View>
           <View style={{marginBottom: 10, top: 80, backgroundColor: 'white'}}>
@@ -482,7 +459,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                 }}>
-                <ActivityIndicator size={'large'} color="blue" />
+                <ActivityIndicator size="large" color="blue" />
               </View>
             ) : (
               <FlatList
@@ -491,7 +468,9 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 maxToRenderPerBatch={1}
                 initialNumToRender={1}
                 contentContainerStyle={{paddingBottom: 40}}
-                onEndReached={() => (callOnScrollEnd.current = true)}
+                onEndReached={() => {
+                  callOnScrollEnd.current = true;
+                }}
                 onMomentumScrollEnd={() => {
                   callOnScrollEnd.current && loadMore(false);
                   callOnScrollEnd.current = false;
@@ -512,27 +491,14 @@ const SearchResultsScreen = ({guests, viewport}) => {
                 // getItemCount={data => data.length}
                 windowSize={3}
                 updateCellsBatchingPeriod={100}
-                //renderItem={({item}) => <Post post={item}/>}
+                // renderItem={({item}) => <Post post={item}/>}
               />
             )}
           </View>
         </View>
       ) : (
-        <View
-          style={{
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <AnimatedEllipsis
-            animationDelay={100}
-            style={{
-              color: 'blue',
-              fontSize: 100,
-
-              letterSpacing: -15,
-            }}
-          />
+        <View style={styless.animatedContainer}>
+          <AnimatedEllipsis animationDelay={100} style={styless.ellipsisOfAnimated} />
         </View>
       )}
     </View>
@@ -540,6 +506,16 @@ const SearchResultsScreen = ({guests, viewport}) => {
 };
 export default SearchResultsScreen;
 const styless = StyleSheet.create({
+  animatedContainer: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ellipsisOfAnimated: {
+    color: 'blue',
+    fontSize: 100,
+    letterSpacing: -15,
+  },
   headerContainer: {
     backgroundColor: 'rgba(211, 211, 211, 0.8)', // Light grey with opacity
     width: '80%', // Add width (you can adjust the percentage to your desired value)

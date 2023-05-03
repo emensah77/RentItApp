@@ -1,30 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  Share,
-  StatusBar,
-  View,
-  FlatList,
-  SafeAreaView,
-  Dimensions,
-  Text,
-  Pressable,
-  Image,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
-import {AuthContext} from '../../navigation/AuthProvider';
-import Post from '../../components/Post';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import Post from '../../components/Post';
 
 const Trending = props => {
-  const {user, logout} = useContext(AuthContext);
   const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,27 +46,27 @@ const Trending = props => {
               } = doc.data();
 
               favorite.push({
-                image: image,
-                type: type,
-                title: title,
-                description: description,
+                image,
+                type,
+                title,
+                description,
 
-                bed: bed,
-                bedroom: bedroom,
-                maxGuests: maxGuests,
-                wifi: wifi,
-                kitchen: kitchen,
-                bathroom: bathroom,
-                water: water,
-                toilet: toilet,
-                images: images,
+                bed,
+                bedroom,
+                maxGuests,
+                wifi,
+                kitchen,
+                bathroom,
+                water,
+                toilet,
+                images,
 
-                oldPrice: oldPrice,
-                newPrice: newPrice,
-                count: count,
-                latitude: latitude,
-                longitude: longitude,
-                id: id,
+                oldPrice,
+                newPrice,
+                count,
+                latitude,
+                longitude,
+                id,
               });
             });
           });
@@ -94,7 +76,7 @@ const Trending = props => {
           setLoading(false);
         }
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     };
 
@@ -175,7 +157,8 @@ const Trending = props => {
                 {width: 90, height: 20, marginBottom: 20},
 
                 // ...
-              ]}></SkeletonContent>
+              ]}
+            />
           </View>
         ) : (
           <View>
@@ -257,12 +240,5 @@ const Trending = props => {
     );
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-});
 
 export default Trending;

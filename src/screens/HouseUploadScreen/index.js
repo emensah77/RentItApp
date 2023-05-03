@@ -1,12 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ImageBackground, Pressable, Text, TouchableOpacity} from 'react-native';
-import styles from './styles.js';
+import {ImageBackground, Platform, Pressable, Text, TouchableOpacity} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 
 import auth from '@react-native-firebase/auth';
 import * as Animatable from 'react-native-animatable';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import styles from './styles';
 
 const HouseUploadScreen = props => {
   const navigation = useNavigation();

@@ -14,10 +14,10 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import axios from 'axios';
 import BackButton from '../../components/BackButton/BackButton';
 import {Marketer_Status} from '../../variables';
 
-import axios from 'axios';
 import {AuthContext} from '../../navigation/AuthProvider';
 
 const Marketer = () => {
@@ -184,7 +184,7 @@ const Marketer = () => {
                   alignSelf: 'center',
                 }}>
                 {temp[firebaseUser?.marketer_status]?.infoText ||
-                  `You can request to admin to become a marketer, once admin approves, enjoy the experience of Marketer in Rentit.`}
+                  'You can request to admin to become a marketer, once admin approves, enjoy the experience of Marketer in Rentit.'}
               </Typography>
             </View>
             {firebaseUser?.marketer_status === 'ACCEPTED' && (
@@ -226,14 +226,14 @@ const Marketer = () => {
                     marginTop: 10,
                   }}>
                   <CardComponent
-                    icon={'home'}
-                    label={'Total Homes'}
+                    icon="home"
+                    label="Total Homes"
                     text={posts?.numberOfHomes || 0}
                     color="blue"
                   />
                   <CardComponent
-                    icon={'money-symbol'}
-                    label={'Total Earnings'}
+                    icon="money-symbol"
+                    label="Total Earnings"
                     text={`GH₵ ${totals || 0}`}
                     color="blue"
                   />
@@ -245,14 +245,14 @@ const Marketer = () => {
                     marginTop: 10,
                   }}>
                   <CardComponent
-                    icon={'check'}
-                    label={'Available'}
+                    icon="check"
+                    label="Available"
                     text={posts?.categories?.available || 0}
                     color="green"
                   />
                   <CardComponent
-                    icon={'close'}
-                    label={'Unavailable'}
+                    icon="close"
+                    label="Unavailable"
                     text={posts?.categories?.unavailableLessThan30Days || 0}
                     color="red"
                   />

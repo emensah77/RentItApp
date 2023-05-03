@@ -1,29 +1,26 @@
 /* eslint-disable react-native/no-inline-styles */
 import {useNavigation} from '@react-navigation/core';
-import {Button, Input, Layout} from '@ui-kitten/components';
+import {Button, Input} from '@ui-kitten/components';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   Alert,
-  Image,
-  StatusBar,
-  Text,
-  TextInput,
-  ScrollView,
-  View,
   FlatList,
-  TouchableOpacity,
+  Image,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
+  Text,
+  View,
 } from 'react-native';
 
+import firestore from '@react-native-firebase/firestore';
+import {API, graphqlOperation} from 'aws-amplify';
 import LinearGradient from 'react-native-linear-gradient';
 import uuid from 'react-native-uuid';
-import {API, graphqlOperation} from 'aws-amplify';
-import firestore from '@react-native-firebase/firestore';
 import StarRating from '../../components/StarRating';
+import {createReview} from '../../graphql/mutations';
 import {AuthContext} from '../../navigation/AuthProvider';
 import styles from './style';
-import {createReview} from '../../graphql/mutations';
 
 const EFeedback = ({route}) => {
   const navigation = useNavigation();
@@ -37,11 +34,7 @@ const EFeedback = ({route}) => {
     try {
       const data = await firestore()
         .collection('homeorders')
-        .where(
-          'homeid',
-          '==',
-          route?.params?.postID ? route?.params?.postID : '',
-        )
+        .where('homeid', '==', route?.params?.postID ? route?.params?.postID : '')
         .get();
       setBookings(data.docs);
       return data.docs;
@@ -175,11 +168,7 @@ const EFeedback = ({route}) => {
                     setError(false);
                   }}
                 />
-                {error && (
-                  <Text style={{color: 'red', fontSize: 12}}>
-                    Review can not be empty
-                  </Text>
-                )}
+                {error && <Text style={{color: 'red', fontSize: 12}}>Review can not be empty</Text>}
               </View>
               <Button
                 // onPress={() => navigation.goBack()}
