@@ -1,52 +1,26 @@
-import React, {useEffect, useState, useRef} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useRef, useCallback} from 'react';
 import {
   View,
   Text,
   Alert,
   ActivityIndicator,
-  TextInput,
-  ScrollView,
-  ImageBackground,
   Platform,
   TouchableOpacity,
   StatusBar,
-  FlatList,
   PermissionsAndroid,
   ToastAndroid,
   Linking,
   Pressable,
   KeyboardAvoidingView,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import FastImage from 'react-native-fast-image';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faUtensils,
-  faLocationArrow,
-  faFan,
-  faFaucet,
-  faBath,
-  faBed,
-  faToilet,
-  faWifi,
-  faWater,
-  faCamera,
-  faUpload,
-  faCameraRetro,
-  faFileUpload,
-  faCloudUploadAlt,
-  faArrowAltCircleUp,
-} from '@fortawesome/free-solid-svg-icons';
+import {faLocationArrow} from '@fortawesome/free-solid-svg-icons';
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Geolocation from 'react-native-geolocation-service';
-import MapView, {
-  Marker,
-  PROVIDER_GOOGLE,
-  PROVIDER_DEFAULT,
-} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_DEFAULT} from 'react-native-maps';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 import auth from '@react-native-firebase/auth';
@@ -271,15 +245,15 @@ const mapStyle = [
   },
 ];
 
-const OnboardingScreen6 = props => {
+const OnboardingScreen6 = () => {
   const ref = useRef();
   const navigation = useNavigation();
   const [forceLocation, setForceLocation] = useState(true);
   const [highAccuracy, setHighAccuracy] = useState(true);
   const [locationDialog, setLocationDialog] = useState(true);
-  const [significantChanges, setSignificantChanges] = useState(false);
-  const [observing, setObserving] = useState(false);
-  const [foregroundService, setForegroundService] = useState(false);
+  // const [significantChanges, setSignificantChanges] = useState(false);
+  // const [observing, setObserving] = useState(false);
+  // const [foregroundService, setForegroundService] = useState(false);
   const [useLocationManager, setUseLocationManager] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -330,14 +304,13 @@ const OnboardingScreen6 = props => {
     return false;
   };
 
-  const saveProgress = async progressData => {
-    try {
-      const user = auth().currentUser;
-      const screenName = route.name;
-      const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
+  const saveProgress = useCallback(
+    async progressData => {
+      try {
+        const user = auth().currentUser;
+        const screenName = route.name;
+        const userId = user.uid;
+        await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -349,14 +322,15 @@ const OnboardingScreen6 = props => {
               progressData,
             },
           }),
-        },
-      );
-    } catch (error) {
-      console.error('Error saving progress:', error);
-    }
-  };
+        });
+      } catch (error) {
+        console.error('Error saving progress:', error);
+      }
+    },
+    [route.name],
+  );
 
-  const hasLocationPermission = async () => {
+  const hasLocationPermission = useCallback(async () => {
     if (Platform.OS === 'ios') {
       const hasPermission = await hasPermissionIOS();
       return hasPermission;
@@ -383,21 +357,15 @@ const OnboardingScreen6 = props => {
     }
 
     if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show(
-        'Location permission denied by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show(
-        'Location permission revoked by user.',
-        ToastAndroid.LONG,
-      );
+      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
     }
 
     return false;
-  };
+  }, []);
 
-  const getLocation = async () => {
+  const getLocation = useCallback(async () => {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
@@ -427,21 +395,17 @@ const OnboardingScreen6 = props => {
             const subLocality = details.address_components.find(component =>
               component.types.includes('sublocality'),
             ).short_name;
-            const address = details.formatted_address;
+            const _address = details.formatted_address;
 
             setLocality(locality);
             setSubLocality(subLocality);
-            setAddress(address);
+            setAddress(_address);
             setIsLoading(false);
-
-            console.log(locality, subLocality, address);
           })
-          .catch(error => console.warn(error));
+          .catch(console.error);
       },
       error => {
-        Alert.alert(`Code ${error.code}`, error.message);
-        setLocation(null);
-        console.log(error);
+        console.error(error);
       },
       {
         accuracy: {
@@ -457,7 +421,97 @@ const OnboardingScreen6 = props => {
         showLocationDialog: locationDialog,
       },
     );
-  };
+  }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
+
+  const next = useCallback(async () => {
+    await saveProgress({
+      title,
+      type,
+      description,
+      bed,
+      bedroom,
+      bathroom,
+      imageUrls,
+      homeprice,
+      latitude,
+      longitude,
+      mode,
+      amenities,
+      locality,
+      sublocality,
+      address,
+      currency,
+    });
+    navigation.navigate('OnboardingScreen11', {
+      title,
+      type,
+      description,
+      bed,
+      bedroom,
+      bathroom,
+      imageUrls,
+      homeprice,
+      latitude,
+      longitude,
+      mode,
+      amenities,
+      locality,
+      sublocality,
+      address,
+      currency,
+    });
+  }, [
+    address,
+    amenities,
+    bathroom,
+    bed,
+    bedroom,
+    currency,
+    description,
+    homeprice,
+    imageUrls,
+    latitude,
+    locality,
+    longitude,
+    mode,
+    navigation,
+    saveProgress,
+    sublocality,
+    title,
+    type,
+  ]);
+
+  const autoComplete = useCallback(async (_, details = null) => {
+    // 'details' is provided when fetchDetails = true
+    // console.log('1', details.address_components[0].short_name);
+    // console.log('2', details.address_components[1].short_name);
+
+    setLatitude(details.geometry.location.lat);
+    setLongitude(details.geometry.location.lng);
+    setLocality(details.address_components[0].short_name);
+    setAddress(details.address_components[0].long_name);
+    setSubLocality(details.address_components[1].short_name);
+
+    // navigation.navigate('OnboardingScreen11', {
+    //   title: title,
+    //   type: type,
+    //   description: description,
+    //   bed: bed,
+    //   bedroom: bedroom,
+    //   bathroom: bathroom,
+    //   imageUrls: imageUrls,
+    //   homeprice: homeprice,
+    //   latitude: latitude,
+    //   longitude: longitude,
+    //   mode: mode,
+    //   amenities: amenities,
+    //   locality: locality,
+    //   sublocality: sublocality,
+    // });
+    // console.log(details.geometry.viewport)
+  }, []);
+
+  const renderRow = useCallback(item => <SuggestionRow item={item} />, []);
 
   return (
     <View style={styles.container}>
@@ -498,11 +552,7 @@ const OnboardingScreen6 = props => {
         </Marker>
       </MapView>
 
-      <Animatable.View
-        useNativeDriver
-        animation="fadeInUpBig"
-        duration={100}
-        style={styles.footer}>
+      <Animatable.View useNativeDriver animation="fadeInUpBig" duration={100} style={styles.footer}>
         {latitude === null || longitude == null ? (
           <Text
             style={{
@@ -526,51 +576,16 @@ const OnboardingScreen6 = props => {
           <GooglePlacesAutocomplete
             placeholder="Type where your home is located"
             ref={ref}
-            onPress={async (data, details = null) => {
-              // 'details' is provided when fetchDetails = true
-              console.log('1', details.address_components[0].short_name);
-              console.log('2', details.address_components[1].short_name);
-
-              setLatitude(details.geometry.location.lat);
-              setLongitude(details.geometry.location.lng);
-              setLocality(details.address_components[0].short_name);
-              setAddress(details.address_components[0].long_name);
-              setSubLocality(details.address_components[1].short_name);
-
-              // navigation.navigate('OnboardingScreen11', {
-              //   title: title,
-              //   type: type,
-              //   description: description,
-              //   bed: bed,
-              //   bedroom: bedroom,
-              //   bathroom: bathroom,
-              //   imageUrls: imageUrls,
-              //   homeprice: homeprice,
-              //   latitude: latitude,
-              //   longitude: longitude,
-              //   mode: mode,
-              //   amenities: amenities,
-              //   locality: locality,
-              //   sublocality: sublocality,
-              // });
-              // console.log(details.geometry.viewport)
-            }}
+            onPress={autoComplete}
             fetchDetails
             styles={{
-              textInput: styles.textInput,
               textInputContainer: {
                 backgroundColor: 'white',
                 borderRadius: 15,
                 borderWidth: 0.5,
                 height: 40,
               },
-              textInput: {
-                height: 44,
-                color: '#000000',
-                fontSize: 18,
-                fontFamily: 'Montserrat-Bold',
-                paddingHorizontal: 10,
-              },
+              textInput: styles.textInput,
             }}
             query={{
               key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
@@ -579,7 +594,7 @@ const OnboardingScreen6 = props => {
               components: 'country:gh',
             }}
             suppressDefaultStyles
-            renderRow={item => <SuggestionRow item={item} />}
+            renderRow={renderRow}
           />
         </KeyboardAvoidingView>
         {loading ? (
@@ -620,8 +635,7 @@ const OnboardingScreen6 = props => {
             justifyContent: 'center',
           }}>
           <FontAwesomeIcon icon={faLocationArrow} size={20} />
-          <Text
-            style={{paddingHorizontal: 10, fontFamily: 'Montserrat-SemiBold'}}>
+          <Text style={{paddingHorizontal: 10, fontFamily: 'Montserrat-SemiBold'}}>
             Get my current location
           </Text>
         </TouchableOpacity>
@@ -671,44 +685,7 @@ const OnboardingScreen6 = props => {
           }}>
           <TouchableOpacity
             disabled={latitude === null || longitude === null}
-            onPress={async () => {
-              await saveProgress({
-                title,
-                type,
-                description,
-                bed,
-                bedroom,
-                bathroom,
-                imageUrls,
-                homeprice,
-                latitude,
-                longitude,
-                mode,
-                amenities,
-                locality,
-                sublocality,
-                address,
-                currency,
-              });
-              navigation.navigate('OnboardingScreen11', {
-                title,
-                type,
-                description,
-                bed,
-                bedroom,
-                bathroom,
-                imageUrls,
-                homeprice,
-                latitude,
-                longitude,
-                mode,
-                amenities,
-                locality,
-                sublocality,
-                address,
-                currency,
-              });
-            }}
+            onPress={next}
             style={{
               left: 250,
               height: 60,
@@ -731,7 +708,7 @@ const OnboardingScreen6 = props => {
           </TouchableOpacity>
 
           <Pressable
-            onPress={() => navigation.goBack()}
+            onPress={navigation.goBack}
             style={{
               right: 250,
               height: 60,
