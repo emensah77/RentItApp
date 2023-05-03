@@ -106,13 +106,6 @@ const AuthStack = () => {
       }}
       onStateChange={state => onNavigationStateChange(state)}>
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen
-        name="LocationPermissions"
-        component={LocationPermissions}
-      />
-      <Stack.Screen name="Notifications" component={Notifications} />
-
       <Stack.Screen name="Login" component={LoginScreen} options={header} />
 
       <Stack.Screen name="LocationPermissions" component={LocationPermissions} options={noHeader} />

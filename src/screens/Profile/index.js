@@ -169,14 +169,11 @@ const ProfileScreen = ({route}) => {
               justifyContent: 'space-evenly',
             }}>
             <View>
-              <Pressable
-                onPress={() => setmodalvisible(!modalvisible)}
-                style={{margin: 10}}>
+              <Pressable onPress={() => setmodalvisible(!modalvisible)} style={{margin: 10}}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
               </Pressable>
 
-              <Text
-                style={{fontWeight: 'bold', paddingBottom: 5, marginLeft: 10}}>
+              <Text style={{fontWeight: 'bold', paddingBottom: 5, marginLeft: 10}}>
                 Ready to Pay?
               </Text>
               <Text style={{fontWeight: 'normal', marginLeft: 10}}>
@@ -274,10 +271,8 @@ const ProfileScreen = ({route}) => {
                 }}
               />
 
-              <Text
-                style={{paddingTop: 10, fontWeight: '600', marginBottom: 20}}>
-                Enter your mobile money number. This is the same number you will
-                use to make payment
+              <Text style={{paddingTop: 10, fontWeight: '600', marginBottom: 20}}>
+                Enter your mobile money number. This is the same number you will use to make payment
               </Text>
               <TextInput
                 adjustsFontSizeToFit
@@ -302,18 +297,12 @@ const ProfileScreen = ({route}) => {
 
             <TouchableOpacity
               disabled={
-                !!(
-                  value === '' ||
-                  selectedItems.length === 0 ||
-                  checkoutNumber.length < 10
-                )
+                !!(value === '' || selectedItems.length === 0 || checkoutNumber.length < 10)
               }
               onPress={() => submitPayment()}
               style={{
                 opacity:
-                  value === '' ||
-                  selectedItems.length === 0 ||
-                  checkoutNumber.length < 10
+                  value === '' || selectedItems.length === 0 || checkoutNumber.length < 10
                     ? 0.5
                     : 1,
                 height: 40,
@@ -380,8 +369,7 @@ const ProfileScreen = ({route}) => {
       </LinearGradient>
       <ScrollView>
         <View style={styles.menuWrapper}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ManageProfile')}>
+          <TouchableOpacity onPress={() => navigation.navigate('ManageProfile')}>
             <View style={styles.menuItem}>
               <Icon name="account" color="blue" size={25} />
               <Text style={styles.menuItemText}>Profile</Text>
@@ -422,8 +410,7 @@ const ProfileScreen = ({route}) => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('AccountManage')}>
+          <TouchableOpacity onPress={() => navigation.navigate('AccountManage')}>
             <View style={styles.menuItem}>
               <Icon name="account" color="blue" size={25} />
               <Text style={styles.menuItemText}>Manage your account</Text>
@@ -456,8 +443,7 @@ const ProfileScreen = ({route}) => {
             </TouchableOpacity>
           ) : null}
           {userData?.marketer_status === 'ACCEPTED' ? (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('MarketerDashboard')}>
+            <TouchableOpacity onPress={() => navigation.navigate('MarketerDashboard')}>
               <View style={styles.menuItem}>
                 <Icon name="table" color="blue" size={25} />
                 <Text style={styles.menuItemText}>Marketer Dashboard</Text>
