@@ -49,7 +49,6 @@ module.exports = {
     ],
     'react/jsx-props-no-spreading': [0],
     'react/no-did-update-set-state': [0],
-    'react-native/no-inline-styles': [0],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
   },
