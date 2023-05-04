@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useState, useRef, useCallback} from 'react';
+import React, {useEffect, useContext, useState, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Image,
@@ -209,7 +209,7 @@ const DetailedPost = props => {
     });
   }, [user.displayName, user.phoneNumber]);
 
-  const getPhoneNumbers = async () => {
+  const getPhoneNumbers = useCallback(async () => {
     const callers = await firebase.firestore().collection('callers');
     callers.get().then(querySnapshot => {
       querySnapshot.forEach((/* doc */) => {
@@ -218,9 +218,9 @@ const DetailedPost = props => {
 
       // console.log('phoneNumbers',phoneNumbers)
     });
-  };
+  }, []);
 
-  const getUsersWithPrivileges = async () => {
+  const getUsersWithPrivileges = useCallback(async () => {
     const callers = await firebase.firestore().collection('usersWithPrivileges');
     callers.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
@@ -229,7 +229,7 @@ const DetailedPost = props => {
 
       // console.log('phoneNumbers',phoneNumbers)
     });
-  };
+  }, []);
 
   useEffect(() => {
     mixpanel.track(
@@ -252,6 +252,7 @@ const DetailedPost = props => {
       price: post.newPrice,
       locality: post.locality,
     });
+
     async function getRecommendedHomes() {
       try {
         setIsLoading(true);
@@ -291,7 +292,7 @@ const DetailedPost = props => {
     getRecommendedHomes();
     getPhoneNumbers();
     getUsersWithPrivileges();
-  }, [post]);
+  }, [getPhoneNumbers, getUsersWithPrivileges, post]);
 
   const payRent = useCallback(() => {
     navigation.navigate('Address', {
@@ -344,7 +345,7 @@ const DetailedPost = props => {
   //   }
   // };
 
-  const deleteFromFavorites = async id => {
+  const deleteFromFavorites = useCallback(async id => {
     const ref = firestore().collection('posts');
     ref
       .where('id', '==', id)
@@ -360,10 +361,11 @@ const DetailedPost = props => {
             });
         });
       });
-  };
-  const deleteFromTrends = async id => {
+  }, []);
+
+  const deleteFromTrends = useCallback(async id => {
     await firestore().collection('trends').doc(id).delete();
-  };
+  }, []);
 
   const payToRent = useCallback(() => {
     payRent();
@@ -392,7 +394,7 @@ const DetailedPost = props => {
       deleteFromTrends(id);
       deleteFromFavorites(id);
     },
-    [deleteHome],
+    [deleteFromFavorites, deleteFromTrends, deleteHome],
   );
 
   // const sendWhatsApp = () => {
@@ -519,8 +521,13 @@ const DetailedPost = props => {
 
   const keyExtractor = useCallback(item => item.id, []);
 
+  const userWithPrivilegeExists = useMemo(
+    () => usersWithPrivileges.includes(user.uid),
+    [user.uid, usersWithPrivileges],
+  );
+
   return (
-    <View style={{backgroundColor: 'white'}}>
+    <View style={styles.parentContainer}>
       {isScheduling && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="blue" />
@@ -528,7 +535,7 @@ const DetailedPost = props => {
         </View>
       )}
 
-      <ScrollView contentContainerStyle={{paddingBottom: 150}} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Image */}
         <StatusBar hidden />
 
@@ -541,16 +548,11 @@ const DetailedPost = props => {
 
         <View style={styles.container}>
           {/* Bed and Bedroom */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
+          <View style={styles.viewContainer}>
             <Text style={styles.description} numberOfLines={2}>
               {post.title}
             </Text>
-            {usersWithPrivileges.includes(user.uid) ? (
+            {userWithPrivilegeExists ? (
               <TouchableOpacity onPress={trash}>
                 <Fontisto name="trash" size={25} color="blue" />
               </TouchableOpacity>
@@ -591,33 +593,30 @@ const DetailedPost = props => {
             {post.type} |{post.bedroom} bedrooms |{post.bathroomNumber} bathrooms |
           </Text>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{flexDirection: 'column'}}>
-              {/* <Pressable
-      onPress={sendWhatsApp}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        borderRadius: 5,
-        padding: 10,
-        backgroundColor: "limegreen",
-        marginVertical: 5,
-        justifyContent: "space-evenly",
-      }}
-    >
-      <Fontisto name="whatsapp" size={20} />
-      <Text>Chat to Rent</Text>
-    </Pressable> */}
+          <View style={styles.viewingContainer}>
+            <View style={styles.flexColumn}>
+              {/*
+              <Pressable
+                onPress={sendWhatsApp}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  borderRadius: 5,
+                  padding: 10,
+                  backgroundColor: "limegreen",
+                  marginVertical: 5,
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <Fontisto name="whatsapp" size={20} />
+                <Text>Chat to Rent</Text>
+              </Pressable>
+              */}
 
               <View style={styles.container1}>
                 <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
-                  <Text style={{fontWeight: 'bold', color: 'white'}}>Schedule Viewing</Text>
+                  <Text style={styles.viewingText}>Schedule Viewing</Text>
                 </Pressable>
 
                 <Modal
@@ -629,7 +628,7 @@ const DetailedPost = props => {
                       onStartShouldSetResponder={onStartShouldSetResponder}
                       style={styles.modal}>
                       <Text style={styles.modalTitle}>Enter your details. </Text>
-                      <Text style={{fontSize: 14}}>
+                      <Text style={styles.font14}>
                         {' '}
                         Click next and choose date and time to confirm Viewing
                       </Text>
@@ -673,60 +672,21 @@ const DetailedPost = props => {
                 />
               </View>
 
-              {usersWithPrivileges.includes(user.uid) && (
+              {userWithPrivilegeExists && (
                 <>
-                  <Pressable
-                    onPress={makeCall(post.phoneNumbers)}
-                    style={{
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      justifyContent: 'space-evenly',
-                      backgroundColor: 'blue',
-                      borderRadius: 5,
-                      paddingHorizontal: 5,
-                      paddingVertical: 5,
-                      marginVertical: 5,
-                    }}>
-                    <Fontisto
-                      name="phone"
-                      size={15}
-                      style={{
-                        color: 'white',
-                        marginHorizontal: 5,
-                        transform: [{rotate: '90deg'}],
-                      }}
-                    />
-                    <Text style={{color: 'white'}}>Call Homeowner</Text>
+                  <Pressable onPress={makeCall(post.phoneNumbers)} style={styles.callOwner}>
+                    <Fontisto name="phone" size={15} style={styles.phoneIcon} />
+                    <Text style={styles.white}>Call Homeowner</Text>
                   </Pressable>
 
-                  <Pressable
-                    onPress={makeCall(post.marketerNumber)}
-                    style={{
-                      borderColor: 'black',
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      justifyContent: 'space-evenly',
-                      backgroundColor: 'yellow',
-                      borderRadius: 5,
-                      paddingHorizontal: 5,
-                      paddingVertical: 5,
-                      marginVertical: 5,
-                    }}>
-                    <Fontisto
-                      name="phone"
-                      size={15}
-                      style={{
-                        color: 'black',
-                        marginHorizontal: 5,
-                        transform: [{rotate: '90deg'}],
-                      }}
-                    />
-                    <Text style={{color: 'black'}}>Call Marketer</Text>
+                  <Pressable onPress={makeCall(post.marketerNumber)} style={styles.callMarketer}>
+                    <Fontisto name="phone" size={15} style={styles.phoneIcon} />
+                    <Text style={styles.black}>Call Marketer</Text>
                   </Pressable>
                 </>
               )}
             </View>
-            <View style={{marginLeft: 10}}>
+            <View style={styles.marginLeft10}>
               {post.videoUrl && (
                 <>
                   {!fullscreen && (
@@ -794,9 +754,9 @@ const DetailedPost = props => {
           {/* <Text style={styles.totalPrice}>
                 GH₵{post.totalPrice}
                 </Text> */}
-          <View style={{paddingBottom: 20}}>
+          <View style={styles.paddingBottom20}>
             <SkeletonContent
-              containerStyle={{flex: 1, flexDirection: 'row'}}
+              containerStyle={styles.flexRow}
               isLoading={isLoading}
               layout={[
                 {
@@ -838,21 +798,9 @@ const DetailedPost = props => {
               {similarHomes.length > 0 ? (
                 <View>
                   <View>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                        marginBottom: 16,
-                      }}>
-                      Homes you may like
-                    </Text>
+                    <Text style={styles.homesYouMayLike}>Homes you may like</Text>
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      paddingHorizontal: 1,
-                      overflow: 'scroll',
-                    }}>
+                  <View style={styles.similarHomes}>
                     <FlatList
                       data={similarHomes}
                       renderItem={renderItem}
@@ -870,43 +818,26 @@ const DetailedPost = props => {
           <Text style={styles.longDescription}>
             {showFullDescription ? post.description : `${post.description.slice(0, 60)}...`}
           </Text>
-          <TouchableOpacity
-            style={{
-              fontWeight: 'bold',
-            }}
-            onPress={toggleDescription}>
-            <Text style={{color: 'blue', textDecorationLine: 'underline'}}>
-              {showFullDescription ? 'Show Less' : 'Show More'}
-            </Text>
+          <TouchableOpacity style={styles.showToggle} onPress={toggleDescription}>
+            <Text style={styles.showText}>{showFullDescription ? 'Show Less' : 'Show More'}</Text>
           </TouchableOpacity>
           <View style={styles.hairline} />
 
-          <View style={{flexDirection: 'column', marginTop: 16}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 8,
-              }}>
+          <View style={styles.innerContainer}>
+            <View style={styles.heading}>
               <FontAwesomeIcon icon={faShieldAlt} size={30} color="blue" />
-              <View style={{marginLeft: 12}}>
-                <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                  <Text style={{color: 'blue'}}>RentIt</Text>
-                  <Text style={{color: 'deeppink'}}>Guarantee</Text>
+              <View style={styles.marginLeft}>
+                <Text style={styles.labelText}>
+                  <Text style={styles.rentItText}>RentIt</Text>
+                  <Text style={styles.guaranteeText}>Guarantee</Text>
                 </Text>
-                <Text
-                  style={{
-                    marginTop: 4,
-                    fontSize: 12,
-                    color: '#555',
-                    maxWidth: '90%',
-                  }}>
+                <Text style={styles.bookingText}>
                   Every booking on RentIt comes with RentItGuarantee, if you don&apos;t like the
                   property you get your money back.
                   {showMore ? (
                     <>
                       {'\n\n'}
-                      <Text style={{fontWeight: 'bold'}}>What&pos;s included?</Text>
+                      <Text style={styles.boldFont}>What&pos;s included?</Text>
                       {'\n\n'}
                       Book with confidence: Our guarantee program gives you the option of getting a
                       refund if you&pos;re not satisfied with the property you booked, or if the
@@ -919,53 +850,29 @@ const DetailedPost = props => {
                     </>
                   ) : null}
                 </Text>
-                <TouchableOpacity onPress={toggleShowMore} style={{marginTop: 8}}>
-                  <Text style={{color: 'blue', fontSize: 12}}>
-                    {showMore ? 'Show less' : 'Show more'}
-                  </Text>
+                <TouchableOpacity onPress={toggleShowMore} style={styles.marginTop8}>
+                  <Text style={styles.showTextLabel}>{showMore ? 'Show less' : 'Show more'}</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             {post.furnished ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 8,
-                }}>
+              <View style={styles.furnished}>
                 <FontAwesomeIcon icon={faCouch} size={30} color="blue" />
-                <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Furnished</Text>
-                  <Text
-                    style={{
-                      marginTop: 4,
-                      fontSize: 12,
-                      color: '#555',
-                      maxWidth: '90%',
-                    }}>
+                <View style={styles.marginLeft12}>
+                  <Text style={styles.furnishedText}>Furnished</Text>
+                  <Text style={styles.furnishedTextDesc}>
                     This property comes with furniture included.
                   </Text>
                 </View>
               </View>
             ) : null}
             {post.negotiable ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: 8,
-                }}>
+              <View style={styles.negotiable}>
                 <FontAwesomeIcon icon={faHandshake} size={30} color="blue" />
-                <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Negotiable</Text>
-                  <Text
-                    style={{
-                      marginTop: 4,
-                      fontSize: 12,
-                      color: '#555',
-                      maxWidth: '90%',
-                    }}>
+                <View style={styles.marginLeft12}>
+                  <Text style={styles.negotiableText}>Negotiable</Text>
+                  <Text style={styles.negotiableTextDesc}>
                     The price of this property is open to negotiation with the owner.
                   </Text>
                 </View>
@@ -981,17 +888,11 @@ const DetailedPost = props => {
     </View>
   ) : null} */}
             {post.verified ? (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={styles.verified}>
                 <FontAwesomeIcon icon={faCheckCircle} size={30} color="blue" />
-                <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Verified</Text>
-                  <Text
-                    style={{
-                      marginTop: 4,
-                      fontSize: 12,
-                      color: '#555',
-                      maxWidth: '90%',
-                    }}>
+                <View style={styles.marginLeft12}>
+                  <Text style={styles.verifiedText}>Verified</Text>
+                  <Text style={styles.verifiedTextLabel}>
                     This property has been verified by our team to ensure its authenticity and
                     quality.
                   </Text>
@@ -1001,10 +902,8 @@ const DetailedPost = props => {
           </View>
 
           <View style={styles.hairline} />
-          <Text style={{margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'}}>
-            Amenities available
-          </Text>
-          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+          <Text style={styles.amenitiesAvailable}>Amenities available</Text>
+          <View style={styles.amenitiesTheContainer}>
             {post.aircondition === 'Yes' ? (
               <View style={styles.card}>
                 <View style={styles.cardItem}>
@@ -1066,20 +965,11 @@ const DetailedPost = props => {
         <View style={styles.hairline} />
         {/* here i made changes */}
 
-        <View style={{paddingHorizontal: 20}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
+        <View style={styles.paddingHorizontal20}>
+          <View style={styles.flexCenter}>
             <View>
               <TouchableOpacity
-                style={{
-                  marginTop: 5,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
+                style={styles.reviewCounter}
                 // onPress={() => navigation.navigate('Reviews')}
               >
                 <StarRating
@@ -1092,37 +982,22 @@ const DetailedPost = props => {
                   }
                   fullStarColor="orange"
                 />
-                <Text footnote grayColor style={{marginLeft: 5}}>
+                <Text footnote grayColor style={styles.marginLeft5}>
                   ({post?.reviews?.items?.length}) reviews
                 </Text>
               </TouchableOpacity>
             </View>
             <View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  paddingTop: 20,
-                }}>
-                <TouchableOpacity
-                  style={{flexDirection: 'row', alignItems: 'center'}}
-                  onPress={goToFeedback}>
+              <View style={styles.paddingTop20}>
+                <TouchableOpacity style={styles.flexRowCenter} onPress={goToFeedback}>
                   <FontAwesomeIcon icon={faPlusCircle} size={18} color="blue" />
-                  <Text
-                    style={{
-                      paddingHorizontal: 4,
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: 'blue',
-                    }}>
-                    Write a review
-                  </Text>
+                  <Text style={styles.writeAReview}>Write a review</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
 
-          <View style={{flex: 1}}>
+          <View style={styles.flex}>
             {post?.reviews?.items?.length !== 0 ? (
               post?.reviews?.items
                 ?.sort((a, b) => a.createdAt - b.createdAt)
@@ -1130,11 +1005,7 @@ const DetailedPost = props => {
                   <View key={review.id}>
                     {!review?.parentReviewId && (
                       <CardCommentPhoto
-                        style={{
-                          borderTopWidth: 0.5,
-                          marginTop: 5,
-                          borderColor: 'deeppink',
-                        }}
+                        style={styles.cardPhotoPink}
                         rate={review.rating}
                         date={moment(review.createdAt).format('D MMM YYYY')}
                         comment={review.review}
@@ -1146,11 +1017,7 @@ const DetailedPost = props => {
                         rep.parentReviewId === review.id && (
                           <>
                             <CardCommentPhoto
-                              style={{
-                                marginLeft: 40,
-                                borderTopWidth: 0.2,
-                                borderColor: 'gray',
-                              }}
+                              style={styles.cardPhotoGrey}
                               rate={rep.rating}
                               date={moment(rep.createdAt).format('D MMM YYYY')}
                               comment={rep.review}
@@ -1163,29 +1030,16 @@ const DetailedPost = props => {
                   </View>
                 ))
             ) : (
-              <Text style={{color: 'gray'}}>No Review yet</Text>
+              <Text style={styles.grayColor}>No Review yet</Text>
             )}
           </View>
         </View>
       </ScrollView>
 
-      <View
-        style={{
-          flex: 1,
-          borderTopColor: 'lightgrey',
-          borderTopWidth: 1,
-          flexDirection: 'row',
-          backgroundColor: 'white',
-          position: 'absolute',
-          height: 80,
-          width: '100%',
-          bottom: 0,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
+      <View style={styles.pricesOfHome}>
         <View>
           {post.mode === 'For Sale' ? (
-            <Text style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
+            <Text style={styles.forSale}>
               {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
               {Math.round(post.newPrice * 1.07)
                 .toString()
@@ -1193,7 +1047,7 @@ const DetailedPost = props => {
               {'\n'}
             </Text>
           ) : (
-            <Text style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
+            <Text style={styles.currencyPerPeriod}>
               {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
               {Math.round((post.newPrice * 1.07) / 12)
                 .toString()
@@ -1202,28 +1056,10 @@ const DetailedPost = props => {
             </Text>
           )}
         </View>
-        <View style={{marginTop: 10, marginHorizontal: 40}}>
-          <Pressable
-            style={{
-              marginBottom: 10,
-              backgroundColor: 'deeppink',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: 50,
-              width: '100%',
-              marginHorizontal: 20,
-              borderRadius: 5,
-            }}
-            onPress={payToRent}>
+        <View style={styles.payToRentContainer}>
+          <Pressable style={styles.payToRentPressable} onPress={payToRent}>
             {/* <Fontisto name="credit-card" size={25} style={{color: 'white' , margin: 10 ,}} /> */}
-            <Text
-              style={{
-                fontSize: 20,
-                color: 'white',
-                fontWeight: 'bold',
-              }}>
-              Pay to Rent
-            </Text>
+            <Text style={styles.payToRent}>Pay to Rent</Text>
           </Pressable>
           {/* <Pressable
                 title="Call to Rent Event"
