@@ -1,17 +1,20 @@
-import React, {useState, useEffect, useContext, useMemo, useCallback} from 'react';
+import React, {useState, useEffect, useContext, useMemo, useCallback, lazy, Suspense} from 'react';
 import {View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GoogleSignin} from '@react-native-community/google-signin';
 
-import SignupScreen from '../screens/SignUpScreen';
-import LoginScreen from '../screens/LoginScreen';
-import OnboardingScreen from '../screens/Onboarding';
-import LocationPermissions from '../screens/LocationPermissions';
-import Notifications from '../screens/Notifications';
 import mixpanel from '../MixpanelConfig';
 import {AuthContext} from './AuthProvider';
+
+import PageSpinner from '../components/PageSpinner';
+
+const SignupScreen = lazy(() => import('../screens/SignUpScreen'));
+const LoginScreen = lazy(() => import('../screens/LoginScreen'));
+const OnboardingScreen = lazy(() => import('../screens/Onboarding'));
+const LocationPermissions = lazy(() => import('../screens/LocationPermissions'));
+const Notifications = lazy(() => import('../screens/Notifications'));
 
 const Stack = createStackNavigator();
 
@@ -100,17 +103,23 @@ const AuthStack = () => {
   }
 
   return (
-    <Stack.Navigator initialRouteName={routeName} onStateChange={onNavigationStateChange(user)}>
-      <Stack.Screen name="Onboarding" component={OnboardingScreen} options={header} />
+    <Suspense fallback={<PageSpinner />}>
+      <Stack.Navigator initialRouteName={routeName} onStateChange={onNavigationStateChange(user)}>
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} options={header} />
 
-      <Stack.Screen name="Login" component={LoginScreen} options={header} />
+        <Stack.Screen name="Login" component={LoginScreen} options={header} />
 
-      <Stack.Screen name="LocationPermissions" component={LocationPermissions} options={noHeader} />
+        <Stack.Screen
+          name="LocationPermissions"
+          component={LocationPermissions}
+          options={noHeader}
+        />
 
-      <Stack.Screen name="Notifications" component={Notifications} options={noHeader} />
+        <Stack.Screen name="Notifications" component={Notifications} options={noHeader} />
 
-      <Stack.Screen name="Signup" component={SignupScreen} options={options} />
-    </Stack.Navigator>
+        <Stack.Screen name="Signup" component={SignupScreen} options={options} />
+      </Stack.Navigator>
+    </Suspense>
   );
 };
 
