@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import SplashScreen from 'react-native-splash-screen';
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {StatusBar, useColorScheme, AppState} from 'react-native';
 import Amplify from '@aws-amplify/core';
 import {ApplicationProvider} from '@ui-kitten/components';
@@ -20,7 +20,7 @@ Sentry.init({
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  useEffect(() => {
+  const didMount = useCallback(() => {
     SplashScreen.hide();
     requestUserPermission();
     notificationListener();
@@ -29,6 +29,10 @@ const App = () => {
       console.debug('Your memory is currently warning.', state);
     });
   }, []);
+
+  useEffect(() => {
+    didMount();
+  }, [didMount]);
 
   return (
     <>
