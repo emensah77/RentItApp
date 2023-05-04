@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+/* eslint-disable react/jsx-no-bind */
 import {
   faBath,
   faBed,
@@ -17,8 +17,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import analytics from '@react-native-firebase/analytics';
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {API, graphqlOperation} from 'aws-amplify';
+import {useNavigation} from '@react-navigation/native';
 import moment from 'moment/moment';
 import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {
@@ -46,7 +45,6 @@ import {AuthContext} from '../../navigation/AuthProvider';
 // const uploadusers = ["17Kx04gVyJXkO8kZsIxUxRu4uJw1","Ye7iz2KN5Fbk5Y0Z91IEmzywNPh1","UWHvpJ1XoObsFYTFR48zYe6jscJ2","7WGODlIhvkXGhjpngLXxAnQihTK2", "lvtDmH13IRW1njCJKZyKsO2okKr1", "JleriGZuTqXkAyO3xCiDsey1CCb2"]
 import mixpanel from '../../MixpanelConfig';
 
-import {deletePost, updatePost} from '../../graphql/mutations';
 import useWishlist from '../../hooks/useWishlist';
 import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto';
 import StarRating from '../StarRating/index';
@@ -55,22 +53,14 @@ import ImageCarousel from '../ImageCarousel';
 import styles from './styles';
 
 const DetailedPost = props => {
-  const [post, setPost] = useState(props?.post);
+  const [post] = useState(props?.post);
   const navigation = useNavigation();
-  const route = useRoute();
-  const {user, logout} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   const {checkIsFav, handleChangeFavorite} = useWishlist();
-  const [modalvisible, setmodalvisible] = useState(false);
-  const {randString} = route.params;
-  const [phoneNumbers, setphones] = useState([]);
+  const [, setphones] = useState([]);
   const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
-  const [value, setValue] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [homeprice, sethomeprice] = useState(1);
   const [similarHomes, setSimilarHomes] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
-  const [numHomes, setNumHomes] = useState(10);
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,7 +72,7 @@ const DetailedPost = props => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState('');
   const [isScheduling, setIsScheduling] = useState(false);
-  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const [, setSelectedDateTime] = useState(null);
   const [videoDuration, setVideoDuration] = useState(0);
   const [playbackTime, setPlaybackTime] = useState(0);
   const [videoLoading, setVideoLoading] = useState(true);
@@ -131,11 +121,8 @@ const DetailedPost = props => {
           },
         );
 
-        const result = await response.json();
-
         if (response.ok) {
           // Success
-          console.log(result.message);
           setIsDetailsModalVisible(false);
           const formattedDate = new Date(date).toLocaleDateString();
           const formattedTime = new Date(date).toLocaleTimeString();
@@ -166,7 +153,7 @@ const DetailedPost = props => {
     // Handle submit and show date picker
     hideDetailsModal();
     showDatePicker();
-  }, []);
+  }, [hideDetailsModal, showDatePicker]);
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
@@ -176,9 +163,6 @@ const DetailedPost = props => {
     setShowFullDescription(prev => !prev);
   }, []);
 
-  const loadMore = useCallback(() => {
-    setNumHomes(prevNumHomes => (prevNumHomes + 10 > totalItems ? totalItems : prevNumHomes + 10));
-  }, [totalItems]);
   const handleProgress = useCallback(progress => {
     setPlaybackTime(progress.currentTime);
   }, []);
@@ -210,12 +194,6 @@ const DetailedPost = props => {
   //     [post.id, post.videoURL],
   //   );
 
-  const loadMoreButton = (
-    <TouchableOpacity onPress={loadMore} style={styles.loadMoreButton}>
-      <Text style={styles.loadMoreText}>Load More</Text>
-    </TouchableOpacity>
-  );
-
   const logAnalyticsEvent = async () => {
     await analytics().logEvent('calltorent', {
       id: user.displayName,
@@ -233,32 +211,6 @@ const DetailedPost = props => {
       // console.log('phoneNumbers',phoneNumbers)
     });
   }, []);
-
-  const hellod1 = useCallback(
-    text => {
-      setValue(parseInt(text, 10));
-
-      sethomeprice(value);
-      console.log(value);
-    },
-    [value],
-  );
-
-  const helloTitle = useCallback(
-    text => {
-      setTitle(text);
-      console.log(title);
-    },
-    [title],
-  );
-
-  const helloDescrip = useCallback(
-    text => {
-      setDescription(text);
-      console.log(description);
-    },
-    [description],
-  );
 
   const getUsersWithPrivileges = useCallback(async () => {
     const callers = await firebase.firestore().collection('usersWithPrivileges');
@@ -330,8 +282,9 @@ const DetailedPost = props => {
     getRecommendedHomes();
     getPhoneNumbers();
     getUsersWithPrivileges();
-    console.log('similar homes', totalItems);
   }, [
+    getPhoneNumbers,
+    getUsersWithPrivileges,
     post.aircondition,
     post.bathroom,
     post.bedroom,
@@ -375,26 +328,6 @@ const DetailedPost = props => {
     }
   }, []);
 
-  const updateHome = async id => {
-    try {
-      const input = {
-        id,
-        title,
-        description,
-        newPrice: value,
-      };
-      const deletedTodo = await API.graphql(
-        graphqlOperation(updatePost, {
-          input,
-        }),
-      );
-      console.log('Succesfully updated the home');
-      setmodalvisible(false);
-    } catch (e) {
-      console.log('Error updating home', e);
-    }
-  };
-
   const deleteFromFavorites = useCallback(async id => {
     const ref = firestore().collection('posts');
     ref
@@ -406,9 +339,7 @@ const DetailedPost = props => {
             .collection('posts')
             .doc(doc.id)
             .delete()
-            .then(() => {
-              console.log('Deleted from favorite posts!');
-            });
+            .then(() => {});
           // console.log(doc.id);
           // console.log(doc.id, "=>", doc.data());
         });
@@ -417,60 +348,15 @@ const DetailedPost = props => {
   const deleteFromTrends = useCallback(async id => {
     await firestore().collection('trends').doc(id).delete();
   }, []);
-  const deleteHome = useCallback(async id => {
-    try {
-      const input = {
-        id,
-      };
-      const deletedTodo = await API.graphql(
-        graphqlOperation(deletePost, {
-          input,
-        }),
-      );
-      console.log('Succesfully deleted the post');
-    } catch (e) {
-      console.log('Error deleting post', e);
-    }
-  }, []);
 
-  const deleteListing = useCallback(async id => {
-    deleteHome(id);
-    deleteFromTrends(id);
-    deleteFromFavorites(id);
-  }, []);
-  const sendWhatsApp = () => {
-    mixpanel.track('User Home Interest', {
-      propertyId: post.id,
-      propertyTitle: post.title,
-      propertyType: post.type,
-      price: post.newPrice,
-      locality: post.locality,
-      url: `https://rentit.homes/rooms/room/${post.id}`,
-    });
-    const msg = `${`${`${`${`${'I am interested in this home '`https://rentit.homes/rooms/room/${post.id}`} ``${post.title}`} which is located in ``${post.locality}`} , ``${post.sublocality}`} and the price is ``${Math.round(
-      (post.newPrice / 12) * 1.07,
-    )}`} per month`;
-    const phoneWithCountryCode = `+233${
-      phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)]
-    }`;
-    const mobile = Platform.OS == 'ios' ? phoneWithCountryCode : `+${phoneWithCountryCode}`;
-    if (mobile) {
-      if (msg) {
-        const url = `whatsapp://send?text=${msg}&phone=${mobile}`;
-        Linking.openURL(url)
-          .then(data => {
-            console.log('WhatsApp Opened');
-          })
-          .catch(() => {
-            alert('Make sure WhatsApp installed on your device');
-          });
-      } else {
-        alert('Please insert message to send');
-      }
-    } else {
-      alert('Please insert mobile no');
-    }
-  };
+  const deleteListing = useCallback(
+    async id => {
+      // deleteHome(id);
+      deleteFromTrends(id);
+      deleteFromFavorites(id);
+    },
+    [deleteFromFavorites, deleteFromTrends],
+  );
 
   const renderItem = useCallback(
     ({item}) => {
@@ -483,16 +369,16 @@ const DetailedPost = props => {
         return 'GH₵';
       };
 
+      function onPress() {
+        navigation.navigate('Home');
+        setTimeout(() => {
+          navigation.navigate('Post', {postId: item.id});
+        }, 1); // Wait for 1 second before navigating to Post screen
+      }
+
       return (
-        <Pressable
-          onPress={() => {
-            // console.log('pressed', item.id);
-            navigation.navigate('Home');
-            setTimeout(() => {
-              navigation.navigate('Post', {postId: item.id});
-            }, 1); // Wait for 1 second before navigating to Post screen
-          }}
-          style={styles.itemContainer}>
+        // eslint-disable-next-line react/jsx-no-bind
+        <Pressable onPress={onPress} style={styles.itemContainer}>
           <View style={styles.imageContainer}>
             <Image source={{uri: item.image}} style={styles.image} />
           </View>
