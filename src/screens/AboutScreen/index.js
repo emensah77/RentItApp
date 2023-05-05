@@ -1,22 +1,12 @@
 import React from 'react';
-import {
-  View,
-  Dimensions,
-  Text,
-  Pressable,
-  ImageBackground,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-} from 'react-native';
-import {Auth} from 'aws-amplify';
+import {Dimensions, ImageBackground, ScrollView, StyleSheet, Text, View} from 'react-native';
 
-const AboutScreen = props => {
-  const logout = () => {
-    Auth.signOut();
-  };
+const AboutScreen = () => {
+  //   const logout = useCallback(() => {
+  //     Auth.signOut();
+  //   }, []);
   return (
-    <ScrollView style={{backgroundColor: '#fff', marginBottom: 10}}>
+    <ScrollView style={styles.scrollView}>
       <View>
         <View>
           <ImageBackground
@@ -25,10 +15,7 @@ const AboutScreen = props => {
               width: Dimensions.get('screen').width,
               height: Dimensions.get('screen').height / 4,
             }}
-            imageStyle={{
-              borderBottomRightRadius: 25,
-              borderBottomLeftRadius: 25,
-            }}>
+            imageStyle={styles.imageStyle}>
             <View style={styles.DarkOverlay} />
             <View style={styles.searchContainer}>
               <Text style={styles.UserGreetings}>Hey, Welcome</Text>
@@ -37,173 +24,108 @@ const AboutScreen = props => {
           </ImageBackground>
         </View>
 
-        <View style={{margin: 10, padding: 5}}>
-          <Text style={{fontWeight: 'bold', fontSize: 25}}>For Tenants</Text>
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              How It Works?
-            </Text>
+        <View style={styles.main}>
+          <Text style={styles.title2}>For Tenants</Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title1}>How It Works?</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              Start by searching the location you are interested in renting
-              from. Apply filters like number of rooms, number of adults, or
-              children to narrow your options.
+            <Text style={styles.title3}>
+              Start by searching the location you are interested in renting from. Apply filters like
+              number of rooms, number of adults, or children to narrow your options.
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              Browse through detailed descriptions of each home, including
-              amenities available and call to rent once you have found your
-              match.
+            <Text style={styles.title3}>
+              Browse through detailed descriptions of each home, including amenities available and
+              call to rent once you have found your match.
             </Text>
           </View>
 
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              Trust and Safety
-            </Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>Trust and Safety</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              Trust and Safety is at the core of everything we do. We make sure
-              that every home you see on the app looks exactly as it appears in
-              person
+            <Text style={styles.title3}>
+              Trust and Safety is at the core of everything we do. We make sure that every home you
+              see on the app looks exactly as it appears in person
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              So you can be sure everything you see on the app is verified and
-              appears exactly as it is portrayed.
+            <Text style={styles.title3}>
+              So you can be sure everything you see on the app is verified and appears exactly as it
+              is portrayed.
             </Text>
           </View>
 
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              Cancellation Options
-            </Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>Cancellation Options</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              Flexibility is important to us. So we allow you to change your
-              mind up until you move into any home.
+            <Text style={styles.title3}>
+              Flexibility is important to us. So we allow you to change your mind up until you move
+              into any home.
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              If you change your mind before moving into the house, we will
-              charge you no fee for it.
+            <Text style={styles.title3}>
+              If you change your mind before moving into the house, we will charge you no fee for
+              it.
             </Text>
           </View>
 
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              Help and Support
-            </Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>Help and Support</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              Whatever you choose, we are here to support you. We can also help
-              arrange to move you into your new home
+            <Text style={styles.title3}>
+              Whatever you choose, we are here to support you. We can also help arrange to move you
+              into your new home
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              We also help you after you move out to your new home in the event
-              anything happens.
+            <Text style={styles.title3}>
+              We also help you after you move out to your new home in the event anything happens.
             </Text>
           </View>
         </View>
 
-        <View style={{margin: 10, padding: 5}}>
-          <Text style={{fontWeight: 'bold', fontSize: 25}}>For LandLords</Text>
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              How It Works?
-            </Text>
+        <View style={styles.main}>
+          <Text style={styles.title2}>For LandLords</Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>How It Works?</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              You can upload your home to the RentIt App. Open your home to
-              thousands of tenants looking for a home to rent and earn money.
+            <Text style={styles.title3}>
+              You can upload your home to the RentIt App. Open your home to thousands of tenants
+              looking for a home to rent and earn money.
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              Also, become a partner once you upload your home to the RentIt App
-              for rent.
+            <Text style={styles.title3}>
+              Also, become a partner once you upload your home to the RentIt App for rent.
             </Text>
           </View>
 
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              Trust and Safety
-            </Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>Trust and Safety</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              You commit to uphold yourself to a higher standard of trust and
-              integrity. People use RentIt because they trust everything they
-              see.
+            <Text style={styles.title3}>
+              You commit to uphold yourself to a higher standard of trust and integrity. People use
+              RentIt because they trust everything they see.
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              It is therefore important that every property you upload is
-              entirely yours and is exactly as it appears.
+            <Text style={styles.title3}>
+              It is therefore important that every property you upload is entirely yours and is
+              exactly as it appears.
             </Text>
           </View>
 
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              Cancellation Options
-            </Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>Cancellation Options</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              We allow our tenants a lot of flexibility in booking rooms to
-              rent. Therefore, you commit to this flexibility once you upload
-              your property to RentIt.
+            <Text style={styles.title3}>
+              We allow our tenants a lot of flexibility in booking rooms to rent. Therefore, you
+              commit to this flexibility once you upload your property to RentIt.
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              You also commit to allow flexible move in dates for tenants once
-              they rent your home.
+            <Text style={styles.title3}>
+              You also commit to allow flexible move in dates for tenants once they rent your home.
             </Text>
           </View>
 
-          <View style={{margin: 20, padding: 5}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                fontFamily: 'Montserrat',
-              }}>
-              Help and Support
-            </Text>
+          <View style={styles.mainContent}>
+            <Text style={styles.title4}>Help and Support</Text>
 
-            <Text style={{fontSize: 16, padding: 10}}>
-              We offer support and help to homeowners and landlords who upload
-              their homes to RentIt
+            <Text style={styles.title3}>
+              We offer support and help to homeowners and landlords who upload their homes to RentIt
             </Text>
-            <Text style={{fontSize: 16, padding: 10}}>
-              Connect with other landlords and homeowners who have rent their
-              homes through RentIt and make strong community connections.
+            <Text style={styles.title3}>
+              Connect with other landlords and homeowners who have rent their homes through RentIt
+              and make strong community connections.
             </Text>
           </View>
         </View>
@@ -244,6 +166,40 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
+  },
+  scrollView: {
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  imageStyle: {
+    borderBottomRightRadius: 25,
+    borderBottomLeftRadius: 25,
+  },
+  title1: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat',
+  },
+  title2: {
+    fontWeight: 'bold',
+    fontSize: 25,
+  },
+  title3: {
+    fontSize: 16,
+    padding: 10,
+  },
+  title4: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat',
+  },
+  main: {
+    margin: 10,
+    padding: 5,
+  },
+  mainContent: {
+    margin: 20,
+    padding: 5,
   },
 });
 
