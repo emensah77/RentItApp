@@ -8,12 +8,13 @@ import firestore from '@react-native-firebase/firestore';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import mixpanel from '../MixpanelConfig';
+import useVisibility from '../hooks/useVisibility';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const loadingVisiblity = useVisibility();
   // const [isFirstLaunch, setIsFirstLaunch] = useState(false);
 
   useEffect(() => {
@@ -90,7 +91,7 @@ export const AuthProvider = ({children}) => {
           const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
           // Sign-in the user with the credential
-          setLoading(true);
+          loadingVisiblity.show();
           await auth().signInWithCredential(googleCredential);
 
           // Identify the user with a unique ID (e.g., user.uid)
@@ -135,7 +136,7 @@ export const AuthProvider = ({children}) => {
           //       userId: auth().currentUser.uid,
           //     });
           // });
-          setLoading(false);
+          loadingVisiblity.hide();
 
           // Once the user creation has happened successfully, we can add the currentUser into firestore
           // with the appropriate details.
@@ -189,7 +190,7 @@ export const AuthProvider = ({children}) => {
           );
 
           // Sign the user in with the credential
-          setLoading(true);
+          loadingVisiblity.show();
           await auth().signInWithCredential(appleCredential);
           // console.debug('apple user name', appleAuthRequestResponse);
 
@@ -236,7 +237,7 @@ export const AuthProvider = ({children}) => {
           //   }
           // }); // A
 
-          setLoading(false);
+          loadingVisiblity.hide();
         } catch (error) {
           console.error(error);
         }
@@ -261,9 +262,9 @@ export const AuthProvider = ({children}) => {
           const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
           // Sign-in the user with the credential
-          setLoading(true);
+          loadingVisiblity.show();
           await auth().signInWithCredential(facebookCredential);
-          setLoading(false);
+          loadingVisiblity.hide();
           // Use it only when user Sign's up,
           // so create different social signup function
           // .then(() => {
@@ -334,10 +335,10 @@ export const AuthProvider = ({children}) => {
           .update({...data});
       },
     }),
-    [user],
+    [loadingVisiblity, user],
   );
 
-  if (loading) {
+  if (loadingVisiblity.visible) {
     return (
       <View style={styles.loadingView}>
         <ActivityIndicator animating size="large" color="blue" style={styles.activityOpacity} />
