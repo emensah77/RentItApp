@@ -12,8 +12,7 @@ async function sendSMSNotification(phoneNumber, message) {
   };
 
   try {
-    // eslint-disable-next-line no-unused-vars
-    const result = await sns.publish(params).promise();
+    await sns.publish(params).promise();
   } catch (error) {
     console.error('Error sending SMS:', error);
   }

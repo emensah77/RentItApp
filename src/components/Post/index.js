@@ -1,116 +1,137 @@
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {View, Platform, Text, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import firestore from '@react-native-firebase/firestore';
+// import firestore from '@react-native-firebase/firestore';
 import FastImage from 'react-native-fast-image';
-import {AuthContext} from '../../navigation/AuthProvider';
-import styles from './styles.js';
-import useWishlist from '../../hooks/useWishlist.js';
+
+import styles from './styles';
+
+// import {AuthContext} from '../../navigation/AuthProvider';
+import useWishlist from '../../hooks/useWishlist';
 
 const Post = props => {
   const {checkIsFav, handleChangeFavorite} = useWishlist();
-  let docRefId;
-  let docId;
-  const {user, logout} = useContext(AuthContext);
-  const addToTrends = async () => {
-    firestore()
-      .collection('trends')
-      .doc(post.id)
-      .set({
-        image: post.image,
-        type: post.type,
-        title: post.title,
-        description: post.description,
-
-        bed: post.bed,
-        bedroom: post.bedroom,
-        maxGuests: post.maxGuests,
-        wifi: post.wifi,
-        kitchen: post.kitchen,
-        bathroom: post.bathroom,
-        water: post.water,
-        toilet: post.toilet,
-        images: post.images,
-
-        oldPrice: post.oldPrice,
-        newPrice: post.newPrice,
-        count: counter,
-        latitude: post.latitude,
-        longitude: post.longitude,
-        id: post.id,
-      })
-      .then(() => {
-        console.log('Added to Trends');
-      })
-      .catch(error => {
-        console.log('Something went wrong adding to Trends', error);
-      });
-  };
-  const updateTrendCount = async (postid, val) => {
-    firestore()
-      .collection('trends')
-      .doc(postid)
-      .update({
-        count: firestore.FieldValue.increment(1),
-      })
-      .then(() => {
-        console.log('User updated!');
-      });
-  };
-
-  let rand;
-  const addToFavorites = () => {
-    const randomString = (Math.random() * 1e32).toString(36);
-    rand = randomString;
-    firestore()
-      .collection('posts')
-      .doc(rand)
-      .set({
-        userId: user.uid,
-        image: post.image,
-        type: post.type,
-        title: post.title,
-        description: post.description,
-        randString: randomString,
-
-        bed: post.bed,
-        bedroom: post.bedroom,
-        maxGuests: post.maxGuests,
-        wifi: post.wifi,
-        kitchen: post.kitchen,
-        bathroom: post.bathroom,
-        water: post.water,
-        toilet: post.toilet,
-        images: post.images,
-
-        oldPrice: post.oldPrice,
-        newPrice: post.newPrice,
-        count: counter,
-        liked: false,
-        latitude: post.latitude,
-        longitude: post.longitude,
-        id: post.id,
-      })
-      .then(docRef => {
-        docRefId = docRef.id;
-        docId = docRefId;
-      })
-      .catch(error => {
-        console.log('Something went wrong adding to Favorites', error);
-      });
-  };
-
-  const [counter, setCount] = useState(0);
-  const [isLike, setIsLike] = useState(false);
+  // let docRefId;
+  // const {user} = useContext(AuthContext);
+  // const [counter, setCount] = useState(0);
+  // const [isLike, setIsLike] = useState(false);
 
   const colorStyle = 'deeppink';
 
   const {post} = props;
   const navigation = useNavigation();
-  const goToPostPage = () => {
+
+  const currency = useMemo(() => {
+    if (post.currency) {
+      if (post.currency[0] === 'usd') {
+        return '$';
+      } else if (post.currency[0] === 'ghs') {
+        return 'GH₵';
+      } else {
+        return 'GH₵';
+      }
+    } else {
+      return 'GH₵';
+    }
+  }, [post?.currency]);
+
+  const goToPostPage = useCallback(() => {
     navigation.navigate('Post', {postId: post.id});
-  };
+  }, [navigation, post.id]);
+
+  const onChangeFavorite = useCallback(() => {
+    handleChangeFavorite(post);
+  }, [handleChangeFavorite, post]);
+
+  // const addToTrends = async () => {
+  //   firestore()
+  //     .collection('trends')
+  //     .doc(post.id)
+  //     .set({
+  //       image: post.image,
+  //       type: post.type,
+  //       title: post.title,
+  //       description: post.description,
+
+  //       bed: post.bed,
+  //       bedroom: post.bedroom,
+  //       maxGuests: post.maxGuests,
+  //       wifi: post.wifi,
+  //       kitchen: post.kitchen,
+  //       bathroom: post.bathroom,
+  //       water: post.water,
+  //       toilet: post.toilet,
+  //       images: post.images,
+
+  //       oldPrice: post.oldPrice,
+  //       newPrice: post.newPrice,
+  //       count: counter,
+  //       latitude: post.latitude,
+  //       longitude: post.longitude,
+  //       id: post.id,
+  //     })
+  //     .then(() => {
+  //       console.log('Added to Trends');
+  //     })
+  //     .catch(error => {
+  //       console.log('Something went wrong adding to Trends', error);
+  //     });
+  // };
+
+  // const updateTrendCount = async (postid, val) => {
+  //   firestore()
+  //     .collection('trends')
+  //     .doc(postid)
+  //     .update({
+  //       count: firestore.FieldValue.increment(1),
+  //     })
+  //     .then(() => {
+  //       console.log('User updated!');
+  //     });
+  // };
+
+  // let rand;
+  // const addToFavorites = () => {
+  //   const randomString = (Math.random() * 1e32).toString(36);
+  //   rand = randomString;
+  //   firestore()
+  //     .collection('posts')
+  //     .doc(rand)
+  //     .set({
+  //       userId: user.uid,
+  //       image: post.image,
+  //       type: post.type,
+  //       title: post.title,
+  //       description: post.description,
+  //       randString: randomString,
+
+  //       bed: post.bed,
+  //       bedroom: post.bedroom,
+  //       maxGuests: post.maxGuests,
+  //       wifi: post.wifi,
+  //       kitchen: post.kitchen,
+  //       bathroom: post.bathroom,
+  //       water: post.water,
+  //       toilet: post.toilet,
+  //       images: post.images,
+
+  //       oldPrice: post.oldPrice,
+  //       newPrice: post.newPrice,
+  //       count: counter,
+  //       liked: false,
+  //       latitude: post.latitude,
+  //       longitude: post.longitude,
+  //       id: post.id,
+  //     })
+  //     .then(docRef => {
+  //       docRefId = docRef.id;
+  //       docId = docRefId;
+  //     })
+  //     .catch(error => {
+  //       console.log('Something went wrong adding to Favorites', error);
+  //     });
+  // };
 
   return (
     <Pressable onPress={goToPostPage} style={styles.container}>
@@ -126,48 +147,11 @@ const Post = props => {
           style={styles.image}
         />
 
-        <Pressable
-          style={{
-            shadowColor: 'black',
-            shadowOpacity: 0.5,
-            shadowRadius: 30,
-            margin: 8,
-            right: 0,
-            top: 5,
-            position: 'absolute',
-            height: 35,
-            width: 35,
-            backgroundColor: 'white',
-            elevation: 90,
-            borderRadius: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onPress={() => handleChangeFavorite(post)}>
-          <Fontisto
-            name="heart"
-            size={15}
-            color={checkIsFav(post.id) ? colorStyle : 'black'}
-          />
+        <Pressable style={styles.favorite} onPress={onChangeFavorite}>
+          <Fontisto name="heart" size={15} color={checkIsFav(post.id) ? colorStyle : 'black'} />
         </Pressable>
-        <View
-          style={{
-            shadowColor: 'black',
-            shadowOpacity: 0.5,
-            shadowRadius: 30,
-            margin: 10,
-            left: 0,
-            top: 5,
-            position: 'absolute',
-            height: 30,
-            width: 80,
-            backgroundColor: 'white',
-            elevation: 90,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text adjustsFontSizeToFit style={{fontSize: 14, fontWeight: 'bold'}}>
+        <View style={styles.forSale}>
+          <Text adjustsFontSizeToFit style={styles.forSaleText}>
             {post.mode === 'For Sale' ? 'FOR SALE' : 'FOR RENT'}
           </Text>
         </View>
@@ -177,14 +161,12 @@ const Post = props => {
 
       {/* Type and Description */}
       {post.locality != null ? (
-        <Text style={{marginTop: 5, fontWeight: '400', fontSize: 14}}>
+        <Text style={styles.location}>
           {post.type} in
           {post.locality}
         </Text>
       ) : (
-        <Text
-          style={{marginTop: 5, fontWeight: '400', fontSize: 14}}
-          numberOfLines={2}>
+        <Text style={styles.typeTitle} numberOfLines={2}>
           {post.type} |{post.title}
         </Text>
       )}
@@ -200,26 +182,14 @@ const Post = props => {
                 </Text> */}
         {post.mode === 'For Sale' ? (
           <Text style={styles.newPrice}>
-            {post.currency
-              ? post.currency[0] === 'usd'
-                ? '$'
-                : post.currency[0] === 'ghs'
-                ? 'GH₵'
-                : 'GH₵'
-              : 'GH₵'}
+            {currency}
             {Math.round(post.newPrice * 1.07)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
           </Text>
         ) : (
           <Text style={styles.newPrice}>
-            {post.currency
-              ? post.currency[0] === 'usd'
-                ? '$'
-                : post.currency[0] === 'ghs'
-                ? 'GH₵'
-                : 'GH₵'
-              : 'GH₵'}
+            {currency}
             {Math.round((post.newPrice * 1.07) / 12)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}

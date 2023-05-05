@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StatusBar, Button} from 'react-native';
 import MapView, {Polyline, Marker, Circle} from 'react-native-maps';
 import * as Animatable from 'react-native-animatable';
@@ -6,7 +6,6 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import auth from '@react-native-firebase/auth';
 import Geolocation from 'react-native-geolocation-service';
 import styles from './styles';
-import {AuthContext} from '../../navigation/AuthProvider';
 
 const LAMBDA_URL = 'https://buzkhgifcsw5ylapunfcpc23jm0owcpr.lambda-url.us-east-2.on.aws/';
 
@@ -22,24 +21,24 @@ const MarketerDashboard = () => {
   const [nearbyBuildings, setNearbyBuildings] = useState([]);
   const [mapType, setMapType] = useState('standard'); // 'standard' or 'satellite'
 
-  const onUserLocationChange = event => {
+  const onUserLocationChange = useCallback(event => {
     setUserLocation(event.nativeEvent.coordinate);
-  };
+  }, []);
 
   const user = auth().currentUser;
 
-  const sampleLocations = [
-    {latitude: 5.5600141, longitude: -0.2057443},
-    {latitude: 5.5628497, longitude: -0.2087192},
-    {latitude: 5.5656848, longitude: -0.2116941},
-    {latitude: 5.5685195, longitude: -0.214669},
-    {latitude: 5.5713539, longitude: -0.2176439},
-    {latitude: 5.574188, longitude: -0.2206188},
-    {latitude: 5.5770217, longitude: -0.2235937},
-    {latitude: 5.5798551, longitude: -0.2265686},
-    {latitude: 5.5826882, longitude: -0.2295435},
-    {latitude: 5.5855215, longitude: -0.2325184},
-  ];
+  // const sampleLocations = [
+  //   {latitude: 5.5600141, longitude: -0.2057443},
+  //   {latitude: 5.5628497, longitude: -0.2087192},
+  //   {latitude: 5.5656848, longitude: -0.2116941},
+  //   {latitude: 5.5685195, longitude: -0.214669},
+  //   {latitude: 5.5713539, longitude: -0.2176439},
+  //   {latitude: 5.574188, longitude: -0.2206188},
+  //   {latitude: 5.5770217, longitude: -0.2235937},
+  //   {latitude: 5.5798551, longitude: -0.2265686},
+  //   {latitude: 5.5826882, longitude: -0.2295435},
+  //   {latitude: 5.5855215, longitude: -0.2325184},
+  // ];
 
   const fetchNearbyBuildings = async (latitude, longitude) => {
     try {
@@ -70,7 +69,6 @@ const MarketerDashboard = () => {
     if (userLocation) {
       fetchNearbyBuildings(userLocation.latitude, userLocation.longitude);
     }
-    console.log('Nearby buildings:', nearbyBuildings);
   }, [nearbyBuildings, userLocation]);
 
   useEffect(() => {
@@ -88,7 +86,7 @@ const MarketerDashboard = () => {
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }, []);
-  const fetchLocationData = async (userID, startDate, endDate) => {
+  const fetchLocationData = (userID, newStartDate, newEndDate) => async () => {
     try {
       const response = await fetch(
         'https://ixsfe7iwziapghmqlug6375jaq0ckotp.lambda-url.us-east-2.on.aws/',
@@ -100,8 +98,8 @@ const MarketerDashboard = () => {
           body: JSON.stringify({
             action: 'getLocationDataByDateRange',
             userID,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
+            startDate: newStartDate.toISOString(),
+            endDate: newEndDate.toISOString(),
           }),
         },
       );
@@ -112,17 +110,15 @@ const MarketerDashboard = () => {
 
       const data = await response.json();
       const fetchedLocations = data.locationData;
-      console.log('Location data fetched successfully:', fetchedLocations);
 
       if (fetchedLocations && fetchedLocations.length > 0) {
         setLocations(fetchedLocations);
 
-        // Calculate the average latitude and longitude
-        const avgLatitude =
-          fetchedLocations.reduce((sum, loc) => sum + loc.latitude, 0) / fetchedLocations.length;
-        const avgLongitude =
-          fetchedLocations.reduce((sum, loc) => sum + loc.longitude, 0) / fetchedLocations.length;
-        console.log('Average latitude:', avgLatitude, 'Average longitude:', avgLongitude);
+        // // Calculate the average latitude and longitude
+        // const avgLatitude =
+        //   fetchedLocations.reduce((sum, loc) => sum + loc.latitude, 0) / fetchedLocations.length;
+        // const avgLongitude =
+        //   fetchedLocations.reduce((sum, loc) => sum + loc.longitude, 0) / fetchedLocations.length;
         // Animate the map to the new region
         mapRef.current.animateToRegion(defaultRegion, 1000);
       }
@@ -131,41 +127,48 @@ const MarketerDashboard = () => {
     }
   };
 
-  const showDatePicker = mode => {
+  const showDatePicker = mode => () => {
     setPickerMode(mode);
     setDatePickerVisibility(true);
   };
 
-  const hideDatePicker = () => {
+  const hideDatePicker = useCallback(() => {
     setDatePickerVisibility(false);
-  };
+  }, []);
 
-  const handleConfirm = date => {
-    if (pickerMode === 'start') {
-      setStartDate(date);
-    } else {
-      setEndDate(date);
-    }
-    hideDatePicker();
-  };
-  const toggleMapType = () => {
+  const handleConfirm = useCallback(
+    date => {
+      if (pickerMode === 'start') {
+        setStartDate(date);
+      } else {
+        setEndDate(date);
+      }
+      hideDatePicker();
+    },
+    [hideDatePicker, pickerMode],
+  );
+
+  const toggleMapType = useCallback(() => {
     setMapType(prevMapType => (prevMapType === 'standard' ? 'satellite' : 'standard'));
-  };
-  const zoomIn = () => {
+  }, []);
+
+  const zoomIn = useCallback(() => {
     setRegion(prevRegion => ({
       ...prevRegion,
       latitudeDelta: prevRegion.latitudeDelta / 2,
       longitudeDelta: prevRegion.longitudeDelta / 2,
     }));
-  };
+  }, []);
 
-  const zoomOut = () => {
+  const zoomOut = useCallback(() => {
     setRegion(prevRegion => ({
       ...prevRegion,
       latitudeDelta: prevRegion.latitudeDelta * 2,
       longitudeDelta: prevRegion.longitudeDelta * 2,
     }));
-  };
+  }, []);
+
+  const onRegionChangeComplete = useCallback(region => setRegion(region), []);
 
   useEffect(() => {
     if (mapRef.current && defaultRegion) {
@@ -179,13 +182,13 @@ const MarketerDashboard = () => {
       <MapView
         ref={mapRef}
         showsUserLocation
-        style={{width: '100%', height: '70%', backgroundColor: 'white'}}
+        style={styles.mapView}
         zoomEnabled
         minZoomLevel={12}
         region={defaultRegion}
         onUserLocationChange={onUserLocationChange}
         mapType={mapType}
-        onRegionChangeComplete={region => setRegion(region)}>
+        onRegionChangeComplete={onRegionChangeComplete}>
         {locations.length > 0 &&
           locations.map((location, index) => (
             <Marker
@@ -222,8 +225,8 @@ const MarketerDashboard = () => {
 
       <Animatable.View useNativeDriver animation="fadeInUpBig" duration={100} style={styles.footer}>
         <View style={styles.datePickerContainer}>
-          <Button title="Select Start Date" onPress={() => showDatePicker('start')} />
-          <Button title="Select End Date" onPress={() => showDatePicker('end')} />
+          <Button title="Select Start Date" onPress={showDatePicker('start')} />
+          <Button title="Select End Date" onPress={showDatePicker('end')} />
         </View>
         <TouchableOpacity onPress={toggleMapType} style={styles.toggleMapTypeButton}>
           <Text style={styles.toggleMapTypeText}>Toggle Map Type</Text>
@@ -237,7 +240,7 @@ const MarketerDashboard = () => {
         {startDate && endDate && (
           <TouchableOpacity
             style={styles.fetchButton}
-            onPress={() => fetchLocationData(user.uid, startDate, endDate)}>
+            onPress={fetchLocationData(user.uid, startDate, endDate)}>
             <Text style={styles.fetchButtonText}>Fetch Location History</Text>
           </TouchableOpacity>
         )}
