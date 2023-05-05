@@ -51,6 +51,11 @@ const styles = StyleSheet.create({
     color: 'darkgray',
     textDecorationLine: 'underline',
   },
+  bedroom: {
+    flex: 1,
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
 });
 
 export default styles;

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 export const getUserHomes = /* GraphQL */ `
   query getUser($id: ID!) {
     getUser(id: $id) {

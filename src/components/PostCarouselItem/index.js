@@ -1,28 +1,18 @@
-import React, {useState} from 'react';
-import {View, Image, Platform, Text, Pressable} from 'react-native';
-import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
 import {useNavigation} from '@react-navigation/native';
-import Fontisto from 'react-native-vector-icons/Fontisto';
+import React, {useCallback} from 'react';
+import {Platform, Pressable, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import styles from './styles.js';
+import useWindowDimensions from 'react-native/Libraries/Utilities/useWindowDimensions';
+import styles from './styles';
 
 const Post = props => {
-  const [count, setCount] = useState(0);
-  const [isLike, setIsLike] = useState(false);
-
-  const colorStyle = 'blue';
-
-  const handleClick = () => {
-    setIsLike(!isLike);
-  };
-
   const {post} = props;
   const {width} = useWindowDimensions();
-
   const navigation = useNavigation();
-  const goToPostPage = () => {
+
+  const goToPostPage = useCallback(() => {
     navigation.navigate('Post', {postId: post.id});
-  };
+  }, [navigation, post.id]);
 
   return (
     <Pressable
@@ -40,7 +30,7 @@ const Post = props => {
           style={styles.image}
         />
         {/* Bed and Bedroom */}
-        <View style={{flex: 1, marginHorizontal: 10, marginBottom: 10}}>
+        <View style={styles.bedroom}>
           <Text style={styles.bedrooms}>
             {post.bed} bed{post.bedrooms} bedrooms
           </Text>
@@ -55,12 +45,6 @@ const Post = props => {
               GH₵
               {Math.round(post.newPrice * 1.07)} / year
             </Text>
-            <View style={{paddingHorizontal: 30, paddingVertical: 1}}>
-              {/* <Pressable onPress={handleClick}>
-
-                            <Fontisto name="heart" size={20} color={isLike ? colorStyle : "yellow"}/>
-                        </Pressable> */}
-            </View>
           </Text>
         </View>
       </View>

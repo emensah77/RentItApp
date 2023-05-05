@@ -82,11 +82,7 @@ export const getReview = /* GraphQL */ `
   }
 `;
 export const listReviews = /* GraphQL */ `
-  query ListReviews(
-    $filter: ModelReviewFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListReviews($filter: ModelReviewFilterInput, $limit: Int, $nextToken: String) {
     listReviews(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -173,11 +169,7 @@ export const getViewing = /* GraphQL */ `
   }
 `;
 export const listViewings = /* GraphQL */ `
-  query ListViewings(
-    $filter: ModelViewingFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListViewings($filter: ModelViewingFilterInput, $limit: Int, $nextToken: String) {
     listViewings(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -270,11 +262,7 @@ export const getUser = /* GraphQL */ `
   }
 `;
 export const listUsers = /* GraphQL */ `
-  query ListUsers(
-    $filter: ModelUserFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListUsers($filter: ModelUserFilterInput, $limit: Int, $nextToken: String) {
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -368,11 +356,7 @@ export const getPost = /* GraphQL */ `
   }
 `;
 export const listPosts = /* GraphQL */ `
-  query ListPosts(
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
     listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id

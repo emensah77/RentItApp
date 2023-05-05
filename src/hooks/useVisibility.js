@@ -5,16 +5,16 @@ const useVisibility = initialState => {
 
   const show = useCallback(() => setVisible(true), []);
   const hide = useCallback(() => setVisible(false), []);
-  const toggleVisibility = useCallback(() => setVisible(v => !v), []);
+  const toggle = useCallback(() => setVisible(v => !v), []);
 
   return useMemo(
     () => ({
       visible,
       show,
       hide,
-      toggleVisibility,
+      toggle,
     }),
-    [show, hide, visible, toggleVisibility],
+    [show, hide, visible, toggle],
   );
 };
 

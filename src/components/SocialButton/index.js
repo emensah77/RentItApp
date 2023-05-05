@@ -1,38 +1,15 @@
 import React from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import {Text, TouchableOpacity, View, StyleSheet, Dimensions} from 'react-native';
 
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import {faFacebook} from '@fortawesome/free-brands-svg-icons';
-
-const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const SocialButton = ({
-  buttonTitle,
-  btnType,
-  color,
-  backgroundColor,
-  ...rest
-}) => {
+const SocialButton = ({buttonTitle, btnType, color, backgroundColor, ...rest}) => {
   const bgColor = backgroundColor;
   return (
-    <TouchableOpacity
-      style={[styles.buttonContainer, {backgroundColor: bgColor}]}
-      {...rest}>
+    <TouchableOpacity style={[styles.buttonContainer, {backgroundColor: bgColor}]} {...rest}>
       <View style={styles.iconWrapper}>
-        <FontAwesomeIcon
-          icon={btnType}
-          style={styles.icon}
-          size={22}
-          color={color}
-        />
+        <FontAwesomeIcon icon={btnType} style={styles.icon} size={22} color={color} />
       </View>
       <View style={styles.btnTxtWrapper}>
         <Text style={[styles.buttonText, {color}]}>{buttonTitle}</Text>

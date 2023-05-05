@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {createIconSetFromIcoMoon} from 'react-native-vector-icons';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
@@ -50,26 +50,29 @@ function StarButton(props) {
     disabled,
   } = props;
 
-  const onButtonPress = event => {
-    let addition = 0;
+  const onButtonPress = useCallback(
+    event => {
+      let addition = 0;
 
-    if (halfStarEnabled) {
-      const isHalfSelected = event.nativeEvent.locationX < starSize / 2;
-      addition = isHalfSelected ? -0.5 : 0;
-    }
+      if (halfStarEnabled) {
+        const isHalfSelected = event.nativeEvent.locationX < starSize / 2;
+        addition = isHalfSelected ? -0.5 : 0;
+      }
 
-    onStarButtonPress(rating + addition);
-  };
+      onStarButtonPress(rating + addition);
+    },
+    [halfStarEnabled, onStarButtonPress, rating, starSize],
+  );
 
-  const iconSetFromProps = () => {
+  const iconSetFromProps = useCallback(() => {
     if (icoMoonJson) {
       return createIconSetFromIcoMoon(icoMoonJson);
     }
 
     return iconSets[iconSet];
-  };
+  }, [icoMoonJson, iconSet]);
 
-  const renderIcon = () => {
+  const renderIcon = useCallback(() => {
     const Icon = iconSetFromProps();
     let iconElement;
 
@@ -84,24 +87,19 @@ function StarButton(props) {
 
     if (typeof starIconName === 'string') {
       iconElement = (
-        <Icon
-          name={starIconName}
-          size={starSize}
-          color={starColor}
-          style={newStarStyle}
-        />
+        <Icon name={starIconName} size={starSize} color={starColor} style={newStarStyle} />
       );
     }
 
     return iconElement;
-  };
+  }, [iconSetFromProps, reversed, starColor, starIconName, starSize, starStyle]);
 
   return (
     <TouchableOpacity
       activeOpacity={activeOpacity}
       disabled={disabled}
       style={buttonStyle}
-      onPress={disabled ? () => {} : onButtonPress}>
+      onPress={!disabled && onButtonPress}>
       {renderIcon()}
     </TouchableOpacity>
   );

@@ -34,6 +34,13 @@ const styles = StyleSheet.create({
     color: 'darkgray',
     textDecorationLine: 'underline',
   },
+  button: {
+    padding: 15,
+    right: 0,
+    top: 0,
+    position: 'absolute',
+    backgroundColor: 'transparent',
+  },
 });
 
 export default styles;
