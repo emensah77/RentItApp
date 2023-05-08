@@ -1,26 +1,22 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-import {faLocationArrow} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useRef, useState, useCallback} from 'react';
+import React, {useState, useRef, useCallback, useMemo} from 'react';
 import {
   ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Linking,
-  PermissionsAndroid,
   Platform,
   Pressable,
   StatusBar,
-  Text,
+  PermissionsAndroid,
   ToastAndroid,
   TouchableOpacity,
   View,
   StyleSheet,
 } from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faLocationArrow} from '@fortawesome/free-solid-svg-icons';
 import * as Animatable from 'react-native-animatable';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import Geolocation from 'react-native-geolocation-service';
+import MapView, {Marker, PROVIDER_DEFAULT} from 'react-native-maps';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import MapView, {Marker, PROVIDER_DEFAULT} from 'react-native-maps';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -247,21 +243,19 @@ const mapStyle = [
   },
 ];
 
-const OnboardingScreen6 = props => {
-  const ref = useRef();
-  const navigation = useNavigation();
-  const [forceLocation] = useState(true);
-  const [highAccuracy] = useState(true);
-  const [locationDialog] = useState(true);
-  const [useLocationManager] = useState(false);
+const OnboardingScreen6 = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [locality, setLocality] = useState('');
   const [address, setAddress] = useState('');
   const [sublocality, setSubLocality] = useState('');
   const [loading, setIsLoading] = useState(false);
+
+  const ref = useRef();
+  const navigation = useNavigation();
   const map = useRef();
   const route = useRoute();
+
   const title = route.params?.title;
   const type = route.params?.type;
   const description = route.params?.description;
@@ -291,14 +285,10 @@ const OnboardingScreen6 = props => {
     }
 
     if (status === 'disabled') {
-      Alert.alert(
-        `Turn on Location Services to allow "${appConfig?.displayName}" to determine your location.`,
-        '',
-        [
-          {text: 'Go to Settings', onPress: openSetting},
-          {text: "Don't Use Location", onPress: () => {}},
-        ],
-      );
+      Alert.alert('Turn on Location Services to allow "RentIt" to determine your location.', '', [
+        {text: 'Go to Settings', onPress: openSetting},
+        {text: "Don't Use Location", onPress: () => {}},
+      ]);
     }
 
     return false;
@@ -329,10 +319,6 @@ const OnboardingScreen6 = props => {
     },
     [route.name],
   );
-
-  const goBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
 
   const hasLocationPermission = useCallback(async () => {
     if (Platform.OS === 'ios') {
@@ -367,9 +353,67 @@ const OnboardingScreen6 = props => {
     }
 
     return false;
-  }, [hasPermissionIOS]);
+  }, []);
 
-  const onSaveProgress = useCallback(async () => {
+  const getLocation = useCallback(async () => {
+    const hasPermission = await hasLocationPermission();
+
+    if (!hasPermission) {
+      return;
+    }
+    setIsLoading(true);
+
+    Geolocation.getCurrentPosition(
+      position => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+        const region = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.8,
+          longitudeDelta: 0.8,
+        };
+        map.current.animateToRegion(region);
+
+        // Reverse geocoding to get the address details
+        Geocoder.from(position.coords.latitude, position.coords.longitude)
+          .then(json => {
+            const details = json.results[0];
+            const _locality = details.address_components.find(component =>
+              component.types.includes('locality'),
+            ).short_name;
+            const subLocality = details.address_components.find(component =>
+              component.types.includes('sublocality'),
+            ).short_name;
+            const _address = details.formatted_address;
+
+            setLocality(_locality);
+            setSubLocality(subLocality);
+            setAddress(_address);
+            setIsLoading(false);
+          })
+          .catch(console.error);
+      },
+      error => {
+        console.error(error);
+      },
+      {
+        accuracy: {
+          android: 'high',
+          ios: 'best',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+        distanceFilter: 0,
+        forceRequestLocation: true,
+        forceLocationManager: true,
+        showLocationDialog: true,
+      },
+    );
+  }, [hasLocationPermission]);
+
+  const next = useCallback(async () => {
     await saveProgress({
       title,
       type,
@@ -427,97 +471,50 @@ const OnboardingScreen6 = props => {
     type,
   ]);
 
-  const getLocation = useCallback(async () => {
-    const hasPermission = await hasLocationPermission();
+  const autoComplete = useCallback(async (_, details = null) => {
+    // 'details' is provided when fetchDetails = true
+    // console.log('1', details.address_components[0].short_name);
+    // console.log('2', details.address_components[1].short_name);
 
-    if (!hasPermission) {
-      return;
-    }
-    setIsLoading(true);
-
-    Geolocation.getCurrentPosition(
-      position => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-        const region = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.8,
-          longitudeDelta: 0.8,
-        };
-        map.current.animateToRegion(region);
-
-        // Reverse geocoding to get the address details
-        Geocoder.from(position.coords.latitude, position.coords.longitude)
-          .then(json => {
-            const details = json.results[0];
-            const locality = details.address_components.find(component =>
-              component.types.includes('locality'),
-            ).short_name;
-            const subLocality = details.address_components.find(component =>
-              component.types.includes('sublocality'),
-            ).short_name;
-            const address = details.formatted_address;
-
-            setLocality(locality);
-            setSubLocality(subLocality);
-            setAddress(address);
-            setIsLoading(false);
-          })
-          .catch(error => {});
-      },
-      error => {
-        Alert.alert(`Code ${error.code}`, error.message);
-        setLocation(null);
-      },
-      {
-        accuracy: {
-          android: 'high',
-          ios: 'best',
-        },
-        enableHighAccuracy: highAccuracy,
-        timeout: 15000,
-        maximumAge: 10000,
-        distanceFilter: 0,
-        forceRequestLocation: forceLocation,
-        forceLocationManager: useLocationManager,
-        showLocationDialog: locationDialog,
-      },
-    );
-  }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
-
-  const onPressGooglePlace = useCallback(async (data, details = null) => {
     setLatitude(details.geometry.location.lat);
     setLongitude(details.geometry.location.lng);
     setLocality(details.address_components[0].short_name);
     setAddress(details.address_components[0].long_name);
     setSubLocality(details.address_components[1].short_name);
+
+    // navigation.navigate('OnboardingScreen11', {
+    //   title: title,
+    //   type: type,
+    //   description: description,
+    //   bed: bed,
+    //   bedroom: bedroom,
+    //   bathroom: bathroom,
+    //   imageUrls: imageUrls,
+    //   homeprice: homeprice,
+    //   latitude: latitude,
+    //   longitude: longitude,
+    //   mode: mode,
+    //   amenities: amenities,
+    //   locality: locality,
+    //   sublocality: sublocality,
+    // });
+    // console.log(details.geometry.viewport)
   }, []);
 
-  const mstyles = useCallback(() => {
-    return StyleSheet.create({
-      onSaveProgress: {
-        left: 250,
-        height: 60,
-        width: 100,
-        backgroundColor: 'deeppink',
-        opacity: latitude === null || longitude === null ? 0.4 : 1,
-        borderRadius: 20,
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-      },
-    });
-  }, [latitude, longitude]);
-
   const renderRow = useCallback(item => <SuggestionRow item={item} />, []);
+
+  const nextOpacity = useMemo(
+    () => ({opacity: latitude === null || longitude === null ? 0.4 : 1}),
+    [latitude, longitude],
+  );
+
   return (
     <View style={styles.container}>
       <StatusBar hidden />
 
       <MapView
         ref={map}
-        style={styles.main}
+        style={styles.mapView}
         provider={PROVIDER_DEFAULT}
         customMapStyle={mapStyle}
         zoomEnabled
@@ -536,7 +533,7 @@ const OnboardingScreen6 = props => {
           }}
           title="Home"
           description="This is where your house is located">
-          <View style={styles.homeTitle}>
+          <View style={styles.home}>
             <Fontisto name="home" size={25} color="blue" />
           </View>
         </Marker>
@@ -544,27 +541,27 @@ const OnboardingScreen6 = props => {
 
       <Animatable.View useNativeDriver animation="fadeInUpBig" duration={100} style={styles.footer}>
         {latitude === null || longitude == null ? (
-          <Text style={styles.subTitle}> We need the {'\n'} address of your home </Text>
+          <Text style={styles.requestAddress}> We need the {'\n'} address of your home </Text>
         ) : (
-          <Text style={styles.title2}> We now have the {'\n'} address of your home </Text>
+          <Text style={styles.gottenAddress}> We now have the {'\n'} address of your home </Text>
         )}
 
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}>
+          style={styles.flex}>
           <GooglePlacesAutocomplete
             placeholder="Type where your home is located"
             ref={ref}
-            onPress={onPressGooglePlace}
+            onPress={autoComplete}
             fetchDetails
             styles={{
-              textInput: styles.textInput,
               textInputContainer: {
                 backgroundColor: 'white',
                 borderRadius: 15,
                 borderWidth: 0.5,
                 height: 40,
               },
+              textInput: styles.textInput,
             }}
             query={{
               key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
@@ -577,28 +574,64 @@ const OnboardingScreen6 = props => {
           />
         </KeyboardAvoidingView>
         {loading ? (
-          <View style={styles.activeIndicatorView}>
+          <View style={styles.gettingLocation}>
             <Text>Getting your location ...</Text>
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : (
-          <Text style={styles.title3}>OR</Text>
+          <Text style={styles.orText}>OR</Text>
         )}
-        <TouchableOpacity onPress={getLocation} style={styles.locationButton}>
+        <TouchableOpacity onPress={getLocation} style={styles.getLocation}>
           <FontAwesomeIcon icon={faLocationArrow} size={20} />
-          <Text style={styles.text4}>Get my current location</Text>
+          <Text style={styles.getLocationText}>Get my current location</Text>
         </TouchableOpacity>
 
-        <View style={styles.progress}>
+        {/* <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{flex:1}}
+        >
+
+        <View style={{flex:1,flexDirection:'column',marginBottom:10,justifyContent:'space-evenly'}}>
+        <TextInput
+                        adjustsFontSizeToFit={true}
+                        placeholder="Enter Latitude"
+                        multiline={true}
+                        maxLength={50}
+                        keyboardType="numeric"
+                        onChangeText={text => setLatitude(Number(text))}
+                        style={{alignContent:'flex-start',width:'100%',height:50,fontSize:14,fontWeight: 'bold'
+                        ,borderWidth:  1,
+                        borderColor: 'darkgray',borderRadius:10,marginBottom:10, padding:10}}></TextInput>
+
+              <TextInput
+                        adjustsFontSizeToFit={true}
+                        placeholder="Enter Longitude"
+                        multiline={true}
+                        maxLength={50}
+                        keyboardType="default"
+                        onChangeText={text => setLongitude(Number(text))}
+                        style={{alignContent:'flex-start',width:'100%',height:50,fontSize:14,fontWeight: 'bold'
+                        ,borderWidth:  1,
+                        borderColor: 'darkgray',borderRadius:10, padding:10}}></TextInput>
+
+        </View>
+
+        </KeyboardAvoidingView>
+
+            <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Latitude: {latitude === null ? 'Click on get my location' : latitude}</Text> */}
+
+        {/* <Text style={{fontSize:18, fontFamily:'Montserrat-Bold'}}>Longitude: {longitude === null ? 'Click on get my location' : longitude}</Text> */}
+
+        <View style={styles.touchableContainer}>
           <TouchableOpacity
             disabled={latitude === null || longitude === null}
-            onPress={onSaveProgress}
-            style={mstyles().onSaveProgress}>
-            <Text style={styles.text2}>Next</Text>
+            onPress={next}
+            style={[styles.nextTouchable, nextOpacity]}>
+            <Text style={styles.nextText}>Next</Text>
           </TouchableOpacity>
 
-          <Pressable onPress={goBack} style={styles.goBackButton}>
-            <Text style={styles.goBackButtonText}>Back</Text>
+          <Pressable onPress={navigation.goBack} style={styles.backButton}>
+            <Text style={styles.backButtonText}>Back</Text>
           </Pressable>
         </View>
       </Animatable.View>

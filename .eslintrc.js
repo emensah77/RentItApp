@@ -33,7 +33,7 @@ module.exports = {
     ],
     'no-confusing-arrow': [0],
     'no-console': ['error', {allow: ['debug', 'error']}],
-    'no-unused-vars': ['error', {vars: 'all', args: 'all', ignoreRestSiblings: false}],
+    'no-unused-vars': ['error', {vars: 'all', args: 'after-used', ignoreRestSiblings: false}],
     'react/jsx-filename-extension': [0],
     'react/jsx-indent': ['error', 2],
     'react/jsx-indent-props': ['error', 2],

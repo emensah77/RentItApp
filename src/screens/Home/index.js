@@ -1,7 +1,4 @@
-/* eslint-disable no-shadow */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable no-unused-vars */
+import React, {useState, useContext, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   faArchway,
   faArrowLeft,
@@ -76,19 +73,12 @@ const HomeScreen = () => {
   const [modalVisible, setmodalVisible] = useState(false);
   const [minimumvalue] = useState(1);
   const [maximumvalue, setMaximumValue] = useState(100000);
-  // eslint-disable-next-line no-unused-vars
-  const [minvalue, setminValue] = useState('');
-  const [maxvalue, setmaxValue] = useState('');
+  // const [minvalue, setminValue] = useState('');
+  // const [maxvalue, setmaxValue] = useState('');
   const [nextToken, setNextToken] = useState(null);
-  const [loading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  // const [loading, setIsLoading] = useState(false);
   const [cachedData, setCachedData] = useState({});
-  const [loadingMore, setIsLoadingMore] = useState(false);
-  const [fetchMore, setFetchMore] = useState(false);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const prevStatus = useRef(null);
-  const [fetchedPosts, setFetchedPosts] = useState([]);
-  const [refresh, setRefresh] = React.useState(false);
   const [fetchingMore, setFetchingMore] = useState(false);
   const [hasWatchedVideo, setHasWatchedVideo] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
@@ -97,14 +87,12 @@ const HomeScreen = () => {
   const [videoVersion, setVideoVersion] = useState(0); // Initialize videoVersion state
   const [videoLoading, setIsVideoLoading] = useState(false);
 
-  const bgGeoEventSubscriptions = [];
-  /// State.
-  const [events, setEvents] = React.useState([]);
-  const [enabled, setEnabled] = React.useState(true);
+  const bgGeoEventSubscriptions = useMemo(() => [], []);
+  const loading = useMemo(() => false, []);
 
   /// Init BackgroundGeolocation when view renders.
   /// Return a function to .removeListeners() When view is removed.
-  React.useEffect(() => {
+  useEffect(() => {
     BackgroundGeolocation.start();
     initBackgroundFetch();
     setTimeout(() => {
@@ -114,7 +102,7 @@ const HomeScreen = () => {
     return () => {
       unsubscribe();
     };
-  }, [initBackgroundFetch, initBackgroundGeolocation, navigation, unsubscribe]);
+  }, [initBackgroundGeolocation, navigation, unsubscribe]);
 
   const subscribe = useCallback(
     subscription => {
@@ -182,9 +170,9 @@ const HomeScreen = () => {
     );
 
     subscribe(
-      BackgroundGeolocation.onEnabledChange(enabled => {
+      BackgroundGeolocation.onEnabledChange(_enabled => {
         // ('[onEnabledChange]', enabled);
-        addEvent('onEnabledChange', {enabled});
+        addEvent('onEnabledChange', {enabled: _enabled});
       }),
     );
 
@@ -210,9 +198,9 @@ const HomeScreen = () => {
     );
 
     subscribe(
-      BackgroundGeolocation.onPowerSaveChange(enabled => {
+      BackgroundGeolocation.onPowerSaveChange(isPowerSaveMode => {
         // console.log('[onPowerSaveChange]', enabled);
-        addEvent('onPowerSaveChange', {isPowerSaveMode: enabled});
+        addEvent('onPowerSaveChange', {isPowerSaveMode});
       }),
     );
 
@@ -247,9 +235,8 @@ const HomeScreen = () => {
         },
         debug: false,
       },
-      // eslint-disable-next-line no-shadow
-      state => {
-        if (!state.enabled) {
+      newState => {
+        if (!newState.enabled) {
           BackgroundGeolocation.start(() => {
             // console.log(' - Start success');
           });
@@ -286,10 +273,11 @@ const HomeScreen = () => {
         },
       ),
     );
-    setEnabled(state.enabled);
-  }, [addEvent, subscribe, user]);
 
-  const initBackgroundFetch = useCallback(async () => {
+    // setEnabled(state.enabled);
+  }, [subscribe, user]);
+
+  const initBackgroundFetch = async () => {
     await BackgroundFetch.configure(
       {
         minimumFetchInterval: 15,
@@ -307,16 +295,16 @@ const HomeScreen = () => {
   }, []);
 
   /// Adds events to List
-  const addEvent = useCallback((name, params) => {
-    const timestamp = new Date();
-    const event = {
-      expanded: false,
-      timestamp: `${timestamp.getMonth()}-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`,
-      name,
-      params: JSON.stringify(params, null, 2),
-    };
-    setEvents(previous => [...previous, event]);
-  }, []);
+  const addEvent = (/* name, params */) => {
+    // const timestamp = new Date();
+    // const event = {
+    //   expanded: false,
+    //   timestamp: `${timestamp.getMonth()}-${timestamp.getDate()} ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`,
+    //   name,
+    //   params: JSON.stringify(params, null, 2),
+    // };
+    // setEvents(previous => [...previous, event]);
+  };
 
   const items = useMemo(
     () => [
@@ -406,23 +394,47 @@ const HomeScreen = () => {
     [filterPosts, status],
   );
 
-  const hasPermissionIOS = useCallback(async () => {
+  const setStatusFilter = useCallback(
+    _status => () => {
+      // setObserving(true);
+      // setIsLoadingType(true);
+      setStatus(_status);
+      // setNextToken(null);
+      // setPosts([]);
+      fetchPostsType();
+      // console.log('status',status)
+      // console.log('isreset', observing)
+      // setObserving(false);
+      // setIsLoadingType(false);
+    },
+    [],
+  );
+
+  const onSelectedItemsChange = useCallback(
+    newSelectedItems => {
+      setSelectedItems(newSelectedItems);
+      filterPosts(status);
+    },
+    [filterPosts, status],
+  );
+
+  const hasPermissionIOS = async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
         Alert.alert('Unable to open settings');
       });
     };
-    const status = await Geolocation.requestAuthorization('whenInUse');
+    const newStatus = await Geolocation.requestAuthorization('whenInUse');
 
-    if (status === 'granted') {
+    if (newStatus === 'granted') {
       return true;
     }
 
-    if (status === 'denied') {
+    if (newStatus === 'denied') {
       Alert.alert('Location permission denied');
     }
 
-    if (status === 'disabled') {
+    if (newStatus === 'disabled') {
       Alert.alert('Turn on Location Services to allow "RentIt" to determine your location.', '', [
         {text: 'Go to Settings', onPress: openSetting},
         {text: "Don't Use Location", onPress: () => {}},
@@ -430,11 +442,10 @@ const HomeScreen = () => {
     }
 
     return false;
-  }, []);
-
-  const renderLoader = useCallback(() => {
-    return !loading ? (
-      <View style={{marginVertical: 100, alignItems: 'center'}}>
+  };
+  const renderLoader = () =>
+    !loading ? (
+      <View style={styles.loader}>
         <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
@@ -458,23 +469,22 @@ const HomeScreen = () => {
       return true;
     }
 
-    // eslint-disable-next-line no-shadow
-    const status = await PermissionsAndroid.request(
+    const newStatus = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
 
-    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+    if (newStatus === PermissionsAndroid.RESULTS.GRANTED) {
       return true;
     }
 
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
+    if (newStatus === PermissionsAndroid.RESULTS.DENIED) {
       ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+    } else if (newStatus === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
       ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
     }
 
     return false;
-  }, [hasPermissionIOS]);
+  }, []);
 
   const getLocation = useCallback(async () => {
     const hasPermission = await hasLocationPermission();
@@ -517,14 +527,14 @@ const HomeScreen = () => {
     );
   }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
 
-  const fetchPostsType = useCallback(async status => {
+  const fetchPostsType = async newStatus => {
     try {
       const query = {
         limit: 100000,
         filter: {
           and: {
             type: {
-              eq: status,
+              eq: newStatus,
             },
             latitude: {
               between: [4.633900069140816, 11.17503079077031],
@@ -550,9 +560,9 @@ const HomeScreen = () => {
   }, []);
 
   const userDetails = useCallback(async () => {
-    const user = await firestore().collection('users').doc(auth().currentUser.uid);
+    const selectedUser = await firestore().collection('users').doc(auth().currentUser.uid);
 
-    user.get().then(doc => {
+    selectedUser.get().then(doc => {
       if (doc.exists) {
         if (doc.data().phoneNumber === null || doc.data().phoneNumber === '') {
           if (Platform.OS === 'android') {
@@ -688,7 +698,7 @@ const HomeScreen = () => {
 
     // console.log('This is latest',postLatest.map(item => (item.createdAt)));
     // clearInterval(selectColor);
-  }, [status, latitude, longitude, _getUserData, userDetails, cachedData, personalizedHomes]);
+  }, [status, latitude, longitude, userDetails, cachedData, personalizedHomes]);
   //    if (postLatest){
   //     postLatest.sort(function (a, b) {
   //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
@@ -712,7 +722,7 @@ const HomeScreen = () => {
   useEffect(() => {}, [posts]);
 
   const personalizedHomes = useCallback(
-    async (userLatitude, userLongitude, homeType, nextToken) => {
+    async (userLatitude, userLongitude, homeType, newNextToken) => {
       try {
         // setIsLoadingType(true);
         const response = await fetch(
@@ -728,7 +738,7 @@ const HomeScreen = () => {
                 longitude: userLongitude,
               },
               homeType,
-              nextToken,
+              nextToken: newNextToken,
             }),
           },
         );
@@ -738,6 +748,8 @@ const HomeScreen = () => {
         return data;
       } catch (error) {
         console.error(error);
+      } finally {
+        // setIsLoadingType(false); // Set loading state to false
       }
     },
     [],
@@ -751,13 +763,19 @@ const HomeScreen = () => {
     getLocation();
   }, [getLocation]);
 
-  const hellod1 = useCallback(text => {
-    setminValue(parseInt(text, 10));
-  }, []);
+  const hellod1 = useCallback(
+    (/* text */) => {
+      // setminValue(parseInt(text, 10));
+    },
+    [],
+  );
 
-  const hellod2 = useCallback(text => {
-    setmaxValue(parseInt(text, 10));
-  }, []);
+  const hellod2 = useCallback(
+    (/* text */) => {
+      // setmaxValue(parseInt(text, 10));
+    },
+    [],
+  );
 
   const handle = useCallback(() => {
     setSelectedButton('For Rent');
@@ -771,18 +789,18 @@ const HomeScreen = () => {
 
   const filter = useCallback(() => {
     filterPosts(status);
-    modalVisiblity.hide();
-  }, [filterPosts, modalVisiblity, status]);
+    setmodalvisible(false);
+  }, [filterPosts, status]);
 
   const filterPosts = useCallback(
-    async status => {
+    async newStatus => {
       try {
         const query = {
           limit: 100000,
           filter: {
             and: {
               type: {
-                eq: status,
+                eq: newStatus,
               },
               mode: {
                 eq: selectedButton,
@@ -854,8 +872,6 @@ const HomeScreen = () => {
     [maximumvalue, selectedButton, selectedItems],
   );
 
-  //  getting wishlists ================
-
   const renderItem = useCallback(
     ({item}) => (
       <View key={item}>
@@ -865,132 +881,137 @@ const HomeScreen = () => {
     [],
   );
 
+  const close = useCallback(() => {
+    setmodalvisible(false);
+  }, []);
+
+  const open = useCallback(() => {
+    setmodalvisible(true);
+  }, []);
+
+  const onValuesChange = useCallback(
+    value => {
+      setMaximumValue(value[0]);
+      filterPosts(status);
+    },
+    [filterPosts, status],
+  );
+
+  const getItemLayout = useCallback(
+    (_, index) => ({
+      length: 380,
+      offset: 380 * index,
+      index,
+    }),
+    [],
+  );
+
+  const keyExtractor = useCallback((_, index) => index.toString(), []);
+
+  const goToHouseType = useCallback(() => navigation.navigate('House Type'), [navigation]);
+
+  const rentStyle = useMemo(
+    () => ({
+      borderWidth: selectedButton === 'For Rent' ? 2 : 1,
+      backgroundColor: selectedButton === 'For Rent' ? 'lightgray' : 'white',
+    }),
+    [selectedButton],
+  );
+
+  const saleStyle = useMemo(
+    () => ({
+      borderWidth: selectedButton === 'For Sale' ? 2 : 1,
+      backgroundColor: selectedButton === 'For Sale' ? 'lightgray' : 'white',
+    }),
+    [selectedButton],
+  );
+
+  const contentContainerStyle = useMemo(
+    () => ({
+      paddingRight: Platform.OS === 'android' ? 20 : 0,
+      backgroundColor: 'white',
+    }),
+    [],
+  );
+
+  const videoDimensions = useMemo(
+    () => ({
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height * 0.5,
+    }),
+    [],
+  );
+
+  const mainScrollViewTop = useMemo(() => ({top: Platform.OS === 'ios' ? 120 : 90}), []);
+
+  const showHomesOpacity = useMemo(() => ({opacity: posts.length === 0 ? 0.6 : 1}), [posts]);
+
   return (
-    <View style={{backgroundColor: 'white', flex: 1}}>
+    <View style={styles.container}>
       <Modal
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: 'white',
-          padding: 20,
-        }}
+        style={styles.modal}
         animationType="slide"
         transparent={false}
-        visible={modalVisiblity.visible}
-        onRequestClose={modalVisiblity.hide}>
-        <View style={{paddingTop: 10}}>
-          <ScrollView
-            contentContainerStyle={{
-              flexGrow: 1,
-              flexDirection: 'column',
-              justifyContent: 'space-evenly',
-            }}>
-            <View style={{marginTop: 20}}>
-              <Pressable onPress={modalVisiblity.hide} style={{margin: 10}}>
+        visible={modalvisible}
+        onRequestClose={close}>
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={styles.modalScrollView}>
+            <View style={styles.marginTop10}>
+              <Pressable onPress={close} style={styles.margin10}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
               </Pressable>
-              <View style={{flex: 1, alignSelf: 'center'}}>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Price range</Text>
+              <View style={styles.priceRangeContainer}>
+                <Text style={styles.priceText}>Price range</Text>
                 <MultiSlider
                   min={minimumvalue}
                   max={maximumvalue}
                   step={100}
                   sliderLength={310}
-                  onValuesChange={value => {
-                    setMaximumValue(value[0]);
-                    filterPosts(status);
-                  }}
+                  onValuesChange={onValuesChange}
                 />
               </View>
 
-              <View
-                style={{
-                  paddingHorizontal: 20,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    width: 50,
-                    padding: 5,
-                    borderWidth: 1,
-                    borderColor: 'black',
-                  }}>
+              <View style={styles.valueContainer}>
+                <View style={styles.valueInnerContainer}>
                   <TextInput
                     keyboardType="numeric"
-                    onChangeText={text => hellod1(text)}
+                    onChangeText={hellod1}
                     placeholder={minimumvalue.toLocaleString()}
                   />
                 </View>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    width: 100,
-                    padding: 5,
-                    borderWidth: 1,
-                    borderColor: 'black',
-                  }}>
+                <View style={styles.textWrapper}>
                   <TextInput
                     keyboardType="numeric"
-                    onChangeText={text => hellod2(text)}
+                    onChangeText={hellod2}
                     placeholder={maximumvalue.toLocaleString()}
                   />
                 </View>
               </View>
             </View>
 
-            <View style={{padding: 15}}>
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>Status of Home</Text>
+            <View style={styles.statusOfHome}>
+              <Text style={styles.statusOfHomeText}>Status of Home</Text>
 
-              <Pressable
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: 20,
-                  borderWidth: selectedButton === 'For Rent' ? 2 : 1,
-                  borderColor: 'black',
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  paddingHorizontal: 20,
-                  marginHorizontal: 20,
-                  flex: 1,
-                  backgroundColor: selectedButton === 'For Rent' ? 'lightgray' : 'white',
-                }}
-                onPress={handle}>
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 15, fontWeight: '600'}}>For Rent</Text>
-                  <Text style={{fontSize: 12, paddingTop: 5}}>
+              <Pressable style={[styles.rentPressable, rentStyle]} onPress={handle}>
+                <View style={styles.rentContainer}>
+                  <Text style={styles.forRent}>For Rent</Text>
+                  <Text style={styles.forRentDesc}>
                     You are looking for homes that are available for rent only
                   </Text>
                 </View>
               </Pressable>
 
-              <Pressable
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: 20,
-                  borderWidth: selectedButton === 'For Sale' ? 2 : 1,
-                  borderColor: 'black',
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  paddingHorizontal: 20,
-                  marginHorizontal: 20,
-                  flex: 1,
-                  backgroundColor: selectedButton === 'For Sale' ? 'lightgray' : 'white',
-                }}
-                onPress={handle1}>
-                <View style={{flexDirection: 'column'}}>
-                  <Text style={{fontSize: 15, fontWeight: '600'}}>For Sale</Text>
-                  <Text style={{fontSize: 12, paddingTop: 5}}>
+              <Pressable style={[styles.salePressable, saleStyle]} onPress={handle1}>
+                <View style={styles.forSale}>
+                  <Text style={styles.forSaleText}>For Sale</Text>
+                  <Text style={styles.forSaleDesc}>
                     You are looking for homes that are available for sale only
                   </Text>
                 </View>
               </Pressable>
             </View>
-            <View style={{marginBottom: 40, padding: 15}}>
-              <Text style={{fontSize: 18, fontWeight: 'bold'}}>Amenities</Text>
+            <View style={styles.amenitiesContainer}>
+              <Text style={styles.amenitiesText}>Amenities</Text>
 
               <SectionedMultiSelect
                 styles={{
@@ -1058,22 +1079,9 @@ const HomeScreen = () => {
 
           <TouchableOpacity
             disabled={posts.length === 0}
-            onPress={() => filter()}
-            style={{
-              flex: 1,
-              alignSelf: 'center',
-              borderRadius: 20,
-              alignItems: 'center',
-              borderColor: 'white',
-              borderWidth: 1,
-              width: '90%',
-              backgroundColor: 'black',
-              position: 'absolute',
-              bottom: 0,
-              height: 50,
-              opacity: posts.length === 0 ? 0.6 : 1,
-            }}>
-            <Text style={{alignSelf: 'center', color: 'white'}}>Show {posts.length} homes</Text>
+            onPress={filter}
+            style={[styles.showHomes, showHomesOpacity]}>
+            <Text style={styles.showHomesText}>Show {posts.length} homes</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -1082,7 +1090,7 @@ const HomeScreen = () => {
         {/* {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center',}}>
                 <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
             </TouchableOpacity>: null} */}
-        <Pressable style={styles.searchButton} onPress={() => navigation.navigate('House Type')}>
+        <Pressable style={styles.searchButton} onPress={goToHouseType}>
           <Fontisto name="search" size={20} color="deeppink" />
           <Text adjustsFontSizeToFit style={styles.searchButtonText}>
             Where do you want to rent?
@@ -1098,13 +1106,7 @@ const HomeScreen = () => {
         snapToAlignment="center"
         decelerationRate="fast"
         height={50}
-        style={{
-          flex: 1,
-          position: 'absolute',
-          top: Platform.OS === 'ios' ? 120 : 90,
-          paddingHorizontal: 10,
-          backgroundColor: 'white',
-        }}
+        style={[styles.mainScrollView, mainScrollViewTop]}
         contentInset={{
           // ios only
           top: 0,
@@ -1112,50 +1114,27 @@ const HomeScreen = () => {
           bottom: 0,
           right: 20,
         }}
-        contentContainerStyle={{
-          paddingRight: Platform.OS === 'android' ? 20 : 0,
-          backgroundColor: 'white',
-        }}>
-        <TouchableOpacity
-          onPress={modalVisiblity.show}
-          style={{
-            flexDirection: 'column',
-            backgroundColor: 'white',
-            borderRadius: 20,
-            padding: 8,
-            paddingHorizontal: 20,
-            marginHorizontal: 10,
-            height: 40,
-            shadowColor: 'white',
-            shadowOffset: {width: 10, height: 10},
-            shadowOpacity: 0.2,
-            shadowRadius: 5,
-            elevation: 30,
-            alignItems: 'center',
-            borderWidth: 0.8,
-            borderColor: 'black',
-            justifyContent: 'space-evenly',
-          }}>
+        contentContainerStyle={contentContainerStyle}>
+        <TouchableOpacity onPress={open} style={styles.filterPressable}>
           <FontAwesomeIcon icon={faFilter} />
-          <Text style={{fontWeight: '600', paddingTop: 5}}>Filter</Text>
+          <Text style={styles.filterText}>Filter</Text>
         </TouchableOpacity>
-        {categories.map((category, index) => (
+        {categories.map(category => (
           <TouchableOpacity
-            // eslint-disable-next-line react/no-array-index-key
-            key={index.toString()}
-            onPress={() => setStatusFilter(category.status)}
+            key={category.id}
+            onPress={setStatusFilter(category.status)}
             style={[styles.button1, status === category.status && styles.btnTabActive]}>
             <FontAwesomeIcon
               icon={category.icon}
               style={[
-                {paddingBottom: 14},
+                styles.padding14,
                 styles.textTab,
                 status === category.status && styles.textTabActive,
               ]}
             />
             <Text
               style={[
-                {paddingTop: 2},
+                styles.padding2,
                 styles.textTab,
                 status === category.status && styles.textTabActive,
               ]}>
@@ -1164,15 +1143,9 @@ const HomeScreen = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View
-        style={{
-          flex: 1,
-          marginBottom: 10,
-          top: Platform.OS === 'android' ? 150 : 200,
-          backgroundColor: 'white',
-        }}>
+      <View style={styles.loadingIndicator}>
         {loadingType === true ? (
-          <View style={{marginVertical: 100, alignItems: 'center'}}>
+          <View style={styles.loaderList}>
             <ActivityIndicator size="large" color="deeppink" />
           </View>
         ) : (
@@ -1181,13 +1154,9 @@ const HomeScreen = () => {
             data={posts}
             maxToRenderPerBatch={1}
             initialNumToRender={1}
-            contentContainerStyle={{paddingBottom: 40}}
-            keyExtractor={(item, index) => index.toString()}
-            getItemLayout={(data, index) => ({
-              length: 380,
-              offset: 380 * index,
-              index,
-            })}
+            contentContainerStyle={styles.padding40}
+            keyExtractor={keyExtractor}
+            getItemLayout={getItemLayout}
             // ListEmptyComponent={renderNoHome()}
             extraData={posts}
             renderItem={renderItem}
@@ -1206,30 +1175,10 @@ const HomeScreen = () => {
           visible={modalVisible}
           // onRequestClose={closeModal}
         >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}>
-            <View
-              style={{
-                width: Dimensions.get('window').width,
-                height: Dimensions.get('window').height * 0.5,
-                backgroundColor: 'black',
-                borderRadius: 30,
-
-                borderColor: 'white',
-              }}>
+          <View style={styles.videoContainer}>
+            <View style={[styles.videoInnerContainer, videoDimensions]}>
               {videoLoading ? (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 30,
-                  }}>
+                <View style={styles.videoLoading}>
                   <ActivityIndicator size="large" color="white" />
                 </View>
               ) : (
@@ -1237,13 +1186,7 @@ const HomeScreen = () => {
                   ref={videoRef}
                   source={{uri: videoUrl}}
                   resizeMode="cover"
-                  style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height,
-                    borderRadius: 30,
-                    borderWidth: 2,
-                    borderColor: 'white',
-                  }}
+                  style={styles.video}
                   onEnd={handleVideoPlaybackComplete}
                 />
               )}

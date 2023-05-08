@@ -1,3 +1,8 @@
+import React, {useState, useEffect, useRef, useCallback} from 'react';
+import {View, Text, TouchableOpacity, StatusBar, Button} from 'react-native';
+import MapView, {Polyline, Marker, Circle} from 'react-native-maps';
+import * as Animatable from 'react-native-animatable';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import auth from '@react-native-firebase/auth';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Button, StatusBar, Text, TouchableOpacity, View} from 'react-native';
@@ -27,7 +32,20 @@ const MarketerDashboard = () => {
 
   const user = auth().currentUser;
 
-  const fetchNearbyBuildings = useCallback(async (latitude, longitude) => {
+  // const sampleLocations = [
+  //   {latitude: 5.5600141, longitude: -0.2057443},
+  //   {latitude: 5.5628497, longitude: -0.2087192},
+  //   {latitude: 5.5656848, longitude: -0.2116941},
+  //   {latitude: 5.5685195, longitude: -0.214669},
+  //   {latitude: 5.5713539, longitude: -0.2176439},
+  //   {latitude: 5.574188, longitude: -0.2206188},
+  //   {latitude: 5.5770217, longitude: -0.2235937},
+  //   {latitude: 5.5798551, longitude: -0.2265686},
+  //   {latitude: 5.5826882, longitude: -0.2295435},
+  //   {latitude: 5.5855215, longitude: -0.2325184},
+  // ];
+
+  const fetchNearbyBuildings = async (latitude, longitude) => {
     try {
       const response = await fetch(LAMBDA_URL, {
         method: 'POST',
@@ -56,7 +74,7 @@ const MarketerDashboard = () => {
     if (userLocation) {
       fetchNearbyBuildings(userLocation.latitude, userLocation.longitude);
     }
-  }, [fetchNearbyBuildings, nearbyBuildings, userLocation]);
+  }, [nearbyBuildings, userLocation]);
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
@@ -73,45 +91,47 @@ const MarketerDashboard = () => {
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
   }, []);
-
-  const fetchLocationData = useCallback(
-    async (userID, startDate, endDate) => {
-      try {
-        const response = await fetch(
-          'https://ixsfe7iwziapghmqlug6375jaq0ckotp.lambda-url.us-east-2.on.aws/',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              action: 'getLocationDataByDateRange',
-              userID,
-              startDate: startDate.toISOString(),
-              endDate: endDate.toISOString(),
-            }),
+  const fetchLocationData = (userID, newStartDate, newEndDate) => async () => {
+    try {
+      const response = await fetch(
+        'https://ixsfe7iwziapghmqlug6375jaq0ckotp.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        );
+          body: JSON.stringify({
+            action: 'getLocationDataByDateRange',
+            userID,
+            startDate: newStartDate.toISOString(),
+            endDate: newEndDate.toISOString(),
+          }),
+        },
+      );
 
         if (!response.ok) {
           throw new Error('Error fetching location data');
         }
 
-        const data = await response.json();
-        const fetchedLocations = data.locationData;
+      const data = await response.json();
+      const fetchedLocations = data.locationData;
 
-        if (fetchedLocations && fetchedLocations.length > 0) {
-          setLocations(fetchedLocations);
-          mapRef.current.animateToRegion(defaultRegion, 1000);
-        }
-      } catch (error) {
-        console.error('Error fetching location data:', error);
+      if (fetchedLocations && fetchedLocations.length > 0) {
+        setLocations(fetchedLocations);
+
+        // // Calculate the average latitude and longitude
+        // const avgLatitude =
+        //   fetchedLocations.reduce((sum, loc) => sum + loc.latitude, 0) / fetchedLocations.length;
+        // const avgLongitude =
+        //   fetchedLocations.reduce((sum, loc) => sum + loc.longitude, 0) / fetchedLocations.length;
+        // Animate the map to the new region
+        mapRef.current.animateToRegion(defaultRegion, 1000);
       }
     },
     [defaultRegion],
   );
 
-  const showDatePicker = useCallback(mode => {
+  const showDatePicker = mode => () => {
     setPickerMode(mode);
     setDatePickerVisibility(true);
   }, []);
@@ -152,6 +172,8 @@ const MarketerDashboard = () => {
     }));
   }, []);
 
+  const onRegionChangeComplete = useCallback(region => setRegion(region), []);
+
   useEffect(() => {
     if (mapRef.current && defaultRegion) {
       mapRef.current.animateToRegion(defaultRegion, 1000);
@@ -170,13 +192,13 @@ const MarketerDashboard = () => {
       <MapView
         ref={mapRef}
         showsUserLocation
-        style={styles.map}
+        style={styles.mapView}
         zoomEnabled
         minZoomLevel={12}
         region={defaultRegion}
         onUserLocationChange={onUserLocationChange}
         mapType={mapType}
-        onRegionChangeComplete={onChangeComplete}>
+        onRegionChangeComplete={onRegionChangeComplete}>
         {locations.length > 0 &&
           locations.map((location, index) => (
             <Marker
@@ -213,8 +235,8 @@ const MarketerDashboard = () => {
 
       <Animatable.View useNativeDriver animation="fadeInUpBig" duration={100} style={styles.footer}>
         <View style={styles.datePickerContainer}>
-          <Button title="Select Start Date" onPress={onStartDate} />
-          <Button title="Select End Date" onPress={onEndDate} />
+          <Button title="Select Start Date" onPress={showDatePicker('start')} />
+          <Button title="Select End Date" onPress={showDatePicker('end')} />
         </View>
         <TouchableOpacity onPress={toggleMapType} style={styles.toggleMapTypeButton}>
           <Text style={styles.toggleMapTypeText}>Toggle Map Type</Text>
@@ -226,7 +248,9 @@ const MarketerDashboard = () => {
           </Text>
         )}
         {startDate && endDate && (
-          <TouchableOpacity style={styles.fetchButton} onPress={fetchButton}>
+          <TouchableOpacity
+            style={styles.fetchButton}
+            onPress={fetchLocationData(user.uid, startDate, endDate)}>
             <Text style={styles.fetchButtonText}>Fetch Location History</Text>
           </TouchableOpacity>
         )}
