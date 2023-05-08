@@ -37,6 +37,8 @@ const Router = () => {
     const previousRouteName = routeNameRef.current;
     const currentRouteName = navigationRef.current.getCurrentRoute().name;
 
+    console.debug('Current Page:', currentRouteName);
+
     if (previousRouteName !== currentRouteName) {
       await analytics().logScreenView({
         screen_name: currentRouteName.replace(/\s/g, ''),
@@ -72,6 +74,7 @@ const Router = () => {
       onReady={onReady}
       onStateChange={onStateChange}
       linking={linking}
+      onP
       fallback={<ActivityIndicator color="blue" size="large" />}>
       <AppStack />
     </NavigationContainer>
