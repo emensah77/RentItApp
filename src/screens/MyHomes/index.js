@@ -14,7 +14,7 @@ import {
 
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
-import {getUserHomes} from '../../graphql/customQueries';
+import homeQuery from '../../graphql/customQueries';
 import {AuthContext} from '../../navigation/AuthProvider';
 import Post from '../../components/Post';
 
@@ -30,7 +30,7 @@ const MyHomes = () => {
     try {
       setLoading(true);
       const result = await API.graphql(
-        graphqlOperation(getUserHomes, {
+        graphqlOperation(homeQuery.getUserHomes, {
           id: user?.uid,
         }),
       );
@@ -158,9 +158,7 @@ const MyHomes = () => {
             </View>
           ) : (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
-              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>
-                No Homes Found
-              </Text>
+              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>No Homes Found</Text>
             </View>
           )}
         </View>

@@ -1,5 +1,5 @@
-/* eslint-disable import/prefer-default-export */
-export const getUserHomes = /* GraphQL */ `
+export default {
+  getUserHomes: `
   query getUser($id: ID!) {
     getUser(id: $id) {
       id
@@ -52,4 +52,5 @@ export const getUserHomes = /* GraphQL */ `
       imageuri
     }
   }
-`;
+`,
+};
