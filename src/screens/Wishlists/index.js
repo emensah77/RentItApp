@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-bind */
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
@@ -31,12 +30,20 @@ const Wishlists = () => {
     loadingVisiblity.hide();
   }, [user.uid, loadingVisiblity]);
 
+  const nextToScreen = useCallback(() => {
+    navigation.navigate('Welcome');
+  }, [navigation]);
+
   useEffect(() => {
     if (!user.uid) {
       return;
     }
     isFocused && fetchPosts();
   }, [fetchPosts, user.uid, isFocused]);
+
+  const renderItem = useCallback(({item}) => {
+    return <Post post={item} />;
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -55,12 +62,17 @@ const Wishlists = () => {
         {posts.length !== 0 ? (
           <>
             <Text style={[styles.subTitle, styles.padding15]}>Your Favorites</Text>
-            <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
+            <FlatList data={posts} renderItem={renderItem} />
           </>
         ) : (
           <View style={styles.main}>
             {loadingVisiblity.visible ? (
-              <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
+              <ActivityIndicator
+                animating
+                size="large"
+                color="blue"
+                style={styles.activeIndicator}
+              />
             ) : (
               <>
                 <Text style={styles.subTitle}>No saves yet</Text>
@@ -69,9 +81,7 @@ const Wishlists = () => {
                   your favorite homes to rent or buy.
                 </Text>
 
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Welcome')}
-                  style={styles.button}>
+                <TouchableOpacity onPress={nextToScreen} style={styles.button}>
                   <Text style={styles.startText}>Start exploring</Text>
                 </TouchableOpacity>
               </>
@@ -84,6 +94,7 @@ const Wishlists = () => {
 };
 
 const styles = StyleSheet.create({
+  activeIndicator: {opacity: 1},
   container: {
     backgroundColor: '#fff',
     flex: 1,

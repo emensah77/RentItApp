@@ -187,9 +187,7 @@ const DetailedPost = props => {
   };
 
   const loadMore = () => {
-    setNumHomes(prevNumHomes =>
-      prevNumHomes + 10 > totalItems ? totalItems : prevNumHomes + 10,
-    );
+    setNumHomes(prevNumHomes => (prevNumHomes + 10 > totalItems ? totalItems : prevNumHomes + 10));
   };
   const handleProgress = progress => {
     setPlaybackTime(progress.currentTime);
@@ -257,9 +255,7 @@ const DetailedPost = props => {
   };
 
   const getUsersWithPrivileges = async () => {
-    const callers = await firebase
-      .firestore()
-      .collection('usersWithPrivileges');
+    const callers = await firebase.firestore().collection('usersWithPrivileges');
     callers.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         setUsersWithPrivileges(prev => [...prev, doc.data().userId]);
@@ -444,8 +440,7 @@ const DetailedPost = props => {
     const phoneWithCountryCode = `+233${
       phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)]
     }`;
-    const mobile =
-      Platform.OS == 'ios' ? phoneWithCountryCode : `+${phoneWithCountryCode}`;
+    const mobile = Platform.OS == 'ios' ? phoneWithCountryCode : `+${phoneWithCountryCode}`;
     if (mobile) {
       if (msg) {
         const url = `whatsapp://send?text=${msg}&phone=${mobile}`;
@@ -464,9 +459,7 @@ const DetailedPost = props => {
     }
   };
   const renderItem = ({item}) => {
-    const monthlyPrice = item.newPrice
-      ? Math.floor((item.newPrice * 1.07) / 12)
-      : 0;
+    const monthlyPrice = item.newPrice ? Math.floor((item.newPrice * 1.07) / 12) : 0;
     const currency = item.currency
       ? item.currency[0] === 'usd'
         ? '$'
@@ -510,9 +503,7 @@ const DetailedPost = props => {
         </View>
       )}
 
-      <ScrollView
-        contentContainerStyle={{paddingBottom: 150}}
-        showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{paddingBottom: 150}} showsVerticalScrollIndicator={false}>
         {/* Image */}
         <StatusBar hidden />
 
@@ -589,8 +580,7 @@ const DetailedPost = props => {
 
           <View style={styles.hairline} />
           <Text style={styles.bedrooms}>
-            {post.type} |{post.bedroom} bedrooms |{post.bathroomNumber}{' '}
-            bathrooms |
+            {post.type} |{post.bedroom} bedrooms |{post.bathroomNumber} bathrooms |
           </Text>
 
           <View
@@ -617,28 +607,18 @@ const DetailedPost = props => {
     </Pressable> */}
 
               <View style={styles.container1}>
-                <Pressable
-                  onPress={showDetailsModal}
-                  style={styles.scheduleButton}>
+                <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
-                  <Text style={{fontWeight: 'bold', color: 'white'}}>
-                    Schedule Viewing
-                  </Text>
+                  <Text style={{fontWeight: 'bold', color: 'white'}}>Schedule Viewing</Text>
                 </Pressable>
 
                 <Modal
                   visible={isDetailsModalVisible}
                   transparent
                   onRequestClose={hideDetailsModal}>
-                  <Pressable
-                    onPress={hideDetailsModal}
-                    style={styles.modalOverlay}>
-                    <View
-                      onStartShouldSetResponder={() => true}
-                      style={styles.modal}>
-                      <Text style={styles.modalTitle}>
-                        Enter your details.{' '}
-                      </Text>
+                  <Pressable onPress={hideDetailsModal} style={styles.modalOverlay}>
+                    <View onStartShouldSetResponder={() => true} style={styles.modal}>
+                      <Text style={styles.modalTitle}>Enter your details. </Text>
                       <Text style={{fontSize: 14}}>
                         {' '}
                         Click next and choose date and time to confirm Viewing
@@ -679,9 +659,7 @@ const DetailedPost = props => {
                   onConfirm={handleConfirm}
                   onCancel={hideDatePicker}
                   minimumDate={new Date(Date.now())}
-                  maximumDate={
-                    new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)
-                  } // Six months from now
+                  maximumDate={new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000)} // Six months from now
                 />
               </View>
 
@@ -753,9 +731,7 @@ const DetailedPost = props => {
                           repeat
                           onProgress={handleProgress}
                           onLoad={handleLoad}
-                          onError={error =>
-                            console.log('Error playing video:', error)
-                          }
+                          onError={error => console.log('Error playing video:', error)}
                         />
                         {videoLoading && (
                           <ActivityIndicator
@@ -783,9 +759,7 @@ const DetailedPost = props => {
                           repeat
                           onProgress={handleProgress}
                           onLoad={handleLoad}
-                          onError={error =>
-                            console.log('Error playing video:', error)
-                          }
+                          onError={error => console.log('Error playing video:', error)}
                         />
                         {videoLoading && (
                           <ActivityIndicator
@@ -885,9 +859,7 @@ const DetailedPost = props => {
           </View>
 
           <Text style={styles.longDescription}>
-            {showFullDescription
-              ? post.description
-              : `${post.description.slice(0, 60)}...`}
+            {showFullDescription ? post.description : `${post.description.slice(0, 60)}...`}
           </Text>
           <TouchableOpacity
             style={{
@@ -920,29 +892,25 @@ const DetailedPost = props => {
                     color: '#555',
                     maxWidth: '90%',
                   }}>
-                  Every booking on RentIt comes with RentItGuarantee, if you
-                  don't like the property you get your money back.
+                  Every booking on RentIt comes with RentItGuarantee, if you don't like the property
+                  you get your money back.
                   {showMore ? (
                     <>
                       {'\n\n'}
                       <Text style={{fontWeight: 'bold'}}>What's included?</Text>
                       {'\n\n'}
-                      Book with confidence: Our guarantee program gives you the
-                      option of getting a refund if you're not satisfied with
-                      the property you booked, or if the property doesn't meet
-                      your expectations.
+                      Book with confidence: Our guarantee program gives you the option of getting a
+                      refund if you're not satisfied with the property you booked, or if the
+                      property doesn't meet your expectations.
                       {'\n'}
                       {'\n\n'}
-                      Protection against scams: You can trust that the
-                      properties listed on our platform are legitimate and not
-                      fraudulent listings.
+                      Protection against scams: You can trust that the properties listed on our
+                      platform are legitimate and not fraudulent listings.
                       {'\n'}
                     </>
                   ) : null}
                 </Text>
-                <TouchableOpacity
-                  onPress={toggleShowMore}
-                  style={{marginTop: 8}}>
+                <TouchableOpacity onPress={toggleShowMore} style={{marginTop: 8}}>
                   <Text style={{color: 'blue', fontSize: 12}}>
                     {showMore ? 'Show less' : 'Show more'}
                   </Text>
@@ -959,9 +927,7 @@ const DetailedPost = props => {
                 }}>
                 <FontAwesomeIcon icon={faCouch} size={30} color="blue" />
                 <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                    Furnished
-                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Furnished</Text>
                   <Text
                     style={{
                       marginTop: 4,
@@ -983,9 +949,7 @@ const DetailedPost = props => {
                 }}>
                 <FontAwesomeIcon icon={faHandshake} size={30} color="blue" />
                 <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                    Negotiable
-                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Negotiable</Text>
                   <Text
                     style={{
                       marginTop: 4,
@@ -993,8 +957,7 @@ const DetailedPost = props => {
                       color: '#555',
                       maxWidth: '90%',
                     }}>
-                    The price of this property is open to negotiation with the
-                    owner.
+                    The price of this property is open to negotiation with the owner.
                   </Text>
                 </View>
               </View>
@@ -1012,9 +975,7 @@ const DetailedPost = props => {
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <FontAwesomeIcon icon={faCheckCircle} size={30} color="blue" />
                 <View style={{marginLeft: 12}}>
-                  <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                    Verified
-                  </Text>
+                  <Text style={{fontWeight: 'bold', fontSize: 16}}>Verified</Text>
                   <Text
                     style={{
                       marginTop: 4,
@@ -1022,8 +983,8 @@ const DetailedPost = props => {
                       color: '#555',
                       maxWidth: '90%',
                     }}>
-                    This property has been verified by our team to ensure its
-                    authenticity and quality.
+                    This property has been verified by our team to ensure its authenticity and
+                    quality.
                   </Text>
                 </View>
               </View>
@@ -1031,8 +992,7 @@ const DetailedPost = props => {
           </View>
 
           <View style={styles.hairline} />
-          <Text
-            style={{margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'}}>
+          <Text style={{margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'}}>
             Amenities available
           </Text>
           <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -1118,10 +1078,8 @@ const DetailedPost = props => {
                   starSize={13}
                   maxStars={5}
                   rating={
-                    post?.reviews?.items?.reduce(
-                      (acc, val) => acc + val.rating,
-                      0,
-                    ) / post?.reviews?.items?.length || 0
+                    post?.reviews?.items?.reduce((acc, val) => acc + val.rating, 0) /
+                      post?.reviews?.items?.length || 0
                   }
                   fullStarColor="orange"
                 />
@@ -1139,9 +1097,7 @@ const DetailedPost = props => {
                 }}>
                 <TouchableOpacity
                   style={{flexDirection: 'row', alignItems: 'center'}}
-                  onPress={() =>
-                    navigation.navigate('Feedback', {postID: post?.id, user})
-                  }>
+                  onPress={() => navigation.navigate('Feedback', {postID: post?.id, user})}>
                   <FontAwesomeIcon icon={faPlusCircle} size={18} color="blue" />
                   <Text
                     style={{
@@ -1220,26 +1176,16 @@ const DetailedPost = props => {
         }}>
         <View>
           {post.mode === 'For Sale' ? (
-            <Text
-              style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
-              {post.currency === null
-                ? 'GH₵'
-                : post.currency[0] === 'usd'
-                ? '$'
-                : 'GH₵'}
+            <Text style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
+              {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
               {Math.round(post.newPrice * 1.07)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
               {'\n'}
             </Text>
           ) : (
-            <Text
-              style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
-              {post.currency === null
-                ? 'GH₵'
-                : post.currency[0] === 'usd'
-                ? '$'
-                : 'GH₵'}
+            <Text style={{fontSize: 22, fontWeight: 'bold', marginHorizontal: 20}}>
+              {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
               {Math.round((post.newPrice * 1.07) / 12)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}

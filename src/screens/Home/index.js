@@ -2,54 +2,55 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-unused-vars */
-import React, {useState, useContext, useEffect, useRef} from 'react';
 import {
-  View,
-  Modal,
-  TextInput,
-  ActivityIndicator,
-  Text,
-  Linking,
-  Platform,
-  Pressable,
-  Dimensions,
-  PermissionsAndroid,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-  Alert,
-  ToastAndroid,
-} from 'react-native';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import {useNavigation} from '@react-navigation/native';
-import Geolocation from 'react-native-geolocation-service';
-import {API, graphqlOperation} from 'aws-amplify';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
+  faArchway,
   faArrowLeft,
-  faFilter,
+  faCampground,
   faCity,
   faDoorClosed,
-  faLandmark,
-  faArchway,
+  faFilter,
   faHotel,
   faIgloo,
-  faCampground,
+  faLandmark,
 } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import BackgroundGeolocation from 'react-native-background-geolocation';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {useNavigation} from '@react-navigation/native';
+import {API, graphqlOperation} from 'aws-amplify';
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  FlatList,
+  Linking,
+  Modal,
+  PermissionsAndroid,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BackgroundFetch from 'react-native-background-fetch';
+import BackgroundGeolocation from 'react-native-background-geolocation';
+import Geolocation from 'react-native-geolocation-service';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Video from 'react-native-video';
-import {registerTransistorAuthorizationListener} from './Authorization';
 import mixpanel from '../../MixpanelConfig';
-import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
 import Post from '../../components/Post';
+import {getUser, listPosts} from '../../graphql/queries';
+import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
+import useVisibility from '../../hooks/useVisibility';
 import {AuthContext} from '../../navigation/AuthProvider';
-import {listPosts, getUser} from '../../graphql/queries';
+import {registerTransistorAuthorizationListener} from './Authorization';
 import styles from './styles';
 
 mixpanel.init();
@@ -70,7 +71,8 @@ const HomeScreen = () => {
   const [longitude, setLongitude] = useState(null);
   const [status, setStatus] = useState('Entire Flat');
   const [loadingType, setIsLoadingType] = useState(false);
-  const [modalvisible, setmodalvisible] = useState(false);
+  const modalVisiblity = useVisibility();
+  //   const [modalvisible, setmodalvisible] = useState(false);
   const [modalVisible, setmodalVisible] = useState(false);
   const [minimumvalue] = useState(1);
   const [maximumvalue, setMaximumValue] = useState(100000);
@@ -112,18 +114,21 @@ const HomeScreen = () => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [initBackgroundFetch, initBackgroundGeolocation, navigation, unsubscribe]);
 
-  const subscribe = subscription => {
-    bgGeoEventSubscriptions?.push(subscription);
-  };
+  const subscribe = useCallback(
+    subscription => {
+      bgGeoEventSubscriptions?.push(subscription);
+    },
+    [bgGeoEventSubscriptions],
+  );
 
-  const unsubscribe = () => {
+  const unsubscribe = useCallback(() => {
     bgGeoEventSubscriptions?.forEach(subscription => subscription?.remove());
-  };
+  }, [bgGeoEventSubscriptions]);
 
   /// Configure the BackgroundGeolocation plugin.
-  const initBackgroundGeolocation = async () => {
+  const initBackgroundGeolocation = useCallback(async () => {
     subscribe(
       BackgroundGeolocation.onProviderChange(event => {
         // console.log('[onProviderChange]', event);
@@ -282,9 +287,9 @@ const HomeScreen = () => {
       ),
     );
     setEnabled(state.enabled);
-  };
+  }, [addEvent, subscribe, user]);
 
-  const initBackgroundFetch = async () => {
+  const initBackgroundFetch = useCallback(async () => {
     await BackgroundFetch.configure(
       {
         minimumFetchInterval: 15,
@@ -299,10 +304,10 @@ const HomeScreen = () => {
         BackgroundFetch.finish(taskId);
       },
     );
-  };
+  }, []);
 
   /// Adds events to List
-  const addEvent = (name, params) => {
+  const addEvent = useCallback((name, params) => {
     const timestamp = new Date();
     const event = {
       expanded: false,
@@ -311,98 +316,97 @@ const HomeScreen = () => {
       params: JSON.stringify(params, null, 2),
     };
     setEvents(previous => [...previous, event]);
-  };
+  }, []);
 
-  const items = [
-    {
-      name: 'Air Conditioner',
-      id: 'Air Conditioner',
-    },
-    {
-      name: 'WiFi',
-      id: 'WiFi',
-    },
-    {
-      name: 'Kitchen',
-      id: 'Kitchen',
-    },
-    {
-      name: 'Water',
-      id: 'Water',
-    },
-    {
-      name: 'Toilet',
-      id: 'Toilet',
-    },
+  const items = useMemo(
+    () => [
+      {
+        name: 'Air Conditioner',
+        id: 'Air Conditioner',
+      },
+      {
+        name: 'WiFi',
+        id: 'WiFi',
+      },
+      {
+        name: 'Kitchen',
+        id: 'Kitchen',
+      },
+      {
+        name: 'Water',
+        id: 'Water',
+      },
+      {
+        name: 'Toilet',
+        id: 'Toilet',
+      },
 
-    {
-      name: 'Bathroom',
-      id: 'Bathroom',
-    },
-  ];
+      {
+        name: 'Bathroom',
+        id: 'Bathroom',
+      },
+    ],
+    [],
+  );
 
-  const categories = [
-    {
-      //   status: 'All',
-      //   id: 1,
-      //   icon: faDoorClosed
-      // },
+  const categories = useMemo(
+    () => [
+      {
+        status: 'Entire Flat',
+        id: 2,
+        icon: faIgloo,
+      },
+      {
+        status: 'Apartment',
+        id: 3,
+        icon: faCity,
+      },
+      {
+        status: 'Chamber and Hall',
+        id: 3,
+        icon: faCampground,
+      },
+      {
+        status: 'Mansion',
+        id: 4,
+        icon: faHotel,
+      },
+      {
+        status: 'Self-Contained',
+        id: 5,
+        icon: faArchway,
+      },
+      {
+        status: 'Single Room',
+        id: 6,
+        icon: faDoorClosed,
+      },
+      {
+        status: 'Full Home',
+        id: 7,
+        icon: faLandmark,
+      },
+    ],
+    [],
+  );
 
-      status: 'Entire Flat',
-      id: 2,
-      icon: faIgloo,
+  const setStatusFilter = useCallback(
+    status => {
+      setStatus(status);
+      fetchPostsType();
     },
-    {
-      status: 'Apartment',
-      id: 3,
-      icon: faCity,
-    },
-    {
-      status: 'Chamber and Hall',
-      id: 3,
-      icon: faCampground,
-    },
-    {
-      status: 'Mansion',
-      id: 4,
-      icon: faHotel,
-    },
-    {
-      status: 'Self-Contained',
-      id: 5,
-      icon: faArchway,
-    },
-    {
-      status: 'Single Room',
-      id: 6,
-      icon: faDoorClosed,
-    },
-    {
-      status: 'Full Home',
-      id: 7,
-      icon: faLandmark,
-    },
-  ];
+    [fetchPostsType],
+  );
 
-  const setStatusFilter = status => {
-    // setObserving(true);
-    // setIsLoadingType(true);
-    setStatus(status);
-    // setNextToken(null);
-    // setPosts([]);
-    fetchPostsType();
-    // console.log('status',status)
-    // console.log('isreset', observing)
-    // setObserving(false);
-    // setIsLoadingType(false);
-  };
+  const onSelectedItemsChange = useCallback(
+    selectedItems => {
+      setSelectedItems(selectedItems);
+      filterPosts(status);
+    },
+    [filterPosts, status],
+  );
 
-  const onSelectedItemsChange = selectedItems => {
-    setSelectedItems(selectedItems);
-    filterPosts(status);
-  };
-
-  const hasPermissionIOS = async () => {
+  const hasPermissionIOS = useCallback(async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
         Alert.alert('Unable to open settings');
@@ -426,15 +430,17 @@ const HomeScreen = () => {
     }
 
     return false;
-  };
-  const renderLoader = () =>
-    !loading ? (
+  }, []);
+
+  const renderLoader = useCallback(() => {
+    return !loading ? (
       <View style={{marginVertical: 100, alignItems: 'center'}}>
         <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
+  }, [loading]);
 
-  const hasLocationPermission = async () => {
+  const hasLocationPermission = useCallback(async () => {
     if (Platform.OS === 'ios') {
       const hasPermission = await hasPermissionIOS();
       return hasPermission;
@@ -468,9 +474,9 @@ const HomeScreen = () => {
     }
 
     return false;
-  };
+  }, [hasPermissionIOS]);
 
-  const getLocation = async () => {
+  const getLocation = useCallback(async () => {
     const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
@@ -509,57 +515,9 @@ const HomeScreen = () => {
         showLocationDialog: locationDialog,
       },
     );
-  };
+  }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
 
-  const [images, setimages] = useState([
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/Kejetia_Kumasi.jpeg',
-      title: 'Kumasi',
-      key: '1',
-    },
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/accra.jpeg',
-      title: 'Accra',
-      key: '2',
-    },
-
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/capecoast.jpeg',
-      title: 'CapeCoast',
-      key: '3',
-    },
-  ]);
-
-  const [imagesApt, setimagesapt] = useState([
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/fullhome.png',
-      title: 'Full Homes',
-      key: '1',
-    },
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/1bedroom.jpeg',
-      title: '1 & 2 bedroom',
-      key: '2',
-    },
-
-    {
-      image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg',
-      title: 'Apartment',
-      key: '3',
-    },
-  ]);
-
-  const [partner, setpartner] = useState([
-    {
-      image: {
-        uri: 'https://d5w4alzj7ppu4.cloudfront.net/cities/house9.jpg',
-      },
-      title: 'Full Homes',
-      key: '1',
-    },
-  ]);
-  // eslint-disable-next-line no-shadow
-  const fetchPostsType = async status => {
+  const fetchPostsType = useCallback(async status => {
     try {
       const query = {
         limit: 100000,
@@ -589,9 +547,9 @@ const HomeScreen = () => {
     } catch (error) {
       // console.log('error1', error);
     }
-  };
+  }, []);
 
-  const userDetails = async () => {
+  const userDetails = useCallback(async () => {
     const user = await firestore().collection('users').doc(auth().currentUser.uid);
 
     user.get().then(doc => {
@@ -605,9 +563,9 @@ const HomeScreen = () => {
         }
       }
     });
-  };
+  }, [navigation]);
 
-  const _getUserData = async ID => {
+  const _getUserData = useCallback(async ID => {
     try {
       const userDB = await API.graphql(
         graphqlOperation(getUser, {
@@ -620,7 +578,7 @@ const HomeScreen = () => {
         } catch (e) {}
       }
     } catch (e) {}
-  };
+  }, []);
 
   useEffect(() => {
     if (!hasWatchedVideo) {
@@ -655,7 +613,7 @@ const HomeScreen = () => {
     fetchUserDataAndVideoUrl();
   }, []);
 
-  const handleVideoPlaybackComplete = async () => {
+  const handleVideoPlaybackComplete = useCallback(async () => {
     await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -668,7 +626,7 @@ const HomeScreen = () => {
 
     setHasWatchedVideo(true);
     setmodalVisible(false); // Add this line to close the modal
-  };
+  }, [videoVersion]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -730,7 +688,7 @@ const HomeScreen = () => {
 
     // console.log('This is latest',postLatest.map(item => (item.createdAt)));
     // clearInterval(selectColor);
-  }, [status, latitude, longitude]);
+  }, [status, latitude, longitude, _getUserData, userDetails, cachedData, personalizedHomes]);
   //    if (postLatest){
   //     postLatest.sort(function (a, b) {
   //         return Date.parse(b.createdAt) - Date.parse(a.createdAt);
@@ -739,7 +697,7 @@ const HomeScreen = () => {
   // Add controls for navigating between pages
   // Increment the page
 
-  async function fetchMoreData() {
+  const fetchMoreData = useCallback(async () => {
     if (nextToken && !fetchingMore) {
       setFetchingMore(true);
       const data = await personalizedHomes(latitude, longitude, status, nextToken);
@@ -749,153 +707,162 @@ const HomeScreen = () => {
       setNextToken(data.nextToken);
       setFetchingMore(false);
     }
-  }
+  }, [fetchingMore, latitude, longitude, nextToken, personalizedHomes, posts, status]);
 
   useEffect(() => {}, [posts]);
 
-  // eslint-disable-next-line no-shadow
-  async function personalizedHomes(userLatitude, userLongitude, homeType, nextToken) {
-    try {
-      // setIsLoadingType(true);
-      const response = await fetch(
-        'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userLocation: {
-              latitude: userLatitude,
-              longitude: userLongitude,
+  const personalizedHomes = useCallback(
+    async (userLatitude, userLongitude, homeType, nextToken) => {
+      try {
+        // setIsLoadingType(true);
+        const response = await fetch(
+          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
             },
-            homeType,
-            nextToken,
-          }),
-        },
-      );
+            body: JSON.stringify({
+              userLocation: {
+                latitude: userLatitude,
+                longitude: userLongitude,
+              },
+              homeType,
+              nextToken,
+            }),
+          },
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      return data;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // setIsLoadingType(false); // Set loading state to false
-    }
-  }
+        return data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [],
+  );
 
-  const onEndReached = () => {
+  const onEndReached = useCallback(() => {
     fetchMoreData();
-  };
+  }, [fetchMoreData]);
 
   useEffect(() => {
     getLocation();
+  }, [getLocation]);
+
+  const hellod1 = useCallback(text => {
+    setminValue(parseInt(text, 10));
   }, []);
 
-  const hellod1 = text => {
-    setminValue(parseInt(text, 10));
-  };
-  const hellod2 = text => {
+  const hellod2 = useCallback(text => {
     setmaxValue(parseInt(text, 10));
-  };
-  const handle = () => {
+  }, []);
+
+  const handle = useCallback(() => {
     setSelectedButton('For Rent');
     filterPosts(status);
-  };
-  const handle1 = () => {
+  }, [filterPosts, status]);
+
+  const handle1 = useCallback(() => {
     setSelectedButton('For Sale');
     filterPosts(status);
-  };
-  const filter = () => {
+  }, [filterPosts, status]);
+
+  const filter = useCallback(() => {
     filterPosts(status);
-    setmodalvisible(false);
-  };
-  // eslint-disable-next-line no-shadow
-  const filterPosts = async status => {
-    try {
-      const query = {
-        limit: 100000,
-        filter: {
-          and: {
-            type: {
-              eq: status,
-            },
-            mode: {
-              eq: selectedButton,
-            },
-            newPrice: {
-              le: maximumvalue,
-            },
-            wifi: {
-              eq: selectedItems.includes('WiFi') ? 'Yes' : 'No',
-            },
-            kitchen: {
-              eq: selectedItems.includes('Kitchen') ? 'Yes' : 'No',
-            },
-            toilet: {
-              eq: selectedItems.includes('Toilet') ? 'Yes' : 'No',
-            },
-            water: {
-              eq: selectedItems.includes('Water') ? 'Yes' : 'No',
-            },
-            aircondition: {
-              eq: selectedItems.includes('Air Conditioner') ? 'Yes' : 'No',
-            },
-            bathroom: {
-              eq: selectedItems.includes('Bathroom') ? 'Yes' : 'No',
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
+    modalVisiblity.hide();
+  }, [filterPosts, modalVisiblity, status]);
+
+  const filterPosts = useCallback(
+    async status => {
+      try {
+        const query = {
+          limit: 100000,
+          filter: {
+            and: {
+              type: {
+                eq: status,
+              },
+              mode: {
+                eq: selectedButton,
+              },
+              newPrice: {
+                le: maximumvalue,
+              },
+              wifi: {
+                eq: selectedItems.includes('WiFi') ? 'Yes' : 'No',
+              },
+              kitchen: {
+                eq: selectedItems.includes('Kitchen') ? 'Yes' : 'No',
+              },
+              toilet: {
+                eq: selectedItems.includes('Toilet') ? 'Yes' : 'No',
+              },
+              water: {
+                eq: selectedItems.includes('Water') ? 'Yes' : 'No',
+              },
+              aircondition: {
+                eq: selectedItems.includes('Air Conditioner') ? 'Yes' : 'No',
+              },
+              bathroom: {
+                eq: selectedItems.includes('Bathroom') ? 'Yes' : 'No',
+              },
+              latitude: {
+                between: [4.633900069140816, 11.17503079077031],
+              },
+              longitude: {
+                between: [-3.26078589558366, 1.199972025476763],
+              },
             },
           },
-        },
-      };
+        };
 
-      if (!selectedItems.includes('WiFi')) {
-        delete query.filter.and.wifi;
-      }
-      if (!selectedItems.includes('Water')) {
-        delete query.filter.and.water;
-      }
-      if (!selectedItems.includes('Kitchen')) {
-        delete query.filter.and.kitchen;
-      }
-      if (!selectedItems.includes('Toilet')) {
-        delete query.filter.and.toilet;
-      }
-      if (!selectedItems.includes('Bathroom')) {
-        delete query.filter.and.bathroom;
-      }
-      if (!selectedItems.includes('Air Conditioner')) {
-        delete query.filter.and.aircondition;
-      }
-      if (selectedButton === '') {
-        delete query.filter.and.mode;
-      }
+        if (!selectedItems.includes('WiFi')) {
+          delete query.filter.and.wifi;
+        }
+        if (!selectedItems.includes('Water')) {
+          delete query.filter.and.water;
+        }
+        if (!selectedItems.includes('Kitchen')) {
+          delete query.filter.and.kitchen;
+        }
+        if (!selectedItems.includes('Toilet')) {
+          delete query.filter.and.toilet;
+        }
+        if (!selectedItems.includes('Bathroom')) {
+          delete query.filter.and.bathroom;
+        }
+        if (!selectedItems.includes('Air Conditioner')) {
+          delete query.filter.and.aircondition;
+        }
+        if (selectedButton === '') {
+          delete query.filter.and.mode;
+        }
 
-      const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-      // console.log('previouslist',previousList.length)
+        const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+        // console.log('previouslist',previousList.length)
 
-      setPosts(postsResult.data.listPosts.items);
-      // setPosts(shuffle(posts));
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-      }
-    } catch (error) {}
-  };
+        setPosts(postsResult.data.listPosts.items);
+        // setPosts(shuffle(posts));
+        if (postsResult?.data?.listPosts?.nextToken !== null) {
+          setNextToken(postsResult.data.listPosts.nextToken);
+        } else {
+        }
+      } catch (error) {}
+    },
+    [maximumvalue, selectedButton, selectedItems],
+  );
+
   //  getting wishlists ================
 
-  //  getting wishlists ================
-
-  const renderItem = ({item}) => (
-    <View key={item}>
-      <Post post={item} />
-    </View>
+  const renderItem = useCallback(
+    ({item}) => (
+      <View key={item}>
+        <Post post={item} />
+      </View>
+    ),
+    [],
   );
 
   return (
@@ -909,11 +876,8 @@ const HomeScreen = () => {
         }}
         animationType="slide"
         transparent={false}
-        visible={modalvisible}
-        onRequestClose={() => {
-          setmodalvisible(false);
-          // console.log('Modal has been closed.');
-        }}>
+        visible={modalVisiblity.visible}
+        onRequestClose={modalVisiblity.hide}>
         <View style={{paddingTop: 10}}>
           <ScrollView
             contentContainerStyle={{
@@ -922,7 +886,7 @@ const HomeScreen = () => {
               justifyContent: 'space-evenly',
             }}>
             <View style={{marginTop: 20}}>
-              <Pressable onPress={() => setmodalvisible(false)} style={{margin: 10}}>
+              <Pressable onPress={modalVisiblity.hide} style={{margin: 10}}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
               </Pressable>
               <View style={{flex: 1, alignSelf: 'center'}}>
@@ -1153,7 +1117,7 @@ const HomeScreen = () => {
           backgroundColor: 'white',
         }}>
         <TouchableOpacity
-          onPress={() => setmodalvisible(true)}
+          onPress={modalVisiblity.show}
           style={{
             flexDirection: 'column',
             backgroundColor: 'white',

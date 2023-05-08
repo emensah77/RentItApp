@@ -144,11 +144,7 @@ const Post = props => {
             alignItems: 'center',
           }}
           onPress={() => handleChangeFavorite(post)}>
-          <Fontisto
-            name="heart"
-            size={15}
-            color={checkIsFav(post.id) ? colorStyle : 'black'}
-          />
+          <Fontisto name="heart" size={15} color={checkIsFav(post.id) ? colorStyle : 'black'} />
         </Pressable>
         <View
           style={{
@@ -182,9 +178,7 @@ const Post = props => {
           {post.locality}
         </Text>
       ) : (
-        <Text
-          style={{marginTop: 5, fontWeight: '400', fontSize: 14}}
-          numberOfLines={2}>
+        <Text style={{marginTop: 5, fontWeight: '400', fontSize: 14}} numberOfLines={2}>
           {post.type} |{post.title}
         </Text>
       )}
