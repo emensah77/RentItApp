@@ -4,12 +4,7 @@ import MapView, {Polyline, Marker, Circle} from 'react-native-maps';
 import * as Animatable from 'react-native-animatable';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import auth from '@react-native-firebase/auth';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Button, StatusBar, Text, TouchableOpacity, View} from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import Geolocation from 'react-native-geolocation-service';
-import MapView, {Circle, Marker, Polyline} from 'react-native-maps';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import styles from './styles';
 
 const LAMBDA_URL = 'https://buzkhgifcsw5ylapunfcpc23jm0owcpr.lambda-url.us-east-2.on.aws/';
@@ -67,7 +62,7 @@ const MarketerDashboard = () => {
     } catch (error) {
       console.error('Error fetching nearby buildings:', error);
     }
-  }, []);
+  };
 
   // Call fetchNearbyBuildings when userLocation is updated
   useEffect(() => {
@@ -109,9 +104,9 @@ const MarketerDashboard = () => {
         },
       );
 
-        if (!response.ok) {
-          throw new Error('Error fetching location data');
-        }
+      if (!response.ok) {
+        throw new Error('Error fetching location data');
+      }
 
       const data = await response.json();
       const fetchedLocations = data.locationData;
@@ -127,14 +122,15 @@ const MarketerDashboard = () => {
         // Animate the map to the new region
         mapRef.current.animateToRegion(defaultRegion, 1000);
       }
-    },
-    [defaultRegion],
-  );
+    } catch (error) {
+      console.error('Error fetching location data:', error);
+    }
+  };
 
   const showDatePicker = mode => () => {
     setPickerMode(mode);
     setDatePickerVisibility(true);
-  }, []);
+  };
 
   const hideDatePicker = useCallback(() => {
     setDatePickerVisibility(false);
@@ -180,12 +176,6 @@ const MarketerDashboard = () => {
     }
   }, [defaultRegion]);
 
-  const onChangeComplete = useCallback(region => setRegion(region), []);
-  const onStartDate = useCallback(() => showDatePicker('start'), [showDatePicker]);
-  const onEndDate = useCallback(() => showDatePicker('end'), [showDatePicker]);
-  const fetchButton = useCallback(() => {
-    fetchLocationData(user.uid, startDate, endDate);
-  }, [endDate, fetchLocationData, startDate, user.uid]);
   return (
     <View style={styles.container}>
       <StatusBar hidden />

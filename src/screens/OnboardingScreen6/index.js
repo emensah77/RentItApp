@@ -1,14 +1,17 @@
 import React, {useState, useRef, useCallback, useMemo} from 'react';
 import {
+  View,
+  Text,
+  Alert,
   ActivityIndicator,
   Platform,
-  Pressable,
+  TouchableOpacity,
   StatusBar,
   PermissionsAndroid,
   ToastAndroid,
-  TouchableOpacity,
-  View,
-  StyleSheet,
+  Linking,
+  Pressable,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -18,8 +21,6 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, {Marker, PROVIDER_DEFAULT} from 'react-native-maps';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import MapView, {Marker, PROVIDER_DEFAULT} from 'react-native-maps';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import auth from '@react-native-firebase/auth';
 import Geocoder from 'react-native-geocoding';
@@ -267,8 +268,7 @@ const OnboardingScreen6 = () => {
   const mode = route.params?.mode;
   const amenities = route.params?.amenities;
   const currency = route.params?.currency;
-
-  const hasPermissionIOS = useCallback(async () => {
+  const hasPermissionIOS = async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
         Alert.alert('Unable to open settings');
@@ -292,7 +292,7 @@ const OnboardingScreen6 = () => {
     }
 
     return false;
-  }, []);
+  };
 
   const saveProgress = useCallback(
     async progressData => {

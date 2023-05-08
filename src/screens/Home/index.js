@@ -1,53 +1,51 @@
 import React, {useState, useContext, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
-  faArchway,
-  faArrowLeft,
-  faCampground,
-  faCity,
-  faDoorClosed,
-  faFilter,
-  faHotel,
-  faIgloo,
-  faLandmark,
-} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
-import {API, graphqlOperation} from 'aws-amplify';
-import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  FlatList,
-  Linking,
+  View,
   Modal,
-  PermissionsAndroid,
+  TextInput,
+  ActivityIndicator,
+  Text,
+  Linking,
   Platform,
   Pressable,
+  Dimensions,
+  PermissionsAndroid,
   ScrollView,
-  Text,
-  TextInput,
-  ToastAndroid,
+  FlatList,
   TouchableOpacity,
-  View,
+  Alert,
+  ToastAndroid,
 } from 'react-native';
-import BackgroundFetch from 'react-native-background-fetch';
-import BackgroundGeolocation from 'react-native-background-geolocation';
-import Geolocation from 'react-native-geolocation-service';
-import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import {useNavigation} from '@react-navigation/native';
+import Geolocation from 'react-native-geolocation-service';
+import {API, graphqlOperation} from 'aws-amplify';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faArrowLeft,
+  faFilter,
+  faCity,
+  faDoorClosed,
+  faLandmark,
+  faArchway,
+  faHotel,
+  faIgloo,
+  faCampground,
+} from '@fortawesome/free-solid-svg-icons';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import BackgroundGeolocation from 'react-native-background-geolocation';
+import BackgroundFetch from 'react-native-background-fetch';
 import Video from 'react-native-video';
-import mixpanel from '../../MixpanelConfig';
-import Post from '../../components/Post';
-import {getUser, listPosts} from '../../graphql/queries';
-import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
-import useVisibility from '../../hooks/useVisibility';
-import {AuthContext} from '../../navigation/AuthProvider';
 import {registerTransistorAuthorizationListener} from './Authorization';
+import mixpanel from '../../MixpanelConfig';
+import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
+import Post from '../../components/Post';
+import {AuthContext} from '../../navigation/AuthProvider';
+import {listPosts, getUser} from '../../graphql/queries';
 import styles from './styles';
 
 mixpanel.init();
@@ -68,8 +66,7 @@ const HomeScreen = () => {
   const [longitude, setLongitude] = useState(null);
   const [status, setStatus] = useState('Entire Flat');
   const [loadingType, setIsLoadingType] = useState(false);
-  const modalVisiblity = useVisibility();
-  //   const [modalvisible, setmodalvisible] = useState(false);
+  const [modalvisible, setmodalvisible] = useState(false);
   const [modalVisible, setmodalVisible] = useState(false);
   const [minimumvalue] = useState(1);
   const [maximumvalue, setMaximumValue] = useState(100000);
@@ -292,7 +289,7 @@ const HomeScreen = () => {
         BackgroundFetch.finish(taskId);
       },
     );
-  }, []);
+  };
 
   /// Adds events to List
   const addEvent = (/* name, params */) => {
@@ -306,93 +303,76 @@ const HomeScreen = () => {
     // setEvents(previous => [...previous, event]);
   };
 
-  const items = useMemo(
-    () => [
-      {
-        name: 'Air Conditioner',
-        id: 'Air Conditioner',
-      },
-      {
-        name: 'WiFi',
-        id: 'WiFi',
-      },
-      {
-        name: 'Kitchen',
-        id: 'Kitchen',
-      },
-      {
-        name: 'Water',
-        id: 'Water',
-      },
-      {
-        name: 'Toilet',
-        id: 'Toilet',
-      },
-
-      {
-        name: 'Bathroom',
-        id: 'Bathroom',
-      },
-    ],
-    [],
-  );
-
-  const categories = useMemo(
-    () => [
-      {
-        status: 'Entire Flat',
-        id: 2,
-        icon: faIgloo,
-      },
-      {
-        status: 'Apartment',
-        id: 3,
-        icon: faCity,
-      },
-      {
-        status: 'Chamber and Hall',
-        id: 3,
-        icon: faCampground,
-      },
-      {
-        status: 'Mansion',
-        id: 4,
-        icon: faHotel,
-      },
-      {
-        status: 'Self-Contained',
-        id: 5,
-        icon: faArchway,
-      },
-      {
-        status: 'Single Room',
-        id: 6,
-        icon: faDoorClosed,
-      },
-      {
-        status: 'Full Home',
-        id: 7,
-        icon: faLandmark,
-      },
-    ],
-    [],
-  );
-
-  const setStatusFilter = useCallback(
-    status => {
-      setStatus(status);
-      fetchPostsType();
+  const items = [
+    {
+      name: 'Air Conditioner',
+      id: 'Air Conditioner',
     },
-    [fetchPostsType],
-  );
-
-  const onSelectedItemsChange = useCallback(
-    selectedItems => {
-      setSelectedItems(selectedItems);
-      filterPosts(status);
+    {
+      name: 'WiFi',
+      id: 'WiFi',
     },
-    [filterPosts, status],
-  );
+    {
+      name: 'Kitchen',
+      id: 'Kitchen',
+    },
+    {
+      name: 'Water',
+      id: 'Water',
+    },
+    {
+      name: 'Toilet',
+      id: 'Toilet',
+    },
+
+    {
+      name: 'Bathroom',
+      id: 'Bathroom',
+    },
+  ];
+
+  const categories = [
+    {
+      //   status: 'All',
+      //   id: 1,
+      //   icon: faDoorClosed
+      // },
+
+      status: 'Entire Flat',
+      id: 2,
+      icon: faIgloo,
+    },
+    {
+      status: 'Apartment',
+      id: 3,
+      icon: faCity,
+    },
+    {
+      status: 'Chamber and Hall',
+      id: 3,
+      icon: faCampground,
+    },
+    {
+      status: 'Mansion',
+      id: 4,
+      icon: faHotel,
+    },
+    {
+      status: 'Self-Contained',
+      id: 5,
+      icon: faArchway,
+    },
+    {
+      status: 'Single Room',
+      id: 6,
+      icon: faDoorClosed,
+    },
+    {
+      status: 'Full Home',
+      id: 7,
+      icon: faLandmark,
+    },
+  ];
 
   const setStatusFilter = useCallback(
     _status => () => {
@@ -449,7 +429,6 @@ const HomeScreen = () => {
         <ActivityIndicator size="large" color="blue" />
       </View>
     ) : null;
-  }, [loading]);
 
   const hasLocationPermission = useCallback(async () => {
     if (Platform.OS === 'ios') {
@@ -557,7 +536,7 @@ const HomeScreen = () => {
     } catch (error) {
       // console.log('error1', error);
     }
-  }, []);
+  };
 
   const userDetails = useCallback(async () => {
     const selectedUser = await firestore().collection('users').doc(auth().currentUser.uid);
@@ -575,7 +554,7 @@ const HomeScreen = () => {
     });
   }, [navigation]);
 
-  const _getUserData = useCallback(async ID => {
+  const _getUserData = async ID => {
     try {
       const userDB = await API.graphql(
         graphqlOperation(getUser, {
@@ -588,7 +567,7 @@ const HomeScreen = () => {
         } catch (e) {}
       }
     } catch (e) {}
-  }, []);
+  };
 
   useEffect(() => {
     if (!hasWatchedVideo) {
