@@ -10,7 +10,13 @@ const PageSpinner = () => {
 };
 
 const styles = StyleSheet.create({
-  pageSpinner: {marginVertical: 100, alignItems: 'center'},
+  pageSpinner: {
+    marginVertical: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default PageSpinner;
