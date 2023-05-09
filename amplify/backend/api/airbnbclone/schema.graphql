@@ -6,7 +6,7 @@ type Mutation {
 type PaymentIntent {
   clientSecret: String!
 }
-type Review
+type Review 
   @model
   @key(name: "byUser", fields: ["userID", "postId"])
   @key(name: "byPost", fields: ["postId", "userID"]) {

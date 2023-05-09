@@ -145,61 +145,54 @@ const HomeScreen = () => {
       ),
     );
 
-    subscribe(
-      BackgroundGeolocation.onMotionChange(location => {
-        // console.log('[onMotionChange]', location);
-        addEvent('onMotionChange', location);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onMotionChange(location => {
+    //     // console.log('[onMotionChange]', location);
+    //     addEvent('onMotionChange', location);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onGeofence(event => {
-        // console.log('[onGeofence]', event);
-        addEvent('onGeofence', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onGeofence(event => {
+    //     // console.log('[onGeofence]', event);
+    //     addEvent('onGeofence', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onConnectivityChange(event => {
-        // console.log('[onConnectivityChange]', event);
-        addEvent('onConnectivityChange', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onConnectivityChange(event => {
+    //     // console.log('[onConnectivityChange]', event);
+    //     addEvent('onConnectivityChange', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onEnabledChange(_enabled => {
-        // ('[onEnabledChange]', enabled);
-        addEvent('onEnabledChange', {enabled: _enabled});
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onEnabledChange(_enabled => {
+    //     // ('[onEnabledChange]', enabled);
+    //     addEvent('onEnabledChange', {enabled: _enabled});
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onHttp(event => {
-        // ('[onHttp]', event);
-        addEvent('onHttp', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onHttp(event => {
+    //     // ('[onHttp]', event);
+    //     addEvent('onHttp', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onLocation(() => {
-        // console.log(`Latitude: ${location.coords.latitude}`);
-        // console.log(`Longitude: ${location.coords.longitude}`);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onActivityChange(event => {
+    //     // console.log('[onActivityChange]', event);
+    //     addEvent('onActivityChange', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onActivityChange(event => {
-        // console.log('[onActivityChange]', event);
-        addEvent('onActivityChange', event);
-      }),
-    );
-
-    subscribe(
-      BackgroundGeolocation.onPowerSaveChange(isPowerSaveMode => {
-        // console.log('[onPowerSaveChange]', enabled);
-        addEvent('onPowerSaveChange', {isPowerSaveMode});
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onPowerSaveChange(isPowerSaveMode => {
+    //     // console.log('[onPowerSaveChange]', enabled);
+    //     addEvent('onPowerSaveChange', {isPowerSaveMode});
+    //   }),
+    // );
 
     /// Configure the plugin.
     const state = await BackgroundGeolocation.ready(
@@ -349,27 +342,27 @@ const HomeScreen = () => {
     },
     {
       status: 'Chamber and Hall',
-      id: 3,
+      id: 4,
       icon: faCampground,
     },
     {
       status: 'Mansion',
-      id: 4,
+      id: 5,
       icon: faHotel,
     },
     {
       status: 'Self-Contained',
-      id: 5,
+      id: 6,
       icon: faArchway,
     },
     {
       status: 'Single Room',
-      id: 6,
+      id: 7,
       icon: faDoorClosed,
     },
     {
       status: 'Full Home',
-      id: 7,
+      id: 8,
       icon: faLandmark,
     },
   ];
@@ -885,7 +878,7 @@ const HomeScreen = () => {
     [],
   );
 
-  const keyExtractor = useCallback((_, index) => index.toString(), []);
+  const keyExtractor = useCallback(item => item.id.toString(), []);
 
   const goToHouseType = useCallback(() => navigation.navigate('House Type'), [navigation]);
 
