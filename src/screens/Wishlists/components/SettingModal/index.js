@@ -1,14 +1,9 @@
 import React, {useCallback} from 'react';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Modal, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
-import SwipeableModal from '../../../../components/SwipeableModal';
 import styles from './SettingModal.styles';
 
-const SettingModal = ({modalizeRef}) => {
-  const onClose = useCallback(() => {
-    modalizeRef.current?.close();
-  }, [modalizeRef]);
-
+const SettingModal = ({visible = false, onClose}) => {
   const renderHeader = useCallback(
     () => (
       <View style={styles.header}>
@@ -56,17 +51,15 @@ const SettingModal = ({modalizeRef}) => {
   );
 
   return (
-    <SwipeableModal
-      isPaddingBottomOfContainer
-      isCenter
-      modalStyle={styles.mainContainer}
-      modalizeRef={modalizeRef}>
-      <View style={styles.container}>
-        {renderHeader()}
-        {renderMain()}
-        {renderFooter()}
+    <Modal transparent animationType="slide" visible={visible} onRequestClose={onClose}>
+      <View style={styles.mainContainer}>
+        <View style={styles.container}>
+          {renderHeader()}
+          {renderMain()}
+          {renderFooter()}
+        </View>
       </View>
-    </SwipeableModal>
+    </Modal>
   );
 };
 

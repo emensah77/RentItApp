@@ -1,23 +1,25 @@
-import React, {useCallback, useRef} from 'react';
+import {faMap} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import React, {useCallback} from 'react';
 import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMap} from '@fortawesome/free-solid-svg-icons';
+import useVisibility from '../../hooks/useVisibility';
 import styles1 from './FirstScreenOfWishlists.styles';
 import styles2 from './SecondScreenOfWishlists.styles';
-import WishListCarousel from './components/WishListCarousel';
 import SettingModal from './components/SettingModal';
 
+import WishListCarousel from './components/WishListCarousel';
+
 export default () => {
-  const modalRef = useRef();
+  const modalVisiblity = useVisibility();
 
   const openModal = useCallback(() => {
-    modalRef.current.open();
-  }, [modalRef]);
+    modalVisiblity.show();
+  }, [modalVisiblity]);
 
   const closeModal = useCallback(() => {
-    modalRef.current.close();
-  }, []);
+    modalVisiblity.hide();
+  }, [modalVisiblity]);
 
   const renderHeader = useCallback(
     () => (
@@ -80,7 +82,7 @@ export default () => {
         </TouchableOpacity>
       </ScrollView>
 
-      <SettingModal modalizeRef={modalRef} />
+      <SettingModal onClose={closeModal} visible={modalVisiblity.visible} />
     </SafeAreaView>
   );
 };
