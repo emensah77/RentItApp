@@ -1,19 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  FlatList,
-  StatusBar,
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import React, {useContext, useEffect, useState} from 'react';
+import {ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import Post from '../../components/Post';
 import {AuthContext} from '../../navigation/AuthProvider';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
+import SecondScreenOfWishlists from './SecondScreenOfWishlists';
+import FirstScreenOfWishlists from './FirstScreenOfWishlists';
 
 const Wishlists = () => {
   const {user} = useContext(AuthContext);
@@ -21,6 +15,10 @@ const Wishlists = () => {
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  if (1) {
+    return <SecondScreenOfWishlists />;
+  }
 
   const fetchPosts = async () => {
     const wishList = await FirebaseRepo.getWishlist(user.uid);
@@ -87,20 +85,12 @@ const Wishlists = () => {
                 Your Favorites
               </Text>
             </View>
-            <FlatList
-              data={posts}
-              renderItem={({item}) => <Post post={item} />}
-            />
+            <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
           </>
         ) : (
           <View style={{padding: 15}}>
             {loading ? (
-              <ActivityIndicator
-                animating
-                size="large"
-                color="blue"
-                style={{opacity: 1}}
-              />
+              <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
             ) : (
               <>
                 <Text
@@ -111,10 +101,9 @@ const Wishlists = () => {
                   No saves yet
                 </Text>
                 <View style={{padding: 10}}>
-                  <Text
-                    style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-                    Start looking for homes to rent or buy: As you search, tap
-                    the heart icon to save your favorite homes to rent or buy.
+                  <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+                    Start looking for homes to rent or buy: As you search, tap the heart icon to
+                    save your favorite homes to rent or buy.
                   </Text>
                 </View>
 
