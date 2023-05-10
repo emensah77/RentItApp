@@ -2,9 +2,7 @@ import React from 'react';
 import {View, Dimensions} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 import {Portal} from 'react-native-portalize';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styles from './SwipeableModal.styles';
-import SafeInsetHelper from '../../helper/SafeInsetHelper';
 
 const {height} = Dimensions.get('window');
 
@@ -20,11 +18,8 @@ const SwipeableModal = ({
   backgroundColor,
   isFullScreen,
   isCenter = false,
-  isPaddingBottomOfContainer = false,
   ...resOfProps
 }) => {
-  const insets = useSafeAreaInsets();
-
   // Renders
   const renderDefaultHeader = () => (
     <View style={[styles.modalHeader, {backgroundColor}]}>
@@ -72,14 +67,11 @@ const SwipeableModal = ({
             backgroundColor,
           },
           contentContainerStyle: [
-            isPaddingBottomOfContainer && {
-              paddingBottom: SafeInsetHelper.getSafeBottomInset({
-                insets,
-                minimumValue: 25,
-              }),
-            },
             isFullScreen && {minHeight: '100%'},
-            isCenter && {justifyContent: 'center', height},
+            isCenter && {
+              justifyContent: 'center',
+              height,
+            },
             {backgroundColor},
           ],
           // contentContainerStyle: [

@@ -1,25 +1,26 @@
 import {faMap} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useCallback} from 'react';
-import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useRef} from 'react';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import useVisibility from '../../hooks/useVisibility';
 import styles1 from './FirstScreenOfWishlists.styles';
 import styles2 from './SecondScreenOfWishlists.styles';
 import SettingModal from './components/SettingModal';
 
+import WishlistsModal from '../../components/Modals/WishlistsModal/WishlistsModal';
 import WishListCarousel from './components/WishListCarousel';
 
 export default () => {
-  const modalVisiblity = useVisibility();
+  const modalizeRef = useRef(null);
 
   const openModal = useCallback(() => {
-    modalVisiblity.show();
-  }, [modalVisiblity]);
+    modalizeRef.current?.open();
+  }, []);
 
   const closeModal = useCallback(() => {
-    modalVisiblity.hide();
-  }, [modalVisiblity]);
+    modalizeRef.current?.close();
+  }, []);
 
   const renderHeader = useCallback(
     () => (
@@ -48,8 +49,8 @@ export default () => {
           <Text style={styles2.desTitle}>Harlingen, Netherlands</Text>
           <Text style={styles2.desSubTitle}>Professional Host</Text>
           <Text style={styles2.desSubTitle}>18-23 Dec</Text>
-          <Text style={styles2.desTitle}>
-            $1,065 <Text style={styles2.desSubTitle}>total</Text>
+          <Text style={[styles2.desTitle, styles2.textUnderline]}>
+            $1,065 <Text style={[styles2.desSubTitle]}>total</Text>
           </Text>
         </View>
 
@@ -65,24 +66,31 @@ export default () => {
     ),
     [],
   );
+
+  const renderMapButton = useCallback(
+    () => (
+      <TouchableOpacity style={styles2.mapButton} onPress={openModal}>
+        <Text style={[styles2.desTitle, styles2.whiteText]}>
+          Map
+          <View style={styles2.starIconOfDes}>
+            <FontAwesomeIcon icon={faMap} size={16} color="white" />
+          </View>
+        </Text>
+      </TouchableOpacity>
+    ),
+    [openModal],
+  );
   return (
     <SafeAreaView style={styles1.container}>
       <ScrollView contentContainerStyle={styles2.scrollView}>
         {renderHeader()}
         {renderCarousel()}
         {renderDescription()}
-
-        <TouchableOpacity style={styles2.mapButton}>
-          <Text style={[styles2.desTitle, styles2.whiteText]} onPress={openModal}>
-            Map
-            <View style={styles2.starIconOfDes}>
-              <FontAwesomeIcon icon={faMap} size={16} color="white" />
-            </View>
-          </Text>
-        </TouchableOpacity>
+        {renderMapButton()}
       </ScrollView>
 
-      <SettingModal onClose={closeModal} visible={modalVisiblity.visible} />
+      {/* <SettingModal modalizeRef={modalizeRef} /> */}
+      <WishlistsModal modalizeRef={modalizeRef} />
     </SafeAreaView>
   );
 };

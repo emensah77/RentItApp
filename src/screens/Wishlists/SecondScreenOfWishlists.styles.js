@@ -41,6 +41,12 @@ export default StyleSheet.create({
     lineHeight: 22,
     color: '#252525',
   },
+  textUnderline: {
+    textDecorationLine: 'underline',
+  },
+  textNoUnderline: {
+    textDecorationLine: 'none',
+  },
   desSubTitle: {
     fontWeight: '700',
     fontSize: 16,

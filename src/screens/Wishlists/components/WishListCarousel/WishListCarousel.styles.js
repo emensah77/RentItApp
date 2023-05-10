@@ -18,4 +18,7 @@ export default StyleSheet.create({
     bottom: 14,
     flexDirection: 'row',
   },
+  dvider: {
+    width: 10,
+  },
 });

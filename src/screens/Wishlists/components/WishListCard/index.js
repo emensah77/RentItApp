@@ -1,5 +1,6 @@
 import React from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import useVisibility from '../../../../hooks/useVisibility';
 
@@ -19,10 +20,12 @@ export default () => {
           style={[styles.heartIcon, likeVisiblity.visible && styles.activeHeart]}
         />
       </TouchableOpacity>
-      <Image
+      <FastImage
         style={styles.image}
         source={{
           uri: 'https://www.oregonlive.com/resizer/kynoG4zvtdSW-sKjVJYfQwsdTxE=/800x0/smart/cloudfront-us-east-1.images.arcpublishing.com/advancelocal/7OGYYKDSJVBKBNVLQQ3W5OHOUM.jpg',
+          headers: {Authorization: 'token'},
+          priority: FastImage.priority.high,
         }}
       />
 
