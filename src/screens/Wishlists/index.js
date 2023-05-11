@@ -1,139 +1,142 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+// import {useNavigation} from '@react-navigation/native';
+// import React, {useContext, useEffect, useState} from 'react';
+// import {ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, View} from 'react-native';
+// import LinearGradient from 'react-native-linear-gradient';
 
-import Post from '../../components/Post';
-import {AuthContext} from '../../navigation/AuthProvider';
-import FirebaseRepo from '../../repositry/FirebaseRepo';
-import SecondScreenOfWishlists from './SecondScreenOfWishlists';
-import FirstScreenOfWishlists from './FirstScreenOfWishlists';
+// import Post from '../../components/Post';
+// import {AuthContext} from '../../navigation/AuthProvider';
+// import FirebaseRepo from '../../repositry/FirebaseRepo';
+export {default} from './SecondScreenOfWishlists';
 
-const Wishlists = () => {
-  const {user} = useContext(AuthContext);
-  const navigation = useNavigation();
+// import FirstScreenOfWishlists from './FirstScreenOfWishlists';
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+// const Wishlists = () => {
+//   const {user} = useContext(AuthContext);
+//   const navigation = useNavigation();
 
-  if (1) {
-    return <SecondScreenOfWishlists />;
-  }
+//   const [posts, setPosts] = useState([]);
+//   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
-    const wishList = await FirebaseRepo.getWishlist(user.uid);
-    const temp = {};
-    const uniquePosts = [];
-    wishList?.map(single => {
-      if (!temp[single.id]) {
-        uniquePosts.push(single);
-      }
-    });
-    setPosts(uniquePosts);
-    setLoading(false);
-  };
+//   console.log(JSON.stringify(posts[0], null, 2));
 
-  useEffect(() => {
-    if (!user.uid) {
-      return;
-    }
-    fetchPosts();
-  }, []);
+//   //   if (1) {
+//   //     return <SecondScreenOfWishlists />;
+//   //   }
 
-  return (
-    <View
-      style={{
-        backgroundColor: '#fff',
-        flex: 1,
-        paddingBottom: 180,
-      }}>
-      <StatusBar hidden />
-      <LinearGradient
-        colors={['purple', 'deeppink']}
-        start={{x: 0.1, y: 0.2}}
-        end={{x: 1, y: 0.5}}
-        style={[
-          {
-            height: '25%',
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            paddingHorizontal: 20,
-            justifyContent: 'center',
-          },
-        ]}>
-        <View style={{paddingTop: 15}}>
-          <Text
-            style={{
-              fontSize: 32,
-              color: 'white',
-              fontFamily: 'Montserrat-Bold',
-            }}>
-            Wishlists
-          </Text>
-        </View>
-      </LinearGradient>
+//   const fetchPosts = async () => {
+//     const wishList = await FirebaseRepo.getWishlist(user.uid);
+//     const temp = {};
+//     const uniquePosts = [];
+//     wishList?.map(single => {
+//       if (!temp[single.id]) {
+//         uniquePosts.push(single);
+//       }
+//     });
+//     setPosts(uniquePosts);
+//     setLoading(false);
+//   };
 
-      <View>
-        {posts.length !== 0 ? (
-          <>
-            <View style={{padding: 15}}>
-              <Text
-                style={{
-                  fontFamily: 'Montserrat-Bold',
-                  fontSize: 20,
-                }}>
-                Your Favorites
-              </Text>
-            </View>
-            <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
-          </>
-        ) : (
-          <View style={{padding: 15}}>
-            {loading ? (
-              <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
-            ) : (
-              <>
-                <Text
-                  style={{
-                    fontFamily: 'Montserrat-Bold',
-                    fontSize: 20,
-                  }}>
-                  No saves yet
-                </Text>
-                <View style={{padding: 10}}>
-                  <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-                    Start looking for homes to rent or buy: As you search, tap the heart icon to
-                    save your favorite homes to rent or buy.
-                  </Text>
-                </View>
+//   useEffect(() => {
+//     if (!user.uid) {
+//       return;
+//     }
+//     fetchPosts();
+//   }, []);
 
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Welcome')}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderWidth: 1,
-                    borderColor: 'black',
-                    width: '50%',
-                    height: '20%',
+//   return (
+//     <View
+//       style={{
+//         backgroundColor: '#fff',
+//         flex: 1,
+//         paddingBottom: 180,
+//       }}>
+//       <StatusBar hidden />
+//       <LinearGradient
+//         colors={['purple', 'deeppink']}
+//         start={{x: 0.1, y: 0.2}}
+//         end={{x: 1, y: 0.5}}
+//         style={[
+//           {
+//             height: '25%',
+//             borderBottomLeftRadius: 20,
+//             borderBottomRightRadius: 20,
+//             paddingHorizontal: 20,
+//             justifyContent: 'center',
+//           },
+//         ]}>
+//         <View style={{paddingTop: 15}}>
+//           <Text
+//             style={{
+//               fontSize: 32,
+//               color: 'white',
+//               fontFamily: 'Montserrat-Bold',
+//             }}>
+//             Wishlists
+//           </Text>
+//         </View>
+//       </LinearGradient>
 
-                    borderRadius: 10,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontFamily: 'Montserrat-Bold',
-                    }}>
-                    Start exploring
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        )}
-      </View>
-    </View>
-  );
-};
+//       <View>
+//         {posts.length !== 0 ? (
+//           <>
+//             <View style={{padding: 15}}>
+//               <Text
+//                 style={{
+//                   fontFamily: 'Montserrat-Bold',
+//                   fontSize: 20,
+//                 }}>
+//                 Your Favorites
+//               </Text>
+//             </View>
+//             <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
+//           </>
+//         ) : (
+//           <View style={{padding: 15}}>
+//             {loading ? (
+//               <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
+//             ) : (
+//               <>
+//                 <Text
+//                   style={{
+//                     fontFamily: 'Montserrat-Bold',
+//                     fontSize: 20,
+//                   }}>
+//                   No saves yet
+//                 </Text>
+//                 <View style={{padding: 10}}>
+//                   <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+//                     Start looking for homes to rent or buy: As you search, tap the heart icon to
+//                     save your favorite homes to rent or buy.
+//                   </Text>
+//                 </View>
 
-export default Wishlists;
+//                 <TouchableOpacity
+//                   onPress={() => navigation.navigate('Welcome')}
+//                   style={{
+//                     alignItems: 'center',
+//                     justifyContent: 'center',
+//                     borderWidth: 1,
+//                     borderColor: 'black',
+//                     width: '50%',
+//                     height: '20%',
+
+//                     borderRadius: 10,
+//                   }}>
+//                   <Text
+//                     style={{
+//                       fontSize: 16,
+//                       fontFamily: 'Montserrat-Bold',
+//                     }}>
+//                     Start exploring
+//                   </Text>
+//                 </TouchableOpacity>
+//               </>
+//             )}
+//           </View>
+//         )}
+//       </View>
+//     </View>
+//   );
+// };
+
+// export default Wishlists;

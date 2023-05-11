@@ -8,9 +8,9 @@ import SwipeableModal from '../../SwipeableModal/SwipeableModal';
 import WishListItem from '../../../screens/Wishlists/components/WishListItem';
 import styles from './WishlistsModal.styles';
 
-const WishlistsModal = ({modalizeRef, children = null}) => {
+const WishlistsModal = ({modalizeRef, children = null, headerTitle = null}) => {
   const onClose = useCallback(() => {
-    modalizeRef.current?.close();
+    modalizeRef.current?.close(); // current = {close:() => {}, open:() => {}}
   }, [modalizeRef]);
 
   const renderHeader = useCallback(
@@ -19,10 +19,10 @@ const WishlistsModal = ({modalizeRef, children = null}) => {
         <TouchableOpacity style={styles.icon} onPress={onClose}>
           <Icon name="close" size={24} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Your wishlists</Text>
+        <Text style={styles.headerTitle}>{headerTitle ?? 'Your wishlists'}</Text>
       </View>
     ),
-    [onClose],
+    [onClose, headerTitle],
   );
 
   const renderAddListItem = useCallback(

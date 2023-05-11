@@ -26,8 +26,8 @@ export default StyleSheet.create({
   heartContainer: {
     position: 'absolute',
     zIndex: 1,
-    right: 16,
-    top: 12,
+    right: 10 + 24,
+    top: 20,
   },
   heartIcon: {
     color: '#ddd',

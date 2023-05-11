@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   scrollView: {
-    flex: 1,
+    paddingBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -63,12 +63,31 @@ export default StyleSheet.create({
     width: 110,
     alignSelf: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    bottom: 20,
   },
-
+  forSale: {
+    left: 10 + 24,
+    top: 20,
+    position: 'absolute',
+    height: 30,
+    width: 80,
+    backgroundColor: 'white',
+    elevation: 90,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  forSaleText: {fontSize: 14, fontWeight: 'bold'},
   whiteText: {
     color: '#FFFFFF',
   },
   px24: {
     paddingHorizontal: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

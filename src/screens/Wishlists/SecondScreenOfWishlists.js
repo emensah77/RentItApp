@@ -1,67 +1,65 @@
 import {faMap} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useCallback, useRef} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useCallback, useRef, useState, useContext, useEffect} from 'react';
+import {FlatList, ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import Post from './components/Post';
+import SettingModal from './components/SettingModal';
+import FirebaseRepo from '../../repositry/FirebaseRepo';
 import styles1 from './FirstScreenOfWishlists.styles';
 import styles2 from './SecondScreenOfWishlists.styles';
-import SettingModal from './components/SettingModal';
-
-import WishlistsModal from '../../components/Modals/WishlistsModal/WishlistsModal';
-import WishListCarousel from './components/WishListCarousel';
+import EmptyWishList from './components/EmptyWishList';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 export default () => {
   const modalizeRef = useRef(null);
+  const isFocused = useIsFocused();
+  const {user} = useContext(AuthContext);
+
+  const [posts, setPosts] = useState({
+    loading: false,
+    data: [],
+  });
+
+  const fetchPosts = useCallback(async () => {
+    if (!user.uid) return;
+
+    setPosts(() => ({loading: true, data: []}));
+
+    try {
+      const res = await FirebaseRepo.getWishlist(user.uid);
+      setPosts(() => ({
+        loading: false,
+        data: res,
+      }));
+    } catch (err) {
+    } finally {
+      setPosts(oldPosts => ({...oldPosts, loading: false}));
+    }
+  }, [user.uid]);
+
+  useEffect(() => {
+    isFocused && fetchPosts();
+  }, [fetchPosts, isFocused]);
 
   const openModal = useCallback(() => {
     modalizeRef.current?.open();
   }, []);
 
-  const closeModal = useCallback(() => {
-    modalizeRef.current?.close();
-  }, []);
-
-  const renderHeader = useCallback(
+  const renderLoading = useCallback(
     () => (
-      <View style={styles2.px24}>
-        <Text style={[styles1.title, styles2.title]}>Weekend away</Text>
-
-        <View style={styles2.buttonContainer}>
-          <TouchableOpacity activeOpacity={0.5} style={styles2.button}>
-            <Text style={styles2.buttonText}>Dates</Text>
-          </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.5} style={[styles2.button, styles2.ml12]}>
-            <Text style={styles2.buttonText}>Guests</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles2.loadingContainer}>
+        <ActivityIndicator animating size="large" color="blue" />
       </View>
     ),
     [],
   );
 
-  const renderCarousel = useCallback(() => <WishListCarousel />, []);
-
-  const renderDescription = useCallback(
+  const renderHeader = useCallback(
     () => (
-      <View style={[styles2.descriptionContainer, styles2.px24]}>
-        <View style={styles2.desRight}>
-          <Text style={styles2.desTitle}>Harlingen, Netherlands</Text>
-          <Text style={styles2.desSubTitle}>Professional Host</Text>
-          <Text style={styles2.desSubTitle}>18-23 Dec</Text>
-          <Text style={[styles2.desTitle, styles2.textUnderline]}>
-            $1,065 <Text style={[styles2.desSubTitle]}>total</Text>
-          </Text>
-        </View>
-
-        <View>
-          <Text style={styles2.desTitle}>
-            <View style={styles2.starIconOfDes}>
-              <Icon name="star" size={12} />
-            </View>
-            4.76
-          </Text>
-        </View>
+      <View style={styles2.px24}>
+        <Text style={[styles1.title, styles2.title]}>Your wishlists</Text>
       </View>
     ),
     [],
@@ -69,7 +67,7 @@ export default () => {
 
   const renderMapButton = useCallback(
     () => (
-      <TouchableOpacity style={styles2.mapButton} onPress={openModal}>
+      <TouchableOpacity activeOpacity={0.7} style={styles2.mapButton} onPress={openModal}>
         <Text style={[styles2.desTitle, styles2.whiteText]}>
           Map
           <View style={styles2.starIconOfDes}>
@@ -80,18 +78,44 @@ export default () => {
     ),
     [openModal],
   );
+
+  const renderItem = useCallback(({item}) => <Post item={item} />, []);
+
+  const renderFlatlist = useCallback(
+    () => (
+      <FlatList
+        keyExtractor={renderKey}
+        showsVerticalScrollIndicator={false}
+        data={posts.data}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          <View style={styles2.px24}>
+            <EmptyWishList />
+          </View>
+        }
+        contentContainerStyle={styles2.scrollView}
+      />
+    ),
+    [posts.data, renderItem, renderKey],
+  );
+
+  const renderKey = useCallback((_, key) => key.toString(), []);
   return (
     <SafeAreaView style={styles1.container}>
-      <ScrollView contentContainerStyle={styles2.scrollView}>
-        {renderHeader()}
-        {renderCarousel()}
-        {renderDescription()}
-        {renderMapButton()}
-      </ScrollView>
+      {posts.loading ? (
+        renderLoading()
+      ) : (
+        <>
+          {renderHeader()}
+          {renderFlatlist()}
+        </>
+      )}
 
-      {/* <SettingModal modalizeRef={modalizeRef} /> */}
+      {renderMapButton()}
+
+      <SettingModal modalizeRef={modalizeRef} />
       {/* <WishlistsModal modalizeRef={modalizeRef}>{renderDescription()}</WishlistsModal> */}
-      <WishlistsModal modalizeRef={modalizeRef} />
+      {/* <WishlistsModal modalizeRef={modalizeRef} /> */}
     </SafeAreaView>
   );
 };

@@ -3,7 +3,7 @@ import {FlatList, View} from 'react-native';
 import WishListCard from '../WishListCard';
 import styles from './WishListCarousel.styles';
 
-export default () => {
+export default ({images = []}) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const viewabilityConfig = useMemo(
@@ -19,8 +19,8 @@ export default () => {
     }
   }, []);
 
-  const renderItem = useCallback(() => {
-    return <WishListCard />;
+  const renderItem = useCallback(({item: imageUrl}) => {
+    return <WishListCard uri={imageUrl} />;
   }, []);
 
   return (
@@ -28,7 +28,7 @@ export default () => {
       <FlatList
         horizontal
         pagingEnabled
-        data={[1, 2, 3, 4]}
+        data={images}
         renderItem={renderItem}
         decelerationRate="fast"
         snapToAlignment="center"
@@ -38,7 +38,7 @@ export default () => {
       />
 
       <View style={styles.dots}>
-        {[1, 2, 3, 4].map((i, index) => (
+        {images.map((i, index) => (
           <View key={i} style={[styles.dot, activeIndex === index && styles.activeDot]} />
         ))}
       </View>
