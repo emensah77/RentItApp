@@ -3,7 +3,6 @@ import {StyleSheet} from 'react-native';
 export default StyleSheet.create({
   scrollView: {
     flex: 1,
-    paddingHorizontal: 24,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -68,5 +67,8 @@ export default StyleSheet.create({
 
   whiteText: {
     color: '#FFFFFF',
+  },
+  px24: {
+    paddingHorizontal: 24,
   },
 });

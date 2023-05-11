@@ -2,12 +2,16 @@ import {Dimensions, StyleSheet} from 'react-native';
 
 const {width} = Dimensions.get('window');
 export default StyleSheet.create({
+  root: {
+    width,
+  },
   container: {
     width: width - 48,
     height: width * 0.95 - 24,
     marginTop: 12,
     borderRadius: 12,
     overflow: 'hidden',
+    alignSelf: 'center',
   },
   image: {
     width: '100%',

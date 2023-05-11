@@ -5,6 +5,7 @@ export default StyleSheet.create({
     backgroundColor: '#ffffff',
     borderTopLeftRadius: 13,
     borderTopEndRadius: 13,
+    paddingBottom: 30,
   },
   header: {
     flexDirection: 'row',
@@ -23,6 +24,7 @@ export default StyleSheet.create({
   icon: {
     position: 'absolute',
     left: 24,
+    top: 18,
   },
   listItemContainer: {
     paddingVertical: 12,

@@ -8,7 +8,7 @@ import SwipeableModal from '../../SwipeableModal/SwipeableModal';
 import WishListItem from '../../../screens/Wishlists/components/WishListItem';
 import styles from './WishlistsModal.styles';
 
-const WishlistsModal = ({modalizeRef}) => {
+const WishlistsModal = ({modalizeRef, children = null}) => {
   const onClose = useCallback(() => {
     modalizeRef.current?.close();
   }, [modalizeRef]);
@@ -51,12 +51,15 @@ const WishlistsModal = ({modalizeRef}) => {
   const renderMainModal = useCallback(
     () => (
       <View style={styles.mainContainer}>
-        {renderHeader()}
-        {renderAddListItem()}
-        {renderListItem()}
+        {children || (
+          <>
+            {renderAddListItem()}
+            {renderListItem()}
+          </>
+        )}
       </View>
     ),
-    [renderAddListItem, renderHeader, renderListItem],
+    [children, renderAddListItem, renderListItem],
   );
 
   return (
@@ -66,7 +69,8 @@ const WishlistsModal = ({modalizeRef}) => {
         closeOnOverlayTap={false}
         scrollViewProps={{
           bounces: false,
-        }}>
+        }}
+        HeaderComponent={renderHeader()}>
         {renderMainModal()}
       </SwipeableModal>
     </Portal>

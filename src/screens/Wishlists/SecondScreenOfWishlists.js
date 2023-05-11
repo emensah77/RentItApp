@@ -24,7 +24,7 @@ export default () => {
 
   const renderHeader = useCallback(
     () => (
-      <>
+      <View style={styles2.px24}>
         <Text style={[styles1.title, styles2.title]}>Weekend away</Text>
 
         <View style={styles2.buttonContainer}>
@@ -35,7 +35,7 @@ export default () => {
             <Text style={styles2.buttonText}>Guests</Text>
           </TouchableOpacity>
         </View>
-      </>
+      </View>
     ),
     [],
   );
@@ -44,7 +44,7 @@ export default () => {
 
   const renderDescription = useCallback(
     () => (
-      <View style={styles2.descriptionContainer}>
+      <View style={[styles2.descriptionContainer, styles2.px24]}>
         <View style={styles2.desRight}>
           <Text style={styles2.desTitle}>Harlingen, Netherlands</Text>
           <Text style={styles2.desSubTitle}>Professional Host</Text>
@@ -90,6 +90,7 @@ export default () => {
       </ScrollView>
 
       {/* <SettingModal modalizeRef={modalizeRef} /> */}
+      {/* <WishlistsModal modalizeRef={modalizeRef}>{renderDescription()}</WishlistsModal> */}
       <WishlistsModal modalizeRef={modalizeRef} />
     </SafeAreaView>
   );
