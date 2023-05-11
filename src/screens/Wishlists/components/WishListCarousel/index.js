@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {FlatList, View, Dimensions} from 'react-native';
+import {FlatList, View} from 'react-native';
 import WishListCard from '../WishListCard';
 import styles from './WishListCarousel.styles';
 
@@ -23,8 +23,6 @@ export default () => {
     return <WishListCard />;
   }, []);
 
-  const renderDvider = useCallback(() => <View style={styles.dvider} />, []);
-
   return (
     <View>
       <FlatList
@@ -34,11 +32,9 @@ export default () => {
         renderItem={renderItem}
         decelerationRate="fast"
         snapToAlignment="center"
-        ItemSeparatorComponent={renderDvider}
         viewabilityConfig={viewabilityConfig}
         showsHorizontalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChange}
-        snapToInterval={Dimensions.get('screen').width - 35}
       />
 
       <View style={styles.dots}>
