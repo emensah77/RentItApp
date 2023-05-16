@@ -140,26 +140,26 @@ const HomeScreen = () => {
       ),
     );
 
-    subscribe(
-      BackgroundGeolocation.onMotionChange(location => {
-        // console.log('[onMotionChange]', location);
-        addEvent('onMotionChange', location);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onMotionChange(location => {
+    //     // console.log('[onMotionChange]', location);
+    //     addEvent('onMotionChange', location);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onGeofence(event => {
-        // console.log('[onGeofence]', event);
-        addEvent('onGeofence', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onGeofence(event => {
+    //     // console.log('[onGeofence]', event);
+    //     addEvent('onGeofence', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onConnectivityChange(event => {
-        // console.log('[onConnectivityChange]', event);
-        addEvent('onConnectivityChange', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onConnectivityChange(event => {
+    //     // console.log('[onConnectivityChange]', event);
+    //     addEvent('onConnectivityChange', event);
+    //   }),
+    // );
 
     subscribe(
       BackgroundGeolocation.onEnabledChange(_enabled => {
@@ -175,19 +175,19 @@ const HomeScreen = () => {
       }),
     );
 
-    subscribe(
-      BackgroundGeolocation.onLocation(() => {
-        // console.log(`Latitude: ${location.coords.latitude}`);
-        // console.log(`Longitude: ${location.coords.longitude}`);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onActivityChange(event => {
+    //     // console.log('[onActivityChange]', event);
+    //     addEvent('onActivityChange', event);
+    //   }),
+    // );
 
-    subscribe(
-      BackgroundGeolocation.onActivityChange(event => {
-        // console.log('[onActivityChange]', event);
-        addEvent('onActivityChange', event);
-      }),
-    );
+    // subscribe(
+    //   BackgroundGeolocation.onPowerSaveChange(isPowerSaveMode => {
+    //     // console.log('[onPowerSaveChange]', enabled);
+    //     addEvent('onPowerSaveChange', {isPowerSaveMode});
+    //   }),
+    // );
 
     subscribe(
       BackgroundGeolocation.onPowerSaveChange(isPowerSaveMode => {
@@ -801,7 +801,7 @@ const HomeScreen = () => {
     [],
   );
 
-  const keyExtractor = useCallback((_, index) => index.toString(), []);
+  const keyExtractor = useCallback(item => item.id.toString(), []);
 
   const goToHouseType = useCallback(() => navigation.navigate('House Type'), [navigation]);
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo, useCallback, lazy, Suspense} from 'react';
+import React, {useState, useEffect, useContext, useMemo, useCallback} from 'react';
 import {View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -8,22 +8,20 @@ import {GoogleSignin} from '@react-native-community/google-signin';
 import mixpanel from '../MixpanelConfig';
 import {AuthContext} from './AuthProvider';
 
-import PageSpinner from '../components/PageSpinner';
-
-const SignupScreen = lazy(() => import('../screens/SignUpScreen'));
-const LoginScreen = lazy(() => import('../screens/LoginScreen'));
-const OnboardingScreen = lazy(() => import('../screens/Onboarding'));
-const LocationPermissions = lazy(() => import('../screens/LocationPermissions'));
-const Notifications = lazy(() => import('../screens/Notifications'));
+import SignupScreen from '../screens/SignUpScreen';
+import LoginScreen from '../screens/LoginScreen';
+import OnboardingScreen from '../screens/Onboarding';
+import LocationPermissions from '../screens/LocationPermissions';
+import Notifications from '../screens/Notifications';
 
 const Stack = createStackNavigator();
 
 const onNavigationStateChange = user => state => {
   const currentRoute = state.routes[state.index];
-  const currentScreen = currentRoute.name;
+  const screenName = currentRoute.name;
 
   mixpanel.track('Screen Viewed', {
-    screenName: currentScreen,
+    screenName,
     userId: user ? user.uid : 'guest',
   });
 };
@@ -34,11 +32,12 @@ const AuthStack = () => {
   const {user} = useContext(AuthContext);
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
-  const header = useMemo(() => ({header: () => null}), []);
+  const header = useMemo(() => ({header: () => null, lazy: true}), []);
 
   const noHeader = useMemo(
     () => ({
       headerShown: false,
+      lazy: true,
     }),
     [],
   );
@@ -103,23 +102,17 @@ const AuthStack = () => {
   }
 
   return (
-    <Suspense fallback={<PageSpinner />}>
-      <Stack.Navigator initialRouteName={routeName} onStateChange={onNavigationStateChange(user)}>
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} options={header} />
+    <Stack.Navigator initialRouteName={routeName} onStateChange={onNavigationStateChange(user)}>
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} options={header} />
 
-        <Stack.Screen name="Login" component={LoginScreen} options={header} />
+      <Stack.Screen name="Login" component={LoginScreen} options={header} />
 
-        <Stack.Screen
-          name="LocationPermissions"
-          component={LocationPermissions}
-          options={noHeader}
-        />
+      <Stack.Screen name="LocationPermissions" component={LocationPermissions} options={noHeader} />
 
-        <Stack.Screen name="Notifications" component={Notifications} options={noHeader} />
+      <Stack.Screen name="Notifications" component={Notifications} options={noHeader} />
 
-        <Stack.Screen name="Signup" component={SignupScreen} options={options} />
-      </Stack.Navigator>
-    </Suspense>
+      <Stack.Screen name="Signup" component={SignupScreen} options={options} />
+    </Stack.Navigator>
   );
 };
 
