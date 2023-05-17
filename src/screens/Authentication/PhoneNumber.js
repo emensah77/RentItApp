@@ -8,7 +8,9 @@ import Social from './Social';
 import {Page, Input, Typography, Button, Divider, Dropdown} from '../../components';
 import arrowDown from '../../assets/images/arrow-down.png';
 
-const PhoneNumber = () => {
+const PhoneNumber = props => {
+  const {inline, onChangeData} = props;
+
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({});
   const [countries, setCountries] = useState([]);
@@ -79,12 +81,18 @@ const PhoneNumber = () => {
       ) {
         setDisabled(false);
         setError('');
+        if (inline) {
+          onChangeData(`+${newCountry?.code}${_phoneNumber}`);
+        }
       } else {
         setDisabled(true);
         setError('Enter your valid mobile number without the country code.');
+        if (inline) {
+          onChangeData('');
+        }
       }
     },
-    [country],
+    [country, inline, onChangeData],
   );
 
   const onCountryChange = useCallback(
@@ -137,7 +145,7 @@ const PhoneNumber = () => {
   }, []);
 
   return (
-    <Page header="Sign up">
+    <Page header="Sign up" inline={inline}>
       <Dropdown
         onChange={onCountryChange}
         value={country.name ? `(+${country.code}) ${country.name}` : ''}
@@ -159,17 +167,21 @@ const PhoneNumber = () => {
         groupBefore
       />
 
-      <Typography type="label">
-        We&apos;ll call or text to confirm your number. Standard message and data rates apply.
-      </Typography>
+      {!inline && (
+        <>
+          <Typography type="label">
+            We&apos;ll call or text to confirm your number. Standard message and data rates apply.
+          </Typography>
 
-      <Button loading={loading} type="standard" disabled={disabled} onPress={submit}>
-        Continue
-      </Button>
+          <Button loading={loading} type="standard" disabled={disabled} onPress={submit}>
+            Continue
+          </Button>
 
-      <Divider>or</Divider>
+          <Divider>or</Divider>
 
-      <Social />
+          <Social />
+        </>
+      )}
     </Page>
   );
 };

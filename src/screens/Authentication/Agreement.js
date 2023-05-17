@@ -11,7 +11,7 @@ const Agreement = () => {
   const navigation = useNavigation();
 
   const goToNotification = useCallback(async () => {
-    const authData = await AsyncStorage.getItem('authentication::data');
+    const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     await AsyncStorage.setItem(
       'authentication::data',
       JSON.stringify({...authData, agreement: true}),

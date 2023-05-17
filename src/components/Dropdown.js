@@ -76,7 +76,7 @@ const Dropdown = props => {
         groupAfter={groupAfter}>
         {value || label}
       </Button>
-      {!open || !Array.isArray(originalData) || originalData.length === 0 ? null : (
+      {!open || !Array.isArray(originalData) ? null : (
         <Modal animationType="slide" visible>
           <Header onClose={toggle}>
             <Input

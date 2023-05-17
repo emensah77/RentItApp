@@ -2,6 +2,7 @@ import React, {useState, useCallback, useMemo} from 'react';
 import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import {appleAuth, appleAuthAndroid} from '@invertase/react-native-apple-authentication';
 import {LoginManager, AccessToken, Profile} from 'react-native-fbsdk-next';
@@ -31,7 +32,7 @@ const Social = props => {
   const setDataFromProvider = useCallback(
     async (provider, data) => {
       await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, provider}));
-      goTo(data.phoneNumber ? 'Finish' : 'PhoneNumber');
+      goTo('Finish');
     },
     [goTo],
   );
@@ -76,8 +77,13 @@ const Social = props => {
         }
 
         // Create a Firebase credential from the response
-        const {email, fullName} = appleAuthRequestResponse;
-        // console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+        const {identityToken, nonce, email, fullName, user: newUser} = appleAuthRequestResponse;
+        const appleCredential = auth.AppleAuthProvider.credential(
+          identityToken,
+          nonce,
+          email,
+          newUser,
+        );
 
         return {
           email,
@@ -87,6 +93,7 @@ const Social = props => {
           phoneNumber: '',
           birthDay: '',
           profilePicture: '',
+          providerCredential: appleCredential,
         };
       }
     } catch (e) {
@@ -110,6 +117,8 @@ const Social = props => {
         };
       }
 
+      const googleCredential = auth.GoogleAuthProvider.credential(signinResponse.idToken);
+
       const {
         user: {email, givenName, familyName, photo},
       } = currentUser;
@@ -121,6 +130,7 @@ const Social = props => {
         // Google doesn't provide these:
         phoneNumber: '',
         birthDay: '',
+        providerCredential: googleCredential,
       };
     } catch (e) {
       return {error: e.message, details: {e, json: JSON.stringify(e)}};
@@ -158,6 +168,10 @@ const Social = props => {
         };
       }
 
+      const facebookCredential = auth.FacebookAuthProvider.credential(
+        accessTokenResponse.accessToken,
+      );
+
       const {
         user: {email, givenName, familyName},
       } = currentUser;
@@ -169,6 +183,7 @@ const Social = props => {
         phoneNumber: '',
         birthDay: '',
         profilePicture: '',
+        providerCredential: facebookCredential,
       };
     } catch (e) {
       return {error: e.message, details: {e, json: JSON.stringify(e)}};

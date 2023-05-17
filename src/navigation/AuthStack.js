@@ -18,7 +18,8 @@ import {PageSpinner} from '../components';
 
 const Stack = createStackNavigator();
 
-// AsyncStorage.removeItem('authentication::data');
+AsyncStorage.removeItem('authentication::data');
+auth().signOut();
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
 
@@ -43,6 +44,7 @@ const AuthStack = () => {
   useEffect(() => {
     (async () => {
       const data = await AsyncStorage.getItem('authentication::data');
+      console.debug('Auth Data', data);
       if (data === null) {
         await AsyncStorage.setItem('authentication::data', '{}');
       }

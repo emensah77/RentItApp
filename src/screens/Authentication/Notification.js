@@ -1,10 +1,10 @@
 import React, {useCallback, useState} from 'react';
 import {Image, Platform, PermissionsAndroid, Linking} from 'react-native';
-import messaging from '@react-native-firebase/messaging';
 import Permissions from 'react-native-permissions';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 
 import {Page, Button, Typography, Whitespace, Container, Error} from '../../components';
@@ -22,6 +22,12 @@ const Notification = () => {
 
   const goToHome = useCallback(async () => {
     const data = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
+    if (data.provider) {
+      const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
+      await auth().signInWithCredential(authData.providerCredential);
+      return setTimeout(() => navigation.replace('Home'), 400);
+    }
+
     const {email, firstname, lastname, birthDay, password, profilePicture, marketing} = data;
     const authenticated = await auth()
       .createUserWithEmailAndPassword(email, password)
@@ -71,7 +77,7 @@ const Notification = () => {
       });
 
     if (authenticated) {
-      navigation.replace('Home');
+      return setTimeout(() => navigation.replace('Home'), 400);
     }
   }, [navigation, setError]);
 
@@ -94,11 +100,6 @@ const Notification = () => {
         })
         .catch(console.error);
     } else {
-      console.debug(
-        'Permission starting.',
-        PermissionsAndroid,
-        PermissionsAndroid.PERMISSIONS.SEND_SMS,
-      );
       // Request permission to send notifications
       notification = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS)
         .then(async granted => {
@@ -107,6 +108,7 @@ const Notification = () => {
             console.debug('Permission for notification granted.');
             return true;
           } else {
+            await messaging().requestPermission();
             const authStatus = await messaging().hasPermission();
             return (
               authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -119,7 +121,7 @@ const Notification = () => {
 
     setCount(count + 1);
     setEnabled(notification);
-    const data = await AsyncStorage.getItem('authentication::data');
+    const data = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, notification}));
 
     if (!notification && count > 1) {

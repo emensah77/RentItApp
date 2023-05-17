@@ -2,6 +2,8 @@ import React, {useState, useCallback, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 
+import PhoneNumber from './PhoneNumber';
+
 import {Page, Input, Typography, Button, Whitespace, Container, Error} from '../../components';
 import arrowDown from '../../assets/images/arrow-down.png';
 
@@ -57,25 +59,33 @@ const Finish = () => {
         _newData.password = '';
       }
 
-      await AsyncStorage.setItem('authentication::data', JSON.stringify({...oldData, ..._newData}));
-      const {email, firstname, lastname, birthDay, password} = _newData;
-      setDisabled(!email || !firstname || !lastname || !birthDay || !password);
+      const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
+      await AsyncStorage.setItem(
+        'authentication::data',
+        JSON.stringify({...authData, ..._newData}),
+      );
+      const {email, firstname, lastname, birthDay, password, phoneNumber, provider} = _newData;
+      setDisabled(
+        !email || !firstname || !lastname || !birthDay || !(provider ? phoneNumber : password),
+      );
     },
-    [newData, oldData, showError],
+    [newData, showError],
   );
 
   const submit = useCallback(async () => {
-    const {email, firstname, lastname, birthDay, password} = newData;
+    const {email, firstname, lastname, birthDay, password, phoneNumber, provider} = newData;
 
-    if (!email || !firstname || !lastname || !birthDay || !password) {
+    if (!email || !firstname || !lastname || !birthDay || !(provider ? phoneNumber : password)) {
       return showError('general')(
         'You need to fill in the form completely before you can continue.',
       );
     }
 
-    await AsyncStorage.setItem('authentication::data', JSON.stringify({...newData}));
+    const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
+    // `phoneNumber` is set in the inline component and as such is set in `newData` so it works
+    await AsyncStorage.setItem('authentication::data', JSON.stringify({...authData, ...newData}));
     goToAgreement();
-  }, [newData, showError, goToAgreement]);
+  }, [newData, goToAgreement, showError]);
 
   useEffect(() => {
     (async () => {
@@ -146,14 +156,18 @@ const Finish = () => {
 
       <Whitespace marginTop={30} />
 
-      <Input
-        placeholder="Password"
-        type="password"
-        name="password"
-        value={newData.password}
-        error={error.password}
-        onChange={onChangeData('password')}
-      />
+      {oldData.provider ? (
+        <PhoneNumber inline onChangeData={onChangeData('phoneNumber')} />
+      ) : (
+        <Input
+          placeholder="Password"
+          type="password"
+          name="password"
+          value={newData.password}
+          error={error.password}
+          onChange={onChangeData('password')}
+        />
+      )}
 
       <Typography type="notice">
         By Selecting Agree and continue, I agree to Rentit&apos;s{' '}
