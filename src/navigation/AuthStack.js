@@ -18,8 +18,8 @@ import {PageSpinner} from '../components';
 
 const Stack = createStackNavigator();
 
-AsyncStorage.removeItem('authentication::data');
-auth().signOut();
+// AsyncStorage.removeItem('authentication::data');
+// auth().signOut();
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
 
