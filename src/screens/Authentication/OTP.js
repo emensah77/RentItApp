@@ -45,16 +45,11 @@ const Email = props => {
     async _otp => {
       setOTP(_otp);
 
-      const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
       if (/^\d{6,6}$/.test(_otp)) {
         setDisabled(false);
         setError('');
       } else {
         setDisabled(true);
-        await AsyncStorage.setItem(
-          'authentication::data',
-          JSON.stringify({...authData, email: ''}),
-        );
         setError(`Enter the six digit code sent to ${params?.phoneNumber}.`);
       }
     },

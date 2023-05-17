@@ -47,17 +47,11 @@ const Password = () => {
   const onPasswordChange = useCallback(async _password => {
     setPassword(_password);
 
-    const data = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     if (/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{6,}$/.test(_password)) {
       setDisabled(false);
-      await AsyncStorage.setItem(
-        'authentication::data',
-        JSON.stringify({...data, password: _password}),
-      );
       setError('');
     } else {
       setDisabled(true);
-      await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, email: ''}));
       setError('Enter a valid email address');
     }
   }, []);

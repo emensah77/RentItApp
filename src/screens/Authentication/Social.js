@@ -22,8 +22,8 @@ const Social = props => {
   const Wrapper = useMemo(() => (isPage ? Page : React.Fragment), [isPage]);
 
   const goTo = useCallback(
-    (route, deactivatable) => {
-      navigation.navigate(route, deactivatable ? {deactivatable: true} : undefined);
+    route => {
+      navigation.navigate(route);
     },
     [navigation],
   );
@@ -31,7 +31,7 @@ const Social = props => {
   const setDataFromProvider = useCallback(
     async (provider, data) => {
       await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, provider}));
-      goTo('Finish', true);
+      goTo(data.phoneNumber ? 'Finish' : 'PhoneNumber');
     },
     [goTo],
   );
@@ -185,7 +185,7 @@ const Social = props => {
 
       if (response?.error) {
         console.error('3rd Party Auth Error:', response);
-        return setError(response.error);
+        setError(response.error);
       } else if (response) {
         setDataFromProvider(provider, response);
       }

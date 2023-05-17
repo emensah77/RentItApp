@@ -125,13 +125,14 @@ const Item = ({
   imageKey,
   onSelect,
   getRowLabel,
-  // ripple = {color: '#d5d5d5', radius: 130},
+  ripple = {color: '#d5d5d5', radius: 130},
 }) => (
   <Pressable
     key={item[index][displayKey]}
     style={global.dropdownItem}
     onPress={onSelect(item[index])}
-    hitSlop={15}>
+    hitSlop={15}
+    android_ripple={ripple}>
     <Container type="row">
       <Image
         source={{uri: _.get(item[index], imageKey)}}

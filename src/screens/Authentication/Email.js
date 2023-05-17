@@ -26,21 +26,28 @@ const Email = () => {
       return;
     }
 
-    const query = await firestore().collection('users').where('email', '==', email).get();
-    goTo(query.docs.length > 0 ? 'Password' : 'PhoneNumber');
+    const query = await firestore()
+      .collection('users')
+      .where('email', '==', email)
+      .get()
+      .catch(console.error);
+    if (query && query.docs) {
+      const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
+      await AsyncStorage.setItem('authentication::data', JSON.stringify({...authData, email}));
+      goTo(query.docs.length > 0 ? 'Password' : 'PhoneNumber');
+    } else {
+      setError('An unknown error occured. Try again');
+    }
   }, [email, error, goTo]);
 
   const onEmailChange = useCallback(async _email => {
     setEmail(_email);
 
-    const auth = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     if (/.+@.+\..+/.test(_email)) {
       setDisabled(false);
-      await AsyncStorage.setItem('authentication::data', JSON.stringify({...auth, email: _email}));
       setError('');
     } else {
       setDisabled(true);
-      await AsyncStorage.setItem('authentication::data', JSON.stringify({...auth, email: ''}));
       setError('Enter a valid email address');
     }
   }, []);
