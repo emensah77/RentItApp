@@ -8,7 +8,7 @@ import Social from './Social';
 import {Page, Input, Button, Divider} from '../../components';
 
 const Email = () => {
-  const [email, setEmail] = useState('nna_chijioke@yahoo.com');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(false);
 

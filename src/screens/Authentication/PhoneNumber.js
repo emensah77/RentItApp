@@ -9,7 +9,7 @@ import {Page, Input, Typography, Button, Divider, Dropdown} from '../../componen
 import arrowDown from '../../assets/images/arrow-down.png';
 
 const PhoneNumber = () => {
-  const [phoneNumber, setPhoneNumber] = useState('235662356');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({});
   const [countries, setCountries] = useState([]);
   const [error, setError] = useState('');

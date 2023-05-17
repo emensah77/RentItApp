@@ -29,8 +29,8 @@ const Social = props => {
   );
 
   const setDataFromProvider = useCallback(
-    async data => {
-      await AsyncStorage.setItem('authentication::data', JSON.stringify(data));
+    async (provider, data) => {
+      await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, provider}));
       goTo('Finish', true);
     },
     [goTo],
@@ -176,18 +176,18 @@ const Social = props => {
   }, []);
 
   const authenticate = useCallback(
-    platform => async () => {
+    provider => async () => {
       let response;
-      if (platform === 'email') response = await goTo('Email');
-      if (platform === 'apple') response = await apple();
-      if (platform === 'google') response = await google();
-      if (platform === 'facebook') response = await facebook();
+      if (provider === 'email') response = await goTo('Email');
+      if (provider === 'apple') response = await apple();
+      if (provider === 'google') response = await google();
+      if (provider === 'facebook') response = await facebook();
 
       if (response?.error) {
         console.error('3rd Party Auth Error:', response);
         return setError(response.error);
       } else if (response) {
-        setDataFromProvider(response);
+        setDataFromProvider(provider, response);
       }
     },
     [goTo, apple, google, facebook, setDataFromProvider],

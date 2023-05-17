@@ -16,7 +16,7 @@ const Finish = () => {
     password: '',
   });
   const [error, setError] = useState({
-    general: 'The email address is already in use by another account.',
+    general: '',
     email: '',
     password: '',
   });
@@ -95,6 +95,7 @@ const Finish = () => {
         type="text"
         name="firstname"
         label="First name"
+        disabled={!!oldData.firstname}
         value={newData.firstname}
         onChange={onChangeData('firstname')}
         groupAfter
@@ -166,7 +167,7 @@ const Finish = () => {
 
       <Error text={error.general} />
 
-      <Whitespace marginBottom={-30} />
+      <Whitespace marginBottom={-20} />
 
       <Button type="standard" disabled={disabled} onPress={submit}>
         Agree and continue

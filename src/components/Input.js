@@ -103,7 +103,7 @@ const Input = props => {
 
   return (
     <KeyboardAvoidingView>
-      <View style={[global.inputContainer]}>
+      <View style={global.inputContainer}>
         {label ? (
           <Text style={[global.inputLabel, typography.regular]}>{value && label}</Text>
         ) : null}
@@ -134,8 +134,8 @@ const Input = props => {
           autoCorrect={false}
           {...rest}
         />
-        <Error text={error} />
       </View>
+      <Error text={error} />
     </KeyboardAvoidingView>
   );
 };

@@ -88,7 +88,6 @@ const global = StyleSheet.create({
   },
   input: {
     color: '#000000',
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -162,8 +161,8 @@ const global = StyleSheet.create({
   error: {
     color: 'red',
     position: 'relative',
-    marginTop: -7,
-    marginBottom: 20,
+    marginTop: 3,
+    marginBottom: 10,
     lineHeight: 17,
   },
 });

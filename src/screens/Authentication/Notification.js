@@ -9,7 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import {Page, Button, Typography, Whitespace, Container, Error} from '../../components';
 import {global} from '../../assets/styles';
-import notification from '../../assets/images/notification.png';
+import notificationImg from '../../assets/images/notification.png';
 import switchOff from '../../assets/images/switch-off.png';
 import switchOn from '../../assets/images/switch-on.png';
 
@@ -76,9 +76,9 @@ const Notification = () => {
   }, [navigation, setError]);
 
   const request = useCallback(async () => {
-    let rs;
+    let notification;
     if (Platform.OS === 'ios') {
-      rs = Permissions.request('notification')
+      notification = Permissions.request('notification')
         .then(async response => {
           if (response === 'authorized') {
             // Permission granted
@@ -100,7 +100,7 @@ const Notification = () => {
         PermissionsAndroid.PERMISSIONS.SEND_SMS,
       );
       // Request permission to send notifications
-      rs = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS)
+      notification = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS)
         .then(async granted => {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             // Permission granted
@@ -118,9 +118,11 @@ const Notification = () => {
     }
 
     setCount(count + 1);
-    setEnabled(rs);
+    setEnabled(notification);
+    const data = await AsyncStorage.getItem('authentication::data');
+    await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, notification}));
 
-    if (!rs && count > 1) {
+    if (!notification && count > 1) {
       return Linking.openSettings();
     }
     setTimeout(goToHome, 1000);
@@ -128,7 +130,7 @@ const Notification = () => {
 
   return (
     <Page>
-      <Image source={notification} style={global.largeIcon} />
+      <Image source={notificationImg} style={global.largeIcon} />
 
       <Typography type="largeHeading">Turn on notifications?</Typography>
 
