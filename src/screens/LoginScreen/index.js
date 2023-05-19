@@ -15,7 +15,7 @@ const LoginScreen = () => {
 
   useEffect(() => {
     SplashScreen.hide();
-  });
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
