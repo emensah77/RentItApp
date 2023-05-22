@@ -7,14 +7,22 @@ import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 
-import {Page, Button, Typography, Whitespace, Container, Error} from '../../components';
+import {
+  Page,
+  Button,
+  Typography,
+  Whitespace,
+  Container,
+  Error,
+  PageSpinner,
+} from '../../components';
 import {global} from '../../assets/styles';
 import notificationImg from '../../assets/images/notification.png';
 import switchOff from '../../assets/images/switch-off.png';
 import switchOn from '../../assets/images/switch-on.png';
 
 const Notification = () => {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(null);
   const [count, setCount] = useState(1);
   const [error, setError] = useState('');
 
@@ -148,12 +156,16 @@ const Notification = () => {
         })
         .catch(console.error);
 
-      setEnabled(!!notification);
       if (notification) {
-        goToHome(notification);
+        return goToHome(notification);
       }
+      setEnabled(!!notification);
     })();
-  }, [count, goToHome]);
+  }, [goToHome]);
+
+  if (enabled === null) {
+    return <PageSpinner />;
+  }
 
   return (
     <Page>
