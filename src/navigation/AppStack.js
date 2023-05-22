@@ -1,7 +1,7 @@
-import React, {useMemo, useContext} from 'react';
+import React, {useMemo, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import auth from '@react-native-firebase/auth';
 
-import {AuthContext} from './AuthProvider';
 import mixpanel from '../MixpanelConfig';
 
 import DestinationSearchScreen from '../screens/DestinationSearch';
@@ -15,19 +15,7 @@ import HomeTabNavigator from './HomeTabNavigator';
 
 const Stack = createStackNavigator();
 
-const onNavigationStateChange = user => state => {
-  const currentRoute = state.routes[state.index];
-  const currentScreen = currentRoute.name;
-
-  mixpanel.track('Screen Viewed', {
-    screenName: currentScreen,
-    userId: user ? user.uid : 'guest',
-  });
-};
-
 const AppStack = () => {
-  const {user} = useContext(AuthContext);
-
   const noHeader = useMemo(
     () => ({
       headerShown: false,
@@ -45,8 +33,18 @@ const AppStack = () => {
     [],
   );
 
+  const onNavigationStateChange = useCallback(state => {
+    const currentRoute = state.routes[state.index];
+    const screenName = currentRoute.name;
+    const user = auth().currentUser;
+    mixpanel.track('Screen Viewed', {
+      screenName,
+      userId: user ? user.uid : 'guest',
+    });
+  }, []);
+
   return (
-    <Stack.Navigator onStateChange={onNavigationStateChange(user)}>
+    <Stack.Navigator onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />

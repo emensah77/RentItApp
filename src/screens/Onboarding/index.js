@@ -12,7 +12,7 @@ const Onboarding = () => {
   const navigation = useNavigation();
 
   const goTo = useCallback(() => {
-    navigation.navigate('LocationPermissions');
+    navigation.navigate('Email');
   }, [navigation]);
 
   return (
