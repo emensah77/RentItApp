@@ -55,7 +55,11 @@ const AuthStack = () => {
         _initialRouteName = 'Notification';
       }
 
-      if (!data?.firstname || !data?.lastname || !data?.birthDay || !data?.agreement) {
+      if (!data?.agreement) {
+        _initialRouteName = 'Agreement';
+      }
+
+      if (!data?.firstname || !data?.lastname || !data?.birthDay) {
         _initialRouteName = 'Finish';
       }
 

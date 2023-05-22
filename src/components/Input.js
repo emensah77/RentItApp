@@ -53,7 +53,7 @@ const Input = props => {
     e => {
       if (type === 'date') {
         const newValue = new Date(e.nativeEvent.timestamp);
-        let month = (newValue || value).getMonth();
+        let month = (newValue || value).getMonth() + 1;
         month = month < 10 ? `0${month}` : month;
         let day = (newValue || value).getDate();
         day = day < 10 ? `0${day}` : day;
