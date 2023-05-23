@@ -38,47 +38,47 @@ export const styles = StyleSheet.create({
   skeleton: {paddingBottom: 0, width: '100%'},
   mainContent: {
     paddingHorizontal: offsets.offsetC,
-    marginTop: offsets.offsetC,
+    // marginTop: offsets.offsetC,
   },
-  hostText: {
+  helpCenter: {
     textDecorationLine: 'underline',
-    color: '#717171',
-    textDecorationColor: '#717171',
-    fontSize: 14,
   },
-  coHosts: {
-    flexDirection: 'row',
-    marginTop: 40,
+  imgBlock: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#D9D9D9',
+    marginTop: 8,
+    marginBottom: 8,
   },
-  imgHosts: {
-    marginLeft: 15,
-  },
-  superHost: {
-    marginBottom: 30,
-  },
-
-  reportText: {
-    textDecorationLine: 'underline',
-    color: '#252525',
-    textDecorationColor: '#252525',
-    paddingLeft: 10,
-    fontWeight: 'bold',
-    fontFamily: fonts.primary,
-  },
-  reportBlock: {
-    flexDirection: 'row',
-  },
-  reserveBlock: {
+  checkBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: offsets.offsetC,
-    paddingTop: 10,
-    paddingBottom: 10,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
+    marginTop: 12,
   },
-  reserveBlockInfo: {
-    // width: wp(55),
+  border: {
+    width: 1,
+    backgroundColor: '#DEDEDE',
+  },
+  leftHostData: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  hostData: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  detailsItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 40,
+  },
+  confirmationCode: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  readMoreText: {
+    flexDirection: 'row',
   },
 });

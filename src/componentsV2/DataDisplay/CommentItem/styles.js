@@ -1,8 +1,9 @@
-import {Platform, StyleSheet} from 'react-native';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {StyleSheet} from 'react-native';
 
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors, offsets} from '../../../styles/globalStyles';
 
+// eslint-disable-next-line import/prefer-default-export
 export const styles = StyleSheet.create({
   main: {
     overflow: 'hidden',

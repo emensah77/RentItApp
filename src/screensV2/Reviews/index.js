@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
-import {FlatList, ScrollView} from 'react-native';
-import {View, Image} from 'react-native-animatable';
+import {View, Image, FlatList, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import {styles} from './styles';
@@ -36,7 +35,6 @@ const Reviews = ({route}) => {
       />
     );
   }, []);
-
   return (
     <ScrollView>
       <View style={styles.mainContent}>

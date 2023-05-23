@@ -1,0 +1,94 @@
+import React, {useState} from 'react';
+import {View, Image, Pressable, Modal} from 'react-native';
+import {styles} from './styles';
+import Typography from '../../componentsV2/DataDisplay/Typography';
+import Carousel from '../../componentsV2/DataDisplay/Carousel';
+import CloseIcon from '../../../assets/data/images/icons/close-icon.png';
+import MapIcon from '../../../assets/data/images/icons/map-icon.png';
+import InputFieldNew from '../../InputFieldNew';
+
+const WishtListItem = ({route}) => {
+  const item = route?.params.item;
+  const [open, setOpen] = useState(false);
+  const openModal = () => {
+    setOpen(!open);
+  };
+
+  return (
+    <View style={styles.mainContent}>
+      <Typography variant="xlarge" bold>
+        Weekend away
+      </Typography>
+      <View style={styles.topContent}>
+        <View style={styles.wishListTop}>
+          <Typography style={{textAlign: 'center'}}>Dates</Typography>
+        </View>
+        <View style={styles.wishListTop}>
+          <Typography style={{textAlign: 'center'}}>Guests</Typography>
+        </View>
+      </View>
+
+      <Carousel
+        postId={item.id}
+        images={item.images}
+        // isFav={checkIsFav(item.id)}
+        // onFavorite={onFavorite}
+      />
+      <Typography style={{marginTop: 12}} bold>
+        Harlingen, Netherlands
+      </Typography>
+      <Typography style={{color: '#717171', marginTop: 5}}>Professional Host</Typography>
+      <Typography style={{color: '#717171', marginTop: 5}}>18-23 Dec</Typography>
+      <View>
+        <Typography style={{marginTop: 8}} bold>
+          ${item.newPrice} total
+        </Typography>
+      </View>
+      <Pressable style={styles.mapBlock} onPress={openModal}>
+        <View style={styles.mapContent}>
+          <Typography bold style={{color: '#fff'}}>
+            Map
+          </Typography>
+          <Image source={MapIcon} />
+        </View>
+      </Pressable>
+      {open && (
+        <Modal transparent={true}>
+          <View style={styles.modalBg}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Pressable onPress={openModal}>
+                  <Image source={CloseIcon} />
+                </Pressable>
+                <Typography variant="large" bold>
+                  Settings
+                </Typography>
+                <Pressable>
+                  <Typography style={styles.deleteButton} bold>
+                    Delete
+                  </Typography>
+                </Pressable>
+              </View>
+              <View style={styles.modalBody}>
+                <InputFieldNew name="Name" requirementText="50 characters maximum" />
+              </View>
+              <View style={styles.modalFooter}>
+                <Pressable onPress={openModal}>
+                  <Typography style={styles.cancelButton} bold>
+                    Cancel
+                  </Typography>
+                </Pressable>
+                <Pressable style={styles.createButtonBox}>
+                  <Typography style={styles.createButton} bold>
+                    Create
+                  </Typography>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </View>
+  );
+};
+export default WishtListItem;

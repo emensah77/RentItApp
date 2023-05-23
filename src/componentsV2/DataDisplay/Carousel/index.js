@@ -5,7 +5,7 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 
 import {colors, offsets} from '../../../styles/globalStyles';
-import {styles} from './styles.js';
+import {styles} from './styles';
 
 import CircleButton from '../../Inputs/CircleButton';
 import Typography from '../Typography';
@@ -56,7 +56,7 @@ const Carousel = ({postId, images, onFavorite}) => {
   return (
     <View>
       <FlatList
-        data={images.filter(image => !!image)}
+        data={images?.filter(image => !!image)}
         renderItem={renderItem}
         horizontal
         showsHorizontalScrollIndicator={false}

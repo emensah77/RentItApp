@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {View, FlatList} from 'react-native';
+import {View, FlatList, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import CircleButton from '../../componentsV2/Inputs/CircleButton';
@@ -66,19 +66,21 @@ const Amenities = () => {
   const keyExtractor = useCallback(item => item.id, []);
 
   return (
-    <View style={styles.mainContent}>
-      <CircleButton onPress={goBack} />
-      <Typography
-        variant="headingLarge"
-        bold
-        style={{marginTop: offsets.offsetC, marginBottom: 40}}>
-        Amenities
-      </Typography>
-      <Typography variant="large" bold style={{marginBottom: 20}}>
-        Bathroom
-      </Typography>
-      <FlatList data={data} renderItem={renderItem} keyExtractor={keyExtractor} />
-    </View>
+    <SafeAreaView>
+      <View style={styles.mainContent}>
+        <CircleButton onPress={goBack} />
+        <Typography
+          variant="headingLarge"
+          bold
+          style={{marginTop: offsets.offsetC, marginBottom: 40}}>
+          Amenities
+        </Typography>
+        <Typography variant="large" bold style={{marginBottom: 20}}>
+          Bathroom
+        </Typography>
+        <FlatList data={data} renderItem={renderItem} keyExtractor={keyExtractor} />
+      </View>
+    </SafeAreaView>
   );
 };
 

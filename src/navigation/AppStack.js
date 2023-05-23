@@ -7,7 +7,7 @@ import mixpanel from '../MixpanelConfig';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screensV2/PostScreen';
-import HouseTypeScreen from '../screens/HouseTypeScreen';
+import HomeScreen from '../screensV2/HomeScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
@@ -17,6 +17,10 @@ import HealthSafety from '../screensV2/HealthSafety';
 import HouseRules from '../screensV2/HouseRules';
 import Amenities from '../screensV2/Amenities';
 import Reviews from '../screensV2/Reviews';
+import WishtListItem from '../screensV2/WishListItem';
+import SelectReason from '../screensV2/SelectReason';
+import ConfirmCancellation from '../screensV2/ConfirmCancellation';
+import RefundPage from '../screensV2/RefundPage';
 
 const Stack = createStackNavigator();
 
@@ -64,7 +68,7 @@ const AppStack = () => {
 
       <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
 
-      <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} />
+      {/* <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} /> */}
 
       <Stack.Screen name="Post" component={PostScreen} options={noHeader} />
 
@@ -76,6 +80,11 @@ const AppStack = () => {
       <Stack.Screen name="Rules" component={HouseRules} options={noHeader} />
       <Stack.Screen name="Amenities" component={Amenities} options={noHeader} />
       <Stack.Screen name="ReviewsMore" component={Reviews} options={noHeader} />
+      <Stack.Screen name="Homes" component={HomeScreen} options={noHeader} />
+      <Stack.Screen name="WishListItem" component={WishtListItem} options={noHeader} />
+      <Stack.Screen name="Reason" component={SelectReason} options={noHeader} />
+      <Stack.Screen name="Cancelation" component={ConfirmCancellation} options={noHeader} />
+      <Stack.Screen name="Refund" component={RefundPage} options={noHeader} />
     </Stack.Navigator>
   );
 };
