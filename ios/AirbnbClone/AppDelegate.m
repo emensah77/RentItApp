@@ -31,7 +31,7 @@
    // [REQUIRED] Register BackgroundFetch
   [[TSBackgroundFetch sharedInstance] didFinishLaunching];
   [FIRApp configure];
-  RCTAppSetupPrepareApp(application);
+  RCTAppSetupPrepareApp(application, true);
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 #if RCT_NEW_ARCH_ENABLED
   _contextContainer = std::make_shared<facebook::react::ContextContainer const>();
@@ -40,7 +40,7 @@
   _bridgeAdapter = [[RCTSurfacePresenterBridgeAdapter alloc] initWithBridge:bridge contextContainer:_contextContainer];
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"AirbnbClone", nil);
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"AirbnbClone", nil, true);
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];
   } else {
