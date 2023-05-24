@@ -1,9 +1,10 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
-export const pageInnerHorizontalPadding = 30;
-export const standardWidth = 340;
-export const isPortrait = () => Dimensions.get('screen').height > Dimensions.get('screen').width;
+export const size = () => Dimensions.get('screen');
+export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
+export const pageInnerHorizontalPadding = 30;
+export const standardWidth = isPortrait && size().width > 450 ? 800 : 540;
 export const sizing = {
   maxWidth: standardWidth,
   width: '100%',
@@ -12,8 +13,9 @@ export const sizing = {
 
 const global = StyleSheet.create({
   flex: {flex: 1},
-  row: {...sizing, flexDirection: 'row', alignItems: 'center', alignSelf: 'center'},
-  spaceBetween: {...sizing, justifyContent: 'space-between', alignSelf: 'center'},
+  row: {...sizing, flexDirection: 'row'},
+  spaceBetween: {...sizing, justifyContent: 'space-between'},
+  flexStart: {...sizing, justifyContent: 'flex-start'},
   center: {
     justifyContent: 'center',
     alignItems: 'center',

@@ -3,6 +3,7 @@ import {Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import {appleAuth, appleAuthAndroid} from '@invertase/react-native-apple-authentication';
 import {LoginManager, AccessToken, Profile} from 'react-native-fbsdk-next';
@@ -11,7 +12,7 @@ import {Button, Page, Error} from '../../components';
 import emailImg from '../../assets/images/social/email.png';
 import appleImg from '../../assets/images/social/apple.png';
 import googleImg from '../../assets/images/social/google.png';
-import facebookImg from '../../assets/images/social/facebook.png';
+// import facebookImg from '../../assets/images/social/facebook.png';
 
 const Social = props => {
   const {noEmail, isPage} = props;
@@ -31,8 +32,62 @@ const Social = props => {
 
   const setDataFromProvider = useCallback(
     async (provider, data) => {
+      if (!data) {
+        return;
+      }
+
       await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, provider}));
-      goTo('Finish');
+
+      const query = await firestore()
+        .collection('users')
+        .where('email', '==', data.email)
+        .get()
+        .catch(console.error);
+      let route = 'Notification';
+      if (query && query.docs && query.docs.length > 0) {
+        const {_data} = query.docs[0];
+        const {
+          fname: firstname,
+          lname: lastname,
+          email: _email,
+          phoneNumber,
+          birthDay,
+          userImg: profilePicture,
+          marketing,
+          agreement,
+          notification,
+        } = _data;
+
+        await AsyncStorage.setItem(
+          'authentication::data',
+          JSON.stringify({
+            ...data,
+            provider,
+            email: _email,
+            firstname,
+            lastname,
+            birthDay,
+            phoneNumber,
+            profilePicture,
+            marketing,
+            agreement,
+            notification,
+          }),
+        );
+
+        if (!notification) {
+          route = 'Notification';
+        }
+
+        if (!agreement) {
+          route = 'Agreement';
+        }
+
+        if (!_email || !firstname || !lastname || !birthDay) {
+          route = 'Finish';
+        }
+      }
+      goTo(route);
     },
     [goTo],
   );
@@ -218,7 +273,7 @@ const Social = props => {
         </Button>
       )}
 
-      {appleAuthAndroid.isSupported && (
+      {Platform.OS === 'ios' && appleAuthAndroid.isSupported && (
         <Button type="primary" prefix={appleImg} onPress={authenticate('apple')}>
           Continue with Apple
         </Button>
@@ -228,9 +283,9 @@ const Social = props => {
         Continue with Google
       </Button>
 
-      <Button type="primary" prefix={facebookImg} onPress={authenticate('facebook')}>
+      {/* <Button type="primary" prefix={facebookImg} onPress={authenticate('facebook')}>
         Continue with Facebook
-      </Button>
+      </Button> */}
     </Wrapper>
   );
 };
