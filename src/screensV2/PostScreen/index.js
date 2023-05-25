@@ -17,18 +17,26 @@ import Divider from '../../componentsV2/DataDisplay/Divider';
 import PostAchievements from '../../componentsV2/Inputs/PostAchievements';
 import ListItemText from '../../componentsV2/DataDisplay/ListItemText';
 
+import Flag from '../../../assets/data/images/flag.svg';
+
 import rightAngle from '../../../assets/data/images/icons/right-angle.png';
-import DoorIcon from '../../../assets/data/images/icons/door.png';
-import MedalIcon from '../../../assets/data/images/icons/medal.png';
+import DoorIcon from '../../../assets/data/images/icons/door-icon.svg';
+import MedalIcon from '../../../assets/data/images/icons/medal-icon.svg';
 import CalendarIcon from '../../../assets/data/images/icons/calendar.png';
+import IconCalendar from '../../../assets/data/images/icons/calendar-icon.svg';
 import RentitGuaranteeImg from '../../../assets/data/images/additional/rentitGuarantee.png';
 import Icon4 from '../../../assets/data/images/icons/rules/icon4.png';
+import KitchenIcon from '../../../assets/data/images/icons/kitchen-icon.svg';
+import WifiIcon from '../../../assets/data/images/icons/wifi-icon.svg';
+import Dedicated from '../../../assets/data/images/icons/dedicated.svg';
+import CarIcon from '../../../assets/data/images/icons/car-icon.svg';
+import TvIcon from '../../../assets/data/images/icons/tv-icon.svg';
+import Star from '../../../assets/data/images/icons/star.svg';
+
 import RoomItem from '../../componentsV2/DataDisplay/RoomItem';
 import CommentItem from '../../componentsV2/DataDisplay/CommentItem';
-
 import PostMoreInfo from '../../componentsV2/DataDisplay/PostMoreInfo';
 import Button from '../../componentsV2/Inputs/Button';
-
 import RulesRow from '../../componentsV2/DataDisplay/RulesRow';
 import Reserve from '../../componentsV2/Inputs/Reserve';
 
@@ -51,38 +59,36 @@ const PostScreen = ({route}) => {
   const {checkIsFav, handleChangeFavorite} = useWishlist();
 
   const postMoreInfoData = [
-    {id: 1, moreInfoTitle: 'Availability', moreInfoText: '30 Oct -- 4 Nov', image: rightAngle},
-    {id: 2, moreInfoTitle: 'House rules', moreInfoText: 'Check-in: After 15:00', image: rightAngle},
+    {id: 1, moreInfoTitle: 'Availability', moreInfoText: '30 Oct - 4 Nov'},
+    {id: 2, moreInfoTitle: 'House rules', moreInfoText: 'Check-in: After 15:00'},
     {
       id: 3,
       moreInfoTitle: 'Health & safety',
       moreInfoText: 'Rentit’s COVID-19 safety practices apply carbon monoxide alarm',
-      image: rightAngle,
     },
     {
       id: 4,
       moreInfoTitle: 'Cancellation policy',
       moreInfoText:
         'Free cancellation before 25 Oct.Review the Host’s full cancellation policy which applies even if you cancel for illness or disruptions caused by COVID-19',
-      image: rightAngle,
     },
   ];
 
   const data = [
     {
-      image: Icon4,
+      image: 1,
       text: '1,128 Reviews',
     },
     {
-      image: Icon4,
+      image: 2,
       text: 'Identity verified',
     },
     {
-      image: Icon4,
+      image: 3,
       text: 'Superhost',
     },
     {
-      image: Icon4,
+      image: 4,
       text: 'Rentit.homes supporter',
     },
   ];
@@ -239,6 +245,7 @@ const PostScreen = ({route}) => {
             primary="This is a rare find."
             secondaryVariant="large"
             secondary="City Superhost’s place on Rentit is usually fully booked"
+            union={true}
           />
           <Divider />
           <ListItemText
@@ -252,18 +259,18 @@ const PostScreen = ({route}) => {
             primary="Self check-in"
             secondary="Check yourself in with the lockbox."
             reverse
-            icon={<Image source={DoorIcon} width={24} height={26} />}
+            icon={<DoorIcon width={24} height={26} />}
           />
           <ListItemText
             primary="City Superhost is a Superhost"
             secondary="Superhosts are experienced, highly rated hosts who are committed to providing great stays for their guests"
             reverse
-            icon={<Image source={MedalIcon} width={30} height={30} />}
+            icon={<MedalIcon width={24} height={26} />}
           />
           <ListItemText
             primary="Free cancellation before 25 Oct"
             reverse
-            icon={<Image source={CalendarIcon} width={30} height={30} />}
+            icon={<IconCalendar width={24} height={26} />}
           />
           <Divider />
           <Typography>
@@ -322,41 +329,46 @@ const PostScreen = ({route}) => {
             <></>
           )}
           <ListItemText
-            primary="What this place offers"
+            primary="Kitchen"
             reverse
             center
-            icon={<Image source={CalendarIcon} width={30} height={30} />}
+            icon={<KitchenIcon width={24} height={26} />}
+          />
+          <ListItemText primary="Wifi" reverse center icon={<WifiIcon width={24} height={26} />} />
+          <ListItemText
+            primary="Dedicated workspace"
+            reverse
+            center
+            icon={<Dedicated width={24} height={26} />}
           />
           <ListItemText
-            primary="What this place offers"
+            primary="Free driveway parking on premises - 1 space"
             reverse
             center
-            icon={<Image source={CalendarIcon} width={30} height={30} />}
+            icon={<CarIcon width={24} height={26} />}
           />
           <ListItemText
-            primary="What this place offers"
+            primary="55” HDTV with Netflix"
             reverse
             center
-            icon={<Image source={CalendarIcon} width={30} height={30} />}
+            icon={<TvIcon width={24} height={26} />}
           />
-          <ListItemText
-            primary="What this place offers"
-            reverse
-            center
-            icon={<Image source={CalendarIcon} width={30} height={30} />}
-          />
-          <ListItemText
-            primary="What this place offers"
-            reverse
-            center
-            icon={<Image source={CalendarIcon} width={30} height={30} />}
+          <Button
+            variant="outlined"
+            text="Show All 54 amenities"
+            onPress={goReviewScreen}
+            style={{marginBottom: 15, marginTop: 15}}
           />
           <Divider />
           {similarPosts?.length ? (
             <>
-              <Typography variant="xlarge" bold>
-                4.76 - 28 Reviews
-              </Typography>
+              <View style={styles.starBlock}>
+                <Star width={20} height={20} />
+                <Typography variant="xlarge" bold style={{paddingLeft: 10}}>
+                  4.76 - 28 Reviews
+                </Typography>
+              </View>
+
               <FlatList
                 style={{marginTop: offsets.offsetB}}
                 data={similarPosts}
@@ -420,7 +432,8 @@ const PostScreen = ({route}) => {
             keyExtractor={moreInfoKeyExtractor}
           />
           <View style={styles.reportBlock}>
-            <Image source={Icon4} />
+            {/* <Image source={Icon4} /> */}
+            <Flag width={20} height={20} />
             <Text style={styles.reportText}>Report this listing</Text>
           </View>
           <Divider />

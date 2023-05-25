@@ -46,6 +46,10 @@ export const styles = StyleSheet.create({
     textDecorationColor: '#717171',
     fontSize: 14,
   },
+  starBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   coHosts: {
     flexDirection: 'row',
     marginTop: 40,
@@ -67,6 +71,7 @@ export const styles = StyleSheet.create({
   },
   reportBlock: {
     flexDirection: 'row',
+    marginBottom: 40,
   },
   reserveBlock: {
     flexDirection: 'row',

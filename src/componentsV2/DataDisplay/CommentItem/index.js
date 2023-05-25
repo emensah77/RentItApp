@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {View, Image, Pressable} from 'react-native';
 
 import {styles} from './styles';
@@ -6,6 +6,12 @@ import Typography from '../Typography';
 import {offsets} from '../../../styles/globalStyles';
 
 const CommentItem = ({image, style, title, locality, subLocality, onPress}) => {
+  // const svgImage = (image) => {
+  //   switch(image){
+  //     case 1:
+  //       return <
+  //   }
+  // }
   return (
     <Pressable onPress={onPress} style={[styles.main, style]}>
       <View style={[styles.userTitleWrapper]}>
@@ -24,9 +30,7 @@ const CommentItem = ({image, style, title, locality, subLocality, onPress}) => {
           Very beautiful, clean and spacious house. Great location and access. Super easy and smooth
           check-in process. Hosts were great to communicate with and very helpf...
         </Typography>
-        <Typography
-          onPress={() => {}}
-          style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+        <Typography style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
           Learn more
         </Typography>
       </View>

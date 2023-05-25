@@ -4,7 +4,7 @@ import Typography from '../Typography';
 import {styles} from './styles';
 import RoomImage from '../../../../assets/data/images/room-example.png';
 
-const RoomCardHorizontal = ({title, infoDateText, infoText}) => {
+const RoomCardHorizontal = ({title, infoDateText, infoText, infoBottomText, infoSuperhost}) => {
   return (
     <View style={styles.content}>
       <Image source={RoomImage} style={styles.image} />
@@ -14,6 +14,10 @@ const RoomCardHorizontal = ({title, infoDateText, infoText}) => {
         </Typography>
         <Typography style={styles.infoDateText}>{infoDateText}</Typography>
         <Typography style={styles.infoText}>{infoText}</Typography>
+        <View style={styles.bottomBlock}>
+          <Typography>{infoBottomText}</Typography>
+          <Typography>{infoSuperhost}</Typography>
+        </View>
       </View>
     </View>
   );

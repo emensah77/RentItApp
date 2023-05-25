@@ -7,4 +7,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: offsets.offsetC,
     marginTop: offsets.offsetC,
   },
+  amenitiesList: {
+    marginBottom: 540,
+  },
 });

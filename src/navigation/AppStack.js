@@ -21,6 +21,7 @@ import WishtListItem from '../screensV2/WishListItem';
 import SelectReason from '../screensV2/SelectReason';
 import ConfirmCancellation from '../screensV2/ConfirmCancellation';
 import RefundPage from '../screensV2/RefundPage';
+import ListingSteps from '../screensV2/ListingSteps';
 
 const Stack = createStackNavigator();
 
@@ -85,6 +86,7 @@ const AppStack = () => {
       <Stack.Screen name="Reason" component={SelectReason} options={noHeader} />
       <Stack.Screen name="Cancelation" component={ConfirmCancellation} options={noHeader} />
       <Stack.Screen name="Refund" component={RefundPage} options={noHeader} />
+      <Stack.Screen name="ListingStep" component={ListingSteps} options={noHeader} />
     </Stack.Navigator>
   );
 };

@@ -9,7 +9,7 @@ import Typography from '../../componentsV2/DataDisplay/Typography';
 import InputField from '../../componentsV2/Inputs/InputField';
 import RatingItem from '../../componentsV2/DataDisplay/RatingItem';
 
-import Star from '../../../assets/data/images/icons/star.png';
+import Star from '../../../assets/data/images/icons/star.svg';
 import CommentItem from '../../componentsV2/DataDisplay/CommentItem';
 import {offsets} from '../../styles/globalStyles';
 
@@ -40,8 +40,9 @@ const Reviews = ({route}) => {
       <View style={styles.mainContent}>
         <CircleButton onPress={goBack} />
         <View style={styles.title}>
-          <Image source={Star} width={19} height={19} style={{marginRight: 10}} />
-          <Typography variant="xlarge" bold>
+          {/* <Image source={Star} width={19} height={19} style={{marginRight: 10}} /> */}
+          <Star width={20} height={20} />
+          <Typography variant="xlarge" bold style={{paddingLeft: 10}}>
             4.76 - 28 Reviews
           </Typography>
         </View>

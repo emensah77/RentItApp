@@ -21,31 +21,31 @@ const Amenities = () => {
   const navigation = useNavigation();
   const data = [
     {
-      image: Icon1,
+      image: 1,
       text: 'Bathroom',
     },
     {
-      image: Icon2,
+      image: 2,
       text: 'Hair dryer',
     },
     {
-      image: Icon3,
+      image: 3,
       text: 'Cleaning products',
     },
     {
-      image: Icon4,
+      image: 4,
       text: 'Shampoo',
     },
     {
-      image: Icon4,
+      image: 5,
       text: 'Conditioner',
     },
     {
-      image: Icon5,
+      image: 6,
       text: 'Body soap',
     },
     {
-      image: Icon6,
+      image: 7,
       text: 'Hot water',
     },
   ];
@@ -78,7 +78,9 @@ const Amenities = () => {
         <Typography variant="large" bold style={{marginBottom: 20}}>
           Bathroom
         </Typography>
-        <FlatList data={data} renderItem={renderItem} keyExtractor={keyExtractor} />
+        <View style={styles.amenitiesList}>
+          <FlatList data={data} renderItem={renderItem} keyExtractor={keyExtractor} />
+        </View>
       </View>
     </SafeAreaView>
   );

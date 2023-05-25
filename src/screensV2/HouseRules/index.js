@@ -19,23 +19,23 @@ const HouseRules = () => {
 
   const data = [
     {
-      image: Icon1,
+      image: 5,
       text: 'Check-in: After 15:00',
     },
     {
-      image: Icon1,
+      image: 5,
       text: 'Check-out: 11:00',
     },
     {
-      image: Icon2,
+      image: 6,
       text: 'Self check-in with lockbox',
     },
     {
-      image: Icon3,
+      image: 7,
       text: 'No pets',
     },
     {
-      image: Icon4,
+      image: 8,
       text: 'No parties',
     },
   ];

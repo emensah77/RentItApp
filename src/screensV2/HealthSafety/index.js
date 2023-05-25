@@ -15,15 +15,15 @@ const HealthSafety = () => {
   const navigation = useNavigation();
   const data = [
     {
-      image: Icon5,
+      image: 9,
       text: 'Renit’s COVID-19 safety practices apply',
     },
     {
-      image: Icon6,
+      image: 10,
       text: 'Carbon monoxide alarm',
     },
     {
-      image: Icon7,
+      image: 11,
       text: 'Smoke alarm',
     },
   ];
@@ -47,7 +47,7 @@ const HealthSafety = () => {
       <View style={styles.mainContent}>
         <CircleButton onPress={goBack} />
         <Typography variant="xlarge" bold style={{marginTop: offsets.offsetC, marginBottom: 28}}>
-          House rules
+          Healt & safety
         </Typography>
         <FlatList data={data} renderItem={renderItem} keyExtractor={keyExtractor} />
       </View>
