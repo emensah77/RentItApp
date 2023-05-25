@@ -3,11 +3,11 @@
  */
 
 import {AppRegistry} from 'react-native';
-
-import Amplify from 'aws-amplify';
+import Amplify from '@aws-amplify/core';
 import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import * as Sentry from '@sentry/react-native';
 
 import config from './src/aws-exports';
 import {name as appName} from './app.json';
@@ -16,6 +16,11 @@ import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
 
 Amplify.configure(config);
+
+Sentry.init({
+  dsn: 'https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972',
+  environment: __DEV__ ? 'development' : 'production',
+});
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.debug('Message handled in the background!', remoteMessage);
