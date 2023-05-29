@@ -51,8 +51,8 @@ const Inbox = () => {
         content: messages.map(({name, location, description, status, date, read, src}, i) => (
           <React.Fragment key={name}>
             <CardDisplay
-              imageCircle={60}
-              imageSrc={src}
+              leftImageCircle={60}
+              leftImageSrc={src}
               name={name}
               location={location}
               description={description}
@@ -69,8 +69,8 @@ const Inbox = () => {
         content: notifications.map(({name, location, description, status, date, read, src}, i) => (
           <React.Fragment key={name}>
             <CardDisplay
-              imageCircle={60}
-              imageSrc={src}
+              leftImageCircle={60}
+              leftImageSrc={src}
               name={name}
               location={location}
               description={description}

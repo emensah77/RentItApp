@@ -7,10 +7,13 @@ import Image from './Image';
 
 const CardDisplay = props => {
   const {
-    imageWidth,
-    imageHeight,
-    imageCircle,
-    imageSrc,
+    leftImageWidth,
+    leftImageHeight,
+    leftImageCircle,
+    leftImageSrc,
+    rightImageWidth,
+    rightImageHeight,
+    rightImageSrc,
     name,
     location,
     numberOfLines,
@@ -23,7 +26,12 @@ const CardDisplay = props => {
 
   return (
     <Container row type={center ? 'center' : 'flexStart'}>
-      <Image width={imageWidth} height={imageHeight} circle={imageCircle} src={imageSrc} />
+      <Image
+        width={leftImageWidth}
+        height={leftImageHeight}
+        circle={leftImageCircle}
+        src={leftImageSrc}
+      />
 
       <Container type="contentBox">
         <Container row type="flexStart">
@@ -48,17 +56,20 @@ const CardDisplay = props => {
           ) : null}
         </Container>
 
-        <Whitespace marginTop={2} />
+        {description ? (
+          <>
+            <Whitespace marginTop={2} />
+            <Container row type={center ? 'center' : 'flexStart'}>
+              <Typography
+                type={bold ? 'levelOneThick' : 'notice'}
+                numberOfLines={numberOfLines || (!(name && location) ? 3 : 2)}>
+                {description}
+              </Typography>
+            </Container>
+          </>
+        ) : null}
 
-        <Container row type={center ? 'center' : 'flexStart'}>
-          <Typography
-            type={bold ? 'levelOneThick' : 'notice'}
-            numberOfLines={numberOfLines || (!(name && location) ? 3 : 2)}>
-            {description}
-          </Typography>
-        </Container>
-
-        <Whitespace marginTop={5} />
+        {status && date ? <Whitespace marginTop={5} /> : null}
 
         <Container row type="flexStart">
           {status ? <Typography type="levelTwoThick">{status}</Typography> : null}
@@ -82,6 +93,8 @@ const CardDisplay = props => {
           ) : null}
         </Container>
       </Container>
+
+      <Image width={rightImageWidth} height={rightImageHeight} src={rightImageSrc} />
     </Container>
   );
 };

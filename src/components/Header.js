@@ -11,8 +11,9 @@ const Header = props => {
   return (
     <View style={global.header}>
       <Pressable onPress={onClose} style={global.leftHeaderIcon} hitSlop={50}>
-        <Image source={leftIcon || close} />
+        <Image style={global.leftHeaderIconImage} source={leftIcon || close} />
       </Pressable>
+
       {typeof children === 'string' ? (
         <Typography type="heading" center>
           {children}
@@ -20,6 +21,7 @@ const Header = props => {
       ) : (
         children
       )}
+
       <Pressable onPress={onMenuToggle} style={global.rightHeaderIcon} hitSlop={50}>
         <Image source={rightIcon || close} />
       </Pressable>

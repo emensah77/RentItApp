@@ -35,6 +35,7 @@ const Page = props => {
         {type === 'large' && header && !inline ? (
           <>
             <Whitespace marginTop={30} />
+
             <Typography type="largeHeading">{header}</Typography>
           </>
         ) : null}
@@ -44,6 +45,7 @@ const Page = props => {
       {footer ? (
         <>
           <Whitespace marginTop={footerTop || 5} />
+
           <View style={global.footer} onLayout={onFooterLayout}>
             {footer}
           </View>

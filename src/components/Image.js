@@ -9,16 +9,15 @@ const RentitImage = props => {
       width: width || circle,
       height: height || circle,
       borderRadius: circle || 0,
-      // borderWidth: __DEV__ ? 1 : 0,
       borderColor: '#000000',
-      marginTop: -3,
       overflow: 'hidden',
+      // borderWidth: __DEV__ ? 1 : 0,
     }),
     [circle, width, height],
   );
 
   const imageStyle = useMemo(
-    () => ({width: circle || width, height: circle || height}),
+    () => ({width: circle || width, height: circle || height, alignSelf: 'flex-start'}),
     [circle, width, height],
   );
 

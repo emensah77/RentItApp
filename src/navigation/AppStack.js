@@ -7,6 +7,8 @@ import mixpanel from '../MixpanelConfig';
 import Inbox from '../screens/Profile/Inbox';
 import Chat from '../screens/Profile/Chat';
 import Menu from '../screens/Profile/Menu';
+import PaymentsAndPayouts from '../screens/Profile/PaymentsAndPayouts';
+import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screens/PostScreen';
@@ -47,12 +49,16 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="Menu" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="PaymentsAndPayouts" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
 
       <Stack.Screen name="Menu" component={Menu} options={noHeader} />
+
+      <Stack.Screen name="PaymentsAndPayouts" component={PaymentsAndPayouts} options={noHeader} />
+
+      <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
 
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 

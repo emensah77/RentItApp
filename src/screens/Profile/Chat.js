@@ -16,7 +16,7 @@ import logo from '../../assets/images/logo.png';
 import moon from '../../assets/images/moon.png';
 import listing from '../../assets/images/listing.png';
 import share from '../../assets/images/share.png';
-import temp from '../../assets/images/temp1.png';
+import temp from '../../assets/images/temp/temp1.png';
 
 const Chat = () => {
   return (
@@ -34,8 +34,8 @@ const Chat = () => {
       footer={
         <>
           <CardDisplay
-            imageCircle={38}
-            imageSrc={moon}
+            leftImageCircle={38}
+            leftImageSrc={moon}
             description={
               <Typography type="levelTwoThick" size={12} color="#959595">
                 It&apos;s<Typography color="#717171"> 4:32 AM </Typography>
@@ -51,9 +51,9 @@ const Chat = () => {
         </>
       }>
       <CardDisplay
-        imageWidth={38}
-        imageHeight={38}
-        imageSrc={temp}
+        leftImageWidth={38}
+        leftImageHeight={38}
+        leftImageSrc={temp}
         numberOfLines={1}
         description={
           <Typography type="link" size={15} color="#252525">
@@ -71,9 +71,9 @@ const Chat = () => {
       <Container row type="center">
         <Container row type="chipSmall" color="#FFF" width={90}>
           <CardDisplay
-            imageWidth={12.95}
-            imageHeight={15}
-            imageSrc={listing}
+            leftImageWidth={12.95}
+            leftImageHeight={15}
+            leftImageSrc={listing}
             numberOfLines={1}
             description="Listing"
             center
@@ -85,9 +85,9 @@ const Chat = () => {
 
         <Container row type="chipSmall" color="#FFF" width={130}>
           <CardDisplay
-            imageWidth={12.95}
-            imageHeight={15}
-            imageSrc={share}
+            leftImageWidth={12.95}
+            leftImageHeight={15}
+            leftImageSrc={share}
             numberOfLines={1}
             description="Share listing"
             center
@@ -108,9 +108,9 @@ const Chat = () => {
 
       <Container row center type="chip">
         <CardDisplay
-          imageWidth={16}
-          imageHeight={16}
-          imageSrc={logo}
+          leftImageWidth={16}
+          leftImageHeight={16}
+          leftImageSrc={logo}
           numberOfLines={2}
           description={
             <Typography type="levelOneThick" size={12} color="#717171">
@@ -128,8 +128,8 @@ const Chat = () => {
       <Whitespace marginTop={24} />
 
       <CardDisplay
-        imageCircle={38}
-        imageSrc={moon}
+        leftImageCircle={38}
+        leftImageSrc={moon}
         name="Dolly 2"
         location="4:26 PM"
         description="Looking forward to staying"
@@ -140,9 +140,9 @@ const Chat = () => {
 
       <Container row center type="chip">
         <CardDisplay
-          imageWidth={16}
-          imageHeight={16}
-          imageSrc={logo}
+          leftImageWidth={16}
+          leftImageHeight={16}
+          leftImageSrc={logo}
           numberOfLines={2}
           description={
             <Typography type="levelOneThick" size={12} color="#717171">
@@ -160,8 +160,8 @@ const Chat = () => {
       <Whitespace marginTop={24} />
 
       <CardDisplay
-        imageCircle={38}
-        imageSrc={moon}
+        leftImageCircle={38}
+        leftImageSrc={moon}
         name="Dolly"
         location="4:26 PM"
         description="Sorry I need to cancel"
@@ -178,9 +178,9 @@ const Chat = () => {
 
       <Container row center type="chip">
         <CardDisplay
-          imageWidth={16}
-          imageHeight={16}
-          imageSrc={logo}
+          leftImageWidth={16}
+          leftImageHeight={16}
+          leftImageSrc={logo}
           description={
             <Typography type="levelOneThick" size={12} color="#717171">
               Reservation cancelled by guest

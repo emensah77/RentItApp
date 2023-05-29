@@ -79,6 +79,10 @@ const global = StyleSheet.create({
     position: 'absolute',
     left: pageInnerHorizontalPadding,
   },
+  leftHeaderIconImage: {
+    width: 45,
+    height: 45,
+  },
   rightHeaderIcon: {
     position: 'absolute',
     right: pageInnerHorizontalPadding,
@@ -168,7 +172,8 @@ const global = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     zIndex: 200,
     alignSelf: 'center',
-    marginTop: -3,
+    marginTop: -20,
+    position: 'absolute',
   },
   noTextDividerTextContainer: {
     padding: 0,
@@ -183,8 +188,6 @@ const global = StyleSheet.create({
     width: '100%',
     backgroundColor: '#DEDEDE',
     zIndex: 100,
-    marginTop: 18,
-    position: 'absolute',
   },
   noTextDivider: {marginTop: 0},
   dropdownItem: {
