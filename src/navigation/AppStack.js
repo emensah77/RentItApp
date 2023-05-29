@@ -4,6 +4,9 @@ import auth from '@react-native-firebase/auth';
 
 import mixpanel from '../MixpanelConfig';
 
+import Inbox from '../screens/Profile/Inbox';
+import Chat from '../screens/Profile/Chat';
+import Menu from '../screens/Profile/Menu';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screens/PostScreen';
@@ -44,7 +47,13 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="Menu" onStateChange={onNavigationStateChange}>
+      <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
+
+      <Stack.Screen name="Chat" component={Chat} options={noHeader} />
+
+      <Stack.Screen name="Menu" component={Menu} options={noHeader} />
+
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />

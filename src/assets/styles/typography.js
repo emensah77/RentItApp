@@ -6,13 +6,14 @@ const fontType = {
   fontFamily: 'Manrope',
   fontStyle: 'normal',
   maxWidth: standardWidth,
-  width: '100%',
+  width: 'auto',
   alignSelf: 'center',
 };
 
 const typography = StyleSheet.create({
   largeHeading: {
     ...fontType,
+    width: '100%',
     fontWeight: '800',
     fontSize: 32,
     lineHeight: 38.4,
@@ -25,6 +26,7 @@ const typography = StyleSheet.create({
     fontSize: 17,
     lineHeight: 24,
     color: '#252525',
+    width: '65%',
   },
   regular: {
     ...fontType,
@@ -53,6 +55,9 @@ const typography = StyleSheet.create({
   },
   link: {
     color: '#194CC3',
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+    textDecorationColor: '#000',
   },
   notice: {
     ...fontType,
@@ -94,6 +99,27 @@ const typography = StyleSheet.create({
   },
   left: {
     textAlign: 'left',
+  },
+  tabText: {
+    ...fontType,
+    fontWeight: '700',
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#000000',
+  },
+  levelOneThick: {
+    ...fontType,
+    fontWeight: '800',
+    fontSize: 14,
+    lineHeight: 16,
+    color: '#252525',
+  },
+  levelTwoThick: {
+    ...fontType,
+    fontWeight: '500',
+    fontSize: 14,
+    lineHeight: 16,
+    color: '#252525',
   },
 });
 

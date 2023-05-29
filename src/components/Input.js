@@ -23,6 +23,7 @@ const Input = props => {
     error,
     plain,
     disabled,
+    inline,
     ...rest
   } = props;
 
@@ -124,6 +125,7 @@ const Input = props => {
             groupBefore ? global.groupBefore : groupAfter ? global.groupAfter : {},
             activeStyle,
             plain ? global.plain : {},
+            inline ? global.inlineInput : {},
             disabled ? button.disabled : {},
           ]}
           multiLine={!!multiLine}

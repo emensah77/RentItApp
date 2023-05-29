@@ -4,7 +4,7 @@ export const size = () => Dimensions.get('screen');
 export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
 export const pageInnerHorizontalPadding = 30;
-export const standardWidth = isPortrait && size().width > 450 ? 800 : 540;
+export const standardWidth = isPortrait && size().width > 450 ? 800 : 450;
 export const sizing = {
   maxWidth: standardWidth,
   width: '100%',
@@ -15,7 +15,7 @@ const global = StyleSheet.create({
   flex: {flex: 1},
   row: {...sizing, flexDirection: 'row'},
   spaceBetween: {...sizing, justifyContent: 'space-between'},
-  flexStart: {...sizing, justifyContent: 'flex-start'},
+  flexStart: {justifyContent: 'flex-start'},
   center: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -23,6 +23,9 @@ const global = StyleSheet.create({
   column: {
     flexDirection: 'column',
   },
+  flexEnd: {justifyContent: 'flex-end'},
+  columnReverse: {flexDirection: 'column-reverse'},
+  rowReverse: {flexDirection: 'row-reverse'},
   zeroElevation: {
     elevation: 0,
     zIndex: 0,
@@ -44,6 +47,15 @@ const global = StyleSheet.create({
     paddingBottom: 32,
     flexGrow: 1,
   },
+  footer: {
+    paddingHorizontal: pageInnerHorizontalPadding,
+    backgroundColor: '#FFF',
+    width: '100%',
+    paddingTop: 10,
+    paddingBottom: 10,
+    position: 'absolute',
+    bottom: 0,
+  },
   header: {
     backgroundColor: '#FFF',
     width: '100%',
@@ -63,9 +75,13 @@ const global = StyleSheet.create({
   ovalIcon: {
     borderRadius: 12,
   },
-  headerIcon: {
+  leftHeaderIcon: {
     position: 'absolute',
     left: pageInnerHorizontalPadding,
+  },
+  rightHeaderIcon: {
+    position: 'absolute',
+    right: pageInnerHorizontalPadding,
   },
   prefix: {
     position: 'absolute',
@@ -110,6 +126,15 @@ const global = StyleSheet.create({
     alignSelf: 'center',
   },
   inputLabel: {position: 'absolute', left: 14, top: 2, color: '#717171', alignSelf: 'center'},
+  inlineInput: {
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+    width: 342,
+    maxWidth: '100%',
+    height: 40,
+    borderRadius: 31,
+    flex: 0,
+  },
   plain: {
     width: 'auto',
     minWidth: 225,
@@ -137,6 +162,7 @@ const global = StyleSheet.create({
     marginVertical: 42.5,
     backgroundColor: 'transparent',
   },
+  noTextDividerContainer: {marginVertical: 25},
   dividerTextContainer: {
     padding: 7,
     backgroundColor: '#FFFFFF',
@@ -144,18 +170,23 @@ const global = StyleSheet.create({
     alignSelf: 'center',
     marginTop: -3,
   },
+  noTextDividerTextContainer: {
+    padding: 0,
+    marginTop: 0,
+  },
   dividerText: {
     width: 'auto',
     color: '#717171',
   },
   divider: {
-    height: StyleSheet.hairlineWidth,
+    height: 2 * StyleSheet.hairlineWidth,
     width: '100%',
     backgroundColor: '#DEDEDE',
     zIndex: 100,
     marginTop: 18,
     position: 'absolute',
   },
+  noTextDivider: {marginTop: 0},
   dropdownItem: {
     paddingHorizontal: pageInnerHorizontalPadding - 5,
     paddingVertical: pageInnerHorizontalPadding / 2,
@@ -167,6 +198,38 @@ const global = StyleSheet.create({
     marginBottom: 10,
     lineHeight: 17,
   },
+  chip: {
+    backgroundColor: '#F7F7F7',
+    height: 45,
+    width: 'auto',
+    borderWidth: 2,
+    borderColor: '#F7F7F7',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 41,
+  },
+  chipSmall: {
+    backgroundColor: '#F7F7F7',
+    height: 34,
+    width: 'auto',
+    borderWidth: 1,
+    borderColor: '#BFBFBF',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+  },
+  contentBox: {
+    maxWidth: 350,
+    width: '80%',
+    marginLeft: 11,
+  },
+  tab: {borderBottomWidth: 2, borderBottomColor: '#000000', height: 36},
+  tabContent: {
+    marginTop: 25,
+  },
+  // bottom: {position: 'absolute', bottom: 0, backgroundColor: 'red'},
 });
 
 export default global;
