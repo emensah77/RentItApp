@@ -13,9 +13,9 @@ export const sizing = {
 
 const global = StyleSheet.create({
   flex: {flex: 1},
-  row: {...sizing, flexDirection: 'row'},
   spaceBetween: {...sizing, justifyContent: 'space-between'},
-  flexStart: {justifyContent: 'flex-start'},
+  flexStart: {...sizing, justifyContent: 'flex-start'},
+  flexEnd: {...sizing, justifyContent: 'flex-end'},
   center: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -23,8 +23,8 @@ const global = StyleSheet.create({
   column: {
     flexDirection: 'column',
   },
-  flexEnd: {justifyContent: 'flex-end'},
   columnReverse: {flexDirection: 'column-reverse'},
+  row: {...sizing, flexDirection: 'row'},
   rowReverse: {flexDirection: 'row-reverse'},
   zeroElevation: {
     elevation: 0,
@@ -78,10 +78,6 @@ const global = StyleSheet.create({
   leftHeaderIcon: {
     position: 'absolute',
     left: pageInnerHorizontalPadding,
-  },
-  leftHeaderIconImage: {
-    width: 45,
-    height: 45,
   },
   rightHeaderIcon: {
     position: 'absolute',
@@ -232,7 +228,6 @@ const global = StyleSheet.create({
   tabContent: {
     marginTop: 25,
   },
-  // bottom: {position: 'absolute', bottom: 0, backgroundColor: 'red'},
 });
 
 export default global;

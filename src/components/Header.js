@@ -22,9 +22,11 @@ const Header = props => {
         children
       )}
 
-      <Pressable onPress={onMenuToggle} style={global.rightHeaderIcon} hitSlop={50}>
-        <Image source={rightIcon || close} />
-      </Pressable>
+      {rightIcon ? (
+        <Pressable onPress={onMenuToggle} style={global.rightHeaderIcon} hitSlop={50}>
+          <Image source={rightIcon || close} />
+        </Pressable>
+      ) : null}
     </View>
   );
 };

@@ -7,7 +7,11 @@ import mixpanel from '../MixpanelConfig';
 import Inbox from '../screens/Profile/Inbox';
 import Chat from '../screens/Profile/Chat';
 import Menu from '../screens/Profile/Menu';
-import PaymentsAndPayouts from '../screens/Profile/PaymentsAndPayouts';
+import PaymentsAndPayouts from '../screens/Profile/Payments/PaymentsAndPayouts';
+import PaymentMethods from '../screens/Profile/Payments/PaymentMethods';
+import YourPayments from '../screens/Profile/Payments/YourPayments';
+import CreditAndCoupons from '../screens/Profile/Payments/CreditAndCoupons';
+import ReadyToPay from '../screens/Profile/Payments/ReadyToPay';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
@@ -49,7 +53,7 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="PaymentsAndPayouts" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="ReadyToPay" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
@@ -57,6 +61,14 @@ const AppStack = () => {
       <Stack.Screen name="Menu" component={Menu} options={noHeader} />
 
       <Stack.Screen name="PaymentsAndPayouts" component={PaymentsAndPayouts} options={noHeader} />
+
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods} options={noHeader} />
+
+      <Stack.Screen name="YourPayments" component={YourPayments} options={noHeader} />
+
+      <Stack.Screen name="CreditAndCoupons" component={CreditAndCoupons} options={noHeader} />
+
+      <Stack.Screen name="ReadyToPay" component={ReadyToPay} options={noHeader} />
 
       <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
 

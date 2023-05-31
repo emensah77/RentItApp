@@ -1,17 +1,17 @@
 import React, {useMemo} from 'react';
 
-import {Page, Whitespace, Divider, CardDisplay, Typography} from '../../components';
+import {Page, Whitespace, Divider, CardDisplay, Typography} from '../../../components';
 
-import logo from '../../assets/images/logo.png';
-import paymentsDark from '../../assets/images/menu/payments-dark.png';
-import donation from '../../assets/images/menu/donation.png';
-import hamburger from '../../assets/images/menu/hamburger.png';
-import coupon from '../../assets/images/menu/coupon.png';
-import paymentMethod from '../../assets/images/menu/payment-method.png';
-import transactionHistory from '../../assets/images/menu/transaction-history.png';
-import arrowRight from '../../assets/images/arrow-right.png';
+import logo from '../../../assets/images/logo.png';
+import paymentsDark from '../../../assets/images/menu/payments-dark.png';
+import donation from '../../../assets/images/menu/donation.png';
+import hamburger from '../../../assets/images/menu/hamburger.png';
+import coupon from '../../../assets/images/menu/coupon.png';
+import paymentMethod from '../../../assets/images/menu/payment-method.png';
+import transactionHistory from '../../../assets/images/menu/transaction-history.png';
+import arrowRight from '../../../assets/images/arrow-right.png';
 
-const Menu = () => {
+const PaymentsAndPayouts = () => {
   const sections = useMemo(
     () => [
       {
@@ -107,4 +107,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default PaymentsAndPayouts;

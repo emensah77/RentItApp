@@ -82,6 +82,14 @@ const typography = StyleSheet.create({
     color: '#252525',
     textAlign: 'center',
   },
+  tertiaryButton: {
+    ...fontType,
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
   regularButton: {
     ...fontType,
     fontWeight: '500',

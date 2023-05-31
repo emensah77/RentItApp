@@ -140,7 +140,7 @@ const Item = ({
         style={[global.icon, global.ovalIcon]}
       />
       <Text style={[typography.primaryButton, typography.left]}>
-        {(getRowLabel && getRowLabel(item[index])) || item[index][displayKey]}
+        {(getRowLabel && getRowLabel(item[index])) || item[index][displayKey] || item[index]}
         {__DEV__ &&
           !index &&
           console.debug(

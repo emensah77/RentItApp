@@ -28,6 +28,18 @@ const button = StyleSheet.create({
     marginTop: 8,
     marginBottom: 5,
   },
+  tertiary: {
+    ...sizing,
+    height: 50,
+    backgroundColor: '#000000',
+    paddingVertical: 15,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#333333',
+    marginTop: 8,
+    marginBottom: 5,
+  },
   regular: {
     ...sizing,
     color: '#000000',
