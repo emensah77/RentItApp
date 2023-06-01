@@ -1,26 +1,23 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {Paystack} from 'react-native-paystack-webview';
 import {ActivityIndicator, Alert, Dimensions, View} from 'react-native';
-import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {API, graphqlOperation} from 'aws-amplify';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import {WebView} from 'react-native-webview';
 import auth from '@react-native-firebase/auth';
 import {deletePost} from '../../graphql/mutations';
+import * as mutations from '../../graphql/mutations';
+import {AuthContext} from '../../navigation/AuthProvider';
 
-const containerStyle = {
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: 'white',
-  flex: 1,
-};
-
-const PaymentScreen = () => {
-  const user = useMemo(async () => auth().currentUser, []);
+const PaymentScreen = props => {
+  const {user, logout} = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
+  const {channel} = route.params;
   const amount = route.params.totalAmount;
   const userEmail = user.email;
   const {homelatitude} = route.params;
@@ -40,6 +37,24 @@ const PaymentScreen = () => {
   const [paymentUrl, setPaymentUrl] = useState(null);
   const [merchantTransactionID, setMerchantTransactionID] = useState(null);
 
+  useEffect(() => {
+    (async () => {
+      await generatePaymentUrl();
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!paymentUrl) {
+      return;
+    }
+
+    if (homeid === null) {
+      addPayment();
+    }
+
+    addTransaction();
+  }, [paymentUrl]);
+
   const deleteFromFavorites = async id => {
     const ref = firestore().collection('posts');
     ref
@@ -47,31 +62,41 @@ const PaymentScreen = () => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
-          firestore().collection('posts').doc(doc.id).delete();
+          firestore()
+            .collection('posts')
+            .doc(doc.id)
+            .delete()
+            .then(() => {
+              console.log('Deleted from favorite posts!');
+            });
+          // console.log(doc.id);
+          // console.log(doc.id, "=>", doc.data());
         });
       });
   };
-
   const deleteFromTrends = async id => {
     await firestore().collection('trends').doc(id).delete();
   };
-
   const deleteHome = async id => {
     try {
       const input = {
         id,
       };
-      await API.graphql(
+      const deletedTodo = await API.graphql(
         graphqlOperation(deletePost, {
           input,
         }),
       );
+      console.log('Succesfully deleted the post');
     } catch (e) {
-      console.error('Error deleting post', e);
+      console.log('Error deleting post', e);
     }
   };
 
-  const addPayment = useCallback(async () => {
+  // console.log({homemonths, homeyears, homebed, homelatitude, homeimage, hometitle, homelongitude});
+  // console.log(channel);
+  // console.log(homeid);
+  const addPayment = async () => {
     await firestore()
       .collection('payments')
       .doc(merchantTransactionID)
@@ -85,12 +110,15 @@ const PaymentScreen = () => {
         paymentStatus: 'Processing',
         checkoutNumber,
       })
-      .catch(e => {
-        console.error('Something went wrong adding to payments!', e);
+      .then(docRef => {
+        console.log('Added to payments');
+      })
+      .catch(error => {
+        console.log('Something went wrong adding to payments!', error);
       });
-  }, [amount, checkoutNumber, merchantTransactionID, selectedType, user.displayName, user.uid]);
+  };
 
-  const addTransaction = useCallback(async () => {
+  const addTransaction = async () => {
     await firestore()
       .collection('transactions')
       .doc(merchantTransactionID)
@@ -104,12 +132,15 @@ const PaymentScreen = () => {
         paymentStatus: 'Processing',
         checkoutNumber,
       })
-      .catch(e => {
-        console.error('Something went wrong adding to payments!', e);
+      .then(docRef => {
+        console.log('Added to transactions');
+      })
+      .catch(error => {
+        console.log('Something went wrong adding to payments!', error);
       });
-  }, [amount, checkoutNumber, homeid, merchantTransactionID, user]);
+  };
 
-  const addHomeOrder = useCallback(async () => {
+  const addHomeOrder = async () => {
     await firestore()
       .collection('homeorders')
       .doc(merchantTransactionID)
@@ -126,146 +157,73 @@ const PaymentScreen = () => {
         merchantTransactionID,
         paymentStatus: 'Processing',
         bed: homebed,
-        confirmCode: (Math.random() + 1).toString(36).substring(7).toUpperCase(),
+        confirmCode: (Math.random() + 1)
+          .toString(36)
+          .substring(7)
+          .toUpperCase(),
 
         amount,
 
         latitude: homelatitude,
         longitude: homelongitude,
       })
-      .catch(e => {
-        console.error('Something went wrong adding to HomeOrders', e);
+      .then(docRef => {
+        console.log('Added to Home Orders');
+      })
+      .catch(error => {
+        console.log('Something went wrong adding to HomeOrders', error);
       });
-  }, [
-    amount,
-    homeDays,
-    homeMonths,
-    homeWeeks,
-    homebed,
-    homeid,
-    homeimage,
-    homelatitude,
-    homelongitude,
-    hometitle,
-    homeyears,
-    merchantTransactionID,
-    user,
-  ]);
+  };
 
-  const _storeData = useCallback(async () => {
+  const _storeData = async () => {
     try {
       await AsyncStorage.setItem(auth().currentUser.uid, 'true');
-    } catch (e) {
-      console.error('Error saving data', e);
+    } catch (error) {
+      console.log('Error saving data', error);
     }
-  }, []);
+  };
+  const generatePaymentUrl = async () =>
+    new Promise((resolve, reject) => {
+      axios
+        .post(
+          'https://i08fhhbxwk.execute-api.us-east-2.amazonaws.com/dev/tingg/checkout-encryption',
+          {
+            // requestAmount: amount,
 
-  const generatePaymentUrl = useCallback(
-    async () =>
-      new Promise((resolve, reject) => {
-        axios
-          .post(
-            'https://i08fhhbxwk.execute-api.us-east-2.amazonaws.com/dev/tingg/checkout-encryption',
-            {
-              requestAmount: amount,
-              currencyCode: 'GHS',
-              requestDescription: 'RentIt Payment',
-              countryCode: 'GH',
-              languageCode: 'en',
-              serviceCode: 'RENTIZO',
-              MSISDN: checkoutNumber,
-              customerFirstName: user?.displayName ?? ' ',
-              customerLastName: ' ',
-              customerEmail: userEmail,
-            },
-          )
-          .then(res => {
-            setMerchantTransactionID(res.data?.requestBody?.merchantTransactionID);
-            setPaymentUrl(res.data?.paymentUrl);
-            resolve(res.data?.paymentUrl);
-          })
-          .catch(e => {
-            console.error('Error generating payment url', e);
+            requestAmount: JSON.stringify(amount),
+            currencyCode: 'GHS',
+            requestDescription: 'RentIt Payment',
+            countryCode: 'GH',
+            languageCode: 'en',
+            serviceCode: 'RENTIZO',
+            MSISDN: checkoutNumber,
+            customerFirstName: user?.displayName ?? ' ',
+            customerLastName: ' ',
+            customerEmail: userEmail,
+          },
+        )
+        .then(res => {
+          setMerchantTransactionID(
+            res.data?.requestBody?.merchantTransactionID,
+          );
+          setPaymentUrl(res.data?.paymentUrl);
+          resolve(res.data?.paymentUrl);
+        })
 
-            setMerchantTransactionID(null);
-            reject(e);
-          });
-      }),
-    [amount, checkoutNumber, user?.displayName, userEmail],
-  );
-
-  const onMessage = useCallback(
-    event => {
-      __DEV__ && console.debug('event', event);
-
-      const {url} = event.nativeEvent;
-      const words = url.split('type=');
-      if (words[1] === 'success') {
-        if (navigation.canGoBack()) {
-          if (homeid === null) {
-            Alert.alert(
-              'Payment Confirmation!',
-              `Keep your confirmation code: ${merchantTransactionID}`,
-              [{text: 'OK', onPress: () => console.debug('OK Pressed')}],
-              {cancelable: false},
-            );
-
-            navigation.replace('Home');
-          } else {
-            Alert.alert('Payment successful. You will be redirected to your new home');
-            addHomeOrder();
-            deleteHome(homeid);
-            deleteFromTrends(homeid);
-            deleteFromFavorites(homeid);
-            navigation.replace('House');
-          }
-        } else {
-          _storeData();
-          Alert.alert('Payment successful. Enjoy using RentIt to find your next home');
-
-          navigation.replace('Home');
-        }
-      } else if (route.name === 'Address') {
-        Alert.alert('Payment is', words[1]);
-        navigation.goBack();
-      } else {
-        Alert.alert('Payment is', words[1]);
-        navigation.replace('Home');
-      }
-    },
-    [_storeData, addHomeOrder, homeid, merchantTransactionID, navigation, route.name],
-  );
-
-  // console.log({
-  //   homeid,
-  //   homeyears,
-  //   homebed,
-  //   homelatitude,
-  //   homeimage,
-  //   hometitle,
-  //   homelongitude,
-  // });
-
-  useEffect(() => {
-    (async () => {
-      await generatePaymentUrl();
-    })();
-  }, [generatePaymentUrl]);
-
-  useEffect(() => {
-    if (!paymentUrl) {
-      return;
-    }
-
-    if (homeid === null) {
-      addPayment();
-    }
-
-    addTransaction();
-  }, [addPayment, addTransaction, homeid, paymentUrl]);
-
+        .catch(e => {
+          console.log(e);
+          setMerchantTransactionID(null);
+          reject(e);
+        });
+    });
   return (
-    <View style={containerStyle}>
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        flex: 1,
+      }}>
       {paymentUrl ? (
         <WebView
           source={{uri: paymentUrl}}
@@ -299,7 +257,48 @@ const PaymentScreen = () => {
           //     }
           //   }
           // }}
-          onMessage={onMessage}
+          onMessage={event => {
+            const {url} = event.nativeEvent;
+            const words = url.split('type=');
+            if (words[1] === 'success') {
+              console.log('event', event);
+              if (navigation.canGoBack()) {
+                if (homeid === null) {
+                  Alert.alert(
+                    'Payment Confirmation!',
+                    'Keep your confirmation code: ' +
+                      `${merchantTransactionID}`,
+                    [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+                    {cancelable: false},
+                  );
+
+                  navigation.replace('Home');
+                } else {
+                  Alert.alert(
+                    'Payment successful. You will be redirected to your new home',
+                  );
+                  addHomeOrder();
+                  deleteHome(homeid);
+                  deleteFromTrends(homeid);
+                  deleteFromFavorites(homeid);
+                  navigation.replace('House');
+                }
+              } else {
+                _storeData();
+                Alert.alert(
+                  'Payment successful. Enjoy using RentIt to find your next home',
+                );
+
+                navigation.replace('Home');
+              }
+            } else if (route.name === 'Address') {
+              Alert.alert('Payment is', words[1]);
+              navigation.goBack();
+            } else {
+              Alert.alert('Payment is', words[1]);
+              navigation.replace('Home');
+            }
+          }}
           javaScriptEnabled
         />
       ) : (

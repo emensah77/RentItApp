@@ -21,17 +21,21 @@ const CardDisplay = props => {
     status,
     date,
     center,
+    spaceBetween,
     bold,
+    suffix,
   } = props;
 
   return (
-    <Container row type={center ? 'center' : 'flexStart'}>
-      <Image
-        width={leftImageWidth}
-        height={leftImageHeight}
-        circle={leftImageCircle}
-        src={leftImageSrc}
-      />
+    <Container row type={center ? 'center' : spaceBetween ? 'spaceBetween' : 'flexStart'}>
+      {leftImageSrc ? (
+        <Image
+          width={leftImageWidth}
+          height={leftImageHeight}
+          circle={leftImageCircle}
+          src={leftImageSrc}
+        />
+      ) : null}
 
       <Container type="contentBox">
         <Container row type="flexStart">
@@ -94,7 +98,11 @@ const CardDisplay = props => {
         </Container>
       </Container>
 
-      <Image width={rightImageWidth} height={rightImageHeight} src={rightImageSrc} />
+      {suffix || null}
+
+      {rightImageSrc ? (
+        <Image width={rightImageWidth} height={rightImageHeight} src={rightImageSrc} />
+      ) : null}
     </Container>
   );
 };

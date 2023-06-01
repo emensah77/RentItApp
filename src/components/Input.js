@@ -61,6 +61,9 @@ const Input = props => {
 
         onChangeProp(`${month}/${day}/${(newValue || value).getFullYear()}`, name, e);
         close();
+      } else if (type === 'numeric') {
+        onChangeProp(/^[0-9]+$/.test(e.trim()) ? e.trim() : e.substring(0, e.length - 1), name, e);
+        close();
       } else {
         onChangeProp(e.trim(), name);
       }

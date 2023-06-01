@@ -20,6 +20,7 @@ const Stack = createStackNavigator();
 
 // AsyncStorage.removeItem('authentication::data');
 // auth().signOut();
+// Add fields `uid`, and `type`, make phoneNumber an array
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
 

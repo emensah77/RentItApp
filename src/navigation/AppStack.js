@@ -11,7 +11,11 @@ import PaymentsAndPayouts from '../screens/Profile/Payments/PaymentsAndPayouts';
 import PaymentMethods from '../screens/Profile/Payments/PaymentMethods';
 import YourPayments from '../screens/Profile/Payments/YourPayments';
 import CreditAndCoupons from '../screens/Profile/Payments/CreditAndCoupons';
-import ReadyToPay from '../screens/Profile/Payments/ReadyToPay';
+import RentItPay from '../screens/Profile/Payments/RentItPay';
+import BecomeAMarketer from '../screens/Profile/BecomeAMarketer';
+import AccountDetails from '../screens/Profile/AccountDetails';
+import Edit from '../screens/Profile/Edit';
+import EditPersonalInfo from '../screens/Profile/EditPersonalInfo';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
@@ -53,7 +57,7 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="ReadyToPay" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="EditPersonalInfo" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
@@ -68,7 +72,15 @@ const AppStack = () => {
 
       <Stack.Screen name="CreditAndCoupons" component={CreditAndCoupons} options={noHeader} />
 
-      <Stack.Screen name="ReadyToPay" component={ReadyToPay} options={noHeader} />
+      <Stack.Screen name="RentItPay" component={RentItPay} options={noHeader} />
+
+      <Stack.Screen name="BecomeAMarketer" component={BecomeAMarketer} options={noHeader} />
+
+      <Stack.Screen name="AccountDetails" component={AccountDetails} options={noHeader} />
+
+      <Stack.Screen name="Edit" component={Edit} options={noHeader} />
+
+      <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfo} options={noHeader} />
 
       <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
 

@@ -16,6 +16,7 @@ const Button = props => {
     loading,
     width,
     fitWidth,
+    color,
   } = props;
   return (
     <Pressable onPress={disabled ? null : onPress} hitSlop={20}>
@@ -26,6 +27,7 @@ const Button = props => {
           disabled ? button.disabled : {},
           fitWidth ? button.fitWidth : {},
           width ? {width} : {},
+          color ? {backgroundColor: color} : {},
         ]}>
         {prefix && (
           <Image
