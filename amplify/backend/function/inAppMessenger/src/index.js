@@ -26,8 +26,7 @@ async function updateWatchStatus(userId, videoVersion) {
   const params = {
     TableName: 'inAppVideoMetrics',
     Key: {userId},
-    UpdateExpression:
-      'set hasWatchedVideo = :watched, watchedVideoVersion = :version',
+    UpdateExpression: 'set hasWatchedVideo = :watched, watchedVideoVersion = :version',
     ExpressionAttributeValues: {
       ':watched': true,
       ':version': videoVersion,

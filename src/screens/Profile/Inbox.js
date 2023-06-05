@@ -1,8 +1,29 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
+import auth from '@react-native-firebase/auth';
+import {StreamChat} from 'stream-chat';
 
 import {Page, Whitespace, Tabs, Divider, CardDisplay} from '../../components';
 
 const Inbox = () => {
+  const [, /* channels */ setChannels] = useState([]);
+
+  useEffect(() => {
+    const client = StreamChat.getInstance('dz5f4d5kzrue'); // 'upcrj3b3pp7v');
+
+    (async () => {
+      const user = auth().currentUser;
+      const _channels = await client.queryChannels(
+        {type: 'messaging', members: {$in: [user.uid]}},
+        [{last_message_at: -1}],
+        {
+          watch: true, // this is the default
+          state: true,
+        },
+      );
+      setChannels(_channels);
+    })().catch(e => console.error('There was an issue loading the chat', e));
+  }, []);
+
   const messages = useMemo(
     () => [
       {

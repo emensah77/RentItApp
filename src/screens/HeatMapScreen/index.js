@@ -1,11 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  TouchableOpacity,
-  AppState,
-} from 'react-native';
+import {View, Text, ActivityIndicator, TouchableOpacity, AppState} from 'react-native';
 import MapView, {
   Heatmap,
   PROVIDER_DEFAULT,
@@ -16,10 +10,7 @@ import MapView, {
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
-import BackgroundGeolocation, {
-  Location,
-  Subscription,
-} from 'react-native-background-geolocation';
+import BackgroundGeolocation, {Location, Subscription} from 'react-native-background-geolocation';
 import auth from '@react-native-firebase/auth';
 
 const mapStyle = [
@@ -246,8 +237,7 @@ const HeatMapScreen = ({navigation}) => {
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [routeInfo, setRouteInfo] = useState(null);
   const [isSendingData, setIsSendingData] = useState(false);
-  const [watchPositionSubscription, setWatchPositionSubscription] =
-    useState(null);
+  const [watchPositionSubscription, setWatchPositionSubscription] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
 
   const handleAppStateChange = nextAppState => {
@@ -271,10 +261,7 @@ const HeatMapScreen = ({navigation}) => {
         heartbeatInterval: 60, // Set the heartbeat interval (in seconds)
       });
 
-      console.log(
-        'BackgroundGeolocation is configured and ready to use:',
-        state,
-      );
+      console.log('BackgroundGeolocation is configured and ready to use:', state);
 
       if (!state.enabled) {
         BackgroundGeolocation.start(() => {
@@ -474,12 +461,7 @@ const HeatMapScreen = ({navigation}) => {
           longitudeDelta: 0.8,
         }}>
         {heatmapVisible && (
-          <Heatmap
-            points={heatmapData}
-            radius={50}
-            opacity={1}
-            gradient={customGradient}
-          />
+          <Heatmap points={heatmapData} radius={50} opacity={1} gradient={customGradient} />
         )}
 
         {selectedPoint && (
@@ -500,9 +482,7 @@ const HeatMapScreen = ({navigation}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-                {selectedPoint.place}
-              </Text>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>{selectedPoint.place}</Text>
               <Text>
                 Count:
                 {selectedPoint.weight}
@@ -627,9 +607,7 @@ const HeatMapScreen = ({navigation}) => {
           paddingVertical: 9,
           zIndex: 2,
         }}>
-        <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-          {isOnline ? 'Stop' : 'Start'}
-        </Text>
+        <Text style={{fontSize: 14, fontWeight: 'bold'}}>{isOnline ? 'Stop' : 'Start'}</Text>
       </TouchableOpacity>
       {!heatmapVisible && (
         <View

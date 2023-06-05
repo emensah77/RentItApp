@@ -50,14 +50,12 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              Start by searching the location you are interested in renting
-              from. Apply filters like number of rooms, number of adults, or
-              children to narrow your options.
+              Start by searching the location you are interested in renting from. Apply filters like
+              number of rooms, number of adults, or children to narrow your options.
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              Browse through detailed descriptions of each home, including
-              amenities available and call to rent once you have found your
-              match.
+              Browse through detailed descriptions of each home, including amenities available and
+              call to rent once you have found your match.
             </Text>
           </View>
 
@@ -72,13 +70,12 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              Trust and Safety is at the core of everything we do. We make sure
-              that every home you see on the app looks exactly as it appears in
-              person
+              Trust and Safety is at the core of everything we do. We make sure that every home you
+              see on the app looks exactly as it appears in person
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              So you can be sure everything you see on the app is verified and
-              appears exactly as it is portrayed.
+              So you can be sure everything you see on the app is verified and appears exactly as it
+              is portrayed.
             </Text>
           </View>
 
@@ -93,12 +90,12 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              Flexibility is important to us. So we allow you to change your
-              mind up until you move into any home.
+              Flexibility is important to us. So we allow you to change your mind up until you move
+              into any home.
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              If you change your mind before moving into the house, we will
-              charge you no fee for it.
+              If you change your mind before moving into the house, we will charge you no fee for
+              it.
             </Text>
           </View>
 
@@ -113,12 +110,11 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              Whatever you choose, we are here to support you. We can also help
-              arrange to move you into your new home
+              Whatever you choose, we are here to support you. We can also help arrange to move you
+              into your new home
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              We also help you after you move out to your new home in the event
-              anything happens.
+              We also help you after you move out to your new home in the event anything happens.
             </Text>
           </View>
         </View>
@@ -136,12 +132,11 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              You can upload your home to the RentIt App. Open your home to
-              thousands of tenants looking for a home to rent and earn money.
+              You can upload your home to the RentIt App. Open your home to thousands of tenants
+              looking for a home to rent and earn money.
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              Also, become a partner once you upload your home to the RentIt App
-              for rent.
+              Also, become a partner once you upload your home to the RentIt App for rent.
             </Text>
           </View>
 
@@ -156,13 +151,12 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              You commit to uphold yourself to a higher standard of trust and
-              integrity. People use RentIt because they trust everything they
-              see.
+              You commit to uphold yourself to a higher standard of trust and integrity. People use
+              RentIt because they trust everything they see.
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              It is therefore important that every property you upload is
-              entirely yours and is exactly as it appears.
+              It is therefore important that every property you upload is entirely yours and is
+              exactly as it appears.
             </Text>
           </View>
 
@@ -177,13 +171,11 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              We allow our tenants a lot of flexibility in booking rooms to
-              rent. Therefore, you commit to this flexibility once you upload
-              your property to RentIt.
+              We allow our tenants a lot of flexibility in booking rooms to rent. Therefore, you
+              commit to this flexibility once you upload your property to RentIt.
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              You also commit to allow flexible move in dates for tenants once
-              they rent your home.
+              You also commit to allow flexible move in dates for tenants once they rent your home.
             </Text>
           </View>
 
@@ -198,12 +190,11 @@ const AboutScreen = props => {
             </Text>
 
             <Text style={{fontSize: 16, padding: 10}}>
-              We offer support and help to homeowners and landlords who upload
-              their homes to RentIt
+              We offer support and help to homeowners and landlords who upload their homes to RentIt
             </Text>
             <Text style={{fontSize: 16, padding: 10}}>
-              Connect with other landlords and homeowners who have rent their
-              homes through RentIt and make strong community connections.
+              Connect with other landlords and homeowners who have rent their homes through RentIt
+              and make strong community connections.
             </Text>
           </View>
         </View>

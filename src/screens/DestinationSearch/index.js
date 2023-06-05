@@ -44,17 +44,11 @@ const DestinationSearch = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
-        <Text style={styles.text_header}>
-          Where do you {'\n'} want to rent?{' '}
-        </Text>
+        <Text style={styles.text_header}>Where do you {'\n'} want to rent? </Text>
       </View>
 
       <Animatable.View style={styles.footer}>

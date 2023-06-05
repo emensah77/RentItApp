@@ -84,12 +84,7 @@ function StarButton(props) {
 
     if (typeof starIconName === 'string') {
       iconElement = (
-        <Icon
-          name={starIconName}
-          size={starSize}
-          color={starColor}
-          style={newStarStyle}
-        />
+        <Icon name={starIconName} size={starSize} color={starColor} style={newStarStyle} />
       );
     }
 

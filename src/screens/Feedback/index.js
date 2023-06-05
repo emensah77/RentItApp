@@ -41,11 +41,7 @@ const EFeedback = ({route}) => {
     try {
       const data = await firestore()
         .collection('homeorders')
-        .where(
-          'homeid',
-          '==',
-          route?.params?.postID ? route?.params?.postID : '',
-        )
+        .where('homeid', '==', route?.params?.postID ? route?.params?.postID : '')
         .get();
       setBookings(data.docs);
       return data.docs;
@@ -172,11 +168,7 @@ const EFeedback = ({route}) => {
                     setError(false);
                   }}
                 />
-                {error && (
-                  <Text style={{color: 'red', fontSize: 12}}>
-                    Review can not be empty
-                  </Text>
-                )}
+                {error && <Text style={{color: 'red', fontSize: 12}}>Review can not be empty</Text>}
               </View>
               <Button
                 // onPress={() => navigation.goBack()}

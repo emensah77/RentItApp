@@ -46,8 +46,7 @@ class TinggService {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getConversionRate = this.getConversionRate.bind(this);
     this.checkoutEncryption = this.checkoutEncryption.bind(this);
-    this.baseUrl =
-      process.env.TINGG_BASE_URL || 'https://online.tingg.africa/v2';
+    this.baseUrl = process.env.TINGG_BASE_URL || 'https://online.tingg.africa/v2';
 
     this.api = axios.create({
       baseURL: this.baseUrl,
@@ -110,11 +109,7 @@ class TinggService {
     };
     const {accessKey} = this;
 
-    const encryption = new Encryption(
-      this.IVKey,
-      this.secretKey,
-      this.algorithm,
-    );
+    const encryption = new Encryption(this.IVKey, this.secretKey, this.algorithm);
 
     const payload = JSON.stringify(requestBody).replace(/\//g, '\\/');
 
@@ -186,9 +181,7 @@ class TinggService {
     const {merchantTransactionID} = request.body;
     console.log('merchantId', merchantTransactionID);
     if (request.body.requestStatusCode == 178) {
-      const transactionsRef = db
-        .collection('transactions')
-        .doc(merchantTransactionID);
+      const transactionsRef = db.collection('transactions').doc(merchantTransactionID);
 
       const transactionDoc = await transactionsRef.get();
       console.log('transaction data1', transactionDoc.data());

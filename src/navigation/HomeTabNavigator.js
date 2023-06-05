@@ -67,9 +67,7 @@ const HomeTabNavigator = props => {
         name="Explore"
         component={ExploreNavigator}
         options={({route}) => ({
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faSearch} size={25} color={color} />
-          ),
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faSearch} size={25} color={color} />,
           tabBarVisible: (route => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
@@ -85,9 +83,7 @@ const HomeTabNavigator = props => {
         name="House"
         component={House}
         options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />
-          ),
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />,
         }}
       />
 
@@ -106,18 +102,14 @@ const HomeTabNavigator = props => {
         name="Wishlists"
         component={Wishlists}
         options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faHeart} size={25} color={color} />
-          ),
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHeart} size={25} color={color} />,
         }}
       />
       <Tab.Screen
         name="Trending"
         component={Trending}
         options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faChartLine} size={25} color={color} />
-          ),
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faChartLine} size={25} color={color} />,
         }}
       />
       <Tab.Screen
@@ -153,9 +145,7 @@ const HomeTabNavigator = props => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faUser} size={25} color={color} />
-          ),
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faUser} size={25} color={color} />,
         }}
       />
 

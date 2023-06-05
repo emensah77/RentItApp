@@ -1,13 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Image,
-  Dimensions,
-  Text,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Image, Dimensions, Text, Pressable, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -47,18 +39,14 @@ const Card = props => {
             source={{uri: post.image}}
           />
         </View>
-        <Text style={{fontWeight: 'bold', fontSize: 14, marginTop: 10}}>
-          {post.title}
-        </Text>
+        <Text style={{fontWeight: 'bold', fontSize: 14, marginTop: 10}}>{post.title}</Text>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 5,
           }}>
-          <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-            ${post.newPrice}
-          </Text>
+          <Text style={{fontSize: 14, fontWeight: 'bold'}}>${post.newPrice}</Text>
         </View>
       </View>
     </TouchableOpacity>

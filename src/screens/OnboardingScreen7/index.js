@@ -66,11 +66,9 @@ const OnboardingScreen7 = props => {
   const locality = route.params?.locality || progressData?.locality;
   const sublocality = route.params?.sublocality || progressData?.sublocality;
   const address = route.params?.address || progressData?.address;
-  const marketerNumber =
-    route.params?.marketerNumber || progressData?.marketerNumber;
+  const marketerNumber = route.params?.marketerNumber || progressData?.marketerNumber;
   const currency = route.params?.currency || progressData?.currency;
-  const loyaltyProgram =
-    route.params?.loyaltyProgram || progressData?.loyaltyProgram;
+  const loyaltyProgram = route.params?.loyaltyProgram || progressData?.loyaltyProgram;
   const negotiable = route.params?.negotiable || progressData?.negotiable;
   const furnished = route.params?.furnished || progressData?.furnished;
   const videoUrl = route.params?.videoUrl || progressData?.videoUrl;
@@ -138,9 +136,7 @@ const OnboardingScreen7 = props => {
   useEffect(() => {
     if (progressData) {
       const sanitizedRouteParams = Object.fromEntries(
-        Object.entries(route.params).filter(
-          ([key, value]) => value !== undefined,
-        ),
+        Object.entries(route.params).filter(([key, value]) => value !== undefined),
       );
 
       const merged = {
@@ -253,9 +249,7 @@ const OnboardingScreen7 = props => {
         longitude: mergedData.longitude,
         oldPrice: Math.round(mergedData.homeprice * 12),
         newPrice: Math.round(mergedData.homeprice * 12),
-        aircondition: mergedData.amenities.includes('Air Conditioner')
-          ? 'Yes'
-          : 'No',
+        aircondition: mergedData.amenities.includes('Air Conditioner') ? 'Yes' : 'No',
         wifi: mergedData.amenities.includes('WiFi') ? 'Yes' : 'No',
         kitchen: mergedData.amenities.includes('Kitchen') ? 'Yes' : 'No',
         bathroom: mergedData.amenities.includes('Bathroom') ? 'Yes' : 'No',
@@ -307,9 +301,7 @@ const OnboardingScreen7 = props => {
   const goHome = () => {
     uploadHome();
 
-    Alert.alert(
-      'We will review your home, if approved it will be available for lease or sale',
-    );
+    Alert.alert('We will review your home, if approved it will be available for lease or sale');
     navigation.replace('Home');
   };
   const openCamera = () => {
@@ -364,18 +356,11 @@ const OnboardingScreen7 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
-        <Text style={styles.text_header}>
-          {' '}
-          We need to verify {'\n'} your home{' '}
-        </Text>
+        <Text style={styles.text_header}> We need to verify {'\n'} your home </Text>
       </View>
 
       <Animatable.View
@@ -476,17 +461,11 @@ const OnboardingScreen7 = props => {
                 flex: 1,
               }}>
               <View style={{justifyContent: 'center'}}>
-                <Text style={{fontWeight: 'bold'}}>
-                  Upload a picture of your ID or bill
-                </Text>
+                <Text style={{fontWeight: 'bold'}}>Upload a picture of your ID or bill</Text>
               </View>
 
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <FontAwesomeIcon
-                  icon={faArrowAltCircleUp}
-                  size={30}
-                  color="black"
-                />
+                <FontAwesomeIcon icon={faArrowAltCircleUp} size={30} color="black" />
               </View>
             </TouchableOpacity>
 
@@ -505,9 +484,7 @@ const OnboardingScreen7 = props => {
                 flex: 1,
               }}>
               <View style={{justifyContent: 'center'}}>
-                <Text style={{fontWeight: 'bold'}}>
-                  Take a picture of your ID or bill
-                </Text>
+                <Text style={{fontWeight: 'bold'}}>Take a picture of your ID or bill</Text>
               </View>
 
               <View style={{flexDirection: 'row', alignItems: 'center'}}>

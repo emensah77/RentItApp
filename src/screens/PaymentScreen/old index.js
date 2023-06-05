@@ -157,10 +157,7 @@ const PaymentScreen = props => {
         merchantTransactionID,
         paymentStatus: 'Processing',
         bed: homebed,
-        confirmCode: (Math.random() + 1)
-          .toString(36)
-          .substring(7)
-          .toUpperCase(),
+        confirmCode: (Math.random() + 1).toString(36).substring(7).toUpperCase(),
 
         amount,
 
@@ -203,9 +200,7 @@ const PaymentScreen = props => {
           },
         )
         .then(res => {
-          setMerchantTransactionID(
-            res.data?.requestBody?.merchantTransactionID,
-          );
+          setMerchantTransactionID(res.data?.requestBody?.merchantTransactionID);
           setPaymentUrl(res.data?.paymentUrl);
           resolve(res.data?.paymentUrl);
         })
@@ -266,17 +261,14 @@ const PaymentScreen = props => {
                 if (homeid === null) {
                   Alert.alert(
                     'Payment Confirmation!',
-                    'Keep your confirmation code: ' +
-                      `${merchantTransactionID}`,
+                    'Keep your confirmation code: ' + `${merchantTransactionID}`,
                     [{text: 'OK', onPress: () => console.log('OK Pressed')}],
                     {cancelable: false},
                   );
 
                   navigation.replace('Home');
                 } else {
-                  Alert.alert(
-                    'Payment successful. You will be redirected to your new home',
-                  );
+                  Alert.alert('Payment successful. You will be redirected to your new home');
                   addHomeOrder();
                   deleteHome(homeid);
                   deleteFromTrends(homeid);
@@ -285,9 +277,7 @@ const PaymentScreen = props => {
                 }
               } else {
                 _storeData();
-                Alert.alert(
-                  'Payment successful. Enjoy using RentIt to find your next home',
-                );
+                Alert.alert('Payment successful. Enjoy using RentIt to find your next home');
 
                 navigation.replace('Home');
               }
