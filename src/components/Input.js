@@ -23,6 +23,7 @@ const Input = props => {
     error,
     plain,
     disabled,
+    inline,
     ...rest
   } = props;
 
@@ -53,12 +54,15 @@ const Input = props => {
     e => {
       if (type === 'date') {
         const newValue = new Date(e.nativeEvent.timestamp);
-        let month = (newValue || value).getMonth();
+        let month = (newValue || value).getMonth() + 1;
         month = month < 10 ? `0${month}` : month;
         let day = (newValue || value).getDate();
         day = day < 10 ? `0${day}` : day;
 
         onChangeProp(`${month}/${day}/${(newValue || value).getFullYear()}`, name, e);
+        close();
+      } else if (type === 'numeric') {
+        onChangeProp(/^[0-9]+$/.test(e.trim()) ? e.trim() : e.substring(0, e.length - 1), name, e);
         close();
       } else {
         onChangeProp(e.trim(), name);
@@ -124,6 +128,7 @@ const Input = props => {
             groupBefore ? global.groupBefore : groupAfter ? global.groupAfter : {},
             activeStyle,
             plain ? global.plain : {},
+            inline ? global.inlineInput : {},
             disabled ? button.disabled : {},
           ]}
           multiLine={!!multiLine}

@@ -20,6 +20,7 @@ const Stack = createStackNavigator();
 
 // AsyncStorage.removeItem('authentication::data');
 // auth().signOut();
+// Add fields `uid`, and `type`, make phoneNumber an array, and then prevent signin with mobile if greater than 1
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
 
@@ -55,7 +56,11 @@ const AuthStack = () => {
         _initialRouteName = 'Notification';
       }
 
-      if (!data?.firstname || !data?.lastname || !data?.birthDay || !data?.agreement) {
+      if (!data?.agreement) {
+        _initialRouteName = 'Agreement';
+      }
+
+      if (!data?.firstname || !data?.lastname || !data?.birthDay) {
         _initialRouteName = 'Finish';
       }
 
