@@ -270,11 +270,7 @@ const HouseDetailScreen = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
       <Text style={styles.text_header}> Your{'\n'} home details. </Text>
 
@@ -308,16 +304,10 @@ const HouseDetailScreen = props => {
               }}>
               Reservation Details
             </Text>
-            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>
-              Confirmation Code
-            </Text>
-            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-SemiBold'}}>
-              {confirmCode}
-            </Text>
+            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>Confirmation Code</Text>
+            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-SemiBold'}}>{confirmCode}</Text>
             <View style={styles.hairline2} />
-            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>
-              Lease
-            </Text>
+            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>Lease</Text>
             <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-SemiBold'}}>
               {homeyears} years
             </Text>
@@ -325,9 +315,7 @@ const HouseDetailScreen = props => {
               {homemonths} months
             </Text>
             <View style={styles.hairline2} />
-            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>
-              Payment info
-            </Text>
+            <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>Payment info</Text>
             <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-SemiBold'}}>
               Total Cost: GH₵ {homeamount}
             </Text>

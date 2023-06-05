@@ -62,24 +62,14 @@ const GuestsScreen = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header} />
-      <Text style={styles.text_header}>
-        {' '}
-        How many {'\n'} people and rooms?{' '}
-      </Text>
+      <Text style={styles.text_header}> How many {'\n'} people and rooms? </Text>
 
       <View style={{justifyContent: 'space-between', height: '100%'}}>
-        <Animatable.View
-          animation="fadeInUpBig"
-          duration={50}
-          style={styles.footer}>
+        <Animatable.View animation="fadeInUpBig" duration={50} style={styles.footer}>
           <ScrollView
             contentContainerStyle={{paddingBottom: 100}}
             showsVerticalScrollIndicator={false}>
@@ -139,19 +129,13 @@ const GuestsScreen = props => {
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Pressable
-                    onPress={() => setrooms(Math.max(0, rooms - 1))}
-                    style={styles.button}>
+                  <Pressable onPress={() => setrooms(Math.max(0, rooms - 1))} style={styles.button}>
                     <Text style={{fontSize: 20, color: 'black'}}>-</Text>
                   </Pressable>
 
-                  <Text style={{marginHorizontal: 20, fontSize: 20}}>
-                    {rooms}
-                  </Text>
+                  <Text style={{marginHorizontal: 20, fontSize: 20}}>{rooms}</Text>
 
-                  <Pressable
-                    onPress={() => setrooms(rooms + 1)}
-                    style={styles.button}>
+                  <Pressable onPress={() => setrooms(rooms + 1)} style={styles.button}>
                     <Text style={{fontSize: 20, color: 'black'}}>+</Text>
                   </Pressable>
                 </View>
@@ -194,15 +178,11 @@ const GuestsScreen = props => {
               <View style={styles.row}>
                 <View>
                   <Text style={{fontWeight: 'bold'}}>Move-in Date</Text>
-                  <Text style={{color: 'darkgray'}}>
-                    Select the date you want to move in
-                  </Text>
+                  <Text style={{color: 'darkgray'}}>Select the date you want to move in</Text>
                 </View>
                 <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                   {dateSelected ? (
-                    <Text style={{color: 'blue'}}>
-                      {moveInDate.toLocaleDateString()}
-                    </Text>
+                    <Text style={{color: 'blue'}}>{moveInDate.toLocaleDateString()}</Text>
                   ) : (
                     <Text style={{color: 'blue'}}>Select Date</Text>
                   )}
@@ -255,9 +235,7 @@ const GuestsScreen = props => {
                           `${user.uid}-${route.params.location.address_components?.[0]?.long_name}`,
                         )
                         .set({
-                          place:
-                            route.params.location.address_components?.[0]
-                              ?.long_name, // send the locality of place to save it on firebase searchQuery
+                          place: route.params.location.address_components?.[0]?.long_name, // send the locality of place to save it on firebase searchQuery
                           userId: user.uid,
                           guests: rooms,
                           created_at: new Date(),

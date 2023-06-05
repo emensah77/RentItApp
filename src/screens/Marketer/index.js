@@ -13,14 +13,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
-import {
-  Card,
-  Layout,
-  Icon,
-  RangeCalendar,
-  Text as Typography,
-  Button,
-} from '@ui-kitten/components';
+import {Card, Layout, Icon, RangeCalendar, Text as Typography, Button} from '@ui-kitten/components';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import axios from 'axios';
@@ -174,14 +167,12 @@ const Marketer = () => {
 
           <ScrollView style={{padding: 0, flex: 1}}>
             <View style={{marginTop: 20, margin: 20}}>
-              <Text
-                style={{fontSize: 18, fontWeight: '600', paddingBottom: 15}}>
+              <Text style={{fontSize: 18, fontWeight: '600', paddingBottom: 15}}>
                 Why do you want to be a Marketer?
               </Text>
               <Text>
-                RentIt Marketers are at the core of the community of homeowners
-                we are building. You will work primarily in your community to
-                connect us with homeowners.
+                RentIt Marketers are at the core of the community of homeowners we are building. You
+                will work primarily in your community to connect us with homeowners.
               </Text>
               <Typography
                 category="label"
@@ -271,15 +262,12 @@ const Marketer = () => {
                 <View style={{alignItems: 'center', marginTop: 20}}>
                   <Button
                     style={{
-                      backgroundColor:
-                        temp[firebaseUser?.marketer_status]?.color || 'blue',
-                      borderColor:
-                        temp[firebaseUser?.marketer_status]?.color || 'blue',
+                      backgroundColor: temp[firebaseUser?.marketer_status]?.color || 'blue',
+                      borderColor: temp[firebaseUser?.marketer_status]?.color || 'blue',
                       width: '60%',
                     }}
                     onPress={submitHandler}>
-                    {temp[firebaseUser?.marketer_status]?.buttonText ||
-                      'Request Now'}
+                    {temp[firebaseUser?.marketer_status]?.buttonText || 'Request Now'}
                   </Button>
                 </View>
               )}
@@ -303,9 +291,7 @@ const CardComponent = ({icon, label, text, color}) => (
       <Fontisto name={icon} size={40} color="white" />
       <View style={{marginLeft: 10}}>
         <Text style={{color: 'white'}}>{label}</Text>
-        <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
-          {text}
-        </Text>
+        <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>{text}</Text>
       </View>
     </View>
   </Card>

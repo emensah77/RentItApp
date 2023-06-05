@@ -41,9 +41,7 @@ exports.handler = async event => {
   try {
     const bucket = event.Records[0].s3.bucket.name;
     const {subfolder} = event;
-    const key = decodeURIComponent(
-      event.Records[0].s3.object.key.replace(/\+/g, ' '),
-    );
+    const key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
     console.log('Object key:', key);
     const fullKey = key.startsWith(subfolder) ? key : `${subfolder}/${key}`;
     console.log('Full key:', fullKey);
@@ -77,8 +75,7 @@ exports.handler = async event => {
 
         const originalSize = inputImageBuffer.length;
         const optimizedSize = optimizedImageBuffer.length;
-        const sizeReductionPercentage =
-          ((originalSize - optimizedSize) / originalSize) * 100;
+        const sizeReductionPercentage = ((originalSize - optimizedSize) / originalSize) * 100;
         const optimizedUrl = `https://${bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${fullKey}`;
 
         await S3.putObject({

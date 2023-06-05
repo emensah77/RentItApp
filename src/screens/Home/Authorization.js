@@ -12,9 +12,7 @@ let onHttpSubscription = null;
  */
 async function register(navigation) {
   console.log('[TransistorAuth] this device requires reqistration');
-  await BackgroundGeolocation.destroyTransistorAuthorizationToken(
-    ENV.TRACKER_HOST,
-  );
+  await BackgroundGeolocation.destroyTransistorAuthorizationToken(ENV.TRACKER_HOST);
 
   const orgname = await AsyncStorage.getItem('@transistorsoft:org');
   const username = await AsyncStorage.getItem('@transistorsoft:username');
@@ -29,12 +27,11 @@ async function register(navigation) {
     };
   }
 
-  const token =
-    await BackgroundGeolocation.findOrCreateTransistorAuthorizationToken(
-      orgname,
-      username,
-      Host.TRACKER_HOST,
-    );
+  const token = await BackgroundGeolocation.findOrCreateTransistorAuthorizationToken(
+    orgname,
+    username,
+    Host.TRACKER_HOST,
+  );
 
   await BackgroundGeolocation.setConfig({
     transistorAuthorizationToken: token,
@@ -73,9 +70,7 @@ export async function registerTransistorAuthorizationListener(navigation) {
     switch (event.status) {
       case 403:
       case 406:
-        await BackgroundGeolocation.destroyTransistorAuthorizationToken(
-          ENV.TRACKER_HOST,
-        );
+        await BackgroundGeolocation.destroyTransistorAuthorizationToken(ENV.TRACKER_HOST);
         const token = await register(navigation);
         if (token.accessToken != 'DUMMY_TOKEN') {
           BackgroundGeolocation.sync();

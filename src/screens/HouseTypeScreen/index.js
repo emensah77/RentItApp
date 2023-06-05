@@ -53,8 +53,7 @@ const HouseTypeScreen = props => {
     },
 
     {
-      image:
-        'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
+      image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
       title: 'Single Room',
       key: '6',
     },
@@ -68,20 +67,13 @@ const HouseTypeScreen = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header} />
       <Text style={styles.text_header}> What are you{'\n'} looking for? </Text>
       <View style={{justifyContent: 'space-between', height: '100%'}}>
-        <Animatable.View
-          animation="fadeInUpBig"
-          duration={50}
-          style={styles.footer}>
+        <Animatable.View animation="fadeInUpBig" duration={50} style={styles.footer}>
           <ScrollView style={{marginBottom: 150}}>
             <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
               {' '}

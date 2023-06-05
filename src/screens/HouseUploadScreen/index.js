@@ -97,10 +97,7 @@ const HouseUploadScreen = props => {
         animation="fadeInUpBig"
         duration={1500}
         style={styles.footer}>
-        <Text style={styles.text_header}>
-          {' '}
-          Upload your home in {'\n'} 10 easy steps{' '}
-        </Text>
+        <Text style={styles.text_header}> Upload your home in {'\n'} 10 easy steps </Text>
         <TouchableOpacity
           onPress={() => {
             if (uploadInProgress && lastScreen) {
