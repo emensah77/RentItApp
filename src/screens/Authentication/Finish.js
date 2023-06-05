@@ -152,7 +152,7 @@ const Finish = () => {
         onChange={onChangeData('email')}
       />
 
-      <Typography type="label">We&apos;ll email you trip confirmations and reciepts.</Typography>
+      <Typography type="label">We&apos;ll email you trip confirmations and receipts.</Typography>
 
       <Whitespace marginTop={30} />
 

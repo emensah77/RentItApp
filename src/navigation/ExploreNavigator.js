@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from '../screens/Home';
-import SearchResultsScreen from '../screens/SearchResults';
+// import SearchResultsScreen from '../screens/SearchResults';
 import SearchResultsTabNavigator from './SearchResultsTabNavigator';
 import AboutScreen from '../screens/AboutScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -23,7 +23,7 @@ import OnboardingScreen10 from '../screens/OnboardingScreen10';
 import OnboardingScreen11 from '../screens/OnboardingScreen11';
 import AccountManageScreen from '../screens/AccountManageScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
-import Notifications from '../screens/Notifications';
+// import Notifications from '../screens/Notifications';
 import ManageProfile from '../screens/ManageProfile';
 import Marketer from '../screens/Marketer';
 import MyHomes from '../screens/MyHomes';
@@ -36,7 +36,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 
 const Stack = createStackNavigator();
 
-const Router = props => (
+const Router = () => (
   <Stack.Navigator
     screenOptions={{
       headerStyle: {
