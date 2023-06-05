@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: offsets.offsetA,
   },
+  image: {
+    borderRadius: 12,
+  },
   text: {
     fontFamily: fonts.primary,
     fontSize: 16,

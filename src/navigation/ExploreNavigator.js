@@ -10,11 +10,11 @@ import PaymentScreen from '../screens/PaymentScreen';
 import House from '../screens/House';
 import HouseDetailScreen from '../screens/HouseDetailScreen';
 import HouseUploadScreen from '../screens/HouseUploadScreen';
-import OnboardingScreen1 from '../screens/OnboardingScreen1';
-import OnboardingScreen2 from '../screens/OnboardingScreen2';
-import OnboardingScreen3 from '../screens/OnboardingScreen3';
-import OnboardingScreen4 from '../screens/OnboardingScreen4';
-import OnboardingScreen5 from '../screens/OnboardingScreen5';
+import OnboardingScreen1 from '../screensV2/OnboardingScreen1';
+import OnboardingScreen2 from '../screensV2/OnboardingScreen2';
+import OnboardingScreen3 from '../screensV2/OnboardingScreen3';
+import OnboardingScreen4 from '../screensV2/OnboardingScreen4';
+import OnboardingScreen5 from '../screensV2/OnboardingScreen5';
 import OnboardingScreen6 from '../screens/OnboardingScreen6';
 import OnboardingScreen7 from '../screens/OnboardingScreen7';
 import OnboardingScreen8 from '../screens/OnboardingScreen8';
@@ -33,6 +33,7 @@ import OnboardingScreen13 from '../screens/OnboardingScreen13';
 import HeatMapScreen from '../screens/HeatMapScreen';
 import MarketerDashboard from '../screens/MarketerDashboard';
 import DashboardScreen from '../screens/DashboardScreen';
+import ListingHome from '../screensV2/ListingHome';
 
 const Stack = createStackNavigator();
 
@@ -194,11 +195,12 @@ const Router = props => (
     />
     <Stack.Screen
       name="HouseUpload"
-      component={HouseUploadScreen}
+      component={ListingHome}
       options={{
         headerShown: false,
       }}
     />
+    {/* HouseUploadScreen */}
     <Stack.Screen
       name="AccountManage"
       component={AccountManageScreen}

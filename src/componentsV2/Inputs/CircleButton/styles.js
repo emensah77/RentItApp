@@ -1,10 +1,7 @@
 import {Platform, StyleSheet} from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-import {colors, fonts} from '../../../styles/globalStyles';
+import {colors} from '../../../styles/globalStyles';
 
 export const styles = StyleSheet.create({
   main: {
@@ -25,5 +22,10 @@ export const styles = StyleSheet.create({
         elevation: 2,
       },
     }),
+  },
+  minimal: {
+    backgroundColor: undefined,
+    elevation: 0,
+    shadowOffset: undefined,
   },
 });

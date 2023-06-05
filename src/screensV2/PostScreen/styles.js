@@ -40,6 +40,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: offsets.offsetC,
     marginTop: offsets.offsetC,
   },
+  loaderWrapper: {
+    marginLeft: wp(40),
+    width: wp(10),
+    height: wp(20),
+    marginTop: offsets.offsetB,
+  },
   hostText: {
     textDecorationLine: 'underline',
     color: '#717171',

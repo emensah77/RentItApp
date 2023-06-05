@@ -9,7 +9,7 @@ const WishListItem = ({item}) => {
   const navigation = useNavigation();
 
   const goWishList = useCallback(() => {
-    navigation.navigate('WishListItem', {item});
+    navigation.navigate('WishlistItem', {item});
   }, [item]);
 
   return (
@@ -20,6 +20,7 @@ const WishListItem = ({item}) => {
             source={{
               uri: item.image,
             }}
+            style={styles.image}
             width={75}
             height={75}
             resizeMode="contain"

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import {SafeAreaView, View} from 'react-native';
 
 import {offsets} from '../../styles/globalStyles';
@@ -8,8 +8,6 @@ import Typography from '../../componentsV2/DataDisplay/Typography';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
 import {AuthContext} from '../../navigation/AuthProvider';
 import WishListItem from '../../componentsV2/DataDisplay/WishListItem';
-import RequestBook from '../../screensV2/RequestBook';
-import ListingHome from '../ListingHome';
 
 const WishList = () => {
   const {user} = useContext(AuthContext);
@@ -39,17 +37,19 @@ const WishList = () => {
     fetchPosts();
   }, []);
 
+  const keyExtractor = useCallback(item => item.id, []);
+
   return (
     <>
       <SafeAreaView>
-        {/* <View style={styles.mainContent}>
+        <View style={styles.mainContent}>
           <Typography variant="xlarge" bold style={{marginTop: offsets.offsetC, marginBottom: 32}}>
             Wishlists
           </Typography>
           {posts?.length > 0 ? (
             <>
               {posts?.map(item => (
-                <WishListItem item={item} />
+                <WishListItem key={keyExtractor} item={item} />
               ))}
             </>
           ) : (
@@ -63,9 +63,10 @@ const WishList = () => {
               </Typography>
             </>
           )}
-        </View> */}
+        </View>
         {/* <RequestBook /> */}
-        <ListingHome />
+        {/* <ListingHome /> */}
+        {/* <Payment /> */}
       </SafeAreaView>
     </>
   );

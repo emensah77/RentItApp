@@ -26,6 +26,7 @@ import Trending from '../screens/TrendingScreen';
 import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
 import HomeScreen from '../screensV2/HomeScreen';
+import WishListNavigation from './WishListNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -97,7 +98,7 @@ const HomeTabNavigator = props => {
 
       <Tab.Screen
         name="Wishlists"
-        component={WishList}
+        component={WishListNavigation}
         options={{
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHeart} size={25} color={color} />,
         }}

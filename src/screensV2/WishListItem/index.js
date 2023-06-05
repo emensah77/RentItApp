@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import {View, Image, Pressable, Modal} from 'react-native';
+
 import {styles} from './styles';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 import Carousel from '../../componentsV2/DataDisplay/Carousel';
 import CloseIcon from '../../../assets/data/images/icons/close-icon.png';
 import MapIcon from '../../../assets/data/images/icons/map-icon.png';
+import Heart from '../../../assets/data/images/icons/heart.svg';
 import InputFieldNew from '../../InputFieldNew';
 
 const WishtListItem = ({route}) => {
@@ -17,13 +19,13 @@ const WishtListItem = ({route}) => {
   return (
     <View style={styles.mainContent}>
       <Typography variant="xlarge" bold>
-        Weekend away
+        {item?.title}
       </Typography>
       <View style={styles.topContent}>
         <View style={styles.wishListTop}>
           <Typography style={{textAlign: 'center'}}>Dates</Typography>
         </View>
-        <View style={styles.wishListTop}>
+        <View style={[styles.wishListTop, styles.guestsText]}>
           <Typography style={{textAlign: 'center'}}>Guests</Typography>
         </View>
       </View>
@@ -31,8 +33,10 @@ const WishtListItem = ({route}) => {
       <Carousel
         postId={item.id}
         images={item.images}
-        // isFav={checkIsFav(item.id)}
-        // onFavorite={onFavorite}
+        round
+        minimal
+        rightAction={() => {}}
+        rightImage={<Heart />}
       />
       <Typography style={{marginTop: 12}} bold>
         Harlingen, Netherlands

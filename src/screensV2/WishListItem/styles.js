@@ -1,5 +1,4 @@
-import {StyleSheet} from 'react-native';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {Platform, StyleSheet} from 'react-native';
 import {offsets, fonts} from '../../styles/globalStyles';
 
 // eslint-disable-next-line import/prefer-default-export
@@ -7,6 +6,7 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
+    marginTop: Platform.OS === 'ios' ? 50 : 0,
   },
   wishListTop: {
     backgroundColor: '#F7F7F7',
@@ -19,6 +19,9 @@ export const styles = StyleSheet.create({
     marginBottom: 31,
     marginTop: 31,
   },
+  guestsText: {
+    marginLeft: 15,
+  },
   topContent: {
     flexDirection: 'row',
   },
@@ -26,7 +29,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0047B3',
     width: 90,
-    borderRadius: 16,
+    borderRadius: 20,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     padding: 12,

@@ -30,22 +30,19 @@ const OnboardingScreen1 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -80,33 +77,28 @@ const OnboardingScreen1 = props => {
     },
 
     {
-      image:
-        'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
+      image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
       title: 'Single Room',
       key: '6',
     },
 
     {
-      image:
-        'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
+      image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
       title: 'Chamber and Hall',
       key: '7',
     },
     {
-      image:
-        'https://photos.zillowstatic.com/fp/fe45b984d1aca2ff57d2455ebcd8b95f-p_e.jpg',
+      image: 'https://photos.zillowstatic.com/fp/fe45b984d1aca2ff57d2455ebcd8b95f-p_e.jpg',
       title: 'Condos',
       key: '8',
     },
     {
-      image:
-        'https://photos.zillowstatic.com/fp/f1d119d24d4c011b9e3b7b177b1a6907-p_e.jpg',
+      image: 'https://photos.zillowstatic.com/fp/f1d119d24d4c011b9e3b7b177b1a6907-p_e.jpg',
       title: 'Villas',
       key: '9',
     },
     {
-      image:
-        'https://photos.zillowstatic.com/fp/72a6b2bf4667a1ffa15ddccacd1ba124-p_e.jpg',
+      image: 'https://photos.zillowstatic.com/fp/72a6b2bf4667a1ffa15ddccacd1ba124-p_e.jpg',
       title: 'Townhouse',
       key: '10',
     },
@@ -120,11 +112,7 @@ const OnboardingScreen1 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
@@ -138,7 +126,6 @@ const OnboardingScreen1 = props => {
         style={styles.footer}>
         <ScrollView>
           <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
-            {' '}
             Select the type {'\n'} of your home{' '}
           </Text>
           <FlatList

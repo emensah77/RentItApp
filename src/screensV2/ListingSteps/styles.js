@@ -2,6 +2,7 @@ import {Platform, StyleSheet} from 'react-native';
 
 import {offsets} from '../../styles/globalStyles';
 
+// eslint-disable-next-line import/prefer-default-export
 export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,

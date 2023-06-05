@@ -22,6 +22,7 @@ import SelectReason from '../screensV2/SelectReason';
 import ConfirmCancellation from '../screensV2/ConfirmCancellation';
 import RefundPage from '../screensV2/RefundPage';
 import ListingSteps from '../screensV2/ListingSteps';
+import RequestBook from '../screensV2/RequestBook';
 
 const Stack = createStackNavigator();
 
@@ -80,10 +81,11 @@ const AppStack = () => {
       <Stack.Screen name="Amenities" component={Amenities} options={noHeader} />
       <Stack.Screen name="ReviewsMore" component={Reviews} options={noHeader} />
       <Stack.Screen name="Homes" component={HomeScreen} options={noHeader} />
-      <Stack.Screen name="WishListItem" component={WishtListItem} options={noHeader} />
+      {/* <Stack.Screen name="WishListItem" component={WishtListItem} options={noHeader} /> */}
       <Stack.Screen name="Reason" component={SelectReason} options={noHeader} />
       <Stack.Screen name="Cancelation" component={ConfirmCancellation} options={noHeader} />
       <Stack.Screen name="Refund" component={RefundPage} options={noHeader} />
+      <Stack.Screen name="RequestBook" component={RequestBook} options={noHeader} />
       <Stack.Screen name="ListingStep" component={ListingSteps} options={noHeader} />
     </Stack.Navigator>
   );

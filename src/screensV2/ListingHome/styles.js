@@ -1,11 +1,14 @@
-import {StyleSheet} from 'react-native';
-
+import {Platform, StyleSheet} from 'react-native';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 
+// eslint-disable-next-line import/prefer-default-export
 export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
+    marginTop: Platform.OS === 'ios' ? 30 : 0,
+    height: hp(80),
   },
   backButton: {
     marginBottom: 80,
@@ -46,6 +49,10 @@ export const styles = StyleSheet.create({
     paddingBottom: 16,
     borderTopWidth: 1,
     borderColor: '#DEDEDE',
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   bottomFixedButton: {
     paddingVertical: 16,

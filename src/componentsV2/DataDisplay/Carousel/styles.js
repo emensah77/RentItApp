@@ -4,13 +4,20 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {colors, fonts, offsets} from '../../../styles/globalStyles';
+import {colors, offsets} from '../../../styles/globalStyles';
 
 export const styles = StyleSheet.create({
+  imageWrapper: {
+    width: '100%',
+  },
   image: {
-    width: wp(100),
+    width: '100%',
     height: hp(36.25),
     resizeMode: 'cover',
+  },
+  round: {
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   counter: {
     position: 'absolute',
@@ -20,5 +27,22 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 4,
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  dotsWrapper: {
+    position: 'absolute',
+    bottom: offsets.offsetA,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  dot: {
+    width: wp(1.53),
+    height: wp(1.53),
+    borderRadius: wp(0.75),
+    backgroundColor: colors.gray,
+    marginLeft: wp(1.53),
   },
 });

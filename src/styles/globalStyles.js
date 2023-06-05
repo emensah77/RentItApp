@@ -10,6 +10,7 @@ export const colors = {
   secondary: '#FFFFFF',
   text: '#1F2D3D',
   border: 'lightgrey',
+  gray: '#DDDDDD',
 };
 
 export const offsets = {

@@ -1,12 +1,15 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {ScrollView, View, Image, FlatList, Text, SafeAreaView} from 'react-native';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import {ScrollView, View, Image, FlatList, Text, SafeAreaView, Share} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useDispatch, useSelector} from 'react-redux';
+import LoadingDots from 'react-native-loading-dots';
 
-import {fetchPost_req, fetchSimilarPosts_req} from '../../api/posts.api';
+import {fetchSimilarPosts_req} from '../../api/posts.api';
+import {getPost, postSelectors} from '../../redux/post.slice';
 
-import {mainSkeletonLayout, styles} from './styles';
-import globalStyles, {offsets} from '../../styles/globalStyles';
+import {styles} from './styles';
+import {offsets} from '../../styles/globalStyles';
 
 import useWishlist from '../../hooks/useWishlist';
 
@@ -19,10 +22,9 @@ import ListItemText from '../../componentsV2/DataDisplay/ListItemText';
 
 import Flag from '../../../assets/data/images/flag.svg';
 
-import rightAngle from '../../../assets/data/images/icons/right-angle.png';
+import ShareIcon from '../../../assets/data/images/icons/share.svg';
 import DoorIcon from '../../../assets/data/images/icons/door-icon.svg';
 import MedalIcon from '../../../assets/data/images/icons/medal-icon.svg';
-import CalendarIcon from '../../../assets/data/images/icons/calendar.png';
 import IconCalendar from '../../../assets/data/images/icons/calendar-icon.svg';
 import RentitGuaranteeImg from '../../../assets/data/images/additional/rentitGuarantee.png';
 import Icon4 from '../../../assets/data/images/icons/rules/icon4.png';
@@ -39,20 +41,21 @@ import PostMoreInfo from '../../componentsV2/DataDisplay/PostMoreInfo';
 import Button from '../../componentsV2/Inputs/Button';
 import RulesRow from '../../componentsV2/DataDisplay/RulesRow';
 import Reserve from '../../componentsV2/Inputs/Reserve';
+import {navigate} from '../../navigation/Router';
 
 const PostScreen = ({route}) => {
   const params = route.params || {};
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const {postId} = params;
 
   const isMounted = useRef(true);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [similarPostsLoading, setSimilarPostsLoading] = useState(false);
 
-  const [post, setPost] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
+  // const [post, setPost] = useState(null);
+  const post = useSelector(postSelectors.selectPost);
 
   const [similarPosts, setSimilarPosts] = useState(null);
 
@@ -97,15 +100,8 @@ const PostScreen = ({route}) => {
     if (!isMounted.current) {
       return;
     }
-    setIsLoading(true);
 
-    try {
-      setPost(await fetchPost_req(id));
-    } catch (e) {
-      console.error('PostScreen -> fetchPost Error:', e);
-      setErrorMsg('PostScreen -> fetchPost Error:');
-    }
-    setIsLoading(false);
+    dispatch(getPost(id));
   }, []);
 
   const fetchSimilarPosts = useCallback(async () => {
@@ -118,7 +114,6 @@ const PostScreen = ({route}) => {
       setSimilarPosts(await fetchSimilarPosts_req(post));
     } catch (e) {
       console.error('PostScreen -> fetchSimilarPosts Error:', e);
-      setErrorMsg('PostScreen -> fetchSimilarPosts Error:');
     }
     setSimilarPostsLoading(false);
   }, [post]);
@@ -193,6 +188,25 @@ const PostScreen = ({route}) => {
   const moreInfoKeyExtractor = useCallback(item => item.id, []);
   const keyExtractor = useCallback(item => item.id, []);
 
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, []);
+
+  const onShare = useCallback(async () => {
+    try {
+      await Share.share({
+        title: 'Check this home on RentIt',
+        message: `https://rentit.homes/rooms/room/${postId}`,
+      });
+    } catch (e) {
+      alert(e.message);
+    }
+  }, [postId]);
+
+  const onReserve = useCallback(() => {
+    navigate('RequestBook', {postId: post.id});
+  }, [post]);
+
   useEffect(() => {
     fetchPost(postId);
   }, [postId]);
@@ -208,238 +222,248 @@ const PostScreen = ({route}) => {
     [],
   );
 
-  if (isLoading || !post) {
-    return (
-      <View style={[globalStyles]}>
-        <SkeletonContent
-          containerStyle={styles.skeleton}
-          animationDirection="horizontalLeft"
-          layout={mainSkeletonLayout}
-          isLoading
-        />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView>
       <ScrollView>
         <Carousel
-          postId={post.id}
-          images={post.images}
-          isFav={checkIsFav(post.id)}
-          onFavorite={onFavorite}
+          postId={post?.id}
+          images={post?.images}
+          isFav={checkIsFav(post?.id)}
+          leftAction={goBack}
+          leftImage={<FontAwesome name="angle-left" size={18} color="black" />}
+          rightAction={onFavorite}
+          rightImage={<FontAwesome name="heart-o" size={18} color="black" />}
+          rightAction2={onShare}
+          rightImage2={<ShareIcon />}
         />
-
         <View style={[styles.mainContent]}>
           <Typography variant="xlarge" bold>
-            {post.title}
+            {post?.title}
           </Typography>
-          <PostAchievements style={{width: '80%', marginTop: offsets.offsetA}} post={post} />
-          <Typography style={{marginTop: offsets.offsetA}}>
-            Greater Manchester, England, United Kingdom
-          </Typography>
-          <Divider />
-          <ListItemText
-            primaryVariant="large"
-            primary="This is a rare find."
-            secondaryVariant="large"
-            secondary="City Superhost’s place on Rentit is usually fully booked"
-            union={true}
-          />
-          <Divider />
-          <ListItemText
-            primaryVariant="headingLarge"
-            primary="Entire home hosted by City Superhost"
-            secondaryVariant="large"
-            secondary="6 guests - 3 bedrooms - 3 beds - 2 bathrooms"
-          />
-          <Divider />
-          <ListItemText
-            primary="Self check-in"
-            secondary="Check yourself in with the lockbox."
-            reverse
-            icon={<DoorIcon width={24} height={26} />}
-          />
-          <ListItemText
-            primary="City Superhost is a Superhost"
-            secondary="Superhosts are experienced, highly rated hosts who are committed to providing great stays for their guests"
-            reverse
-            icon={<MedalIcon width={24} height={26} />}
-          />
-          <ListItemText
-            primary="Free cancellation before 25 Oct"
-            reverse
-            icon={<IconCalendar width={24} height={26} />}
-          />
-          <Divider />
-          <Typography>
-            Every booking includes free protection from Host cancellations, listing inaccuracies,
-            and other issues like trouble checking in.
-          </Typography>
-          <Typography
-            // onPress={() => {}}
-            style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
-            Learn more
-          </Typography>
-          <Divider />
-          <Typography>
-            You’ll love this home for your visit to Manchester whether you’re here for a long time,
-            short time, business or pleasure
-          </Typography>
-          <Typography
-            // onPress={() => {}}
-            style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
-            Learn more
-          </Typography>
-          <Divider />
-          <Image source={RentitGuaranteeImg} width={239} height={24} />
-          <Typography style={{marginTop: offsets.offsetA}}>
-            Every booking includes free protection from Host cancellations, listing inaccuracies,
-            and other issues like trouble checking in.
-          </Typography>
-          <Typography
-            // onPress={() => {}}
-            style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
-            Learn more
-          </Typography>
-          <Divider />
-          <Typography style={{marginTop: offsets.offsetA}}>{post.description}</Typography>
-          <Typography
-            // onPress={() => {}}
-            style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
-            Learn more
-          </Typography>
-          <Divider />
-          {similarPosts?.length ? (
-            <>
-              <Typography variant="xlarge" bold>
-                Where you will sleep
-              </Typography>
-              <FlatList
-                style={{marginTop: offsets.offsetB}}
-                data={similarPosts}
-                renderItem={renderRoomItem}
-                horizontal
-                showsHorizontalScrollIndicator={false}
+          {post?.temp && (
+            <View style={styles.loaderWrapper}>
+              <LoadingDots
+                dots={3}
+                size={10}
+                bounceHeight={4}
+                colors={['#000000', '#000000', '#000000']}
               />
-              <Divider />
-            </>
-          ) : (
-            <></>
-          )}
-          <ListItemText
-            primary="Kitchen"
-            reverse
-            center
-            icon={<KitchenIcon width={24} height={26} />}
-          />
-          <ListItemText primary="Wifi" reverse center icon={<WifiIcon width={24} height={26} />} />
-          <ListItemText
-            primary="Dedicated workspace"
-            reverse
-            center
-            icon={<Dedicated width={24} height={26} />}
-          />
-          <ListItemText
-            primary="Free driveway parking on premises - 1 space"
-            reverse
-            center
-            icon={<CarIcon width={24} height={26} />}
-          />
-          <ListItemText
-            primary="55” HDTV with Netflix"
-            reverse
-            center
-            icon={<TvIcon width={24} height={26} />}
-          />
-          <Button
-            variant="outlined"
-            text="Show All 54 amenities"
-            onPress={goReviewScreen}
-            style={{marginBottom: 15, marginTop: 15}}
-          />
-          <Divider />
-          {similarPosts?.length ? (
-            <>
-              <View style={styles.starBlock}>
-                <Star width={20} height={20} />
-                <Typography variant="xlarge" bold style={{paddingLeft: 10}}>
-                  4.76 - 28 Reviews
-                </Typography>
-              </View>
-
-              <FlatList
-                style={{marginTop: offsets.offsetB}}
-                data={similarPosts}
-                renderItem={renderCommentItem}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              />
-              <Divider />
-            </>
-          ) : (
-            <></>
-          )}
-          <Button
-            variant="outlined"
-            text="Show All 28 reviews"
-            onPress={goReviewScreen}
-            style={{marginBottom: 15, marginTop: 15}}
-          />
-          <Divider />
-          <View style={styles.superHost}>
-            <Typography variant="xlarge" bold style={{width: 200}}>
-              Hosted by City Superhost
-            </Typography>
-            <Typography variant="small" style={{color: '#717171'}}>
-              Joined in February 2015
-            </Typography>
-            <Text style={styles.hostText}>Profesional Host</Text>
-          </View>
-          <FlatList data={data} renderItem={hostItem} keyExtractor={keyExtractor} />
-          <Typography style={{marginTop: 19}}>
-            Hey! We are Matt and Ben - owners of UiClones - the best resource for editable user
-            interfaces of the worlds best a...
-          </Typography>
-          <View style={styles.coHosts}>
-            <Typography>Co-hosts: </Typography>
-            <View style={styles.imgHosts}>
-              <Image source={Icon4} />
             </View>
-          </View>
-          <Typography variant="large" bold style={{marginTop: 40}}>
-            City Superhost is a Superhost
-          </Typography>
-          <Typography style={{marginTop: 8}}>
-            Superhosts are experienced, highly rated hosts who are committed to providing great
-            stays for quests
-          </Typography>
-          <Typography style={{marginTop: 16}}>Repsonse rate: 100%</Typography>
-          <Typography style={{marginTop: 8, marginBottom: 20}}>
-            Response time: within an hour
-          </Typography>
-          <Button variant="outlined" text="Contact host" onPress={goReviewScreen} />
-          <Typography style={{marginTop: 30}}>
-            To protect your payment, never transfer money or communicate outside of the Rentit
-            website or app.
-          </Typography>
+          )}
+          {!post?.temp && (
+            <>
+              <PostAchievements style={{width: '80%', marginTop: offsets.offsetA}} post={post} />
+              <Typography style={{marginTop: offsets.offsetA}}>
+                Greater Manchester, England, United Kingdom
+              </Typography>
+              <Divider />
+              <ListItemText
+                primaryVariant="large"
+                primary="This is a rare find."
+                secondaryVariant="large"
+                secondary="City Superhost’s place on Rentit is usually fully booked"
+                union={true}
+              />
+              <Divider />
+              <ListItemText
+                primaryVariant="headingLarge"
+                primary="Entire home hosted by City Superhost"
+                secondaryVariant="large"
+                secondary="6 guests - 3 bedrooms - 3 beds - 2 bathrooms"
+              />
+              <Divider />
+              <ListItemText
+                primary="Self check-in"
+                secondary="Check yourself in with the lockbox."
+                reverse
+                icon={<DoorIcon width={24} height={26} />}
+              />
+              <ListItemText
+                primary="City Superhost is a Superhost"
+                secondary="Superhosts are experienced, highly rated hosts who are committed to providing great stays for their guests"
+                reverse
+                icon={<MedalIcon width={24} height={26} />}
+              />
+              <ListItemText
+                primary="Free cancellation before 25 Oct"
+                reverse
+                icon={<IconCalendar width={24} height={26} />}
+              />
+              <Divider />
+              <Typography>
+                Every booking includes free protection from Host cancellations, listing
+                inaccuracies, and other issues like trouble checking in.
+              </Typography>
+              <Typography
+                // onPress={() => {}}
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+                Learn more
+              </Typography>
+              <Divider />
+              <Typography>
+                You’ll love this home for your visit to Manchester whether you’re here for a long
+                time, short time, business or pleasure
+              </Typography>
+              <Typography
+                // onPress={() => {}}
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+                Learn more
+              </Typography>
+              <Divider />
+              <Image source={RentitGuaranteeImg} width={239} height={24} />
+              <Typography style={{marginTop: offsets.offsetA}}>
+                Every booking includes free protection from Host cancellations, listing
+                inaccuracies, and other issues like trouble checking in.
+              </Typography>
+              <Typography
+                // onPress={() => {}}
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+                Learn more
+              </Typography>
+              <Divider />
+              <Typography style={{marginTop: offsets.offsetA}}>{post?.description}</Typography>
+              <Typography
+                // onPress={() => {}}
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+                Learn more
+              </Typography>
+              <Divider />
+              {similarPosts?.length ? (
+                <>
+                  <Typography variant="xlarge" bold>
+                    Where you will sleep
+                  </Typography>
+                  <FlatList
+                    style={{marginTop: offsets.offsetB}}
+                    data={similarPosts}
+                    renderItem={renderRoomItem}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  />
+                  <Divider />
+                </>
+              ) : (
+                <></>
+              )}
+              <ListItemText
+                primary="Kitchen"
+                reverse
+                center
+                icon={<KitchenIcon width={24} height={26} />}
+              />
+              <ListItemText
+                primary="Wifi"
+                reverse
+                center
+                icon={<WifiIcon width={24} height={26} />}
+              />
+              <ListItemText
+                primary="Dedicated workspace"
+                reverse
+                center
+                icon={<Dedicated width={24} height={26} />}
+              />
+              <ListItemText
+                primary="Free driveway parking on premises - 1 space"
+                reverse
+                center
+                icon={<CarIcon width={24} height={26} />}
+              />
+              <ListItemText
+                primary="55” HDTV with Netflix"
+                reverse
+                center
+                icon={<TvIcon width={24} height={26} />}
+              />
+              <Button
+                variant="outlined"
+                text="Show All 54 amenities"
+                onPress={goReviewScreen}
+                style={{marginBottom: 15, marginTop: 15}}
+              />
+              <Divider />
+              {similarPosts?.length ? (
+                <>
+                  <View style={styles.starBlock}>
+                    <Star width={20} height={20} />
+                    <Typography variant="xlarge" bold style={{paddingLeft: 10}}>
+                      4.76 - 28 Reviews
+                    </Typography>
+                  </View>
 
-          <Divider />
-          <FlatList
-            data={postMoreInfoData}
-            renderItem={moreInfoItem}
-            keyExtractor={moreInfoKeyExtractor}
-          />
-          <View style={styles.reportBlock}>
-            {/* <Image source={Icon4} /> */}
-            <Flag width={20} height={20} />
-            <Text style={styles.reportText}>Report this listing</Text>
-          </View>
-          <Divider />
+                  <FlatList
+                    style={{marginTop: offsets.offsetB}}
+                    data={similarPosts}
+                    renderItem={renderCommentItem}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  />
+                  <Divider />
+                </>
+              ) : (
+                <></>
+              )}
+              <Button
+                variant="outlined"
+                text="Show All 28 reviews"
+                onPress={goReviewScreen}
+                style={{marginBottom: 15, marginTop: 15}}
+              />
+              <Divider />
+              <View style={styles.superHost}>
+                <Typography variant="xlarge" bold style={{width: 200}}>
+                  Hosted by City Superhost
+                </Typography>
+                <Typography variant="small" style={{color: '#717171'}}>
+                  Joined in February 2015
+                </Typography>
+                <Text style={styles.hostText}>Profesional Host</Text>
+              </View>
+              <FlatList data={data} renderItem={hostItem} keyExtractor={keyExtractor} />
+              <Typography style={{marginTop: 19}}>
+                Hey! We are Matt and Ben - owners of UiClones - the best resource for editable user
+                interfaces of the worlds best a...
+              </Typography>
+              <View style={styles.coHosts}>
+                <Typography>Co-hosts: </Typography>
+                <View style={styles.imgHosts}>
+                  <Image source={Icon4} />
+                </View>
+              </View>
+              <Typography variant="large" bold style={{marginTop: 40}}>
+                City Superhost is a Superhost
+              </Typography>
+              <Typography style={{marginTop: 8}}>
+                Superhosts are experienced, highly rated hosts who are committed to providing great
+                stays for quests
+              </Typography>
+              <Typography style={{marginTop: 16}}>Repsonse rate: 100%</Typography>
+              <Typography style={{marginTop: 8, marginBottom: 20}}>
+                Response time: within an hour
+              </Typography>
+              <Button variant="outlined" text="Contact host" onPress={goReviewScreen} />
+              <Typography style={{marginTop: 30}}>
+                To protect your payment, never transfer money or communicate outside of the Rentit
+                website or app.
+              </Typography>
+
+              <Divider />
+              <FlatList
+                data={postMoreInfoData}
+                renderItem={moreInfoItem}
+                keyExtractor={moreInfoKeyExtractor}
+              />
+              <View style={styles.reportBlock}>
+                {/* <Image source={Icon4} /> */}
+                <Flag width={20} height={20} />
+                <Text style={styles.reportText}>Report this listing</Text>
+              </View>
+              <Divider />
+            </>
+          )}
         </View>
       </ScrollView>
-      <Reserve />
+      {!post?.temp && <Reserve price={post.newPrice} onPress={onReserve} />}
     </SafeAreaView>
   );
 };
