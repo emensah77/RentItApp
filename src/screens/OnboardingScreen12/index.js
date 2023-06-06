@@ -15,12 +15,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {
-  faCrown,
-  faHandshake,
-  faCouch,
-  faArrowLeft,
-} from '@fortawesome/free-solid-svg-icons';
+import {faCrown, faHandshake, faCouch, faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import * as Animatable from 'react-native-animatable';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
@@ -150,10 +145,7 @@ const OnboardingScreen12 = props => {
   const userDetails = async () => {
     const {currentUser} = auth();
     if (currentUser) {
-      const userDoc = await firestore()
-        .collection('users')
-        .doc(currentUser.uid)
-        .get();
+      const userDoc = await firestore().collection('users').doc(currentUser.uid).get();
       if (userDoc.exists) {
         setUser(userDoc.data());
         // console.log('User data:', user);
@@ -178,22 +170,19 @@ const OnboardingScreen12 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -211,14 +200,8 @@ const OnboardingScreen12 = props => {
       end={{x: 1, y: 0.5}}
       style={styles.container}>
       <StatusBar hidden />
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.text_header}>Choose options</Text>
@@ -232,16 +215,9 @@ const OnboardingScreen12 = props => {
           {usersWithPrivileges.includes(auth().currentUser.uid) ||
           user?.marketer_status === 'ACCEPTED' ? (
             <TouchableOpacity
-              style={[
-                styles.optionButton,
-                loyalty && styles.selectedOptionButton,
-              ]}
+              style={[styles.optionButton, loyalty && styles.selectedOptionButton]}
               onPress={handleLoyaltyPress}>
-              <FontAwesomeIcon
-                icon={faCrown}
-                style={styles.optionIcon}
-                color="blue"
-              />
+              <FontAwesomeIcon icon={faCrown} style={styles.optionIcon} color="blue" />
               <View>
                 <Text style={styles.optionButtonText}>Loyalty Home</Text>
                 <Text style={styles.optionDescription}>
@@ -252,35 +228,19 @@ const OnboardingScreen12 = props => {
           ) : null}
 
           <TouchableOpacity
-            style={[
-              styles.optionButton,
-              negotiable && styles.selectedOptionButton,
-            ]}
+            style={[styles.optionButton, negotiable && styles.selectedOptionButton]}
             onPress={handleNegotiablePress}>
-            <FontAwesomeIcon
-              icon={faHandshake}
-              style={styles.optionIcon}
-              color="blue"
-            />
+            <FontAwesomeIcon icon={faHandshake} style={styles.optionIcon} color="blue" />
             <View>
               <Text style={styles.optionButtonText}>Negotiable</Text>
-              <Text style={styles.optionDescription}>
-                Price can be negotiated with homeowner
-              </Text>
+              <Text style={styles.optionDescription}>Price can be negotiated with homeowner</Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.optionButton,
-              furnished && styles.selectedOptionButton,
-            ]}
+            style={[styles.optionButton, furnished && styles.selectedOptionButton]}
             onPress={handleFurnishedPress}>
-            <FontAwesomeIcon
-              icon={faCouch}
-              style={styles.optionIcon}
-              color="blue"
-            />
+            <FontAwesomeIcon icon={faCouch} style={styles.optionIcon} color="blue" />
             <View>
               <Text style={styles.optionButtonText}>Furnished</Text>
               <Text style={styles.optionDescription}>
@@ -290,9 +250,7 @@ const OnboardingScreen12 = props => {
           </TouchableOpacity>
 
           <View style={styles.homeownerNameContainer}>
-            <Text style={styles.homeownerNameText}>
-              Enter the homeowner's name
-            </Text>
+            <Text style={styles.homeownerNameText}>Enter the homeowner's name</Text>
             <TextInput
               style={styles.homeownerNameInput}
               onChangeText={text => setHomeownerName(text)}
@@ -302,15 +260,12 @@ const OnboardingScreen12 = props => {
           </View>
 
           <View style={styles.availableForRentContainer}>
-            <Text style={styles.availableForRentText}>
-              Is your home available for rent now?
-            </Text>
+            <Text style={styles.availableForRentText}>Is your home available for rent now?</Text>
             <View style={styles.availableForRentButtons}>
               <TouchableOpacity
                 style={[
                   styles.availableForRentButton,
-                  availableForRent === true &&
-                    styles.selectedAvailableForRentButton,
+                  availableForRent === true && styles.selectedAvailableForRentButton,
                 ]}
                 onPress={() => handleAvailableForRent(true)}>
                 <Text style={styles.availableForRentButtonText}>Yes</Text>
@@ -318,8 +273,7 @@ const OnboardingScreen12 = props => {
               <TouchableOpacity
                 style={[
                   styles.availableForRentButton,
-                  availableForRent === false &&
-                    styles.selectedAvailableForRentButton,
+                  availableForRent === false && styles.selectedAvailableForRentButton,
                 ]}
                 onPress={() => handleAvailableForRent(false)}>
                 <Text style={styles.availableForRentButtonText}>No</Text>
@@ -334,16 +288,12 @@ const OnboardingScreen12 = props => {
             onCancel={hideDatePicker}
             customHeaderIOS={() => (
               <View style={styles.customHeader}>
-                <Text style={styles.customHeaderText}>
-                  Select when your home will be available
-                </Text>
+                <Text style={styles.customHeaderText}>Select when your home will be available</Text>
               </View>
             )}
             customHeaderAndroid={() => (
               <View style={styles.customHeader}>
-                <Text style={styles.customHeaderText}>
-                  Select when your home will be available
-                </Text>
+                <Text style={styles.customHeaderText}>Select when your home will be available</Text>
               </View>
             )}
           />
@@ -351,9 +301,7 @@ const OnboardingScreen12 = props => {
           <TouchableOpacity
             style={[
               styles.nextButton,
-              homeownerName && availableForRent !== null
-                ? null
-                : styles.disabledNextButton,
+              homeownerName && availableForRent !== null ? null : styles.disabledNextButton,
             ]}
             onPress={handleNextPress}
             disabled={!homeownerName || availableForRent === null}>

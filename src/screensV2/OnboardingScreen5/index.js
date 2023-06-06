@@ -60,19 +60,19 @@ const OnboardingScreen5 = () => {
     navigation.navigate('OnboardingScreen6');
   };
 
-  const hellod = text => {
-    setValue(parseInt(text));
+  // const hellod = text => {
+  //   setValue(parseInt(text));
 
-    sethomeprice(value);
-  };
+  //   sethomeprice(value);
+  // };
 
-  const setHomePrice = () => {};
-  const handle = () => {
-    setCurrency('usd');
-  };
-  const handle1 = () => {
-    setCurrency('ghs');
-  };
+  // const setHomePrice = () => {};
+  // const handle = () => {
+  //   setCurrency('usd');
+  // };
+  // const handle1 = () => {
+  //   setCurrency('ghs');
+  // };
   const currencyDataItem = [
     {text: 'US Dollar', id: 1},
     {text: 'Ghana Cedis', id: 2},
@@ -82,7 +82,6 @@ const OnboardingScreen5 = () => {
   }, []);
 
   const changeCount = type => {
-    console.log('Number(currencyData) + 1', Number(currencyData) + 1);
     if (type === 'minus' && currencyData > 1) {
       setCurrencyData(Number(currencyData) - 1);
     }
