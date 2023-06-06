@@ -11,4 +11,28 @@ module.exports = {
   globals: {
     __DEV__: true,
   },
+  collectCoverage: true,
+  coverageDirectory: 'analysis/coverage',
+  coveragePathIgnorePatterns: ['/node_modules/'],
+  collectCoverageFrom: ['src/**/*.{js,jsx,ts}'],
+  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageThreshold: {
+    global: {
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
+    },
+  },
+  clearMocks: true,
+  coverageProvider: 'babel',
+  testPathIgnorePatterns: ['\\\\node_modules\\\\'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native' +
+      '|react-navigation-tabs' +
+      '|react-native-splash-screen' +
+      '|react-native-screens' +
+      '|react-native-reanimated' +
+      ')/)',
+  ],
 };
