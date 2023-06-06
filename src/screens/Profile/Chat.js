@@ -7,67 +7,65 @@ import {
   Page,
   Whitespace,
   Input,
-  Container,
-  Divider,
+  // Container,
+  // Divider,
   CardDisplay,
   Typography,
 } from '../../components';
 
 import arrowLeft from '../../assets/images/arrow-left.png';
 import menu from '../../assets/images/menu.png';
-import logo from '../../assets/images/logo.png';
+// import logo from '../../assets/images/logo.png';
 import moon from '../../assets/images/moon.png';
-import listing from '../../assets/images/listing.png';
-import share from '../../assets/images/share.png';
-import temp from '../../assets/images/temp/temp1.png';
+// import listing from '../../assets/images/listing.png';
+// import share from '../../assets/images/share.png';
+// import temp from '../../assets/images/temp/temp1.png';
 
-const Chat = () => {
-  // const {
-  //   route: {
-  //     params: {receiver_id},
-  //   },
-  // } = props;
-  const receiver_id = '000yhEHlwAarHPNrc2Xbwy9facw1';
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1c2VyX2lkIjoiMDAweWhFSGx3QWFySFBOcmMyWGJ3eTlmYWN3MSJ9.FdDVtyb_Q8wrnRF9lu2QOxHR7hZ3YkAlohYkdyZhtSI';
+const Chat = props => {
+  const {
+    route: {params: {receiver_id} = {receiver_id: '000yhEHlwAarHPNrc2Xbwy9facw1'}},
+  } = props;
 
-  const [, /* loading */ setLoading] = useState(false);
+  const [sender, setSender] = useState({});
+  const [receiver, setReceiver] = useState({});
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
+  const [, /* loading */ setLoading] = useState(false);
 
   const send = useCallback(async () => {
-    const user = auth().currentUser;
-    const _message = await channel.sendMessage({
+    if (!channel) {
+      return;
+    }
+
+    await channel.sendMessage({
       text: message,
       timestamp: new Date().getTime(),
-      sender_id: user.uid,
-      receiver_id,
+      sender_id: sender.uid,
+      receiver_id: receiver.uid,
       // Use this to create a thread, recall
       // that the message will go into the
       // parent message specified using `parent_id`
       // parent_id: parent.message.id,
     });
-    setMessages(oldMessages => [...oldMessages, _message]);
-    console.debug('message', _message);
-  }, [channel, message]);
+  }, [channel, message, sender, receiver]);
 
   useEffect(() => {
-    const client = StreamChat.getInstance('dz5f4d5kzrue'); // 'upcrj3b3pp7v');
+    const client = StreamChat.getInstance('dz5f4d5kzrue');
 
     (async () => {
       setLoading(true);
 
       const user = auth().currentUser;
-      const receiver = await firestore()
+      const _receiver = await firestore()
         .collection('users')
         .doc(receiver_id)
         .get()
         .catch(console.error);
-      const recipient = receiver?.data();
+      const recipient = _receiver?.data();
       recipient.uid = receiver_id;
       if (!recipient) {
-        console.error('User not found', receiver, recipient);
+        console.error('User not found', _receiver, recipient);
         return;
       }
       console.debug(
@@ -79,14 +77,28 @@ const Chat = () => {
         `(uid: ${recipient.uid})`,
       );
 
-      await client
-        .setUser(
-          {
-            id: recipient.uid,
-            name: recipient.displayName,
-            image: recipient.userImg,
+      const request = await fetch(
+        'https://bnymw2nuxn6zstrhiiz4nibuum0zkovn.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          token,
+          body: JSON.stringify({
+            user_id: user.uid,
+          }),
+        },
+      );
+      const response = await request.json();
+
+      await client
+        .connectUser(
+          {
+            id: user.uid,
+            name: user.displayName,
+            image: user.userImg,
+          },
+          response.token,
         )
         .catch(console.error);
 
@@ -97,47 +109,53 @@ const Chat = () => {
         members: [user.uid, recipient.uid],
       });
 
-      await _channel.watch();
-      _channel.on('message.new', event => {
-        console.debug('You have a new message:', event);
-        setMessages(oldMessages => [...oldMessages, event.message]);
-      });
-
       // TODO:
       // Forbid banned users from continuing?
       // const member = await _channel.queryMembers({user_id: user.uid});
       // const {user:{banned, online, last_active}} = member[0];
       const result = await _channel.query({
-        messages: {limit: 10, offset: 0},
-        // members: { limit: 10, offset: 0 } ,
-        // watchers: { limit: 10, offset: 0 },
+        messages: {limit: 30, offset: 0},
       });
-      // console.log('QQQQ', result);
-      setMessages(result.messages);
+      setMessages(result.messages.reverse());
+      setSender(user);
+      setReceiver(recipient);
       setChannel(_channel);
       setLoading(false);
+
+      await _channel.watch();
+      _channel.on('message.new', event => {
+        console.debug('You have a new message:', event);
+        setMessage('');
+        setMessages(oldMessages => [event.message, ...oldMessages]);
+      });
     })().catch(e => console.error('There was an issue loading the chat', e));
 
-    return () => client.disconnect();
+    return () => client.disconnectUser();
   }, [receiver_id]);
 
-  // console.log('messages', messages);
+  let currentDay, nextDay;
 
   return (
     <Page
       leftIcon={arrowLeft}
       rightIcon={menu}
+      reverse
       header={
         <Typography type="heading" left>
-          Craig{'\n'}
-          <Typography type="regular" size={11} left color="#717171">
-            Response time: 1 hour
-          </Typography>
+          {receiver.displayName}
+          {receiver.displayName ? (
+            <>
+              {'\n'}
+              <Typography type="regular" size={11} left color="#717171">
+                Response time: 1 hour
+              </Typography>
+            </>
+          ) : null}
         </Typography>
       }
       footer={
         <>
-          <CardDisplay
+          {/* <CardDisplay
             leftImageCircle={38}
             leftImageSrc={moon}
             description={
@@ -149,7 +167,7 @@ const Chat = () => {
             bold={false}
           />
 
-          <Whitespace marginTop={8} />
+          <Whitespace marginTop={8} /> */}
 
           <Input
             inline
@@ -158,10 +176,11 @@ const Chat = () => {
             onSubmitEditing={send}
             value={message}
             onChange={setMessage}
+            trim={false}
           />
         </>
       }>
-      <CardDisplay
+      {/* <CardDisplay
         leftImageWidth={38}
         leftImageHeight={38}
         leftImageSrc={temp}
@@ -209,19 +228,31 @@ const Chat = () => {
 
       <Whitespace marginTop={-35} />
 
-      <Divider />
+      <Divider /> */}
 
-      {messages.map(msg => {
+      {messages.map((msg, i) => {
         const date = new Date(msg.created_at);
+        const months = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ];
+        const nextDate = new Date((messages[i + 1] || msg).created_at);
+        nextDay = `${months[nextDate.getMonth()]} ${nextDate.getDate()}, ${nextDate.getFullYear()}`;
+        currentDay = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
         return (
-          <React.Fragment key={msg.cid}>
-            <Typography type="levelOneThick" size={12} color="#717171">
-              Aug 23, 2022
-            </Typography>
-
-            <Whitespace marginTop={24} />
-
-            <Container row center type="chip">
+          <React.Fragment key={msg.id}>
+            {/* <Container row center type="chip">
               <CardDisplay
                 leftImageWidth={16}
                 leftImageHeight={16}
@@ -240,21 +271,33 @@ const Chat = () => {
               />
             </Container>
 
-            <Whitespace marginTop={24} />
+            <Whitespace marginTop={24} /> */}
 
             <CardDisplay
               leftImageCircle={38}
-              leftImageSrc={moon}
+              leftImageSrc={msg.user.image ? {uri: msg.user?.image} : moon}
               name={msg.user.name}
-              location={`${date.getHours()}:${date.getMinutes()}`}
-              description="Looking forward to staying"
+              location={`${
+                date.getHours() > 12 ? date.getHours() - 12 : date.getHours()
+              }:${date.getMinutes()} ${date.getHours() > 12 ? 'PM' : 'AM'}`}
+              description={msg.html.replace(/<\/?[^>]+(>|$)/g, '')}
+              reverse={msg.user.id === sender.uid}
               bold={false}
             />
+
+            {i === messages.length - 1 || nextDay !== currentDay ? (
+              <>
+                <Whitespace marginTop={24} />
+
+                <Typography type="levelOneThick" size={12} color={msg.pending ? '#555' : '#717171'}>
+                  {currentDay}
+                </Typography>
+              </>
+            ) : null}
           </React.Fragment>
         );
       })}
-
-      <Typography type="levelOneThick" size={12} color="#717171">
+      {/* <Typography type="levelOneThick" size={12} color="#717171">
         Aug 23, 2022
       </Typography>
 
@@ -343,7 +386,7 @@ const Chat = () => {
           center
           bold
         />
-      </Container>
+      </Container> */}
     </Page>
   );
 };

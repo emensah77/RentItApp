@@ -14,6 +14,7 @@ export const sizing = {
 const global = StyleSheet.create({
   flex: {flex: 1},
   spaceBetween: {...sizing, justifyContent: 'space-between'},
+  spaceAround: {...sizing, justifyContent: 'space-around'},
   flexStart: {...sizing, justifyContent: 'flex-start'},
   flexEnd: {...sizing, justifyContent: 'flex-end'},
   center: {
@@ -223,10 +224,15 @@ const global = StyleSheet.create({
     maxWidth: 350,
     width: '80%',
     marginLeft: 11,
+    marginRight: 11,
   },
   tab: {borderBottomWidth: 2, borderBottomColor: '#000000', height: 36},
   tabContent: {
     marginTop: 25,
+  },
+  buttonLike: {
+    padding: 7,
+    borderRadius: 13,
   },
 });
 

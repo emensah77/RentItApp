@@ -14,13 +14,15 @@ import Password from '../screens/Authentication/Password';
 import Finish from '../screens/Authentication/Finish';
 import Agreement from '../screens/Authentication/Agreement';
 import Notification from '../screens/Authentication/Notification';
+import Location from '../screens/Authentication/Location';
+
 import {PageSpinner} from '../components';
 
 const Stack = createStackNavigator();
 
-// AsyncStorage.removeItem('authentication::data');
-// auth().signOut();
-// Add fields `uid`, and `type`, make phoneNumber an array, and then prevent signin with mobile if greater than 1
+AsyncStorage.removeItem('authentication::data');
+auth().signOut();
+// Make phoneNumber an array, and then prevent signin with mobile if greater than 1
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
 
@@ -54,6 +56,10 @@ const AuthStack = () => {
 
       if (!data?.notification) {
         _initialRouteName = 'Notification';
+      }
+
+      if (!data?.location) {
+        _initialRouteName = 'Location';
       }
 
       if (!data?.agreement) {
@@ -101,6 +107,8 @@ const AuthStack = () => {
       <Stack.Screen name="Agreement" component={Agreement} options={noHeader} />
 
       <Stack.Screen name="Notification" component={Notification} options={noHeader} />
+
+      <Stack.Screen name="Location" component={Location} options={noHeader} />
     </Stack.Navigator>
   );
 };
