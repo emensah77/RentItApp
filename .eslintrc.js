@@ -15,6 +15,7 @@ module.exports = {
       {
         SwitchCase: 1,
         ignoredNodes: [
+          'TemplateLiteral',
           'JSXElement',
           'JSXElement > *',
           'JSXAttribute',
