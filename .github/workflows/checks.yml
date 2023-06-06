@@ -35,11 +35,11 @@ jobs:
 
       - name: Lintable Files
         run: |
-          git diff --diff-filter=RM --name-only origin/main..$(git log -n 1 --pretty=format:%h -- . | xargs)
+          git diff --diff-filter=RM --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs)
 
       - name: Lint
         run: |
-          npx eslint --no-inline-config --fix-dry-run $(git diff --diff-filter=RM --name-only origin/main..$(git log -n 1 --pretty=format:%h -- . | xargs) '**/*.js')
+          npx eslint --no-inline-config --fix-dry-run $(git diff --diff-filter=RM --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs) '**/*.js')
 
       - name: Inject environment variables
         run: |
