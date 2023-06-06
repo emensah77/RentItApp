@@ -4,6 +4,19 @@ import auth from '@react-native-firebase/auth';
 
 import mixpanel from '../MixpanelConfig';
 
+import Inbox from '../screens/Profile/Inbox';
+import Chat from '../screens/Profile/Chat';
+import Menu from '../screens/Profile/Menu';
+import PaymentsAndPayouts from '../screens/Profile/Payments/PaymentsAndPayouts';
+import PaymentMethods from '../screens/Profile/Payments/PaymentMethods';
+import YourPayments from '../screens/Profile/Payments/YourPayments';
+import CreditAndCoupons from '../screens/Profile/Payments/CreditAndCoupons';
+import RentItPay from '../screens/Profile/Payments/RentItPay';
+import BecomeAMarketer from '../screens/Profile/BecomeAMarketer';
+import AccountDetails from '../screens/Profile/AccountDetails';
+import Edit from '../screens/Profile/Edit';
+import EditPersonalInfo from '../screens/Profile/EditPersonalInfo';
+import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screensV2/PostScreen';
@@ -55,7 +68,33 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="EditPersonalInfo" onStateChange={onNavigationStateChange}>
+      <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
+
+      <Stack.Screen name="Chat" component={Chat} options={noHeader} />
+
+      <Stack.Screen name="Menu" component={Menu} options={noHeader} />
+
+      <Stack.Screen name="PaymentsAndPayouts" component={PaymentsAndPayouts} options={noHeader} />
+
+      <Stack.Screen name="PaymentMethods" component={PaymentMethods} options={noHeader} />
+
+      <Stack.Screen name="YourPayments" component={YourPayments} options={noHeader} />
+
+      <Stack.Screen name="CreditAndCoupons" component={CreditAndCoupons} options={noHeader} />
+
+      <Stack.Screen name="RentItPay" component={RentItPay} options={noHeader} />
+
+      <Stack.Screen name="BecomeAMarketer" component={BecomeAMarketer} options={noHeader} />
+
+      <Stack.Screen name="AccountDetails" component={AccountDetails} options={noHeader} />
+
+      <Stack.Screen name="Edit" component={Edit} options={noHeader} />
+
+      <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfo} options={noHeader} />
+
+      <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
+
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />

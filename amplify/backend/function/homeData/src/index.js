@@ -28,11 +28,7 @@ const haversineDistance = (location1, location2) => {
   return earthRadius * c;
 };
 
-const getNearbyBuildings = (
-  userLocation,
-  buildingLocations,
-  radiusInMeters = 500,
-) =>
+const getNearbyBuildings = (userLocation, buildingLocations, radiusInMeters = 500) =>
   buildingLocations.filter(building => {
     const distance = haversineDistance(userLocation, building);
     return distance <= radiusInMeters;

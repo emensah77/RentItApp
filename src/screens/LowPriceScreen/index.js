@@ -153,10 +153,7 @@ const LowPriceScreen = props => {
         </View>
       ) : (
         <View>
-          <OptimizedFlatList
-            data={posts}
-            renderItem={({item}) => <Post post={item} />}
-          />
+          <OptimizedFlatList data={posts} renderItem={({item}) => <Post post={item} />} />
         </View>
       )}
     </View>

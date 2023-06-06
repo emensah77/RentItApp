@@ -22,11 +22,7 @@ export default function CardCommentPhoto({
   const getUserInfo = async id => {
     if (id) {
       try {
-        const data = await firebase
-          .firestore()
-          .collection('users')
-          .doc(id)
-          .get();
+        const data = await firebase.firestore().collection('users').doc(id).get();
         setUserInfo(data.data());
         return data.data();
       } catch (error) {

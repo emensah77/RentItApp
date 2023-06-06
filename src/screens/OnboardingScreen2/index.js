@@ -34,22 +34,19 @@ const OnboardingScreen2 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -81,18 +78,11 @@ const OnboardingScreen2 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
-        <Text style={styles.text_header}>
-          {' '}
-          How many bedrooms {'\n'} and bathrooms{' '}
-        </Text>
+        <Text style={styles.text_header}> How many bedrooms {'\n'} and bathrooms </Text>
       </View>
 
       <Animatable.View
@@ -103,15 +93,11 @@ const OnboardingScreen2 = props => {
         <ScrollView>
           <View style={styles.row}>
             <View>
-              <Text style={{fontSize: 18, fontFamily: 'Montserrat-Regular'}}>
-                Beds
-              </Text>
+              <Text style={{fontSize: 18, fontFamily: 'Montserrat-Regular'}}>Beds</Text>
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Pressable
-                onPress={() => setbed(Math.max(0, bed - 1))}
-                style={styles.button1}>
+              <Pressable onPress={() => setbed(Math.max(0, bed - 1))} style={styles.button1}>
                 <Text style={{fontSize: 20, color: 'black'}}>-</Text>
               </Pressable>
 
@@ -124,9 +110,7 @@ const OnboardingScreen2 = props => {
           </View>
           <View style={styles.row}>
             <View>
-              <Text style={{fontSize: 18, fontFamily: 'Montserrat-Regular'}}>
-                Bedrooms
-              </Text>
+              <Text style={{fontSize: 18, fontFamily: 'Montserrat-Regular'}}>Bedrooms</Text>
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -136,13 +120,9 @@ const OnboardingScreen2 = props => {
                 <Text style={{fontSize: 20, color: 'black'}}>-</Text>
               </Pressable>
 
-              <Text style={{marginHorizontal: 20, fontSize: 20}}>
-                {bedroom}
-              </Text>
+              <Text style={{marginHorizontal: 20, fontSize: 20}}>{bedroom}</Text>
 
-              <Pressable
-                onPress={() => setbedroom(bedroom + 1)}
-                style={styles.button1}>
+              <Pressable onPress={() => setbedroom(bedroom + 1)} style={styles.button1}>
                 <Text style={{fontSize: 20, color: 'black'}}>+</Text>
               </Pressable>
             </View>
@@ -150,9 +130,7 @@ const OnboardingScreen2 = props => {
 
           <View style={styles.row}>
             <View>
-              <Text style={{fontSize: 18, fontFamily: 'Montserrat-Regular'}}>
-                Bathrooms
-              </Text>
+              <Text style={{fontSize: 18, fontFamily: 'Montserrat-Regular'}}>Bathrooms</Text>
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -162,13 +140,9 @@ const OnboardingScreen2 = props => {
                 <Text style={{fontSize: 20, color: 'black'}}>-</Text>
               </Pressable>
 
-              <Text style={{marginHorizontal: 20, fontSize: 20}}>
-                {bathroom}
-              </Text>
+              <Text style={{marginHorizontal: 20, fontSize: 20}}>{bathroom}</Text>
 
-              <Pressable
-                onPress={() => setbathroom(bathroom + 1)}
-                style={styles.button1}>
+              <Pressable onPress={() => setbathroom(bathroom + 1)} style={styles.button1}>
                 <Text style={{fontSize: 20, color: 'black'}}>+</Text>
               </Pressable>
             </View>

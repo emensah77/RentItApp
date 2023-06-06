@@ -132,8 +132,7 @@ const PostScreen = ({route}) => {
   const makeCall1 = () => {
     const phoneNumbers = ['0256744112'];
 
-    let phoneNumber =
-      phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
+    let phoneNumber = phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)];
 
     if (Platform.OS === 'android') {
       phoneNumber = `tel:${phoneNumber}`;

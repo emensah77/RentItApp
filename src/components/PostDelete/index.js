@@ -1,12 +1,5 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-  Text,
-  Pressable,
-} from 'react-native';
+import {View, Image, TouchableOpacity, ImageBackground, Text, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -60,11 +53,7 @@ const PostDelete = props => {
             backgroundColor: 'transparent',
           }}
           onPress={handleClick}>
-          <Fontisto
-            name="heart"
-            size={30}
-            color={isLike ? colorStyle : 'yellow'}
-          />
+          <Fontisto name="heart" size={30} color={isLike ? colorStyle : 'yellow'} />
         </Pressable>
       </View>
 

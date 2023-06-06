@@ -1,12 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  FlatList,
-  StatusBar,
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {FlatList, StatusBar, View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 import LinearGradient from 'react-native-linear-gradient';
@@ -87,20 +80,12 @@ const Wishlists = () => {
                 Your Favorites
               </Text>
             </View>
-            <FlatList
-              data={posts}
-              renderItem={({item}) => <Post post={item} />}
-            />
+            <FlatList data={posts} renderItem={({item}) => <Post post={item} />} />
           </>
         ) : (
           <View style={{padding: 15}}>
             {loading ? (
-              <ActivityIndicator
-                animating
-                size="large"
-                color="blue"
-                style={{opacity: 1}}
-              />
+              <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
             ) : (
               <>
                 <Text
@@ -111,10 +96,9 @@ const Wishlists = () => {
                   No saves yet
                 </Text>
                 <View style={{padding: 10}}>
-                  <Text
-                    style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-                    Start looking for homes to rent or buy: As you search, tap
-                    the heart icon to save your favorite homes to rent or buy.
+                  <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
+                    Start looking for homes to rent or buy: As you search, tap the heart icon to
+                    save your favorite homes to rent or buy.
                   </Text>
                 </View>
 

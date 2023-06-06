@@ -51,9 +51,7 @@ const DashboardScreen = () => {
   }, []);
 
   const upcomingViewings = viewings?.filter(
-    viewing =>
-      new Date(viewing.viewingDate).toDateString() ===
-      new Date().toDateString(),
+    viewing => new Date(viewing.viewingDate).toDateString() === new Date().toDateString(),
   );
   const fetchViewingsByAssignedRep = async assignedRep => {
     try {
@@ -138,8 +136,7 @@ const DashboardScreen = () => {
   }
 
   const renderItem = ({item}) => (
-    <View
-      style={[styles.viewingCard, {backgroundColor: statusColor(item.status)}]}>
+    <View style={[styles.viewingCard, {backgroundColor: statusColor(item.status)}]}>
       <Text style={styles.viewingCardTitle}>{item.username}</Text>
       <Text style={styles.viewingCardDetails}>
         {item.viewingDate} at
@@ -149,9 +146,7 @@ const DashboardScreen = () => {
         Contact:
         {item.usercontact}
       </Text>
-      <Text style={styles.viewingCardDetails}>
-        Location: {item.userlocation}
-      </Text>
+      <Text style={styles.viewingCardDetails}>Location: {item.userlocation}</Text>
       <Text style={styles.viewingCardDetails}>
         rep:
         {item.assignedRep}
@@ -188,9 +183,7 @@ const DashboardScreen = () => {
               setOpen={setOpen}
               setValue={setValue}
               setItems={items =>
-                setAssignedReps(
-                  items.map(item => ({name: item.label, value: item.value})),
-                )
+                setAssignedReps(items.map(item => ({name: item.label, value: item.value})))
               }
               containerStyle={{
                 position: 'absolute',
@@ -238,9 +231,7 @@ const DashboardScreen = () => {
           showsHorizontalScrollIndicator={false}
           ListFooterComponent={
             filteredViewings.length > visibleViewings ? (
-              <TouchableOpacity
-                style={styles.loadMoreButton}
-                onPress={loadMoreViewings}>
+              <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreViewings}>
                 <Text style={styles.loadMoreButtonText}>Load More</Text>
               </TouchableOpacity>
             ) : null

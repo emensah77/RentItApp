@@ -33,9 +33,7 @@ const WelcomeScreen = ({props}) => {
   const navigation = useNavigation();
 
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView style={{flexGrow: 1}}>
         <View
           style={{
@@ -49,12 +47,12 @@ const WelcomeScreen = ({props}) => {
             Welcome {user?._user?.displayName}
           </Text>
           <Text style={{fontWeight: '400', fontSize: 14, padding: 10}}>
-            We are glad you are here. We began RentIt to make it easier for
-            people like you to find homes they love!
+            We are glad you are here. We began RentIt to make it easier for people like you to find
+            homes they love!
           </Text>
           <Text style={{fontWeight: '400', fontSize: 14, padding: 10}}>
-            We really hope you find the home you love, because we truly believe
-            everyone deserves a home!
+            We really hope you find the home you love, because we truly believe everyone deserves a
+            home!
           </Text>
           <View style={{paddingHorizontal: 20, marginTop: 5}}>
             <Text
@@ -148,8 +146,7 @@ const WelcomeScreen = ({props}) => {
           />
 
           <View>
-            <Text
-              style={{fontWeight: '400', fontSize: 14, paddingHorizontal: 20}}>
+            <Text style={{fontWeight: '400', fontSize: 14, paddingHorizontal: 20}}>
               By selecting Agree and Continue, I agree to Rentit
               <Text style={{textDecorationLine: 'underline', color: 'blue'}}>
                 {' '}
@@ -161,34 +158,25 @@ const WelcomeScreen = ({props}) => {
                 Payment Terms of Service
               </Text>{' '}
               and acknowledge the
-              <Text style={{textDecorationLine: 'underline', color: 'blue'}}>
-                {' '}
-                Privacy Policy
-              </Text>
-              .
+              <Text style={{textDecorationLine: 'underline', color: 'blue'}}> Privacy Policy</Text>.
             </Text>
           </View>
 
           <TouchableOpacity
             onPress={() => {
               const checkValid = phoneInput.current?.isValidNumber(value);
-              const trendRef = firestore()
-                .collection('users')
-                .doc(auth().currentUser.uid);
+              const trendRef = firestore().collection('users').doc(auth().currentUser.uid);
               if (name) {
                 if (checkValid) {
                   Alert.alert('Your phone number is valid', formattedValue);
 
                   const getDoc = trendRef.get().then(doc => {
                     if (doc.exists) {
-                      firestore()
-                        .collection('users')
-                        .doc(auth().currentUser.uid)
-                        .update({
-                          displayName: name,
-                          phoneNumber: formattedValue,
-                          email: user?._user?.email,
-                        });
+                      firestore().collection('users').doc(auth().currentUser.uid).update({
+                        displayName: name,
+                        phoneNumber: formattedValue,
+                        email: user?._user?.email,
+                      });
                       setUser({
                         ...user,
                         _user: {
@@ -205,10 +193,7 @@ const WelcomeScreen = ({props}) => {
                     }
                   });
                 } else {
-                  Alert.alert(
-                    'Your phone number is not correct',
-                    formattedValue,
-                  );
+                  Alert.alert('Your phone number is not correct', formattedValue);
                 }
               } else {
                 Alert.alert('Please Enter Name');
