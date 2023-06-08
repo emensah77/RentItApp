@@ -29,7 +29,7 @@ const RentItPay = () => {
         screen: 'Payment',
         params: {
           totalAmount: data.amount,
-          selectedType: data.paymentType,
+          selectedType: data.paymentType.value,
           checkoutNumber: data.phoneNumber,
           homelatitude: '',
           homelongitude: '',

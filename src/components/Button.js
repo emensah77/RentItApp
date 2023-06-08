@@ -24,10 +24,10 @@ const Button = props => {
         style={[
           button[type] || button.primary,
           groupBefore ? global.groupBefore : groupAfter ? global.groupAfter : {},
-          disabled ? button.disabled : {},
           fitWidth ? button.fitWidth : {},
           width ? {width} : {},
           color ? {backgroundColor: color} : {},
+          disabled ? button.disabled : {},
         ]}>
         {prefix && (
           <Image

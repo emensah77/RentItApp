@@ -10,13 +10,13 @@ import {global} from '../../assets/styles';
 const Agreement = () => {
   const navigation = useNavigation();
 
-  const goToNotification = useCallback(async () => {
+  const goToLocation = useCallback(async () => {
     const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     await AsyncStorage.setItem(
       'authentication::data',
       JSON.stringify({...authData, agreement: true}),
     );
-    navigation.replace('Notification');
+    navigation.replace('Location');
   }, [navigation]);
 
   return (
@@ -47,7 +47,7 @@ const Agreement = () => {
 
       <Whitespace marginTop={64} />
 
-      <Button type="standard" onPress={goToNotification}>
+      <Button type="standard" onPress={goToLocation}>
         Agree and continue
       </Button>
 
