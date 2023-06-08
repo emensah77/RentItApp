@@ -41,6 +41,7 @@ const Notification = () => {
         marketing,
         agreement,
         provider,
+        location,
         providerCredential,
       } = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
       const newData = {
@@ -53,6 +54,8 @@ const Notification = () => {
         marketing: marketing || false,
         agreement: agreement || true,
         notification: _enabled || enabled,
+        location,
+        type: 'default',
         createdAt: firestore.Timestamp.fromDate(new Date()),
       };
       if (provider && providerCredential) {
@@ -72,7 +75,7 @@ const Notification = () => {
           return firestore()
             .collection('users')
             .doc(auth().currentUser.uid)
-            .set(newData)
+            .set({...newData, uid: auth().currentUser.uid})
             .catch(e => {
               console.error(
                 'Something went wrong with adding user to firestore: ',
@@ -112,10 +115,11 @@ const Notification = () => {
     [navigation, enabled, setError],
   );
 
-  const request = useCallback(async () => {
-    const notification = await (Platform.OS === 'ios'
-      ? Permissions.request('notification')
-      : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS)
+  const init = useCallback(async () => {
+    return (
+      Platform.OS === 'ios'
+        ? Permissions.request('notification')
+        : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS)
     )
       .then(async grant => {
         await messaging().requestPermission();
@@ -128,40 +132,34 @@ const Notification = () => {
         );
       })
       .catch(console.error);
+  }, []);
+
+  const request = useCallback(async () => {
+    const notification = await init();
 
     setCount(count + 1);
     setEnabled(notification);
     const data = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, notification}));
 
-    if (!notification && count > 1) {
-      return Linking.openSettings();
+    if (!notification && count > 2) {
+      Linking.openSettings();
+      return notification;
     }
     setTimeout(goToHome, 1000);
-  }, [count, goToHome]);
+    return notification;
+  }, [count, goToHome, init]);
 
   useEffect(() => {
     (async () => {
-      const notification = await (Platform.OS === 'ios'
-        ? Permissions.request('notification')
-        : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.SEND_SMS)
-      )
-        .then(async grant => {
-          const authStatus = await messaging().hasPermission();
-          return (
-            grant === PermissionsAndroid.RESULTS.GRANTED ||
-            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-            authStatus === messaging.AuthorizationStatus.PROVISIONAL
-          );
-        })
-        .catch(console.error);
+      const notification = await init();
 
       if (notification) {
         return goToHome(notification);
       }
       setEnabled(!!notification);
     })();
-  }, [goToHome]);
+  }, [goToHome, init]);
 
   if (enabled === null) {
     return <PageSpinner />;

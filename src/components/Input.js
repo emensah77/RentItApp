@@ -24,6 +24,7 @@ const Input = props => {
     plain,
     disabled,
     inline,
+    trim = true,
     ...rest
   } = props;
 
@@ -62,13 +63,21 @@ const Input = props => {
         onChangeProp(`${month}/${day}/${(newValue || value).getFullYear()}`, name, e);
         close();
       } else if (type === 'numeric') {
-        onChangeProp(/^[0-9]+$/.test(e.trim()) ? e.trim() : e.substring(0, e.length - 1), name, e);
+        onChangeProp(
+          /^[0-9]+$/.test(trim ? e.trim() : e)
+            ? trim
+              ? e.trim()
+              : e
+            : e.substring(0, e.length - 1),
+          name,
+          e,
+        );
         close();
       } else {
-        onChangeProp(e.trim(), name);
+        onChangeProp(trim ? e.trim() : e, name);
       }
     },
-    [close, onChangeProp, type, name, value],
+    [type, value, onChangeProp, name, close, trim],
   );
 
   if (type === 'checkbox' || type === 'radio') {
