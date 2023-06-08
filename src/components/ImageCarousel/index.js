@@ -82,7 +82,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: 50,
         }}
-        onViewableItemsChanged={onFlatlistUpdate}
+        // onViewableItemsChanged={onFlatlistUpdate}
       />
       <Pressable
         style={{

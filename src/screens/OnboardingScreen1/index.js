@@ -126,7 +126,6 @@ const OnboardingScreen1 = props => {
         style={styles.footer}>
         <ScrollView>
           <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
-            {' '}
             Select the type {'\n'} of your home{' '}
           </Text>
           <FlatList

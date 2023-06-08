@@ -45,7 +45,6 @@ const HouseUploadScreen = props => {
       const data = await response.json();
 
       if (data) {
-        console.log('Home upload progress:', data);
         setLastScreen(data.screenName);
         setUploadInProgress(true);
       }

@@ -2,6 +2,8 @@ import React, {useCallback, useMemo} from 'react';
 import {View, Platform, Text, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import {useDispatch} from 'react-redux';
+
 // import firestore from '@react-native-firebase/firestore';
 import FastImage from 'react-native-fast-image';
 
@@ -9,9 +11,11 @@ import styles from './styles';
 
 // import {AuthContext} from '../../navigation/AuthProvider';
 import useWishlist from '../../hooks/useWishlist';
+import {setPost} from '../../redux/post.slice';
 
 const Post = props => {
   const {checkIsFav, handleChangeFavorite} = useWishlist();
+  const dispatch = useDispatch();
   // let docRefId;
   // const {user} = useContext(AuthContext);
   // const [counter, setCount] = useState(0);
@@ -37,6 +41,15 @@ const Post = props => {
   }, [post?.currency]);
 
   const goToPostPage = useCallback(() => {
+    dispatch(
+      setPost({
+        id: post.id,
+        title: post.title,
+        images: post.images,
+        temp: true,
+      }),
+    );
+
     navigation.navigate('Post', {postId: post.id});
   }, [navigation, post.id]);
 

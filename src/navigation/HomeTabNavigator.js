@@ -8,7 +8,6 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faFacebook} from '@fortawesome/free-brands-svg-icons';
 import {
-  faCoffee,
   faSearch,
   faHeart,
   faChartLine,
@@ -18,17 +17,16 @@ import {
   faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {Text, View} from 'react-native';
-import HomeScreen from '../screens/Home';
+import {View} from 'react-native';
 import ExploreNavigator from './ExploreNavigator';
-import SearchResultsMaps from '../screens/SearchResultsMap';
-import PostScreen from '../screens/PostScreen';
 import ProfileScreen from '../screens/Profile';
 import LowPriceScreen from '../screens/LowPriceScreen';
-import Wishlists from '../screens/Wishlists';
+import WishList from '../screensV2/WishList';
 import Trending from '../screens/TrendingScreen';
 import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
+import HomeScreen from '../screensV2/HomeScreen';
+import WishListNavigation from './WishListNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -81,7 +79,7 @@ const HomeTabNavigator = props => {
       />
       <Tab.Screen
         name="House"
-        component={House}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />,
         }}
@@ -100,7 +98,7 @@ const HomeTabNavigator = props => {
 
       <Tab.Screen
         name="Wishlists"
-        component={Wishlists}
+        component={WishListNavigation}
         options={{
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHeart} size={25} color={color} />,
         }}
