@@ -71,6 +71,7 @@
     "react-native-animated-pagination-dot": "^0.3.0",
     "react-native-background-fetch": "^4.1.7",
     "react-native-background-geolocation": "^4.9.4",
+    "react-native-bootsplash": "^4.7.2",
     "react-native-bouncy-checkbox": "^3.0.6",
     "react-native-calendars": "^1.1294.0",
     "react-native-dotenv": "^3.4.8",
