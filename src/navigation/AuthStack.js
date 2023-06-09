@@ -6,7 +6,7 @@ import auth from '@react-native-firebase/auth';
 
 import mixpanel from '../MixpanelConfig';
 
-import Onboarding from '../screens/Onboarding';
+import Welcome from '../screens/Authentication/Welcome';
 import Email from '../screens/Authentication/Email';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import OTP from '../screens/Authentication/OTP';
@@ -48,11 +48,8 @@ const AuthStack = () => {
     (async () => {
       const data = await AsyncStorage.getItem('authentication::data');
       console.debug('Auth Data', data);
-      if (data === null) {
-        await AsyncStorage.setItem('authentication::data', '{}');
-      }
 
-      let _initialRouteName = 'Onboarding';
+      let _initialRouteName;
 
       if (!data?.notification) {
         _initialRouteName = 'Notification';
@@ -78,6 +75,11 @@ const AuthStack = () => {
         _initialRouteName = 'Email';
       }
 
+      if (!data) {
+        await AsyncStorage.setItem('authentication::data', '{}');
+        _initialRouteName = 'Welcome';
+      }
+
       setInitialRouteName(_initialRouteName);
     })();
 
@@ -92,7 +94,7 @@ const AuthStack = () => {
 
   return (
     <Stack.Navigator initialRouteName={initialRouteName} onStateChange={onNavigationStateChange}>
-      <Stack.Screen name="Onboarding" component={Onboarding} options={noHeader} />
+      <Stack.Screen name="Welcome" component={Welcome} options={noHeader} />
 
       <Stack.Screen name="Email" component={Email} options={noHeader} />
 

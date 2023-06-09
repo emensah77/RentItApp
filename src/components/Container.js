@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import {global} from '../assets/styles';
 
 const Container = props => {
-  const {row, type, children, center, left, width, color, position} = props;
+  const {row, type, children, center, left, width, height, color, position} = props;
   return (
     <View
       style={[
@@ -13,6 +13,7 @@ const Container = props => {
         left ? global.left : {},
         center ? global.center : {},
         width ? {width} : {},
+        height ? {maxHeight: height, height} : {},
         color ? {backgroundColor: color} : {},
         position ? {alignSelf: position} : {},
       ]}>
