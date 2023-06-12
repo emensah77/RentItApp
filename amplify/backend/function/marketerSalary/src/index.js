@@ -18,6 +18,8 @@ exports.handler = async event => {
 
   // Calculate daily base salary
   console.log('Days in month:', daysInMonth);
+  // User ID
+  console.log('User ID:', userId);
   const dailyBaseSalary = Math.ceil(baseSalary / daysInMonth);
   console.log('Daily base salary:', dailyBaseSalary);
 
