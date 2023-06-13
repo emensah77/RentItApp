@@ -22,18 +22,13 @@ const CardDisplay = props => {
     date,
     center,
     spaceBetween,
-    reverse,
     bold,
     suffix,
     onPress,
   } = props;
 
   return (
-    <Container
-      row
-      type={
-        center ? 'center' : spaceBetween ? 'spaceBetween' : reverse ? 'rowReverse' : 'flexStart'
-      }>
+    <Container row type={center ? 'center' : spaceBetween ? 'spaceBetween' : 'flexStart'}>
       {leftImageSrc ? (
         <Image
           width={leftImageWidth}
@@ -44,7 +39,7 @@ const CardDisplay = props => {
       ) : null}
 
       <Container type="contentBox" onPress={onPress} width="70%">
-        <Container row type={reverse ? 'rowReverse' : 'flexStart'} onPress={onPress}>
+        <Container row type="flexStart" onPress={onPress}>
           {name ? <Typography type={bold ? 'levelOneThick' : 'notice'}>{name}</Typography> : null}
 
           {name && location ? (
@@ -69,10 +64,7 @@ const CardDisplay = props => {
         {description ? (
           <>
             <Whitespace marginTop={2} />
-            <Container
-              row
-              type={reverse ? 'rowReverse' : center ? 'center' : 'flexStart'}
-              onPress={onPress}>
+            <Container row type={center ? 'center' : 'flexStart'} onPress={onPress}>
               <Typography
                 type={bold ? 'levelOneThick' : 'notice'}
                 numberOfLines={numberOfLines || (!(name && location) ? 3 : 2)}>

@@ -10,6 +10,8 @@ import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import IconWoman from '../../../assets/data/images/woman-big.png';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import {offsets} from '../../styles/globalStyles';
 
 const OnboardingScreen1 = () => {
   const navigation = useNavigation();
@@ -71,6 +73,16 @@ const OnboardingScreen1 = () => {
         In this step, we’ll ask you which type of property you have and if guest will book the
         entire place or just a room.{' '}
       </Typography>
+      <View
+        style={{
+          width: '100%',
+          paddingHorizontal: offsets.offsetB,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        <DividedProgress />
+      </View>
     </View>
   );
 };

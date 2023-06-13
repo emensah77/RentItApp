@@ -159,33 +159,7 @@ const OnboardingScreen7 = props => {
     console.log('mergedData', mergedData);
   }, [progressData]);
 
-  useEffect(() => {
-    console.log({
-      title,
-      bedroom,
-      bathroom,
-      bed,
-      type,
-      description,
-      imageUrls,
-      homeprice,
-      latitude,
-      longitude,
-      mode,
-      amenities,
-      phoneNumber,
-      locality,
-      sublocality,
-      userId: user.uid,
-      marketerNumber,
-      currency,
-      loyaltyProgram,
-      negotiable,
-      furnished,
-      address,
-      videoUrl,
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   const searchApi = async data => {
     const {search, postId, title, description, image} = data;

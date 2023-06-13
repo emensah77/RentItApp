@@ -4,10 +4,17 @@ import Typography from '../Typography';
 import {styles} from './styles';
 import RoomImage from '../../../../assets/data/images/room-example.png';
 
-const RoomCardHorizontal = ({title, infoDateText, infoText, infoBottomText, infoSuperhost}) => {
+const RoomCardHorizontal = ({
+  imageUrl,
+  title,
+  infoDateText,
+  infoText,
+  infoBottomText,
+  infoSuperhost,
+}) => {
   return (
     <View style={styles.content}>
-      <Image source={RoomImage} style={styles.image} />
+      {imageUrl && <Image source={{uri: imageUrl}} style={styles.image} />}
       <View style={styles.textBox}>
         <Typography style={styles.title} bold>
           {title}

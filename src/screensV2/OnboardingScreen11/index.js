@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Image, Pressable, TextInput, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -12,7 +12,14 @@ import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 const OnboardingScreen11 = () => {
   const navigation = useNavigation();
 
+  const [value, setValue] = useState('');
   const route = useRoute();
+  const title = route.params?.title;
+  const type = route.params?.type;
+  const bed = route.params?.bed;
+  const bedroom = route.params?.bedroom;
+  const bathroom = route.params?.bathroom;
+  const mode = route.params?.mode;
 
   const saveProgress = async progressData => {
     try {
@@ -40,11 +47,17 @@ const OnboardingScreen11 = () => {
   const goFaqs = () => {
     navigation.navigate('OnboardingScreen9');
   };
+  const goBack = () => {
+    navigation.goBack();
+  };
+  const hellod = text => {
+    setValue(text);
+  };
   return (
     <SafeAreaView>
       <View style={styles.mainContent}>
         <View style={styles.topBar}>
-          <Pressable style={styles.backButton}>
+          <Pressable style={styles.backButton} onPress={goBack}>
             <Image source={BackArrow} />
           </Pressable>
           <View style={styles.topButtons}>
@@ -52,24 +65,22 @@ const OnboardingScreen11 = () => {
               style={styles.topButton}
               onPress={async () => {
                 await saveProgress({
-                  type,
+                  mode,
                   title,
-                  description,
+                  type,
                   bed,
                   bedroom,
                   bathroom,
-                  mode,
-                  amenities: selectedItems,
+                  description: value,
                 });
-                navigation.navigate('OnboardingScreen4', {
-                  type,
+                navigation.navigate('OnboardingScreen14', {
                   title,
-                  description,
                   bed,
                   bedroom,
                   bathroom,
+                  description: value,
+                  type,
                   mode,
-                  amenities: selectedItems,
                 });
               }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
@@ -87,6 +98,7 @@ const OnboardingScreen11 = () => {
         <TextInput
           placeholder="Tell us about where your home is located,
           including landmarks and amenities available"
+          onChangeText={text => hellod(text)}
           style={styles.input}
         />
       </View>

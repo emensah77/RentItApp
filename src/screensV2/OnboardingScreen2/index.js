@@ -16,6 +16,8 @@ const OnboardingScreen2 = () => {
   const [bedCount, setBedCount] = useState(1);
   const [bedRoomCount, setBedRoomCount] = useState(1);
   const [bathRoomsCount, setBathRoomsCount] = useState(1);
+  const type = route.params?.type;
+  const mode = route.params?.mode;
 
   const saveProgress = async progressData => {
     try {
@@ -77,9 +79,19 @@ const OnboardingScreen2 = () => {
           <Pressable
             style={styles.topButton}
             onPress={async () => {
-              await saveProgress({homeType: item.title});
-              navigation.navigate('OnboardingScreen2', {
-                type: item.title,
+              await saveProgress({
+                type,
+                mode,
+                bedRoomCount,
+                bathRoomsCount,
+                bedCount,
+              });
+              navigation.navigate('OnboardingScreen10', {
+                type,
+                mode,
+                bedCount,
+                bedRoomCount,
+                bathRoomsCount,
               });
             }}>
             <Typography style={styles.topButtonText}>Save & exit</Typography>

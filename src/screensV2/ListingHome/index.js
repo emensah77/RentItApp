@@ -19,9 +19,10 @@ const ListingHome = () => {
   const [isLoading, setIsLoading] = useState(true);
   const goOnboardingScreen = useCallback(() => {
     if (uploadInProgress && lastScreen) {
-      navigation.navigate(lastScreen);
+      // navigation.navigate(lastScreen);
+      navigation.navigate('OnboardingScreen12');
     } else {
-      navigation.navigate('OnboardingScreen1');
+      navigation.navigate('OnboardingScreen12');
     }
   }, []);
   useEffect(() => {
@@ -43,6 +44,7 @@ const ListingHome = () => {
       const data = await response.json();
 
       if (data) {
+        console.log('Data', data);
         setLastScreen(data.screenName);
         setUploadInProgress(true);
       }

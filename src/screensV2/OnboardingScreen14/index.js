@@ -1,24 +1,37 @@
-import React, {useState, useCallback} from 'react';
-import {View, Image, Pressable, SafeAreaView, TextInput} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Image, Pressable, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
+import IconMan from '../../../assets/data/images/second-step.png';
 
-const OnboardingScreen10 = () => {
+const OnboardingScreen14 = () => {
   const navigation = useNavigation();
-
   const route = useRoute();
-  const [value, setValue] = useState('');
-  const type = route.params?.type;
-  const mode = route.params?.mode;
+
+  const title = route.params?.title;
   const bed = route.params?.bed;
   const bedroom = route.params?.bedroom;
   const bathroom = route.params?.bathroom;
+  const imageUrls = route.params?.imageUrls;
+  const homeprice = route.params?.homeprice;
+  const latitude = route.params?.latitude;
+  const longitude = route.params?.longitude;
+  const type = route.params?.type;
+  const description = route.params?.description;
+  const mode = route.params?.mode;
+  const amenities = route.params?.amenities;
+  const locality = route.params?.locality;
+  const sublocality = route.params?.sublocality;
+  const address = route.params?.address;
+  const currency = route.params?.currency;
   const saveProgress = async progressData => {
     try {
       const user = auth().currentUser;
@@ -41,64 +54,80 @@ const OnboardingScreen10 = () => {
       console.error('Error saving progress:', error);
     }
   };
-
   const goFaqs = () => {
-    navigation.navigate('OnboardingScreen11');
+    navigation.navigate('OnboardingScreen9');
   };
-  const hellod = text => {
-    setValue(text);
-  };
-  const goBack = () => {
-    navigation.goBack();
-  };
+
   return (
     <SafeAreaView>
       <View style={styles.mainContent}>
         <View style={styles.topBar}>
-          <Pressable style={styles.backButton} onPress={goBack}>
+          <Pressable style={styles.backButton}>
             <Image source={BackArrow} />
           </Pressable>
           <View style={styles.topButtons}>
             <Pressable
               style={styles.topButton}
+              // eslint-disable-next-line react/jsx-no-bind
               onPress={async () => {
                 await saveProgress({
-                  title: value,
                   type,
+                  title,
+                  description,
                   bed,
                   bedroom,
                   bathroom,
+                  imageUrls,
+                  homeprice,
+                  latitude,
+                  longitude,
                   mode,
+                  amenities,
+                  locality,
+                  sublocality,
+                  currency,
+                  address,
                 });
-                navigation.navigate('OnboardingScreen11', {
+                navigation.navigate('OnboardingScreen9', {
+                  title,
                   type,
+                  description,
                   bed,
                   bedroom,
                   bathroom,
-                  title: value,
+                  imageUrls,
+                  homeprice,
+                  latitude,
+                  longitude,
                   mode,
+                  amenities,
+                  locality,
+                  sublocality,
+                  currency,
+                  address,
                 });
               }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
+            {/* //OnboardingScreen13 */}
             <Pressable style={styles.topButton} onPress={goFaqs}>
               <Typography style={styles.topButtonText}>FAQs</Typography>
             </Pressable>
           </View>
         </View>
 
+        <Image source={IconMan} style={styles.imgItem} />
+        <Typography style={styles.stepText}>Step 2</Typography>
         <Typography bold style={styles.title}>
-          Let's give your place a title.
+          Make it stand out
         </Typography>
-
-        <TextInput
-          placeholder="Eg. Beautiful 3 bedroom flat "
-          style={styles.input}
-          onChangeText={text => hellod(text)}
-        />
+        <Typography style={styles.text}>
+          In this step, we’ll ask you which type of amenities your home offers, pictures of your
+          home, the location, the price.
+        </Typography>
       </View>
     </SafeAreaView>
   );
 };
 
-export default OnboardingScreen10;
+export default OnboardingScreen14;

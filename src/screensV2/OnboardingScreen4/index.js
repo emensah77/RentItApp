@@ -1,6 +1,10 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState, Platform, useEffect} from 'react';
 import {View, Image, Pressable} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import ImagePicker from 'react-native-image-crop-picker';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
+import {Storage} from 'aws-amplify';
+import uuid from 'react-native-uuid';
 
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -12,31 +16,47 @@ import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import PlusIcon from '../../../assets/data/images/icons/plus-icon.svg';
 import CameraIcon from '../../../assets/data/images/icons/camera-icon.svg';
 
-const ImagePicker = require('react-native-image-picker');
-
 const OnboardingScreen3 = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const [uniqueItem, setUniqueItem] = useState([]);
   const [images, setImages] = useState([]);
+  const [progressText, setProgressText] = useState(0);
+  const [isLoading, setisLoading] = useState(false);
+  const [imageUrls, setImageUrls] = useState('');
+  const [urls, setUrls] = useState([]);
+  const route = useRoute();
+  const title = route.params?.title;
+  const bed = route.params?.bed;
+  const bedroom = route.params?.bedroom;
+  const bathroom = route.params?.bathroom;
+  const type = route.params?.type;
+  const description = route.params?.description;
+  const mode = route.params?.mode;
+  const amenities = route.params?.amenities;
 
-  const handleChoosePhoto = useCallback(async () => {
-    let _data = [...images];
-    const options = {};
-    ImagePicker.launchImageLibrary(options, response => {
-      _data = [..._data, ...(response?.assets || [])];
-      setImages(_data);
-    });
-  }, []);
-  const handleLaunchCamera = useCallback(async () => {
-    let _data = [...images];
-    const options = {};
-    ImagePicker.launchCamera(options, response => {
-      _data = [..._data, ...(response?.assets || [])];
-
-      setImages(_data);
-    });
-  }, []);
+  async function getFileSize(uri) {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return blob.size;
+  }
+  async function pathToImageFile(uri) {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      await Storage.put(uuid.v4(), blob, {
+        level: 'public',
+        contentType: 'image/jpeg', // contentType is optional
+      });
+    } catch (err) {
+      console.log('Error uploading file:', err);
+    }
+  }
+  const convertPathToFileURL = path => {
+    // if (Platform.OS === 'ios') {
+    //   return `file://${path}`;
+    // }
+    return `file://${path}`;
+    // return path;
+  };
 
   const saveProgress = async progressData => {
     try {
@@ -61,26 +81,173 @@ const OnboardingScreen3 = () => {
     }
   };
 
-  const goFaqs = () => {
-    navigation.navigate('OnboardingScreen5');
-  };
+  const resizeImage = async (uri, width, height, format, quality) => {
+    console.log('Original URI:', uri); // Add this line to log the original URI
 
-  const changeItem = id => {
-    const _data = [...uniqueItem];
-    const index = _data.indexOf(id);
+    const originalSize = await getFileSize(uri);
 
-    if (index === -1) {
-      _data.push(id);
-    } else {
-      _data.splice(index, 1);
+    try {
+      const resizedImage = await ImageResizer.createResizedImage(
+        uri,
+        width,
+        height,
+        format,
+        quality,
+      );
+      const resizedSize = await getFileSize(resizedImage.uri);
+
+      const reductionPercentage = ((originalSize - resizedSize) / originalSize) * 100;
+
+      return resizedImage;
+    } catch (err) {
+      console.log('Error resizing the image:', err);
+      return null;
     }
-    setUniqueItem(_data);
   };
 
+  const fetchResourceFromURI = async uri => {
+    const response = await fetch(uri);
+
+    const blob = await response.blob();
+
+    return blob;
+  };
+
+  const handleDeleteImage = imageToDelete => {
+    setImages(prevImages => prevImages.filter(image => image.name !== imageToDelete.name));
+  };
+
+  useEffect(() => {
+    if (imageUrls != '') {
+      setUrls(prevImages => prevImages.concat(imageUrls));
+    }
+  }, [imageUrls]);
+  const uploadResource = async image => {
+    if (isLoading) return;
+    setisLoading(true);
+    const img = await fetchResourceFromURI(image.uri);
+    setImageUrls(`https://d1mgzi0ytcdaf9.cloudfront.net/public/${image.name}`);
+
+    return Storage.put(image.name, img, {
+      level: 'public',
+      contentType: 'image/jpeg',
+      progressCallback(uploadProgress) {
+        setProgressText((uploadProgress.loaded / uploadProgress.total) * 100);
+      },
+    })
+      .then(res => {
+        setisLoading(false);
+        Storage.get(res.key, {
+          level: 'public',
+          contentType: 'image/jpeg',
+        })
+          .then(result => {
+            console.log(result);
+          })
+          .catch(err => {
+            setProgressText('Upload Error');
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        setisLoading(false);
+        setProgressText('Upload Error');
+        console.log(err);
+      });
+  };
+
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      width: 1024,
+      height: 683,
+      mediaType: 'photo',
+    }).then(image => {
+      console.log(image);
+      const fileURL = convertPathToFileURL(image.path);
+
+      (async () => {
+        resizeImage(fileURL, 1024, 683, 'JPEG', 80)
+          .then(resizedImage => {
+            if (resizedImage) {
+              const img = {
+                uri: resizedImage.uri,
+                type: image.mime,
+                name: uuid.v4(),
+              };
+              uploadResource(img);
+              setImages(prevImages => prevImages.concat(img));
+            }
+          })
+          .catch(err => console.error('Error obtaining resized image:', err));
+      })();
+    });
+  };
+  const openPicker = () => {
+    ImagePicker.openPicker({
+      width: 1024,
+      height: 683,
+      multiple: true,
+      maxFiles: 10,
+      mediaType: 'photo',
+    }).then(async image => {
+      image.map(item => {
+        const fileURL = convertPathToFileURL(item.path);
+        (async () => {
+          resizeImage(fileURL, 1024, 683, 'JPEG', 80)
+            .then(resizedImage => {
+              if (resizedImage) {
+                const img = {
+                  uri: resizedImage.uri,
+                  type: item.mime,
+                  name: uuid.v4(),
+                };
+
+                uploadResource(img);
+                setImages(prevImages => prevImages.concat(img));
+              }
+            })
+            .catch(err => console.error('Error obtaining resized image:', err));
+        })();
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      async () => {
+        await saveProgress({
+          title,
+          type,
+          description,
+          bed,
+          bedroom,
+          bathroom,
+          imageUrls: urls,
+          mode,
+          amenities,
+        });
+        navigation.navigate('OnboardingScreen5', {
+          title,
+          type,
+          description,
+          bed,
+          bedroom,
+          bathroom,
+          imageUrls: urls,
+          mode,
+          amenities,
+        });
+      };
+    }
+  }, [isLoading]);
+  const goFaqs = () => {};
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
     <View style={styles.mainContent}>
       <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
+        <Pressable style={styles.backButton} onPress={goBack}>
           <Image source={BackArrow} />
         </Pressable>
         <View style={styles.topButtons}>
@@ -121,11 +288,11 @@ const OnboardingScreen3 = () => {
       </Typography>
 
       <View style={styles.placesList}>
-        <Pressable style={styles.upload} onPress={handleChoosePhoto}>
+        <Pressable style={styles.upload} onPress={openPicker}>
           <PlusIcon width={20} height={20} />
           <Typography style={{color: '#717171', paddingLeft: 10}}>Upload photos</Typography>
         </Pressable>
-        <Pressable style={styles.upload} onPress={handleLaunchCamera}>
+        <Pressable style={styles.upload} onPress={openCamera}>
           <CameraIcon width={20} height={20} />
           <Typography style={{color: '#717171', paddingLeft: 10}}>Upload photos</Typography>
         </Pressable>

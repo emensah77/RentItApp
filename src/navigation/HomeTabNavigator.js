@@ -46,6 +46,8 @@ const HomeTabNavigator = props => {
     'OnboardingScreen11',
     'OnboardingScreen12',
     'OnboardingScreen13',
+    'OnboardingScreen14',
+    'OnboardingScreen15',
   ];
   return (
     <Tab.Navigator
@@ -77,13 +79,13 @@ const HomeTabNavigator = props => {
           })(route),
         })}
       />
-      <Tab.Screen
-        name="House"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />,
-        }}
-      />
+      {/*<Tab.Screen*/}
+      {/*  name="House"*/}
+      {/*  component={HomeScreen}*/}
+      {/*  options={{*/}
+      {/*    tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />,*/}
+      {/*  }}*/}
+      {/*/>*/}
 
       <Tab.Screen
         name="Discount"

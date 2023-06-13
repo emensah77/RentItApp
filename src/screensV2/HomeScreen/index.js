@@ -15,7 +15,9 @@ import RoomItem from '../../componentsV2/DataDisplay/RoomItem';
 import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
-  const postId = '34c83874-9f22-4642-9922-bda8dd22a9d2';
+  const params = route.params || {};
+
+  const postId = params.id;
   const navigation = useNavigation();
   const isMounted = useRef(true);
 
@@ -126,6 +128,7 @@ const HomeScreen = () => {
     }
     setSimilarPostsLoading(false);
   }, [post]);
+
   useEffect(() => {
     fetchPost(postId);
   }, [postId]);

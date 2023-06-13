@@ -117,24 +117,30 @@ const OnboardingScreen5 = () => {
             style={styles.topButton}
             onPress={async () => {
               await saveProgress({
-                type,
                 title,
+                type,
                 description,
                 bed,
                 bedroom,
                 bathroom,
+                imageUrls,
+                homeprice: value,
                 mode,
-                amenities: selectedItems,
+                amenities,
+                currencyData,
               });
-              navigation.navigate('OnboardingScreen4', {
-                type,
+              navigation.navigate('OnboardingScreen6', {
                 title,
+                type,
                 description,
                 bed,
                 bedroom,
                 bathroom,
+                imageUrls,
+                homeprice: value,
                 mode,
-                amenities: selectedItems,
+                amenities,
+                currencyData,
               });
             }}>
             <Typography style={styles.topButtonText}>Save & exit</Typography>

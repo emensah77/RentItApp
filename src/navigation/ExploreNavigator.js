@@ -9,7 +9,6 @@ import AddressScreen from '../screens/AddressScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import House from '../screens/House';
 import HouseDetailScreen from '../screens/HouseDetailScreen';
-import HouseUploadScreen from '../screens/HouseUploadScreen';
 import OnboardingScreen1 from '../screensV2/OnboardingScreen1';
 import OnboardingScreen2 from '../screensV2/OnboardingScreen2';
 import OnboardingScreen3 from '../screensV2/OnboardingScreen3';
@@ -21,6 +20,10 @@ import OnboardingScreen8 from '../screensV2/OnboardingScreen8';
 import OnboardingScreen9 from '../screensV2/OnboardingScreen9';
 import OnboardingScreen10 from '../screensV2/OnboardingScreen10';
 import OnboardingScreen11 from '../screensV2/OnboardingScreen11';
+import OnboardingScreen12 from '../screensV2/OnboardingScreen12';
+import OnboardingScreen13 from '../screensV2/OnboardingScreen13';
+import OnboardingScreen14 from '../screensV2/OnboardingScreen14';
+import OnboardingScreen15 from '../screensV2/OnboardingScreen15';
 import AccountManageScreen from '../screens/AccountManageScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 // import Notifications from '../screens/Notifications';
@@ -28,8 +31,8 @@ import ManageProfile from '../screens/ManageProfile';
 import Marketer from '../screens/Marketer';
 import MyHomes from '../screens/MyHomes';
 import EditHome from '../screens/EditHome';
-import OnboardingScreen12 from '../screens/OnboardingScreen12';
-import OnboardingScreen13 from '../screens/OnboardingScreen13';
+// import OnboardingScreen12 from '../screens/OnboardingScreen12';
+// import OnboardingScreen13 from '../screens/OnboardingScreen13';
 import HeatMapScreen from '../screens/HeatMapScreen';
 import MarketerDashboard from '../screens/MarketerDashboard';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -193,6 +196,21 @@ const Router = () => (
         headerShown: false,
       }}
     />
+    <Stack.Screen
+      name="OnboardingScreen14"
+      component={OnboardingScreen14}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="OnboardingScreen15"
+      component={OnboardingScreen15}
+      options={{
+        headerShown: false,
+      }}
+    />
+
     <Stack.Screen
       name="HouseUpload"
       component={ListingHome}

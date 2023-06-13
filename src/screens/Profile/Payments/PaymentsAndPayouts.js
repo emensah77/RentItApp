@@ -4,10 +4,10 @@ import {useNavigation} from '@react-navigation/native';
 import {Page, Whitespace, Divider, CardDisplay, Typography} from '../../../components';
 
 import logo from '../../../assets/images/logo.png';
-// import paymentsDark from '../../../assets/images/menu/payments-dark.png';
+import paymentsDark from '../../../assets/images/menu/payments-dark.png';
 import donation from '../../../assets/images/menu/donation.png';
 import hamburger from '../../../assets/images/menu/hamburger.png';
-// import coupon from '../../../assets/images/menu/coupon.png';
+import coupon from '../../../assets/images/menu/coupon.png';
 import paymentMethod from '../../../assets/images/menu/payment-method.png';
 import transactionHistory from '../../../assets/images/menu/transaction-history.png';
 import arrowRight from '../../../assets/images/arrow-right.png';
@@ -27,13 +27,13 @@ const PaymentsAndPayouts = () => {
       {
         heading: '',
         items: [
-          // {
-          //   description: 'Payments methods',
-          //   image: paymentsDark,
-          //   width: 22,
-          //   height: 17.5,
-          //   onPress: goTo('PaymentMethods'),
-          // },
+          {
+            description: 'Payments methods',
+            image: paymentsDark,
+            width: 22,
+            height: 17.5,
+            onPress: goTo('PaymentMethods'),
+          },
           {
             description: 'Your payments',
             image: hamburger,
@@ -41,13 +41,13 @@ const PaymentsAndPayouts = () => {
             height: 12,
             onPress: goTo('YourPayments'),
           },
-          // {
-          //   description: 'Credit & coupons',
-          //   image: coupon,
-          //   width: 22.5,
-          //   height: 20.25,
-          //   onPress: goTo('CreditAndCoupons'),
-          // },
+          {
+            description: 'Credit & coupons',
+            image: coupon,
+            width: 22.5,
+            height: 20.25,
+            onPress: goTo('CreditAndCoupons'),
+          },
           {
             description: 'Rentit pay',
             image: logo,

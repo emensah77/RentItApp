@@ -65,5 +65,19 @@ export const styles = StyleSheet.create({
   },
   input: {
     height: 52,
+    // background: '#F7F7F7',
+    // borderWidth: 1,
+    // borderColor: '#B0B0B0',
+    // borderRadius: 25,
+    // paddingLeft: 42,
+    // paddingRight: 16,
+  },
+  textInput: {
+    height: 52,
+    color: '#000000',
+    fontSize: 12,
+    fontFamily: 'Montserrat-Bold',
+    paddingLeft: 12,
+    paddingRight: 16,
   },
 });

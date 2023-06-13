@@ -13,14 +13,21 @@ import PayPalIcon from '../../../assets/data/images/icons/paypal-icon.png';
 import CardIcon from '../../../assets/data/images/icons/card-icon.png';
 import PlusIcon from '../../../assets/data/images/icons/plus-grey-icon.png';
 import RentitGuaranteeImg from '../../../assets/data/images/RentitGuarantee.png';
+import {useSelector} from 'react-redux';
+import {postSelectors} from '../../redux/post.slice';
 
 const RequestBook = () => {
+  const post = useSelector(postSelectors.selectPost);
+
+  console.log('post', post.images[0]);
+
   return (
     <ScrollView>
       <View style={styles.content}>
         <RoomCardHorizontal
-          title={'Entire home'}
-          infoDateText={'Stunning Family home  close to the city centre'}
+          imageUrl={post.images[0]}
+          title={post.title}
+          infoDateText={post.description}
           infoBottomText={'4.76(28)'}
           infoSuperhost={'  Superhost'}
         />

@@ -2,19 +2,22 @@ import React, {useCallback, useState} from 'react';
 import {View, Image, Pressable, TextInput, FlatList} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
-import InputField from '../../componentsV2/Inputs/InputField';
 
 const OnboardingScreen7 = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [checkItem, setCheckItem] = useState(0);
+  const [isSelected, setisSelected] = useState(false);
+  const [mode, setMode] = useState('');
 
+  const type = route.params?.type;
   const saveProgress = async progressData => {
     try {
       const user = auth().currentUser;
@@ -44,24 +47,28 @@ const OnboardingScreen7 = () => {
   const data = [
     {
       id: 1,
+      isSelected,
       title: 'For Rent',
       text: 'You are renting your home to tenants, and require monthly payments and offering a stay limited by a time agreed upon.',
     },
     {
       id: 2,
       title: 'For Sale',
+      isSelected,
       text: 'You are selling your home for a stipulated amount and are not offering a stay limited by time.',
     },
   ];
-  const checkData = id => {
+  const checkData = (id, isSelect, title) => {
     setCheckItem(id);
+    setisSelected(!isSelect);
+    setMode(title);
   };
   const renderItems = useCallback(
     ({item}) => {
       return (
         <Pressable
           style={[styles.itemData, item.id === checkItem ? styles.itemCheckData : '']}
-          onPress={() => checkData(item.id)}>
+          onPress={() => checkData(item.id, item.isSelected, item.title)}>
           <Typography bold>{item.title}</Typography>
           <Typography style={{color: '#4D4D4D'}}>{item.text}</Typography>
         </Pressable>
@@ -69,35 +76,24 @@ const OnboardingScreen7 = () => {
     },
     [checkItem],
   );
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
     <View style={styles.mainContent}>
       <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
+        <Pressable style={styles.backButton} onPress={goBack}>
           <Image source={BackArrow} />
         </Pressable>
         <View style={styles.topButtons}>
           <Pressable
             style={styles.topButton}
+            // eslint-disable-next-line react/jsx-no-bind
             onPress={async () => {
-              await saveProgress({
+              await saveProgress({homeType: type, mode});
+              navigation.navigate('OnboardingScreen2', {
                 type,
-                title,
-                description,
-                bed,
-                bedroom,
-                bathroom,
                 mode,
-                amenities: selectedItems,
-              });
-              navigation.navigate('OnboardingScreen4', {
-                type,
-                title,
-                description,
-                bed,
-                bedroom,
-                bathroom,
-                mode,
-                amenities: selectedItems,
               });
             }}>
             <Typography style={styles.topButtonText}>Save & exit</Typography>

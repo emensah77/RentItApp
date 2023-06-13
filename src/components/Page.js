@@ -8,7 +8,7 @@ import Typography from './Typography';
 import {global} from '../assets/styles';
 
 const Page = props => {
-  const {header, children, inline, type = 'small', reverse, footer, leftIcon, rightIcon} = props;
+  const {header, children, inline, type = 'small', footer, leftIcon, rightIcon} = props;
   const [footerTop, setFooterTop] = useState(0);
 
   const Display = useMemo(() => (inline ? View : ScrollView), [inline]);
@@ -30,7 +30,7 @@ const Page = props => {
 
       <Display
         style={global.page}
-        contentContainerStyle={[global.pageContent, reverse ? global.columnReverse : {}]}
+        contentContainerStyle={global.pageContent}
         keyboardShouldPersistTaps="handled">
         {type === 'large' && header && !inline ? (
           <>

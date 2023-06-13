@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useEffect, useState, useRef, useCallback, useMemo} from 'react';
 import {ScrollView, View, Image, FlatList, Text, SafeAreaView, Share} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -42,6 +42,8 @@ import Button from '../../componentsV2/Inputs/Button';
 import RulesRow from '../../componentsV2/DataDisplay/RulesRow';
 import Reserve from '../../componentsV2/Inputs/Reserve';
 import {navigate} from '../../navigation/Router';
+import BottomSheet from '@gorhom/bottom-sheet';
+import CalendarOverlay from '../../componentsV2/Inputs/CalendarOverlay';
 
 const PostScreen = ({route}) => {
   const params = route.params || {};
@@ -51,6 +53,8 @@ const PostScreen = ({route}) => {
   const {postId} = params;
 
   const isMounted = useRef(true);
+  const bottomSheetRef = useRef(null);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const [similarPostsLoading, setSimilarPostsLoading] = useState(false);
 
@@ -95,6 +99,11 @@ const PostScreen = ({route}) => {
       text: 'Rentit.homes supporter',
     },
   ];
+
+  // callbacks
+  const handleSheetChanges = useCallback(index => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   const fetchPost = useCallback(async id => {
     if (!isMounted.current) {
@@ -204,8 +213,19 @@ const PostScreen = ({route}) => {
   }, [postId]);
 
   const onReserve = useCallback(() => {
-    navigate('RequestBook', {postId: post.id});
+    setShowCalendar(true);
+    // navigate('RequestBook', {postId: post.id});
   }, [post]);
+
+  const onCalendarClose = useCallback(() => {
+    setTimeout(() => {
+      setShowCalendar(false);
+    }, 500);
+  }, []);
+
+  const onDatesSaved = useCallback(dates => {
+    navigate('RequestBook', {postId: post.id, dates});
+  }, []);
 
   useEffect(() => {
     fetchPost(postId);
@@ -464,6 +484,15 @@ const PostScreen = ({route}) => {
         </View>
       </ScrollView>
       {!post?.temp && <Reserve price={post.newPrice} onPress={onReserve} />}
+      {showCalendar && (
+        <CalendarOverlay
+          title="5 night stay"
+          handleSheetChanges={handleSheetChanges}
+          bottomSheetRef={bottomSheetRef}
+          onClose={onCalendarClose}
+          onPositive={onDatesSaved}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -1,21 +1,49 @@
-import React, {useState, useCallback} from 'react';
-import {View, Image, Pressable, FlatList, TextInput, SafeAreaView, ScrollView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Image, Pressable, TextInput, SafeAreaView, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import Typography from '../../componentsV2/DataDisplay/Typography';
+import Button from '../../componentsV2/Inputs/Button';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 
-import Button from '../../componentsV2/Inputs/Button';
-
 const OnboardingScreen9 = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
-  const [checkItem, setCheckItem] = useState(0);
+  const [loyalty, setLoyalty] = useState(false);
+  const [negotiable, setNegotiable] = useState(false);
+  const [furnished, setFurnished] = useState(false);
+  const [user, setUser] = useState(null);
+  const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
+  const bed = route.params?.bed;
+  const title = route.params?.title;
+  const bedroom = route.params?.bedroom;
+  const bathroom = route.params?.bathroom;
+  const imageUrls = route.params?.imageUrls;
+  const homeprice = route.params?.homeprice;
+  const latitude = route.params?.latitude;
+  const longitude = route.params?.longitude;
+  const type = route.params?.type;
+  const description = route.params?.description;
+  const mode = route.params?.mode;
+  const amenities = route.params?.amenities;
+  const phoneNumber = route.params?.phoneNumber;
+  const locality = route.params?.locality;
+  const sublocality = route.params?.sublocality;
+  const address = route.params?.address;
+  const currency = route.params?.currency;
+  const marketerNumber = route.params?.marketerNumber;
+  const [availableForRent, setAvailableForRent] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [availabilityDate, setAvailabilityDate] = useState(null);
+  const [homeownerName, setHomeownerName] = useState('');
+
   const saveProgress = async progressData => {
     try {
       const user = auth().currentUser;
@@ -38,75 +66,134 @@ const OnboardingScreen9 = () => {
       console.error('Error saving progress:', error);
     }
   };
-  const data = [
-    {
-      id: 1,
-      title: 'Loyalty Home',
-      text: 'You have given a loyalty package to this homeowner',
-    },
-    {
-      id: 2,
-      title: 'Negotiable',
-      text: 'Price can be negotiated with the home owner',
-    },
-    {
-      id: 3,
-      title: 'Furnished',
-      text: 'Property comes with furniture and amenities',
-    },
-  ];
-  const checkData = id => {
-    setCheckItem(id);
+
+  const handleLoyaltyPress = () => {
+    setLoyalty(!loyalty);
   };
-  const renderItems = useCallback(
-    ({item}) => {
-      return (
-        <Pressable
-          style={[styles.itemData, item.id === checkItem ? styles.itemCheckData : '']}
-          onPress={() => checkData(item.id)}>
-          <Typography bold>{item.title}</Typography>
-          <Typography style={{color: '#4D4D4D'}}>{item.text}</Typography>
-        </Pressable>
-      );
-    },
-    [checkItem],
-  );
+  const handleNegotiablePress = () => {
+    setNegotiable(!negotiable);
+  };
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const handleFurnishedPress = () => {
+    setFurnished(!furnished);
+  };
+  const handleAvailableForRent = value => {
+    setAvailableForRent(value);
+    if (!value) {
+      showDatePicker();
+    }
+  };
   const goFaqs = () => {
-    navigation.navigate('OnboardingScreen10');
+    navigation.navigate('OnboardingScreen15');
   };
+  const goBack = () => {
+    navigation.goBack();
+  };
+  const handleConfirm = date => {
+    // Save the selected date here
+    setAvailabilityDate(date);
+    hideDatePicker();
+  };
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  const userDetails = async () => {
+    const {currentUser} = auth();
+    if (currentUser) {
+      const userDoc = await firestore().collection('users').doc(currentUser.uid).get();
+      if (userDoc.exists) {
+        setUser(userDoc.data());
+        // console.log('User data:', user);
+        // Do something with user data
+      }
+    }
+  };
+  const getUsersWithPrivileges = async () => {
+    try {
+      const callers = await firestore().collection('usersWithPrivileges');
+      callers.get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          setUsersWithPrivileges(prev => [...prev, doc.data().userId]);
+        });
+      });
+    } catch (error) {}
+  };
+  const handleNextPress = async () => {
+    if (!homeownerName || availableForRent === null) {
+      return;
+    }
+    await saveProgress({
+      title,
+      type,
+      description,
+      bed,
+      bedroom,
+      bathroom,
+      imageUrls,
+      homeprice,
+      latitude,
+      longitude,
+      mode,
+      amenities,
+      phoneNumber,
+      marketerNumber,
+      locality,
+      sublocality,
+      currency,
+      negotiable: negotiable ? 'Yes' : 'No',
+      loyaltyProgram: loyalty ? 'Yes' : 'No',
+      furnished: furnished ? 'Yes' : 'No',
+      address,
+      available: availableForRent ? 'Yes' : 'No',
+      availabilityDate: availabilityDate || null,
+      homeownerName,
+    });
+
+    navigation.navigate('OnboardingScreen15', {
+      title,
+      type,
+      description,
+      bed,
+      bedroom,
+      bathroom,
+      imageUrls,
+      homeprice,
+      latitude,
+      longitude,
+      mode,
+      amenities,
+      phoneNumber,
+      marketerNumber,
+      locality,
+      sublocality,
+      currency,
+      negotiable: negotiable ? 'Yes' : 'No',
+      loyaltyProgram: loyalty ? 'Yes' : 'No',
+      furnished: furnished ? 'Yes' : 'No',
+      address,
+      available: availableForRent ? 'Yes' : 'No',
+      availabilityDate: availabilityDate || null,
+      homeownerName,
+    });
+  };
+  useEffect(() => {
+    userDetails();
+    getUsersWithPrivileges();
+    return () => {};
+  }, [user]);
   return (
     <SafeAreaView>
       <ScrollView>
         <View style={styles.mainContent}>
           <View style={styles.topBar}>
-            <Pressable style={styles.backButton}>
+            <Pressable style={styles.backButton} onPress={goBack}>
               <Image source={BackArrow} />
             </Pressable>
             <View style={styles.topButtons}>
-              <Pressable
-                style={styles.topButton}
-                onPress={async () => {
-                  await saveProgress({
-                    type,
-                    title,
-                    description,
-                    bed,
-                    bedroom,
-                    bathroom,
-                    mode,
-                    amenities: selectedItems,
-                  });
-                  navigation.navigate('OnboardingScreen4', {
-                    type,
-                    title,
-                    description,
-                    bed,
-                    bedroom,
-                    bathroom,
-                    mode,
-                    amenities: selectedItems,
-                  });
-                }}>
+              <Pressable style={styles.topButton} onPress={handleNextPress}>
                 <Typography style={styles.topButtonText}>Save & exit</Typography>
               </Pressable>
               <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -118,23 +205,72 @@ const OnboardingScreen9 = () => {
           <Typography bold style={styles.title}>
             Your home is?
           </Typography>
-          <FlatList data={data} renderItem={renderItems} />
-          <Typography style={{textAlign: 'center', marginTop: 28}} bold>
+          {usersWithPrivileges.includes(auth().currentUser.uid) ||
+          user?.marketer_status === 'ACCEPTED' ? (
+            <Pressable style={[styles.itemData]} onPress={handleLoyaltyPress}>
+              <Typography bold>Loyalty Home</Typography>
+              <Typography style={{color: '#4D4D4D'}}>
+                You have given a loyalty package to this homeowner
+              </Typography>
+            </Pressable>
+          ) : null}
+
+          <Pressable style={[styles.itemData]} onPress={handleNegotiablePress}>
+            <Typography bold>Negotiable</Typography>
+            <Typography style={{color: '#4D4D4D'}}>
+              Price can be negotiated with the home owner
+            </Typography>
+          </Pressable>
+          <Pressable style={[styles.itemData]} onPress={handleFurnishedPress}>
+            <Typography bold>Furnished</Typography>
+            <Typography style={{color: '#4D4D4D'}}>
+              Property comes with furniture and amenities
+            </Typography>
+          </Pressable>
+          <Typography style={styles.homeOwner} bold>
             Enter the homeowner’s name
           </Typography>
-          <TextInput placeholder="Homeowner’s Name" style={styles.input} />
+          <TextInput
+            placeholder="Homeowner’s Name"
+            style={styles.input}
+            onChangeText={text => setHomeownerName(text)}
+            value={homeownerName}
+          />
           <Typography style={{textAlign: 'center', marginTop: 28}} bold>
             Is your home available for rent now?
           </Typography>
           <View style={styles.btn}>
-            <Button text="Yes" style={styles.btnYes} />
+            <Button text="Yes" style={styles.btnYes} onPress={() => handleAvailableForRent(true)} />
             {/* <Button text="No" variant="defaultText" style={styles.btnNo} /> */}
-            <Pressable style={styles.btnNo}>
+            <Pressable style={styles.btnNo} onPress={() => handleAvailableForRent(false)}>
               <Typography style={{color: '#194CC3', textAlign: 'center', paddingTop: 15}}>
                 No
               </Typography>
             </Pressable>
           </View>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            // eslint-disable-next-line react/jsx-no-bind
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+            // eslint-disable-next-line react/jsx-no-bind
+            customHeaderIOS={() => (
+              <View style={styles.customHeader}>
+                <Typography style={styles.customHeaderText}>
+                  Select when your home will be available
+                </Typography>
+              </View>
+            )}
+            // eslint-disable-next-line react/jsx-no-bind
+            customHeaderAndroid={() => (
+              <View style={styles.customHeader}>
+                <Typography style={styles.customHeaderText}>
+                  Select when your home will be available
+                </Typography>
+              </View>
+            )}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

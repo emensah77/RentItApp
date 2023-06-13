@@ -17,6 +17,14 @@ const OnboardingScreen3 = () => {
   const route = useRoute();
   const [uniqueItem, setUniqueItem] = useState([]);
 
+  const type = route.params?.type;
+  const description = route.params?.description;
+  const title = route.params?.title;
+  const bed = route.params?.bed;
+  const bedroom = route.params?.bedroom;
+  const bathroom = route.params?.bathroom;
+  const mode = route.params?.mode;
+
   const items = [
     {
       name: 'Air Conditioner',
@@ -126,9 +134,9 @@ const OnboardingScreen3 = () => {
                 bedroom,
                 bathroom,
                 mode,
-                amenities: selectedItems,
+                amenities: uniqueItem,
               });
-              navigation.navigate('OnboardingScreen4', {
+              navigation.navigate('OnboardingScreen5', {
                 type,
                 title,
                 description,
@@ -136,7 +144,7 @@ const OnboardingScreen3 = () => {
                 bedroom,
                 bathroom,
                 mode,
-                amenities: selectedItems,
+                amenities: uniqueItem,
               });
             }}>
             <Typography style={styles.topButtonText}>Save & exit</Typography>
