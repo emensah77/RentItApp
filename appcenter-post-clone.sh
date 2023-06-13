@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Create Android App Center config json
+# Create Android App Center config json file
 cat << EOF > $APPCENTER_SOURCE_DIRECTORY/android/app/src/main/assets/appcenter-config.json
   $APPCENTER_CONFIG
 EOF
