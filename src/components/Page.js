@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useMemo} from 'react';
 import {SafeAreaView, ScrollView, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import Header from './Header';
 import Whitespace from './Whitespace';
@@ -13,6 +14,8 @@ const Page = props => {
 
   const Display = useMemo(() => (inline ? View : ScrollView), [inline]);
 
+  const navigation = useNavigation();
+
   const onFooterLayout = useCallback(e => {
     const {
       layout: {height},
@@ -23,7 +26,7 @@ const Page = props => {
   return (
     <SafeAreaView style={global.flex}>
       {type === 'small' && header && !inline ? (
-        <Header center leftIcon={leftIcon} rightIcon={rightIcon}>
+        <Header center leftIcon={leftIcon} rightIcon={rightIcon} onClose={navigation.goBack}>
           {header}
         </Header>
       ) : null}

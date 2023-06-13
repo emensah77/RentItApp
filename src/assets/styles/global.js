@@ -234,6 +234,22 @@ const global = StyleSheet.create({
     padding: 7,
     borderRadius: 13,
   },
+  ...Array.from(new Array(101)).reduce(
+    (p, _, i) => ({
+      ...p,
+      [`top-${i}`]: {
+        position: 'absolute',
+        top: i,
+        zIndex: 10000,
+      },
+      [`bottom-${i}`]: {
+        position: 'absolute',
+        top: i,
+        zIndex: 10000,
+      },
+    }),
+    {},
+  ),
 });
 
 export default global;
