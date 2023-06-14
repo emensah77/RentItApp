@@ -58,7 +58,7 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="Chat" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
