@@ -70,11 +70,11 @@ const Chat = props => {
 
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
-      if (!_home) {
+      const receiver_id = _home?.user?.id;
+      if (!_home || !receiver_id) {
         return;
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
-      const receiver_id = _home.user.id;
 
       const user = auth().currentUser;
       const _receiver = await firestore()
