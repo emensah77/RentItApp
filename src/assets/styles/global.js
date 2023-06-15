@@ -242,10 +242,22 @@ const global = StyleSheet.create({
         top: i,
         zIndex: 10000,
       },
-      [`bottom-${i}`]: {
+      [`top-${i}-center`]: {
         position: 'absolute',
         top: i,
         zIndex: 10000,
+        alignSelf: 'center',
+      },
+      [`bottom-${i}`]: {
+        position: 'absolute',
+        bottom: i,
+        zIndex: 10000,
+      },
+      [`bottom-${i}-center`]: {
+        position: 'absolute',
+        bottom: i,
+        zIndex: 10000,
+        alignSelf: 'center',
       },
     }),
     {},
