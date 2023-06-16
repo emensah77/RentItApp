@@ -116,7 +116,7 @@ const Explore = () => {
             attributeExists: isSelected('amenities', 'kitchen'),
           },
           water: {
-            attributeExists: isSelected('amenities', 'hot-tub') || isSelected('amenities', 'pool'),
+            attributeExists: isSelected('amenities', 'water'),
           },
           toilet: {
             attributeExists: isSelected('amenities', 'essentials'),
@@ -391,6 +391,7 @@ const Explore = () => {
         {title: 'Dryer', slug: 'dryer'},
         {title: 'Air conditioning', slug: 'air-conditioning'},
         {title: 'Heating', slug: 'heating'},
+        {title: 'Water', slug: 'water'},
         {title: 'Dedicated Workspace', slug: 'dedicated-workspace'},
       ].map(
         ({title, slug}, i) =>

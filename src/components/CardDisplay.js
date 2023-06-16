@@ -23,10 +23,10 @@ const CardDisplay = props => {
     center,
     spaceBetween,
     reverse,
-    contentBox,
     bold,
     suffix,
     onPress,
+    contentBox = true,
   } = props;
 
   return (

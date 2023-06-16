@@ -83,11 +83,12 @@ const Chat = props => {
         .get()
         .catch(console.error);
       const recipient = _receiver?.data();
-      recipient.uid = receiver_id;
       if (!recipient) {
         console.error('User not found', _receiver, recipient);
         return;
       }
+      recipient.uid = receiver_id;
+
       console.debug(
         'Chat Between:',
         user.displayName,
