@@ -5,6 +5,7 @@ export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
 export const pageInnerHorizontalPadding = 30;
 export const standardWidth = isPortrait && size().width > 450 ? 800 : 450;
+export const colors = {primary: '#194CC3'};
 export const sizing = {
   maxWidth: standardWidth,
   width: '100%',
@@ -219,6 +220,46 @@ const global = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 8,
+  },
+  chipSelected: {
+    backgroundColor: '#0047B3',
+    height: 36,
+    borderWidth: 1,
+    borderColor: '#0047B3',
+    paddingVertical: 5,
+    paddingHorizontal: 27,
+    borderRadius: 20,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chipDeSelected: {
+    backgroundColor: 'transparent',
+    height: 36,
+    borderWidth: 1,
+    borderColor: '#DEDEDE',
+    paddingVertical: 5,
+    paddingHorizontal: 27,
+    borderRadius: 20,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selected: {
+    backgroundColor: '#E6F0FF',
+    justifyContent: 'space-between',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#0047B3',
+  },
+  deselected: {
+    backgroundColor: 'transparent',
+    justifyContent: 'space-between',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
   },
   contentBox: {
     maxWidth: 350,

@@ -23,6 +23,7 @@ const CardDisplay = props => {
     center,
     spaceBetween,
     reverse,
+    contentBox,
     bold,
     suffix,
     onPress,
@@ -43,7 +44,10 @@ const CardDisplay = props => {
         />
       ) : null}
 
-      <Container type="contentBox" onPress={onPress} width="70%">
+      <Container
+        type={contentBox ? 'contentBox' : ''}
+        onPress={onPress}
+        width={suffix ? '70%' : '85%'}>
         <Container row type={reverse ? 'rowReverse' : 'flexStart'} onPress={onPress}>
           {name ? <Typography type={bold ? 'levelOneThick' : 'notice'}>{name}</Typography> : null}
 

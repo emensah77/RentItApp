@@ -20,8 +20,8 @@ import {PageSpinner} from '../components';
 
 const Stack = createStackNavigator();
 
-// AsyncStorage.removeItem('authentication::data');
-// auth().signOut();
+AsyncStorage.removeItem('authentication::data');
+auth().signOut();
 // Make phoneNumber an array, and then prevent signin with mobile if greater than 1
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
