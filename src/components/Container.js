@@ -1,12 +1,29 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Pressable} from 'react-native';
 
 import {global} from '../assets/styles';
 
 const Container = props => {
-  const {row, type, children, center, left, width, height, color, position} = props;
+  const {
+    row,
+    type,
+    children,
+    center,
+    left,
+    width,
+    height,
+    color,
+    position,
+    onPress,
+    ripple,
+    hitSlop,
+  } = props;
+
   return (
-    <View
+    <Pressable
+      onPress={onPress}
+      android_ripple={ripple}
+      hitSlop={hitSlop}
       style={[
         row ? global.row : {},
         global[type],
@@ -18,7 +35,7 @@ const Container = props => {
         position ? {alignSelf: position} : {},
       ]}>
       {children}
-    </View>
+    </Pressable>
   );
 };
 

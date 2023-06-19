@@ -55,9 +55,11 @@ const Welcome = () => {
       <Whitespace marginBottom={20} />
 
       <Container>
-        <Typography size={21} height={26} weight="200" color="#194CC3">
-          Buy, Sell, Rent a Home
-        </Typography>
+        <Container center>
+          <Typography size={21} height={26} weight="200" color="#194CC3">
+            Buy, Sell, Rent a Home
+          </Typography>
+        </Container>
 
         <Whitespace marginTop={20} />
 

@@ -18,6 +18,7 @@ import AccountDetails from '../screens/Profile/AccountDetails';
 import Edit from '../screens/Profile/Edit';
 import EditPersonalInfo from '../screens/Profile/EditPersonalInfo';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
+import Filter from '../screens/Explore/Filter';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screens/PostScreen';
@@ -58,7 +59,7 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="Chat" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
@@ -86,6 +87,8 @@ const AppStack = () => {
       <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfo} options={noHeader} />
 
       <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
+
+      <Stack.Screen name="Filter" component={Filter} options={noHeader} />
 
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
 

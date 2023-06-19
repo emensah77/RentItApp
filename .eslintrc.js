@@ -29,6 +29,7 @@ module.exports = {
           'JSXText',
           'JSXEmptyExpression',
           'JSXSpreadChild',
+          'ConditionalExpression',
         ],
       },
     ],

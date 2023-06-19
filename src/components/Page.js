@@ -9,7 +9,17 @@ import Typography from './Typography';
 import {global} from '../assets/styles';
 
 const Page = props => {
-  const {header, children, inline, type = 'small', reverse, footer, leftIcon, rightIcon} = props;
+  const {
+    header,
+    children,
+    inline,
+    type = 'small',
+    reverse,
+    footer,
+    leftIcon,
+    rightIcon,
+    onLeftIconPress,
+  } = props;
   const [footerTop, setFooterTop] = useState(0);
 
   const Display = useMemo(() => (inline ? View : ScrollView), [inline]);
@@ -26,7 +36,11 @@ const Page = props => {
   return (
     <SafeAreaView style={global.flex}>
       {type === 'small' && header && !inline ? (
-        <Header center leftIcon={leftIcon} rightIcon={rightIcon} onClose={navigation.goBack}>
+        <Header
+          center
+          leftIcon={leftIcon}
+          rightIcon={rightIcon}
+          onClose={onLeftIconPress || navigation.goBack}>
           {header}
         </Header>
       ) : null}

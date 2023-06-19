@@ -43,7 +43,7 @@ const Chat = props => {
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
-  const [, /* loading */ setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const send = useCallback(async () => {
     if (!channel) {
@@ -83,11 +83,12 @@ const Chat = props => {
         .get()
         .catch(console.error);
       const recipient = _receiver?.data();
-      recipient.uid = receiver_id;
       if (!recipient) {
         console.error('User not found', _receiver, recipient);
         return;
       }
+      recipient.uid = receiver_id;
+
       console.debug(
         'Chat Between:',
         user.displayName,
@@ -141,6 +142,7 @@ const Chat = props => {
           members: [user.uid, recipient.uid],
         },
       );
+      await _channel.updatePartial({set: {home_id}});
 
       // TODO:
       // Forbid banned users from continuing?
@@ -218,14 +220,14 @@ const Chat = props => {
           />
         </>
       }>
-      <Container type="top-10-center">
+      <Container width="100%" type="top-10-center">
         {home?.title ? (
           <>
             <CardDisplay
               leftImageWidth={38}
               leftImageHeight={38}
               leftImageSrc={{uri: home?.image}}
-              numberOfLines={1}
+              numberOfLines={2}
               description={
                 <Typography
                   type="link"
@@ -238,10 +240,11 @@ const Chat = props => {
               }
               status={home?.status}
               date={home?.formattedDate}
-              center
               bold
             />
+
             <Whitespace marginTop={10} />
+
             <Container row type="center">
               <Container row type="chipSmall" color="#FFF" width={110}>
                 <CardDisplay
@@ -269,7 +272,9 @@ const Chat = props => {
                 />
               </Container>
             </Container>
+
             <Whitespace marginTop={-35} />
+
             <Divider />
           </>
         ) : (
@@ -277,7 +282,7 @@ const Chat = props => {
         )}
       </Container>
 
-      {messages.length > 0 ? (
+      {!loading ? (
         messages.map((msg, i) => {
           nextDay = Utils.formatDate((messages[i + 1] || msg).created_at);
           currentDay = Utils.formatDate(msg.created_at);
