@@ -4,10 +4,26 @@ import {Pressable} from 'react-native';
 import {global} from '../assets/styles';
 
 const Container = props => {
-  const {row, type, children, center, left, width, height, color, position, onPress} = props;
+  const {
+    row,
+    type,
+    children,
+    center,
+    left,
+    width,
+    height,
+    color,
+    position,
+    onPress,
+    ripple,
+    hitSlop,
+  } = props;
+
   return (
     <Pressable
       onPress={onPress}
+      android_ripple={ripple}
+      hitSlop={hitSlop}
       style={[
         row ? global.row : {},
         global[type],

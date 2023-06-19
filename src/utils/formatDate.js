@@ -1,4 +1,6 @@
 const formatDate = _date => {
+  if (!_date) return '';
+
   const months = [
     'Jan',
     'Feb',

@@ -299,6 +299,7 @@ const Explore = () => {
           />
 
           <Typography
+            type="left"
             color={isSelected('propertyTypes', 'house') ? '#0047B3' : '#252525'}
             weight="800"
             size={16}>
@@ -320,6 +321,7 @@ const Explore = () => {
           />
 
           <Typography
+            type="left"
             color={isSelected('propertyTypes', 'apartment') ? '#0047B3' : '#252525'}
             weight="800"
             size={16}>
@@ -343,6 +345,7 @@ const Explore = () => {
           />
 
           <Typography
+            type="left"
             color={isSelected('propertyTypes', 'guesthouse') ? '#0047B3' : '#252525'}
             weight="800"
             size={16}>
@@ -364,6 +367,7 @@ const Explore = () => {
           />
 
           <Typography
+            type="left"
             color={isSelected('propertyTypes', 'hotel') ? '#0047B3' : '#252525'}
             weight="800"
             size={16}>

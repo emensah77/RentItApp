@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 
 import Container from './Container';
 import Typography from './Typography';
@@ -24,10 +24,30 @@ const CardDisplay = props => {
     spaceBetween,
     reverse,
     bold,
+    prefix,
     suffix,
     onPress,
     contentBox = true,
   } = props;
+
+  const contentBoxWidth = useMemo(() => {
+    // const noPrefix = !prefix; // No UI element appears to ever have a prefix, only a left image
+    const noSuffix = !suffix;
+    const noLeftImage = !(leftImageSrc && (!!leftImageSrc.uri || typeof leftImageSrc === 'number'));
+    const noRightImage = !(
+      rightImageSrc &&
+      (!!rightImageSrc.uri || typeof rightImageSrc === 'number')
+    );
+    return noSuffix || noLeftImage || noRightImage
+      ? noSuffix && noLeftImage && noRightImage
+        ? '100%'
+        : (noSuffix && noLeftImage) || (noSuffix && noRightImage) || (noLeftImage && noRightImage)
+        ? '87%'
+        : '70%'
+      : !noSuffix && !noLeftImage && !noRightImage
+      ? '55%'
+      : '70%';
+  }, [leftImageSrc, rightImageSrc, suffix]);
 
   return (
     <Container
@@ -35,19 +55,24 @@ const CardDisplay = props => {
       type={
         center ? 'center' : spaceBetween ? 'spaceBetween' : reverse ? 'rowReverse' : 'flexStart'
       }>
-      {leftImageSrc ? (
-        <Image
-          width={leftImageWidth}
-          height={leftImageHeight}
-          circle={leftImageCircle}
-          src={leftImageSrc}
-        />
+      {leftImageSrc && (!!leftImageSrc.uri || typeof leftImageSrc === 'number') ? (
+        <Container center width={40} height={30} onPress={onPress}>
+          <Image
+            width={leftImageWidth}
+            height={leftImageHeight}
+            circle={leftImageCircle}
+            src={leftImageSrc}
+          />
+        </Container>
       ) : null}
 
-      <Container
-        type={contentBox ? 'contentBox' : ''}
-        onPress={onPress}
-        width={suffix ? '70%' : '85%'}>
+      {prefix ? (
+        <Container center width="15%">
+          {prefix || null}
+        </Container>
+      ) : null}
+
+      <Container type={contentBox ? 'contentBox' : ''} onPress={onPress} width={contentBoxWidth}>
         <Container row type={reverse ? 'rowReverse' : 'flexStart'} onPress={onPress}>
           {name ? <Typography type={bold ? 'levelOneThick' : 'notice'}>{name}</Typography> : null}
 
@@ -111,10 +136,16 @@ const CardDisplay = props => {
         </Container>
       </Container>
 
-      {suffix ? <Container width="15%">{suffix || null}</Container> : null}
+      {suffix ? (
+        <Container center width="15%">
+          {suffix || null}
+        </Container>
+      ) : null}
 
-      {rightImageSrc ? (
-        <Image width={rightImageWidth} height={rightImageHeight} src={rightImageSrc} />
+      {rightImageSrc && (!!rightImageSrc.uri || typeof rightImageSrc === 'number') ? (
+        <Container center width={40} height={30} onPress={onPress}>
+          <Image width={rightImageWidth} height={rightImageHeight} src={rightImageSrc} />
+        </Container>
       ) : null}
     </Container>
   );

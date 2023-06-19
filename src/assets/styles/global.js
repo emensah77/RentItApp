@@ -61,7 +61,7 @@ const global = StyleSheet.create({
   header: {
     backgroundColor: '#FFF',
     width: '100%',
-    height: 59,
+    height: 65,
     borderBottomColor: '#DFDFDF',
     borderBottomWidth: 1,
     justifyContent: 'center',
@@ -189,8 +189,11 @@ const global = StyleSheet.create({
   },
   noTextDivider: {marginTop: 0},
   dropdownItem: {
+    ...sizing,
+    flexDirection: 'row',
     paddingHorizontal: pageInnerHorizontalPadding - 5,
     paddingVertical: pageInnerHorizontalPadding / 2,
+    marginVertical: 5,
   },
   error: {
     color: 'red',
@@ -264,8 +267,8 @@ const global = StyleSheet.create({
   contentBox: {
     maxWidth: 350,
     width: '80%',
-    marginLeft: 11,
-    marginRight: 11,
+    marginLeft: 3,
+    marginRight: 3,
   },
   tab: {borderBottomWidth: 2, borderBottomColor: '#000000', height: 36},
   tabContent: {
