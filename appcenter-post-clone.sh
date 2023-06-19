@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-# Create App Center config
+# Create Android App Center config json file
 cat << EOF > $APPCENTER_SOURCE_DIRECTORY/android/app/src/main/assets/appcenter-config.json
+  $APPCENTER_CONFIG
+EOF
+
+# Create iOS' App Center config plist file
+cat << EOF > $APPCENTER_SOURCE_DIRECTORY/ios/AppCenter-Config.plist
   $APPCENTER_CONFIG
 EOF
 

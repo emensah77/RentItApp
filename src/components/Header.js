@@ -15,7 +15,7 @@ const Header = props => {
       </Pressable>
 
       {typeof children === 'string' ? (
-        <Typography type="heading" center>
+        <Typography onPress={onClose} type="heading" center>
           {children}
         </Typography>
       ) : (
