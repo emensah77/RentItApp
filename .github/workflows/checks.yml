@@ -48,4 +48,4 @@ jobs:
           EOF
 
       - name: Run tests
-        run: yarn test
+        run: yarn test --testMatch **/*-test.js
