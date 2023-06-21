@@ -8,7 +8,7 @@ module.exports = {
   testTimeout: 500000,
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    // '^.+\\.(ts|tsx)$': 'ts-jest',
   },
   globals: {
     __DEV__: true,
