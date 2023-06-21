@@ -65,27 +65,12 @@ jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 
-// jest.mock('react-native/Libraries/AppState/AppState', () => ({
-//   addEventListener: jest.fn((event, callback) => {
-//     if (event === 'change') {
-//       capturedChangeCallback = callback
-//     }
-//   }),
-// }));
-
-// jest.mock('react-native/Libraries/Utilities/Platform');
-
-// jest.mock('react-native/Libraries/Utilities/Platform', () => ({
-//   OS: 'android',
-//   select: config => config.android,
-// }));
-
 jest.mock('@react-native-firebase/auth', () => () => {
   return {
     currentUser: {uid: undefined},
     signInWithCustomToken: jest.fn(),
-  }
-})
+  };
+});
 
 jest.mock('mixpanel-react-native', () => {
   class Mixpanel {
