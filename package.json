@@ -9,7 +9,7 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testMatch **/*-test.js",
     "lint": "prettier --write . && eslint --fix .",
     "clean": "react-native-clean-project",
-    "appium:server": "appium",
+    "appium:start": "appium",
     "appium:test": "yarn test --testMatch='**/*.appium.js'",
     "appium:doctor:android": "appium-doctor --android",
     "appium:doctor:ios": "appium-doctor --ios"

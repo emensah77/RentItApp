@@ -70,6 +70,48 @@ jobs:
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
+      - name: Gradle Cache
+        uses: gradle/gradle-build-action@v2
+
+      - name: AVD Cache
+        uses: actions/cache@v3
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-28
+
+      - name: Create AVD and Generate Snapshot for Caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          force-avd-creation: false
+          emulator-options:
+            -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Start Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: x86_64
+          profile: Nexus 6
+          force-avd-creation: false
+          disable-animations: true
+          emulator-options:
+            -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+            -camera-back none
+          script: ./gradlew connectedCheck
+
+      - name: Start Appium
+        run: |
+          yarn appium:doctor:android
+          yarn appium:start &
+          yarn appium:test
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:

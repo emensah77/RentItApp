@@ -1,7 +1,7 @@
 import wdio from 'webdriverio';
 
 export const JEST_IMPLICIT_TIMEOUT = 60000;
-export const WD_IMPLICIT_TIMEOUT = 10000;
+export const WD_IMPLICIT_TIMEOUT = 20000;
 
 export const PORT = 4723;
 export const HOSTNAME = 'localhost';
@@ -27,6 +27,7 @@ export const ANDROID_CAPABILITIES = {
     deviceName: ANDROID_DEVICE_NAME,
     app: ANDROID_APP,
     automationName: ANDROID_AUTOMATION_NAME,
+    connectionRetryTimeout: WD_IMPLICIT_TIMEOUT,
   },
 };
 
