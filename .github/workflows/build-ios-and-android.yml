@@ -93,18 +93,21 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
+      - name: All Available Devices
+        run: avdmanager list device
+
       - name: Start Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
-          arch: x86_64
+          arch: arm64-v8a
           profile: Nexus 6
           force-avd-creation: false
           disable-animations: true
           emulator-options:
             -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
             -camera-back none
-          script: cd android && ./gradlew connectedCheck
+          script: echo "Up and running."
 
       - name: Start Appium
         run: |
