@@ -96,7 +96,7 @@ jobs:
       - name: All Available Devices
         run: avdmanager list device
 
-      - name: Start Emulator
+      - name: Start Emulator and Execute Appium
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
@@ -107,13 +107,10 @@ jobs:
           emulator-options:
             -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
             -camera-back none
-          script: echo "Up and running."
-
-      - name: Start Appium
-        run: |
-          yarn appium:doctor:android
-          yarn appium:start &
-          yarn appium:test
+          script: |
+            yarn appium:doctor:android
+            yarn appium:start &
+            yarn appium:test
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
