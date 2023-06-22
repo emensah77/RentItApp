@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {StatusBar, useColorScheme, AppState} from 'react-native';
+import {Text, StatusBar, useColorScheme, AppState} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
@@ -29,6 +29,13 @@ const App = () => {
 
   return (
     <>
+      <Text
+        accessible={true}
+        id="welcomemessagea"
+        test-id="welcomemessageb"
+        accessibilityLabel="welcomemessagec">
+        Buy, Sell, Rent a Home
+      </Text>
       <ApplicationProvider {...eva} theme={eva.light}>
         <WishListProvider>
           <StatusBar barStyle={barStyle} />

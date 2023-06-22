@@ -16,9 +16,12 @@ const Typography = props => {
     size,
     weight,
     height,
+    accessibilityLabel,
   } = props;
   return (
     <Text
+      accessible
+      accessibilityLabel={accessibilityLabel}
       numberOfLines={numberOfLines}
       style={[
         typography[type] || typography.regular,

@@ -56,6 +56,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - uses: actions/cache@v2
         id: yarn-cache
         with:
@@ -101,7 +102,7 @@ jobs:
         with:
           api-level: 28
           arch: arm64-v8a
-          profile: Nexus 6
+          profile: Nexus 10
           force-avd-creation: false
           disable-animations: true
           emulator-options:

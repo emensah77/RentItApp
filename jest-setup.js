@@ -16,7 +16,6 @@ Object.defineProperty(window, 'navigator', {
   configurable: true,
 });
 console.warn = () => null;
-jest.useFakeTimers();
 
 jest.mock('react-native-gesture-handler', () => require('react-native-gesture-handler/jestSetup'));
 
