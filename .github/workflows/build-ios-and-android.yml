@@ -78,6 +78,8 @@ jobs:
             appium &>/dev/null &
           EOF
         
+          curl localhost:4723
+          curl 127.0.0.1:4723
           chmod +x ./RunAppiumServer.sh # install and run appium server in the background
           ./RunAppiumServer.sh
           yarn appium:test
@@ -87,8 +89,6 @@ jobs:
           set -ex
           yarn appium:doctor:android
           timeout -k 10m 15m yarn appium:start &>/dev/null &
-          curl localhost:4723
-          curl 127.0.0.1:4723
           yarn appium:test
 
       - name: Bundle & *.apk
