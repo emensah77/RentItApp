@@ -72,7 +72,7 @@ jobs:
         run: |
           set -ex
           yarn appium:doctor:android
-          timeout -k 15m 15m yarn appium:start &
+          timeout -k 10m 15m yarn appium:start &
           yarn appium:test
 
       - name: Bundle & *.apk
