@@ -76,14 +76,16 @@ jobs:
             npm install -g appium
             appium -v
             netstat -tuplen
-            appium &>/dev/null &
+            appium -p 5555 &>/dev/null &
             echo "---------------------"
             netstat -tuplen
+            curl localhost:5555
+            curl 127.0.0.1:5555
           EOF
           echo "---------------------"
           netstat -tuplen
-          curl localhost:4723
-          curl 127.0.0.1:4723
+          curl localhost:5555
+          curl 127.0.0.1:5555
           chmod +x ./RunAppiumServer.sh # install and run appium server in the background
           ./RunAppiumServer.sh
           yarn appium:test
