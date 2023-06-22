@@ -109,8 +109,9 @@ jobs:
             -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
             -camera-back none
           script: |
+            set -ex
             yarn appium:doctor:android
-            yarn appium:start &
+            yarn timeout -k 15 15m appium:start
             yarn appium:test
 
       - name: Upload Artifact

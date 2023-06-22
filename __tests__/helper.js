@@ -7,7 +7,7 @@ export const CONFIG = {
   platformName: 'Android',
   deviceName: 'Android Emulator',
   automationName: 'UiAutomator2',
-  newCommandTimeout: 50000,
+  'appium:newCommandTimeout': 50000,
 };
 
 export const getCommandLineArgument = argument => {
