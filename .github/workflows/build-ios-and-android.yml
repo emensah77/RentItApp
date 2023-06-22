@@ -111,7 +111,7 @@ jobs:
           script: |
             set -ex
             yarn appium:doctor:android
-            yarn timeout -k 15m 15m appium:start
+            timeout -k 15m 15m yarn appium:start
             yarn appium:test
 
       - name: Upload Artifact
