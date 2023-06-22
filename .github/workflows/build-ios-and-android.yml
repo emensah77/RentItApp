@@ -77,7 +77,7 @@ jobs:
             appium -v
             appium &>/dev/null &
           EOF
-        
+          netstat -tuplen
           curl localhost:4723
           curl 127.0.0.1:4723
           chmod +x ./RunAppiumServer.sh # install and run appium server in the background
