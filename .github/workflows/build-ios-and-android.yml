@@ -68,35 +68,6 @@ jobs:
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Temp test 1
-        run: |
-          cat << EOF > RunAppiumServer.sh
-            #!/bin/bash
-            set -ex
-            npm install -g appium
-            appium -v
-            netstat -tuplen
-            appium -p 5555 &>/dev/null &
-            echo "---------------------"
-            netstat -tuplen
-            curl localhost:5555
-            curl 127.0.0.1:5555
-          EOF
-          echo "---------------------"
-          netstat -tuplen
-          curl localhost:5555
-          curl 127.0.0.1:5555
-          chmod +x ./RunAppiumServer.sh # install and run appium server in the background
-          ./RunAppiumServer.sh
-          yarn appium:test
-
-      - name: Temp test 2
-        run: |
-          set -ex
-          yarn appium:doctor:android
-          timeout -k 10m 15m yarn appium:start &>/dev/null &
-          yarn appium:test
-
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
@@ -126,6 +97,9 @@ jobs:
       - name: All Available Devices
         run: avdmanager list device
 
+      - name: Install and Run Appium Server
+        uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
+
       - name: Start Emulator and Execute Appium
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -138,9 +112,7 @@ jobs:
             -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
             -camera-back none
           script: |
-            set -ex
             yarn appium:doctor:android
-            timeout -k 15m 15m yarn appium:start
             yarn appium:test
 
       - name: Upload Artifact
