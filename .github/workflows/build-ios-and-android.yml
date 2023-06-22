@@ -87,6 +87,8 @@ jobs:
           set -ex
           yarn appium:doctor:android
           timeout -k 10m 15m yarn appium:start &>/dev/null &
+          curl localhost:4723
+          curl 127.0.0.1:4723
           yarn appium:test
 
       - name: Bundle & *.apk
