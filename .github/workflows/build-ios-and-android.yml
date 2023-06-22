@@ -68,6 +68,12 @@ jobs:
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Install and Run Appium Server
+        uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
+
+      - name: Run Appium Test
+        run: yarn appium:test
+
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
@@ -96,9 +102,6 @@ jobs:
 
       - name: All Available Devices
         run: avdmanager list device
-
-      - name: Install and Run Appium Server
-        uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
 
       - name: Start Emulator and Execute Appium
         uses: reactivecircus/android-emulator-runner@v2
