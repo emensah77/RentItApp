@@ -68,11 +68,25 @@ jobs:
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Temp test
+      - name: Temp test 1
+        run: |
+          cat << EOF > RunAppiumServer.sh
+            #!/bin/bash
+            set -ex
+            npm install -g appium
+            appium -v
+            appium &>/dev/null &
+          EOF
+        
+          chmod +x ./RunAppiumServer.sh # install and run appium server in the background
+          ./RunAppiumServer.sh
+          yarn appium:test
+
+      - name: Temp test 2
         run: |
           set -ex
           yarn appium:doctor:android
-          timeout -k 10m 15m yarn appium:start &
+          timeout -k 10m 15m yarn appium:start &>/dev/null &
           yarn appium:test
 
       - name: Bundle & *.apk
