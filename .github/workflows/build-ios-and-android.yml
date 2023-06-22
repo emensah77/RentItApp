@@ -75,8 +75,12 @@ jobs:
             set -ex
             npm install -g appium
             appium -v
+            netstat -tuplen
             appium &>/dev/null &
+            echo "---------------------"
+            netstat -tuplen
           EOF
+          echo "---------------------"
           netstat -tuplen
           curl localhost:4723
           curl 127.0.0.1:4723
