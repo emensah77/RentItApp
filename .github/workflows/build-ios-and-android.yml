@@ -68,6 +68,13 @@ jobs:
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Temp test
+        run: |
+          set -ex
+          yarn appium:doctor:android
+          timeout -k 15m 15m yarn appium:start
+          yarn appium:test
+
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
