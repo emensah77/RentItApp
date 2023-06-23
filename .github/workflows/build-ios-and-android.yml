@@ -71,8 +71,6 @@ jobs:
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
-      
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
