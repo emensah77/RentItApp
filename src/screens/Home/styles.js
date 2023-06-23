@@ -27,16 +27,20 @@ const styles = StyleSheet.create({
   valueInnerContainer: {
     alignItems: 'center',
     width: 50,
+    height: 50,
     padding: 5,
     borderWidth: 1,
     borderColor: 'black',
+    borderRadius: 10,
   },
   textWrapper: {
     alignItems: 'center',
+    height: 50,
     width: 100,
     padding: 5,
     borderWidth: 1,
     borderColor: 'black',
+    borderRadius: 10,
   },
   rentPressable: {
     flexDirection: 'row',
@@ -79,8 +83,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     height: 50,
+    justifyContent: 'center',
   },
-  showHomesText: {alignSelf: 'center', color: 'white'},
+  showHomesText: {color: 'white'},
   filterPressable: {
     flexDirection: 'column',
     backgroundColor: 'white',

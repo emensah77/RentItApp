@@ -233,14 +233,14 @@ const House = props => {
             style={{
               fontFamily: 'Montserrat-Bold',
               fontSize: 20,
+              padding: 10,
             }}>
             No Home yet
           </Text>
           <View style={{padding: 10}}>
             <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-              You have not rented a house yet. If you rent a house, you should
-              check here to receive details about the address of the house, when
-              to move in, and other details here.
+              You have not rented a house yet. If you rent a house, you should check here to receive
+              details about the address of the house, when to move in, and other details here.
             </Text>
           </View>
 
@@ -252,7 +252,7 @@ const House = props => {
               alignSelf: 'center',
               borderWidth: 1,
               borderColor: 'black',
-              width: '90%',
+              width: '95%',
               height: '50%',
 
               borderRadius: 10,

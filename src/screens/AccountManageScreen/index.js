@@ -54,12 +54,11 @@ const AccountManageScreen = props => {
           Why do we store your data?
         </Text>
         <Text>
-          We store your data to ensure we deliver you a personalized and
-          relevant experience everytime you use this app. We never sell or
-          distribute your data with third parties. In light of this commitment
-          we are giving you the opportunity to be able to delete your data. Note
-          that doing this will also delete your account with us and will require
-          you to create a new account to be able to enjoy our services.
+          We store your data to ensure we deliver you a personalized and relevant experience
+          everytime you use this app. We never sell or distribute your data with third parties. In
+          light of this commitment we are giving you the opportunity to be able to delete your data.
+          Note that doing this will also delete your account with us and will require you to create
+          a new account to be able to enjoy our services.
         </Text>
 
         <Pressable
@@ -80,8 +79,20 @@ const AccountManageScreen = props => {
               },
             );
           }}
-          style={{padding: 15}}>
-          <Fontisto name="trash" size={15} style={{color: 'black'}} />
+          style={{marginTop: 20}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: 100,
+              backgroundColor: 'black',
+              height: 40,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+            }}>
+            <Fontisto name="trash" size={20} style={{color: 'white'}} />
+            <Text style={{color: 'white', fontSize: 16, fontWeight: 'bold'}}>Delete</Text>
+          </View>
         </Pressable>
       </View>
     </View>

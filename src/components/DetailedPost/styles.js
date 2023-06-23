@@ -355,7 +355,8 @@ const styles = StyleSheet.create({
     padding: 10,
     width: 150,
     margin: 5,
-    height: 150,
+    height: 100,
+    justifyContent: 'center',
     backgroundColor: 'white',
     elevation: 2, // add a shadow effect for Android
     shadowColor: 'gray', // add a shadow effect for iOS
@@ -424,7 +425,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     backgroundColor: 'black',
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-between',
   },
   modalOverlay: {
     flex: 1,

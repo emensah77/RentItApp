@@ -615,7 +615,12 @@ const DetailedPost = props => {
 
               <View style={styles.container1}>
                 <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
-                  <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
+                  <FontAwesomeIcon
+                    icon={faCalendar}
+                    size={20}
+                    color="white"
+                    style={{marginRight: 4}}
+                  />
                   <Text style={styles.viewingText}>Schedule Viewing</Text>
                 </Pressable>
 
@@ -826,7 +831,7 @@ const DetailedPost = props => {
           <View style={styles.innerContainer}>
             <View style={styles.heading}>
               <FontAwesomeIcon icon={faShieldAlt} size={30} color="blue" />
-              <View style={styles.marginLeft}>
+              <View style={styles.marginLeft12}>
                 <Text style={styles.labelText}>
                   <Text style={styles.rentItText}>RentIt</Text>
                   <Text style={styles.guaranteeText}>Guarantee</Text>
@@ -923,7 +928,7 @@ const DetailedPost = props => {
             {post.kitchen === 'Yes' ? (
               <View style={styles.card}>
                 <View style={styles.cardItem}>
-                  <FontAwesomeIcon icon={faUtensils} color="blue" />
+                  <FontAwesomeIcon icon={faUtensils} size={25} color="blue" />
                   <Text style={styles.cardText}>Kitchen</Text>
                 </View>
               </View>

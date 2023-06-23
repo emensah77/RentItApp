@@ -10,6 +10,7 @@ import {
   StatusBar,
   FlatList,
   Pressable,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FastImage from 'react-native-fast-image';
@@ -61,22 +62,19 @@ const OnboardingScreen8 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -90,96 +88,90 @@ const OnboardingScreen8 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
+      <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
+        <View style={styles.header}>
+          <Text style={styles.text_header}> Describe your home {'\n'} in detail </Text>
+        </View>
 
-      <View style={styles.header}>
-        <Text style={styles.text_header}>
-          {' '}
-          Describe your home {'\n'} in detail{' '}
-        </Text>
-      </View>
-
-      <Animatable.View
-        useNativeDriver
-        animation="fadeInUpBig"
-        duration={1500}
-        style={styles.footer}>
-        <ScrollView>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{flex: 1, marginBottom: 20, alignItems: 'center'}}>
-              <TextInput
-                adjustsFontSizeToFit
-                placeholder="Tell us about where your home is located, including landmarks and amenities available"
-                multiline
-                onChangeText={text => hellod(text)}
-                style={{
-                  alignContent: 'flex-start',
-                  width: '100%',
-                  height: 100,
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  borderWidth: 1,
-                  borderColor: 'darkgray',
-                  borderRadius: 10,
-                  padding: 10,
-                }}
-              />
-            </View>
-          </View>
-
-          <TouchableOpacity
-            disabled={value.length === 0}
-            onPress={async () => {
-              await saveProgress({
-                mode,
-                title,
-                type,
-                bed,
-                bedroom,
-                bathroom,
-                description: value,
-              });
-              navigation.navigate('OnboardingScreen3', {
-                title,
-                bed,
-                bedroom,
-                bathroom,
-                description: value,
-                type,
-                mode,
-              });
-            }}
-            style={{
-              left: 250,
-              width: 100,
-              backgroundColor: 'deeppink',
-              borderRadius: 20,
-              opacity: value.length === 0 ? 0.4 : 1,
-              alignItems: 'center',
-              paddingHorizontal: 20,
-              paddingVertical: 20,
-            }}>
-            <Text
+        <Animatable.View
+          useNativeDriver
+          animation="fadeInUpBig"
+          duration={1500}
+          style={styles.footer}>
+          <ScrollView>
+            <View
               style={{
-                color: 'white',
-                fontFamily: 'Montserrat-SemiBold',
-                fontSize: 14,
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
               }}>
-              Next
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </Animatable.View>
+              <View style={{flex: 1, marginBottom: 20, alignItems: 'center'}}>
+                <TextInput
+                  adjustsFontSizeToFit
+                  placeholder="Tell us about where your home is located, including landmarks and amenities available"
+                  multiline
+                  onChangeText={text => hellod(text)}
+                  style={{
+                    alignContent: 'flex-start',
+                    width: '100%',
+                    height: 100,
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    borderWidth: 1,
+                    borderColor: 'darkgray',
+                    borderRadius: 10,
+                    padding: 10,
+                  }}
+                />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              disabled={value.length === 0}
+              onPress={async () => {
+                await saveProgress({
+                  mode,
+                  title,
+                  type,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  description: value,
+                });
+                navigation.navigate('OnboardingScreen3', {
+                  title,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  description: value,
+                  type,
+                  mode,
+                });
+              }}
+              style={{
+                left: 250,
+                width: 100,
+                backgroundColor: 'deeppink',
+                borderRadius: 20,
+                opacity: value.length === 0 ? 0.4 : 1,
+                alignItems: 'center',
+                paddingHorizontal: 20,
+                paddingVertical: 20,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'Montserrat-SemiBold',
+                  fontSize: 14,
+                }}>
+                Next
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </Animatable.View>
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 };

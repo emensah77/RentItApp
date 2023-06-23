@@ -152,8 +152,8 @@ const ManageProfile = () => {
               justifyContent: 'center',
               borderWidth: 1,
               borderColor: 'blue',
-              width: '40%',
-              height: '12%',
+              height: 40,
+              width: '100%',
               backgroundColor: 'blue',
               borderRadius: 10,
               alignSelf: 'center',
@@ -161,7 +161,7 @@ const ManageProfile = () => {
             }}>
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 18,
                 fontFamily: 'Montserrat-Bold',
                 color: 'white',
               }}>

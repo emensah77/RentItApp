@@ -97,19 +97,22 @@ const OnboardingScreen4 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          progress: {
-            screenName,
-            progressData,
+      const response = await fetch(
+        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        }),
-      });
+          body: JSON.stringify({
+            userId,
+            progress: {
+              screenName,
+              progressData,
+            },
+          }),
+        },
+      );
     } catch (error) {
       console.error('Error saving progress:', error);
     }
@@ -143,7 +146,6 @@ const OnboardingScreen4 = props => {
 
   const fetchResourceFromURI = async uri => {
     const response = await fetch(uri);
-    // console.log(response);
     const blob = await response.blob();
 
     return blob;
@@ -161,44 +163,31 @@ const OnboardingScreen4 = props => {
   const uploadResource = async image => {
     if (isLoading) return;
     setisLoading(true);
-    const img = await fetchResourceFromURI(image.uri);
-    setImageUrls(`https://d1mgzi0ytcdaf9.cloudfront.net/public/${image.name}`);
 
-    return Storage.put(image.name, img, {
-      level: 'public',
-      contentType: 'image/jpeg',
-      progressCallback(uploadProgress) {
-        setProgressText((uploadProgress.loaded / uploadProgress.total) * 100);
-        // setProgressText(
+    try {
+      const img = await fetchResourceFromURI(image.uri);
+      setImageUrls(`https://d1mgzi0ytcdaf9.cloudfront.net/public/${image.name}`);
 
-        //   `Progress: ${Math.round(
-        //     (uploadProgress.loaded / uploadProgress.total) * 100,
-        //   )} %`,
-        // );
-        // Alert.alert(`Uploading: ${Math.round(
-        //     (uploadProgress.loaded / uploadProgress.total) * 100,
-        //   )}%`);
-      },
-    })
-      .then(res => {
-        setisLoading(false);
-        Storage.get(res.key, {
-          level: 'public',
-          contentType: 'image/jpeg',
-        })
-          .then(result => {
-            console.log(result);
-          })
-          .catch(err => {
-            setProgressText('Upload Error');
-            console.log(err);
-          });
-      })
-      .catch(err => {
-        setisLoading(false);
-        setProgressText('Upload Error');
-        console.log(err);
+      await Storage.put(image.name, img, {
+        level: 'public',
+        contentType: 'image/jpeg',
+        progressCallback(uploadProgress) {
+          setProgressText((uploadProgress.loaded / uploadProgress.total) * 100);
+        },
       });
+
+      setisLoading(false);
+
+      const result = await Storage.get(image.name, {
+        level: 'public',
+        contentType: 'image/jpeg',
+      });
+      console.log(result);
+    } catch (error) {
+      setisLoading(false);
+      setProgressText('Upload Error');
+      console.log(error, 'error');
+    }
   };
 
   // const launchCamera = () => {
@@ -244,7 +233,6 @@ const OnboardingScreen4 = props => {
       height: 683,
       mediaType: 'photo',
     }).then(image => {
-      console.log(image);
       const fileURL = convertPathToFileURL(image.path);
 
       (async () => {
@@ -295,7 +283,6 @@ const OnboardingScreen4 = props => {
                   type: item.mime,
                   name: uuid.v4(),
                 };
-
                 uploadResource(img);
                 setImages(prevImages => prevImages.concat(img));
               }

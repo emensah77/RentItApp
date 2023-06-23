@@ -97,30 +97,25 @@ const OnboardingScreen11 = props => {
       const user = auth().currentUser;
       const screenName = route.name;
       const userId = user.uid;
-      await fetch(
-        'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            progress: {
-              screenName,
-              progressData,
-            },
-          }),
+      await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName,
+            progressData,
+          },
+        }),
+      });
     } catch (error) {
       console.error('Error saving progress:', error);
     }
   };
   const getUsersWithPrivileges = async () => {
-    const callers = await firebase
-      .firestore()
-      .collection('usersWithPrivileges');
+    const callers = await firebase.firestore().collection('usersWithPrivileges');
     callers.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         setUsersWithPrivileges(prev => [...prev, doc.data().userId]);
@@ -143,18 +138,11 @@ const OnboardingScreen11 = props => {
       style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
-        <Fontisto
-          name="angle-left"
-          size={25}
-          style={{color: 'white', margin: 20, marginTop: 30}}
-        />
+        <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
       </Pressable>
 
       <View style={styles.header}>
-        <Text style={styles.text_header}>
-          {' '}
-          We need {'\n'} your phone number{' '}
-        </Text>
+        <Text style={styles.text_header}> We need {'\n'} your phone number </Text>
       </View>
 
       <Animatable.View
@@ -212,9 +200,7 @@ const OnboardingScreen11 = props => {
           {usersWithPrivileges.includes(auth().currentUser.uid) ||
           user?.marketer_status === 'ACCEPTED' ? (
             <View style={{alignItems: 'center', padding: 20}}>
-              <Text style={{fontWeight: 'bold', margin: 10}}>
-                Add Marketer's Number
-              </Text>
+              <Text style={{fontWeight: 'bold', margin: 10}}>Add Marketer's Number</Text>
               <PhoneInput
                 ref={phoneInput}
                 defaultValue={value}
@@ -235,21 +221,21 @@ const OnboardingScreen11 = props => {
             </View>
           ) : null}
 
-          <Text style={{fontWeight: '600'}}>
-            Your Phone Number: {secondformattedValue}
-          </Text>
+          <Text style={{fontWeight: '600'}}>Your Phone Number: {secondformattedValue}</Text>
 
           <TouchableOpacity
             disabled={phoneNumber.length < 9}
             onPress={async () => {
               const checkValid = phoneInput.current?.isValidNumber(value);
-              const checkSecondValid =
-                phoneInput.current?.isValidNumber(phoneNumber);
+              const checkSecondValid = phoneInput.current?.isValidNumber(phoneNumber);
               if (checkSecondValid) {
-                Alert.alert(
-                  'Your phone number is correct',
-                  secondformattedValue,
-                );
+                Alert.alert('Your phone number is correct', secondformattedValue);
+
+                const marketerNumber =
+                  (usersWithPrivileges && usersWithPrivileges.includes(user?.uid)) ||
+                  (user && user.marketer_status === 'ACCEPTED')
+                    ? formattedValue
+                    : null;
                 await saveProgress({
                   type,
                   title,
@@ -264,16 +250,13 @@ const OnboardingScreen11 = props => {
                   mode,
                   amenities,
                   phoneNumber: secondformattedValue,
-                  marketerNumber:
-                    usersWithPrivileges.includes(user.uid) ||
-                    user?.marketer_status === 'ACCEPTED'
-                      ? formattedValue
-                      : null,
+                  marketerNumber,
                   locality,
                   sublocality,
                   currency,
                   address,
                 });
+
                 navigation.navigate('OnboardingScreen12', {
                   title,
                   type,
@@ -288,21 +271,14 @@ const OnboardingScreen11 = props => {
                   mode,
                   amenities,
                   phoneNumber: secondformattedValue,
-                  marketerNumber:
-                    usersWithPrivileges.includes(user.uid) ||
-                    user?.marketer_status === 'ACCEPTED'
-                      ? formattedValue
-                      : null,
+                  marketerNumber,
                   locality,
                   sublocality,
                   currency,
                   address,
                 });
               } else {
-                Alert.alert(
-                  'Your phone number is not correct',
-                  secondformattedValue,
-                );
+                Alert.alert('Your phone number is not correct', secondformattedValue);
               }
             }}
             style={{
