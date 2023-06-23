@@ -20,9 +20,11 @@ const App = () => {
     requestUserPermission();
     notificationListener();
 
-    AppState.addEventListener('memoryWarning', state => {
-      console.debug('Your memory is currently warning.', state);
+    const subscription = AppState.addEventListener('memoryWarning', state => {
+      console.debug('Your memory is currently waning.', state);
     });
+
+    return () => subscription.remove();
   }, []);
 
   return (

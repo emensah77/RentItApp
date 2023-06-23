@@ -56,7 +56,12 @@ const Welcome = () => {
 
       <Container>
         <Container center>
-          <Typography size={21} height={26} weight="200" color="#194CC3">
+          <Typography
+            size={21}
+            height={26}
+            weight="200"
+            color="#194CC3"
+            accessibilityLabel="welcomemessage">
             Buy, Sell, Rent a Home
           </Typography>
         </Container>
