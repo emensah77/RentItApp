@@ -1,3 +1,6 @@
+#import <AppCenterReactNative.h>
+#import <AppCenterReactNativeAnalytics.h>
+#import <AppCenterReactNativeCrashes.h>
 #import <React/RCTLinkingManager.h>
 #import <Firebase.h>
 #import "AppDelegate.h"
@@ -27,6 +30,9 @@
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [AppCenterReactNative register];
+  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+  [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
   [GMSServices provideAPIKey:@"AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys"]; // add this line using the api key obtained from Google Console
    // [REQUIRED] Register BackgroundFetch
   [[TSBackgroundFetch sharedInstance] didFinishLaunching];

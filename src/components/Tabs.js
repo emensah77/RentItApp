@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {Pressable, View} from 'react-native';
+import {View} from 'react-native';
 
 import Container from './Container';
 import Typography from './Typography';
@@ -23,11 +23,9 @@ const Tabs = props => {
       <Container row type="flexStart">
         {content.map((item, i) => (
           <React.Fragment key={item.title}>
-            <Pressable onPress={change(i)}>
-              <Container type={i === active ? 'tab' : ''}>
-                <Typography type={i === active ? 'tabText' : 'notice'}>{item.title}</Typography>
-              </Container>
-            </Pressable>
+            <Container onPress={change(i)} type={i === active ? 'tab' : ''}>
+              <Typography type={i === active ? 'tabText' : 'notice'}>{item.title}</Typography>
+            </Container>
 
             <Whitespace marginLeft={28} />
           </React.Fragment>
