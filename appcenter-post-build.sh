@@ -18,6 +18,10 @@ replace-in-file "capabilities.setCapability(\"app\", \"/path/to/app.apk\");" "ca
 
 cd $APPCENTER_SOURCE_DIRECTORY/chijioke
 
+echo "Packaging Tests\n"
+mvn -DskipTests -P prepare-for-upload package
+echo "Packaged Tests\n"
+
 echo "Starting Run\n"
 appcenter test run appium --app "Photizo/Rentit-Android-Production" --devices "Photizo/$DEVICE_SET" --app-path $APPCENTER_SOURCE_DIRECTORY/android/app/build/outputs/apk/release/app-release.apk --test-series "launch-tests" --locale "en_US" --build-dir $APPCENTER_SOURCE_DIRECTORY/chijioke/target/upload --token $APPCENTER_CLI_TOKEN --debug
 echo "Completed Run"
