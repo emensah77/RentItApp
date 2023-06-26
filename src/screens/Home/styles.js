@@ -1,10 +1,7 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-import {colors, offsets} from '../../styles/globalStyles';
+import {offsets} from '../../styles/globalStyles';
 
 const styles = StyleSheet.create({
   container: {backgroundColor: 'white', flex: 1},
@@ -100,7 +97,6 @@ const styles = StyleSheet.create({
   },
   filterText: {paddingTop: 5, fontSize: 11},
   mainScrollView: {
-    position: 'absolute',
     paddingHorizontal: 10,
     backgroundColor: 'white',
     zIndex: 2,
@@ -111,8 +107,6 @@ const styles = StyleSheet.create({
   loadingIndicator: {
     flex: 1,
     marginBottom: 10,
-    top: hp(15.5),
-    backgroundColor: 'white',
   },
   loaderList: {marginTop: wp(8), paddingHorizontal: wp(6.15)},
   padding40: {paddingBottom: 40},
@@ -221,27 +215,23 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     backgroundColor: 'white',
-    width: Dimensions.get('screen').width - 20,
-    marginHorizontal: 10,
-    height: wp(15),
+    height: 60,
     borderRadius: 30,
+    marginHorizontal: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    position: 'absolute',
-    top: Platform.OS === 'android' ? 20 : 40,
     zIndex: 10,
-    shadowOpacity: 0.12,
-    // shadowColor: 'transparent',
+    shadowOpacity: 0.1,
     elevation: 5,
     borderWidth: 0.5,
     borderColor: '#DEDEDE',
-    shadowRadius: 5,
+    shadowRadius: 10,
     paddingLeft: offsets.offsetC,
     shadowOffset: {
-      width: 3,
-      height: 3,
+      width: 1,
+      height: 4,
     },
   },
   searchInfoWrapper: {
@@ -312,6 +302,6 @@ const styles = StyleSheet.create({
     paddingRight: Platform.OS === 'android' ? 20 : 0,
     backgroundColor: 'white',
   },
-  mainScrollViewTop: {top: Platform.OS === 'ios' ? 120 : 90},
+  mainScrollViewTop: {},
 });
 export default styles;

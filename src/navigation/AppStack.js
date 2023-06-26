@@ -19,6 +19,7 @@ import EditPersonalInfo from '../screens/Profile/EditPersonalInfo';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
+// eslint-disable-next-line import/no-cycle
 import PostScreen from '../screensV2/PostScreen';
 import HomeScreen from '../screensV2/HomeScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -30,7 +31,6 @@ import HealthSafety from '../screensV2/HealthSafety';
 import HouseRules from '../screensV2/HouseRules';
 import Amenities from '../screensV2/Amenities';
 import Reviews from '../screensV2/Reviews';
-import WishtListItem from '../screensV2/WishListItem';
 import SelectReason from '../screensV2/SelectReason';
 import ConfirmCancellation from '../screensV2/ConfirmCancellation';
 import RefundPage from '../screensV2/RefundPage';
@@ -69,8 +69,8 @@ const AppStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator onStateChange={onNavigationStateChange}>
-      <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
+    <Stack.Navigator screenOptions={{headerShown: false}} onStateChange={onNavigationStateChange}>
+      <Stack.Screen name="Home" component={HomeTabNavigator} />
 
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
@@ -100,11 +100,7 @@ const AppStack = () => {
 
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />
 
-      <Stack.Screen
-        name="Destination Search"
-        component={DestinationSearchScreen}
-        options={noHeaderWithATitle}
-      />
+      <Stack.Screen name="Destination Search" component={DestinationSearchScreen} options={noHeaderWithATitle} />
 
       <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import HomeScreen from '../screens/Home';
+import HomeScreen from '@screens/Home';
 // import SearchResultsScreen from '../screens/SearchResults';
 import SearchResultsTabNavigator from './SearchResultsTabNavigator';
 import AboutScreen from '../screens/AboutScreen';
@@ -52,7 +52,8 @@ const Router = () => (
       headerTitleStyle: {
         fontWeight: 'bold',
       },
-    }}>
+    }}
+  >
     <Stack.Screen
       name="Welcome"
       component={HomeScreen}

@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {View, Image, Dimensions, Text, Pressable, StyleSheet, TouchableOpacity} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
+import {View, Image, Dimensions, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 
 const Card = props => {
   const {post} = props;
@@ -23,7 +23,8 @@ const Card = props => {
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: 'transparent',
-            }}>
+            }}
+          >
             <FontAwesome name="heart-o" size={18} color="black" />
           </View>
         </View>
@@ -45,7 +46,8 @@ const Card = props => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 5,
-          }}>
+          }}
+        >
           <Text style={{fontSize: 14, fontWeight: 'bold'}}>${post.newPrice}</Text>
         </View>
       </View>

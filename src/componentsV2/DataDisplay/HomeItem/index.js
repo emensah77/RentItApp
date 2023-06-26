@@ -1,6 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useMemo} from 'react';
-import {Pressable, Text, View} from 'react-native';
+import {Pressable, View} from 'react-native';
 
+import {useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {SizedBox} from '@components/SizedBox';
 import {styles} from './styles';
 
 import Carousel from '../Carousel';
@@ -8,8 +12,6 @@ import Typography from '../Typography';
 import Star from '../../../../assets/data/images/icons/star.svg';
 import {calculatePriceForDays, extractDate, formatCurrency} from '../../../utils/formatter';
 import {setPost} from '../../../redux/post.slice';
-import {useDispatch} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
 
 const HomeItem = ({item}) => {
   const dispatch = useDispatch();
@@ -23,10 +25,7 @@ const HomeItem = ({item}) => {
 
     const startObj = extractDate(today);
     const tillObj = extractDate(till);
-    const monthlyPrice =
-      item.mode === 'For sale'
-        ? Math.round((item.newPrice * 1.07) / 12)
-        : Math.round((item.newPrice * 1.07) / 12);
+    const monthlyPrice = item.mode === 'For sale' ? Math.round((item.newPrice * 1.07) / 12) : Math.round((item.newPrice * 1.07) / 12);
 
     return {
       sameMonth: startObj.month === tillObj.month,
@@ -49,6 +48,7 @@ const HomeItem = ({item}) => {
     );
 
     navigation.navigate('Post', {postId: item.id});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation, item.id]);
 
   return (
@@ -67,13 +67,13 @@ const HomeItem = ({item}) => {
           </Typography>
         </View>
       </View>
+      <SizedBox height={3} />
       <Typography variant="large">
         {range.start} {range.startMonth} - {range.till} {range.tillMonth}
       </Typography>
+      <SizedBox height={3} />
       <View style={styles.prices}>
-        <Typography bold variant="large">{`${formatCurrency(item.currency)} ${
-          range.price
-        } `}</Typography>
+        <Typography bold variant="large">{`${formatCurrency(item.currency)} ${range.price} `}</Typography>
         <Typography variant="large">Total</Typography>
       </View>
     </Pressable>

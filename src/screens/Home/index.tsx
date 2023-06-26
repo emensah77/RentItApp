@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useContext, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
@@ -34,34 +36,44 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import BackgroundFetch from 'react-native-background-fetch';
 import Video from 'react-native-video';
-import BottomSheet from '@gorhom/bottom-sheet';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+
+import {Screen} from '@components/Screen';
+import {SizedBox} from '@components/SizedBox';
 import {registerTransistorAuthorizationListener} from './Authorization';
 import styles from './styles';
 
 import mixpanel from '../../MixpanelConfig';
 import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
-import Post from '../../components/Post';
 import {AuthContext} from '../../navigation/AuthProvider';
 import {listPosts, getUser} from '../../graphql/queries';
 import HomeItem from '../../componentsV2/DataDisplay/HomeItem';
 import Typography from '../../componentsV2/DataDisplay/Typography';
+// @ts-ignore
 import MapIcon from '../../../assets/data/images/icons/map-icon.png';
 import CustomMarker from '../../components/CustomMarker';
 import {mapStyle} from '../../configs/map';
 import {setPost} from '../../redux/post.slice';
 import CircleButton from '../../componentsV2/Inputs/CircleButton';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-
+// @ts-ignore
 import FilterIcon from '../../../assets/data/images/icons/filter.svg';
+// @ts-ignore
 import FilterMinIcon from '../../../assets/data/images/icons/filter-min.svg';
+// @ts-ignore
 import EntireFlatIcon from '../../../assets/data/images/icons/entire-flat.svg';
+// @ts-ignore
 import ApartmentsIcon from '../../../assets/data/images/icons/apartments.svg';
+// @ts-ignore
 import MansionIcon from '../../../assets/data/images/icons/mansion.svg';
+// @ts-ignore
 import SelfContainedIcon from '../../../assets/data/images/icons/self-contained.svg';
+// @ts-ignore
 import DoorIcon from '../../../assets/data/images/icons/door.svg';
+// @ts-ignore
 import HouseIcon from '../../../assets/data/images/icons/house.svg';
+// @ts-ignore
 import HotelIcon from '../../../assets/data/images/icons/hotel.svg';
 
 mixpanel.init();
@@ -95,7 +107,7 @@ const HomeScreen = () => {
   const [watchedVideoVersion, setWatchedVideoVersion] = useState(null);
   const [videoVersion, setVideoVersion] = useState(0); // Initialize videoVersion state
   const [videoLoading, setIsVideoLoading] = useState(false);
-  const [selectedPlacedId, setSelectedPlacedId] = useState(null);
+  const [selectedPlacedId] = useState(null);
 
   const [showMap, setShowMap] = useState(false);
 
@@ -103,6 +115,7 @@ const HomeScreen = () => {
   const [filtersLayout, setFiltersLayout] = useState([]);
   const [activeIndicatorWidth] = useState(new Animated.Value(wp(14)));
   const navigation = useNavigation();
+  // @ts-ignore
   const {user} = useContext(AuthContext);
 
   const bgGeoEventSubscriptions = useMemo(() => [], []);
@@ -227,8 +240,7 @@ const HomeScreen = () => {
         backgroundPermissionRationale: {
           title:
             '{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.',
-          message:
-            'If you will like to receive these recommendations and notifications, choose Allow all the time.',
+          message: 'If you will like to receive these recommendations and notifications, choose Allow all the time.',
           positiveAction: '{backgroundPermissionOptionLabel}',
           negativeAction: 'Cancel',
         },
@@ -459,17 +471,13 @@ const HomeScreen = () => {
       return true;
     }
 
-    const hasPermission = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
+    const hasPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
 
     if (hasPermission) {
       return true;
     }
 
-    const newStatus = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
+    const newStatus = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
 
     if (newStatus === PermissionsAndroid.RESULTS.GRANTED) {
       return true;
@@ -640,39 +648,33 @@ const HomeScreen = () => {
     }
   }, [fetchingMore, latitude, longitude, nextToken, personalizedHomes, posts, status]);
 
-  const personalizedHomes = useCallback(
-    async (userLatitude, userLongitude, homeType, newNextToken) => {
-      try {
-        // setIsLoadingType(true);
-        const response = await fetch(
-          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userLocation: {
-                latitude: userLatitude,
-                longitude: userLongitude,
-              },
-              homeType,
-              nextToken: newNextToken,
-            }),
+  const personalizedHomes = useCallback(async (userLatitude, userLongitude, homeType, newNextToken) => {
+    try {
+      // setIsLoadingType(true);
+      const response = await fetch('https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userLocation: {
+            latitude: userLatitude,
+            longitude: userLongitude,
           },
-        );
+          homeType,
+          nextToken: newNextToken,
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        return data;
-      } catch (error) {
-        console.error(error);
-      } finally {
-        // setIsLoadingType(false); // Set loading state to false
-      }
-    },
-    [],
-  );
+      return data;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setIsLoadingType(false); // Set loading state to false
+    }
+  }, []);
 
   const onEndReached = useCallback(() => {
     fetchMoreData();
@@ -691,21 +693,6 @@ const HomeScreen = () => {
     },
     [],
   );
-
-  const handle = useCallback(() => {
-    setSelectedButton('For Rent');
-    filterPosts(status);
-  }, [filterPosts, status]);
-
-  const handle1 = useCallback(() => {
-    setSelectedButton('For Sale');
-    filterPosts(status);
-  }, [filterPosts, status]);
-
-  const filter = useCallback(() => {
-    filterPosts(status);
-    setmodalvisible(false);
-  }, [filterPosts, status]);
 
   const filterPosts = useCallback(
     async newStatus => {
@@ -787,11 +774,30 @@ const HomeScreen = () => {
     [maximumvalue, selectedButton, selectedItems],
   );
 
+  const handle = useCallback(() => {
+    setSelectedButton('For Rent');
+    filterPosts(status);
+  }, [filterPosts, status]);
+
+  const handle1 = useCallback(() => {
+    setSelectedButton('For Sale');
+    filterPosts(status);
+  }, [filterPosts, status]);
+
+  const filter = useCallback(() => {
+    filterPosts(status);
+    setmodalvisible(false);
+  }, [filterPosts, status]);
+
   const renderItem = useCallback(
     ({item, index}) => (
       <View
         key={item.id}
-        style={{width: '87.7%', marginLeft: '6.15%', marginTop: index !== 0 ? wp(10.25) : wp(3)}}>
+        style={{
+          marginHorizontal: 20,
+          marginTop: index !== 0 ? wp(10.25) : wp(3),
+        }}
+      >
         <HomeItem item={item} />
       </View>
     ),
@@ -861,11 +867,6 @@ const HomeScreen = () => {
     }
   }, []);
 
-  const handleClosePress = () => {
-    bottomSheetRef?.current?.close();
-    onClose();
-  };
-
   useEffect(() => {
     getLocation();
   }, [getLocation]);
@@ -879,17 +880,14 @@ const HomeScreen = () => {
   useEffect(() => {
     setIsVideoLoading(true);
     const fetchUserDataAndVideoUrl = async () => {
-      const response = await fetch(
-        'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            action: 'fetchVideoUrl',
-            userId: auth().currentUser.uid,
-          }),
-        },
-      );
+      const response = await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          action: 'fetchVideoUrl',
+          userId: auth().currentUser.uid,
+        }),
+      });
 
       const data = await response.json();
       setHasWatchedVideo(data.hasWatchedVideo);
@@ -984,301 +982,275 @@ const HomeScreen = () => {
   }, [status, latitude, longitude, userDetails, cachedData, personalizedHomes, _getUserData]);
 
   return (
-    <View style={styles.container}>
-      <Modal
-        style={styles.modal}
-        animationType="slide"
-        transparent={false}
-        visible={modalvisible}
-        onRequestClose={close}>
-        <View style={styles.modalContainer}>
-          <ScrollView contentContainerStyle={styles.modalScrollView}>
-            <View style={styles.marginTop10}>
-              <Pressable onPress={close} style={styles.margin10}>
-                <FontAwesomeIcon icon={faArrowLeft} size={20} />
-              </Pressable>
-              <View style={styles.priceRangeContainer}>
-                <Text style={styles.priceText}>Price range</Text>
-                <MultiSlider
-                  min={minimumvalue}
-                  max={maximumvalue}
-                  step={100}
-                  sliderLength={310}
-                  onValuesChange={onValuesChange}
+    <Screen safeAreaEdges={['top']} backgroundColor="white">
+      <View style={styles.container}>
+        <Modal style={styles.modal} animationType="slide" transparent={false} visible={modalvisible} onRequestClose={close}>
+          <View style={styles.modalContainer}>
+            <ScrollView contentContainerStyle={styles.modalScrollView}>
+              <View style={styles.marginTop10}>
+                <Pressable onPress={close} style={styles.margin10}>
+                  <FontAwesomeIcon icon={faArrowLeft} size={20} />
+                </Pressable>
+                <View style={styles.priceRangeContainer}>
+                  <Text style={styles.priceText}>Price range</Text>
+                  <MultiSlider min={minimumvalue} max={maximumvalue} step={100} sliderLength={310} onValuesChange={onValuesChange} />
+                </View>
+
+                <View style={styles.valueContainer}>
+                  <View style={styles.valueInnerContainer}>
+                    <TextInput keyboardType="numeric" onChangeText={hellod1} placeholder={minimumvalue.toLocaleString()} />
+                  </View>
+                  <View style={styles.textWrapper}>
+                    <TextInput keyboardType="numeric" onChangeText={hellod2} placeholder={maximumvalue.toLocaleString()} />
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.statusOfHome}>
+                <Text style={styles.statusOfHomeText}>Status of Home</Text>
+
+                <Pressable style={[styles.rentPressable, rentStyle]} onPress={handle}>
+                  <View style={styles.rentContainer}>
+                    <Text style={styles.forRent}>For Rent</Text>
+                    <Text style={styles.forRentDesc}>You are looking for homes that are available for rent only</Text>
+                  </View>
+                </Pressable>
+
+                <Pressable style={[styles.salePressable, saleStyle]} onPress={handle1}>
+                  <View style={styles.forSale}>
+                    <Text style={styles.forSaleText}>For Sale</Text>
+                    <Text style={styles.forSaleDesc}>You are looking for homes that are available for sale only</Text>
+                  </View>
+                </Pressable>
+              </View>
+              <View style={styles.amenitiesContainer}>
+                <Text style={styles.amenitiesText}>Amenities</Text>
+
+                <SectionedMultiSelect
+                  styles={{
+                    container: {
+                      margin: 20,
+                    },
+
+                    selectToggleText: {
+                      fontSize: 15,
+                    },
+
+                    selectToggle: {
+                      backgroundColor: 'white',
+                      borderWidth: 1,
+                      borderRadius: 20,
+                      margin: 10,
+                      padding: 10,
+                    },
+                    chipContainer: {
+                      backgroundColor: 'white',
+                      marginBottom: 10,
+                    },
+
+                    chipText: {
+                      color: 'black',
+                      fontSize: 16,
+                      maxWidth: Dimensions.get('screen').width - 90,
+                    },
+
+                    itemText: {
+                      color: selectedItems.length ? 'black' : 'darkgrey',
+                      fontSize: 18,
+                    },
+
+                    selectedItemText: {
+                      color: 'blue',
+                    },
+
+                    item: {
+                      paddingHorizontal: 10,
+                      margin: 10,
+                    },
+
+                    selectedItem: {
+                      backgroundColor: 'rgba(0,0,0,0.1)',
+                    },
+
+                    scrollView: {paddingHorizontal: 0},
+                  }}
+                  items={items}
+                  showChips
+                  uniqueKey="id"
+                  IconRenderer={Icon}
+                  selectText="Choose amenities you want"
+                  showDropDowns
+                  modalAnimationType="fade"
+                  readOnlyHeadings={false}
+                  onSelectedItemsChange={onSelectedItemsChange}
+                  selectedItems={selectedItems}
+                  colors={{chipColor: 'black'}}
+                  iconKey="icon"
                 />
               </View>
+            </ScrollView>
 
-              <View style={styles.valueContainer}>
-                <View style={styles.valueInnerContainer}>
-                  <TextInput
-                    keyboardType="numeric"
-                    onChangeText={hellod1}
-                    placeholder={minimumvalue.toLocaleString()}
-                  />
-                </View>
-                <View style={styles.textWrapper}>
-                  <TextInput
-                    keyboardType="numeric"
-                    onChangeText={hellod2}
-                    placeholder={maximumvalue.toLocaleString()}
-                  />
-                </View>
+            <TouchableOpacity disabled={posts.length === 0} onPress={filter} style={[styles.showHomes, showHomesOpacity]}>
+              <Text style={styles.showHomesText}>Show {posts.length} homes</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <View>
+          <Pressable style={styles.searchButton} onPress={goToHouseType}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Fontisto name="search" size={20} />
+              <View style={styles.searchInfoWrapper}>
+                <Typography style={styles.searchButtonText}>Where to?</Typography>
+                <SizedBox height={5} />
+                <Typography style={{color: '#717171'}}>Anywhere ⦁ Any week ⦁ Add guests</Typography>
               </View>
             </View>
+            <CircleButton minimal style={styles.searchFilter} image={<FilterMinIcon width={20} />} />
+          </Pressable>
+          <SizedBox height={20} />
+          <View style={[styles.mainScrollView, styles.mainScrollViewTop, styles.filtersWrapper]}>
+            <TouchableOpacity onPress={open} style={styles.button1}>
+              <FilterIcon width={20} />
+              <Text style={[styles.padding6, styles.textTab, styles.textTabActive]}>Filter</Text>
+            </TouchableOpacity>
+            <ScrollView
+              // snapToInterval={100}
+              ref={filtersScrollRef}
+              horizontal
+              pagingEnabled
+              scrollEventThrottle={1}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              snapToAlignment="center"
+              decelerationRate="fast"
+              height={50}
+              contentInset={{
+                // ios only
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: 20,
+              }}
+              snapToOffsets={filtersLayout?.map(data => data?.x || 0)}
+              onMomentumScrollEnd={event => {
+                const activeIndex = filtersLayout.findIndex(data => event.nativeEvent.contentOffset.x === data.x);
 
-            <View style={styles.statusOfHome}>
-              <Text style={styles.statusOfHomeText}>Status of Home</Text>
+                if (activeIndex > -1) {
+                  Animated.timing(activeIndicatorWidth, {
+                    toValue: filtersLayout?.[activeIndex]?.width - wp(6) || 0,
+                    duration: 100,
+                    useNativeDriver: false,
+                  }).start();
+                }
+              }}
+              contentContainerStyle={styles.contentContainerStyle}
+            >
+              {categories.map((category, index) => (
+                <TouchableOpacity
+                  onLayout={event => {
+                    const {layout} = event.nativeEvent;
+                    const _filtersLayout = [...filtersLayout];
+                    _filtersLayout[index] = layout;
+                    setFiltersLayout(_filtersLayout);
+                  }}
+                  key={category.id}
+                  onPress={() => {
+                    filtersScrollRef.current.scrollTo({
+                      x: filtersLayout[index].x,
+                      animated: true,
+                    });
+                    setStatusFilter(category.status);
+                  }}
+                  style={[styles.button1, status === category.status && styles.btnTabActive]}
+                >
+                  {category.icon}
 
-              <Pressable style={[styles.rentPressable, rentStyle]} onPress={handle}>
-                <View style={styles.rentContainer}>
-                  <Text style={styles.forRent}>For Rent</Text>
-                  <Text style={styles.forRentDesc}>
-                    You are looking for homes that are available for rent only
-                  </Text>
-                </View>
-              </Pressable>
+                  <Text style={[styles.padding6, styles.textTab, status === category.status && styles.textTabActive]}>{category.status}</Text>
+                </TouchableOpacity>
+              ))}
+              <View style={{width: wp(61)}} />
+            </ScrollView>
+            <Animated.View style={[styles.activeIndicator, {width: activeIndicatorWidth || 100}]} />
+          </View>
+        </View>
 
-              <Pressable style={[styles.salePressable, saleStyle]} onPress={handle1}>
-                <View style={styles.forSale}>
-                  <Text style={styles.forSaleText}>For Sale</Text>
-                  <Text style={styles.forSaleDesc}>
-                    You are looking for homes that are available for sale only
-                  </Text>
-                </View>
-              </Pressable>
-            </View>
-            <View style={styles.amenitiesContainer}>
-              <Text style={styles.amenitiesText}>Amenities</Text>
-
-              <SectionedMultiSelect
-                styles={{
-                  container: {
-                    margin: 20,
-                  },
-
-                  selectToggleText: {
-                    fontSize: 15,
-                  },
-
-                  selectToggle: {
-                    backgroundColor: 'white',
-                    borderWidth: 1,
-                    borderRadius: 20,
-                    margin: 10,
-                    padding: 10,
-                  },
-                  chipContainer: {
-                    backgroundColor: 'white',
+        <View style={styles.loadingIndicator}>
+          {loadingType === true ? (
+            <View style={[styles.loaderList]}>
+              <SkeletonContent
+                containerStyle={{paddingBottom: 0, width: '100%'}}
+                animationDirection="horizontalLeft"
+                layout={[
+                  // long line
+                  {
+                    width: '100%',
+                    height: wp(87.7),
                     marginBottom: 10,
+                    borderRadius: 10,
                   },
+                  {width: '70%', height: wp(5.6), marginBottom: 10},
+                  // short line
+                  {width: 90, height: wp(5.6), marginBottom: 10},
+                  {width: 40, height: wp(5.6), marginBottom: 80},
 
-                  chipText: {
-                    color: 'black',
-                    fontSize: 16,
-                    maxWidth: Dimensions.get('screen').width - 90,
-                  },
-
-                  itemText: {
-                    color: selectedItems.length ? 'black' : 'darkgrey',
-                    fontSize: 18,
-                  },
-
-                  selectedItemText: {
-                    color: 'blue',
-                  },
-
-                  item: {
-                    paddingHorizontal: 10,
-                    margin: 10,
-                  },
-
-                  selectedItem: {
-                    backgroundColor: 'rgba(0,0,0,0.1)',
-                  },
-
-                  scrollView: {paddingHorizontal: 0},
-                }}
-                items={items}
-                showChips
-                uniqueKey="id"
-                IconRenderer={Icon}
-                selectText="Choose amenities you want"
-                showDropDowns
-                modalAnimationType="fade"
-                readOnlyHeadings={false}
-                onSelectedItemsChange={onSelectedItemsChange}
-                selectedItems={selectedItems}
-                colors={{chipColor: 'black'}}
-                iconKey="icon"
+                  // ...
+                ]}
               />
             </View>
-          </ScrollView>
+          ) : (
+            <>
+              {showMap && (
+                <MapView.Animated
+                  ref={mapRef}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'white',
+                  }}
+                  provider={PROVIDER_GOOGLE}
+                  customMapStyle={mapStyle}
+                  zoomEnabled
+                  minZoomLevel={10}
+                  maxZoomLevel={500}
+                  // onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
+                  initialRegion={{
+                    latitude: 5.602028159656166,
+                    longitude: -0.183158678544458,
+                    latitudeDelta: 0.8,
+                    longitudeDelta: 0.8,
+                  }}
+                >
+                  {posts.map((place, index) => (
+                    <CustomMarker
+                      key={index}
+                      isSelected={place.id === selectedPlacedId}
+                      onPress={() => {
+                        dispatch(
+                          setPost({
+                            id: place.id,
+                            title: place.title,
+                            images: place.images,
+                            temp: true,
+                          }),
+                        );
+                        navigation.navigate('Post', {postId: place.id});
+                      }}
+                      coordinate={{
+                        latitude: place.latitude,
+                        longitude: place.longitude,
+                      }}
+                      price={place.newPrice}
+                    />
+                  ))}
+                </MapView.Animated>
+              )}
 
-          <TouchableOpacity
-            disabled={posts.length === 0}
-            onPress={filter}
-            style={[styles.showHomes, showHomesOpacity]}>
-            <Text style={styles.showHomesText}>Show {posts.length} homes</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
-      <View>
-        {/* {updateNeeded ? <TouchableOpacity onPress={updateApp}  style={{backgroundColor:'black',alignItems:'center',}}>
-                <Text style={{alignItems:'center', fontWeight:'bold',fontSize:15, textDecorationLine:'underline',textDecorationStyle:'solid',paddingBottom:10, marginTop: Platform.OS === 'android' ? 10 : 50, color:'white'}}>Get the latest app update</Text>
-            </TouchableOpacity>: null} */}
-        <Pressable style={styles.searchButton} onPress={goToHouseType}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Fontisto name="search" size={20} />
-            <View style={styles.searchInfoWrapper}>
-              <Typography style={styles.searchButtonText}>Where to?</Typography>
-              <Typography style={{color: '#717171'}}>Anywhere ⦁ Any week ⦁ Add guests</Typography>
-            </View>
-          </View>
-          <CircleButton minimal style={styles.searchFilter} image={<FilterMinIcon width={20} />} />
-        </Pressable>
-      </View>
-      <View style={[styles.mainScrollView, styles.mainScrollViewTop, styles.filtersWrapper]}>
-        <TouchableOpacity onPress={open} style={styles.button1}>
-          <FilterIcon width={20} />
-          <Text style={[styles.padding6, styles.textTab, styles.textTabActive]}>Filter</Text>
-        </TouchableOpacity>
-        <ScrollView
-          // snapToInterval={100}
-          ref={filtersScrollRef}
-          horizontal
-          pagingEnabled
-          scrollEventThrottle={1}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          height={50}
-          contentInset={{
-            // ios only
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 20,
-          }}
-          snapToOffsets={filtersLayout?.map(data => data?.x || 0)}
-          onMomentumScrollEnd={event => {
-            const activeIndex = filtersLayout.findIndex(
-              data => event.nativeEvent.contentOffset.x === data.x,
-            );
-
-            if (activeIndex > -1) {
-              Animated.timing(activeIndicatorWidth, {
-                toValue: filtersLayout?.[activeIndex]?.width - wp(6) || 0,
-                duration: 100,
-                useNativeDriver: false,
-              }).start();
-            }
-          }}
-          contentContainerStyle={styles.contentContainerStyle}>
-          {categories.map((category, index) => (
-            <TouchableOpacity
-              onLayout={event => {
-                const layout = event.nativeEvent.layout;
-                const _filtersLayout = [...filtersLayout];
-                _filtersLayout[index] = layout;
-                setFiltersLayout(_filtersLayout);
-              }}
-              key={category.id}
-              onPress={() => {
-                filtersScrollRef.current.scrollTo({x: filtersLayout[index].x, animated: true});
-                setStatusFilter(category.status);
-              }}
-              style={[styles.button1, status === category.status && styles.btnTabActive]}>
-              {category.icon}
-
-              <Text
-                style={[
-                  styles.padding6,
-                  styles.textTab,
-                  status === category.status && styles.textTabActive,
-                ]}>
-                {category.status}
-              </Text>
-            </TouchableOpacity>
-          ))}
-          <View style={{width: wp(61)}} />
-        </ScrollView>
-        <Animated.View style={[styles.activeIndicator, {width: activeIndicatorWidth || 100}]} />
-      </View>
-      <View style={styles.loadingIndicator}>
-        {loadingType === true ? (
-          <View style={[styles.loaderList]}>
-            <SkeletonContent
-              containerStyle={{paddingBottom: 0, width: '100%'}}
-              animationDirection="horizontalLeft"
-              layout={[
-                // long line
-                {
-                  width: '100%',
-                  height: wp(87.7),
-                  marginBottom: 10,
-                  borderRadius: 10,
-                },
-                {width: '70%', height: wp(5.6), marginBottom: 10},
-                // short line
-                {width: 90, height: wp(5.6), marginBottom: 10},
-                {width: 40, height: wp(5.6), marginBottom: 80},
-
-                // ...
-              ]}
-            />
-          </View>
-        ) : (
-          <>
-            {showMap && (
-              <MapView.Animated
-                ref={mapRef}
-                style={{width: '100%', height: '100%', backgroundColor: 'white'}}
-                provider={PROVIDER_GOOGLE}
-                customMapStyle={mapStyle}
-                zoomEnabled
-                minZoomLevel={10}
-                maxZoomLevel={500}
-                // onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
-                initialRegion={{
-                  latitude: 5.602028159656166,
-                  longitude: -0.183158678544458,
-                  latitudeDelta: 0.8,
-                  longitudeDelta: 0.8,
-                }}>
-                {posts.map(place => (
-                  <CustomMarker
-                    isSelected={place.id === selectedPlacedId}
-                    onPress={() => {
-                      dispatch(
-                        setPost({
-                          id: place.id,
-                          title: place.title,
-                          images: place.images,
-                          temp: true,
-                        }),
-                      );
-                      navigation.navigate('Post', {postId: place.id});
-                    }}
-                    coordinate={{latitude: place.latitude, longitude: place.longitude}}
-                    price={place.newPrice}
-                  />
-                ))}
-              </MapView.Animated>
-            )}
-
-            <BottomSheet
-              enableContentPanningGesture
-              ref={bottomSheetRef}
-              index={1}
-              snapPoints={snapPoints}
-              onChange={handleSheetChanges}>
               <FlatList
                 removeClippedSubviews
                 data={posts}
                 maxToRenderPerBatch={1}
-                initialNumToRender={1}
+                initialNumToRender={10}
                 contentContainerStyle={styles.padding40}
                 keyExtractor={keyExtractor}
                 getItemLayout={getItemLayout}
@@ -1291,51 +1263,47 @@ const HomeScreen = () => {
                 windowSize={3}
                 updateCellsBatchingPeriod={100}
               />
-            </BottomSheet>
-          </>
-        )}
-      </View>
-      {!showMap && (
-        <Pressable
-          style={styles.mapContent}
-          onPress={() => {
-            setShowMap(true);
-            bottomSheetRef.current?.snapToIndex(0);
-          }}>
-          <Typography bold style={{color: '#fff'}}>
-            Map
-          </Typography>
-          <Image source={MapIcon} />
-        </Pressable>
-      )}
+            </>
+          )}
+        </View>
+        {!showMap && (
+          <Pressable
+            style={styles.mapContent}
+            onPress={() => {
+              setShowMap(true);
+              bottomSheetRef.current?.snapToIndex(0);
+            }}
+          >
+            <Typography bold style={{color: '#fff'}}>
+              Map
+            </Typography>
 
-      {videoUrl && (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
-        <Modal
-          animationType="slide"
-          transparent
-          visible={modalVisible}
-          // onRequestClose={closeModal}
-        >
-          <View style={styles.videoContainer}>
-            <View style={[styles.videoInnerContainer, videoDimensions]}>
-              {videoLoading ? (
-                <View style={styles.videoLoading}>
-                  <ActivityIndicator size="large" color="white" />
-                </View>
-              ) : (
-                <Video
-                  ref={videoRef}
-                  source={{uri: videoUrl}}
-                  resizeMode="cover"
-                  style={styles.video}
-                  onEnd={handleVideoPlaybackComplete}
-                />
-              )}
+            <Image source={MapIcon} />
+          </Pressable>
+        )}
+
+        {videoUrl && (hasWatchedVideo === false || watchedVideoVersion !== videoVersion) ? (
+          <Modal
+            animationType="slide"
+            transparent
+            visible={modalVisible}
+            // onRequestClose={closeModal}
+          >
+            <View style={styles.videoContainer}>
+              <View style={[styles.videoInnerContainer, videoDimensions]}>
+                {videoLoading ? (
+                  <View style={styles.videoLoading}>
+                    <ActivityIndicator size="large" color="white" />
+                  </View>
+                ) : (
+                  <Video ref={videoRef} source={{uri: videoUrl}} resizeMode="cover" style={styles.video} onEnd={handleVideoPlaybackComplete} />
+                )}
+              </View>
             </View>
-          </View>
-        </Modal>
-      ) : null}
-    </View>
+          </Modal>
+        ) : null}
+      </View>
+    </Screen>
   );
 };
 

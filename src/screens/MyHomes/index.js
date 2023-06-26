@@ -1,16 +1,6 @@
 import {API, graphqlOperation} from 'aws-amplify';
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Button,
-  FlatList,
-  TouchableOpacity,
-  StatusBar,
-  View,
-  Text,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import {ActivityIndicator, FlatList, TouchableOpacity, StatusBar, View, Text, StyleSheet, Platform} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
@@ -26,7 +16,6 @@ const MyHomes = () => {
   const [posts, setPosts] = useState();
 
   const fetchUserHome = async () => {
-    console.log(user?.uid);
     try {
       setLoading(true);
       const result = await API.graphql(
@@ -55,7 +44,8 @@ const MyHomes = () => {
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'flex-end',
-        }}>
+        }}
+      >
         <TouchableOpacity
           onPress={() => navigation.navigate('EditHome', {homeInfo: item})}
           style={{
@@ -63,13 +53,15 @@ const MyHomes = () => {
             borderColor: 'blue',
             backgroundColor: 'blue',
             borderRadius: 10,
-          }}>
+          }}
+        >
           <Text
             style={{
               fontSize: 17,
               fontFamily: 'Montserrat-Bold',
               color: 'white',
-            }}>
+            }}
+          >
             Edit
           </Text>
         </TouchableOpacity>
@@ -83,9 +75,7 @@ const MyHomes = () => {
         <ActivityIndicator size="large" color="blue" />
       </View>
     ) : (
-      <Text style={{alignSelf: 'center', fontSize: 17, fontWeight: 'bold'}}>
-        Yay! you have seen it all
-      </Text>
+      <Text style={{alignSelf: 'center', fontSize: 17, fontWeight: 'bold'}}>Yay! you have seen it all</Text>
     );
 
   return (
@@ -104,21 +94,24 @@ const MyHomes = () => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: Platform.OS === 'ios' ? 50 : 25,
             width: '100%',
-          }}>
+          }}
+        >
           <View style={{flex: 1, alignItems: 'center'}}>
             <Text
               style={{
                 fontSize: 24,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}>
+              }}
+            >
               My Homes
             </Text>
           </View>
@@ -130,7 +123,8 @@ const MyHomes = () => {
           style={{
             flex: 1,
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           {loading ? (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
               <ActivityIndicator size="large" color="deeppink" />
