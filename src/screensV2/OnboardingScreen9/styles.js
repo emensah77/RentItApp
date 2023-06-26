@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
-
     backgroundColor: '#fff',
     height: hp(100),
   },
@@ -18,7 +17,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 80,
+    // marginBottom: 80,
   },
   topButtons: {
     flexDirection: 'row',
@@ -50,7 +49,9 @@ export const styles = StyleSheet.create({
     fontSize: 26,
     lineHeight: 32,
     color: '#1F2D3D',
-    marginBottom: 50,
+    marginBottom: offsets.offsetB,
+    marginTop: wp(12),
+    // marginBottom: 50,
   },
   titleText: {
     color: '#4D4D4D',

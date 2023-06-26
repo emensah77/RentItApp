@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.secondary,
     paddingVertical: offsets.offsetA,
+    paddingHorizontal: offsets.offsetB,
     // elevation: 2,
     ...Platform.select({
       ios: {

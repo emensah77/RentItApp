@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 80,
   },
   topButtons: {
     flexDirection: 'row',
@@ -50,7 +49,8 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 32,
     color: '#1F2D3D',
-    marginBottom: 50,
+    marginTop: wp(12),
+    // marginBottom: 50,
   },
   titleText: {
     color: '#4D4D4D',
@@ -69,12 +69,19 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
   },
+  selectedItemText: {
+    color: '#194CC3',
+  },
   itemImage: {
     width: 150,
     height: 88,
     borderRadius: 10,
   },
+  selectedItemImage: {
+    borderWidth: 1,
+    borderColor: '#194CC3',
+  },
   bottomItem: {
-    marginBottom: 60,
+    marginBottom: wp(25),
   },
 });

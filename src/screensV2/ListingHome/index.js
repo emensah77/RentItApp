@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Pressable, View, Image} from 'react-native';
+import {Pressable, View, Image, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 import {styles} from './styles';
@@ -17,17 +17,22 @@ const ListingHome = () => {
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [lastScreen, setLastScreen] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
   const goOnboardingScreen = useCallback(() => {
     if (uploadInProgress && lastScreen) {
       // navigation.navigate(lastScreen);
-      navigation.navigate('OnboardingScreen12');
+      console.log(1);
+      navigation.navigate('OnboardingScreen1');
     } else {
-      navigation.navigate('OnboardingScreen12');
+      console.log(2);
+      navigation.navigate('OnboardingScreen1');
     }
   }, []);
+
   useEffect(() => {
     checkHomeUploadProgress();
   }, []);
+
   const checkHomeUploadProgress = async () => {
     const userId = auth().currentUser.uid;
     try {
@@ -68,39 +73,39 @@ const ListingHome = () => {
         <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
           <Image source={BackArrow} />
         </Pressable>
-        <Typography bold style={styles.title}>
-          It's easy to get started on Rentit
-        </Typography>
-
-        <View style={styles.item}>
-          <View style={styles.left}>
-            <Typography style={styles.boldText}>1 Tell us about your place</Typography>
-            <Typography style={styles.lightText}>
-              Share some basic info like how many guest can stay.
-            </Typography>
+        <ScrollView style={styles.scrollContent}>
+          <Typography bold style={styles.title}>
+            It's easy to get started on Rentit
+          </Typography>
+          <View style={styles.item}>
+            <View style={styles.left}>
+              <Typography style={styles.boldText}>1 Tell us about your place</Typography>
+              <Typography style={styles.lightText}>
+                Share some basic info like how many guest can stay.
+              </Typography>
+            </View>
+            <Image source={Icon1} width={65} />
           </View>
-          <Image source={Icon1} width={65} />
-        </View>
-        <View style={styles.item}>
-          <View style={styles.left}>
-            <Typography style={styles.boldText}>2 Make it stand out</Typography>
-            <Typography style={styles.lightText}>
-              Share some basic info like how many guest can stay.
-            </Typography>
+          <View style={styles.item}>
+            <View style={styles.left}>
+              <Typography style={styles.boldText}>2 Make it stand out</Typography>
+              <Typography style={styles.lightText}>
+                Share some basic info like how many guest can stay.
+              </Typography>
+            </View>
+            <Image source={Icon2} width={65} />
           </View>
-          <Image source={Icon2} width={65} />
-        </View>
-        <View style={styles.item}>
-          <View style={styles.left}>
-            <Typography style={styles.boldText}>3 Finish up and publish</Typography>
-            <Typography style={styles.lightText}>
-              Set a starting price, and publish your listing.
-            </Typography>
+          <View style={styles.item}>
+            <View style={styles.left}>
+              <Typography style={styles.boldText}>3 Finish up and publish</Typography>
+              <Typography style={styles.lightText}>
+                Set a starting price, and publish your listing.
+              </Typography>
+            </View>
+            <Image source={Icon3} width={65} />
           </View>
-          <Image source={Icon3} width={65} />
-        </View>
+        </ScrollView>
       </View>
-
       <View style={styles.bottomFixedButtonBox}>
         <Pressable style={styles.bottomFixedButton} onPress={goOnboardingScreen}>
           <Typography style={styles.bottomFixedButtonText} bold>

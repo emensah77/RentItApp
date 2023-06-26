@@ -9,6 +9,7 @@ import {
   Linking,
   Pressable,
   KeyboardAvoidingView,
+  SafeAreaView,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
@@ -20,6 +21,10 @@ import SuggestionRow from '../../screens/DestinationSearch/SuggestionRow';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 Geocoder.init('AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys');
 
@@ -99,6 +104,10 @@ const OnboardingScreen6 = () => {
   );
 
   const next = useCallback(async () => {
+    if (!address) {
+      alert('Please select location');
+      return;
+    }
     await saveProgress({
       title,
       type,
@@ -192,57 +201,75 @@ const OnboardingScreen6 = () => {
     () => ({opacity: latitude === null || longitude === null ? 0.4 : 1}),
     [latitude, longitude],
   );
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
-    <View style={styles.mainContent}>
-      <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
-          <Image source={BackArrow} />
-        </Pressable>
-        <View style={styles.topButtons}>
-          <Pressable
-            style={styles.topButton}
-            // eslint-disable-next-line react/jsx-no-bind
-            onPress={next}>
-            <Typography style={styles.topButtonText}>Save & exit</Typography>
+    <SafeAreaView>
+      <View style={styles.mainContent}>
+        <View style={styles.topBar}>
+          <Pressable style={styles.backButton} onPress={goBack}>
+            <Image source={BackArrow} />
           </Pressable>
-          <Pressable style={styles.topButton} onPress={goFaqs}>
-            <Typography style={styles.topButtonText}>FAQs</Typography>
-          </Pressable>
+          <View style={styles.topButtons}>
+            <Pressable
+              style={styles.topButton}
+              // eslint-disable-next-line react/jsx-no-bind
+              onPress={next}>
+              <Typography style={styles.topButtonText}>Save & exit</Typography>
+            </Pressable>
+            <Pressable style={styles.topButton} onPress={goFaqs}>
+              <Typography style={styles.topButtonText}>FAQs</Typography>
+            </Pressable>
+          </View>
+        </View>
+        <View style={styles.listing}>
+          <Typography bold style={styles.title}>
+            Where’s your home located?
+          </Typography>
+          {/* <InputField style={styles.input} placeHolder={'Type where your home is located'} /> */}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.input}>
+            <GooglePlacesAutocomplete
+              placeholder="Type where your home is located"
+              ref={ref}
+              onPress={autoComplete}
+              fetchDetails
+              styles={{
+                textInputContainer: {
+                  backgroundColor: '#F7F7F7',
+                  borderRadius: 15,
+                  // borderWidth: 0.5,
+                  // height: 52,
+                },
+                textInput: styles.textInput,
+              }}
+              query={{
+                key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
+                language: 'en',
+
+                components: 'country:gh',
+              }}
+              suppressDefaultStyles
+              renderRow={renderRow}
+            />
+          </KeyboardAvoidingView>
+        </View>
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={4} progress={4} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar leftText="Back" rightText="Next" rightAction={next} />
         </View>
       </View>
-
-      <Typography bold style={styles.title}>
-        Where’s your home located?
-      </Typography>
-      {/* <InputField style={styles.input} placeHolder={'Type where your home is located'} /> */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.input}>
-        <GooglePlacesAutocomplete
-          placeholder="Type where your home is located"
-          ref={ref}
-          onPress={autoComplete}
-          fetchDetails
-          styles={{
-            textInputContainer: {
-              backgroundColor: 'white',
-              borderRadius: 15,
-              borderWidth: 0.5,
-              height: 52,
-            },
-            textInput: styles.textInput,
-          }}
-          query={{
-            key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
-            language: 'en',
-
-            components: 'country:gh',
-          }}
-          suppressDefaultStyles
-          renderRow={renderRow}
-        />
-      </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   );
 };
 

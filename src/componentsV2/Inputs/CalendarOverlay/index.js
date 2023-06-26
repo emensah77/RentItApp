@@ -2,7 +2,9 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {Pressable, View} from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {RangeCalendar} from '@ui-kitten/components';
+import Calendar from 'react-native-calendar-range-picker';
+
+// import {RangeCalendar} from '@ui-kitten/components';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {styles} from './styles';
@@ -12,8 +14,28 @@ import {offsets} from '../../../styles/globalStyles';
 import Reserve from '../Reserve';
 import {extractDate} from '../../../utils/formatter';
 
+const CUSTOM_LOCALE = {
+  monthNames: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+  dayNames: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  today: '',
+  year: '', // letter behind year number -> 2020{year}
+};
+
 const CalendarOverlay = ({title, bottomSheetRef, handleSheetChanges, onClose, onPositive}) => {
-  const snapPoints = useMemo(() => ['25%', '98%'], []);
+  const snapPoints = useMemo(() => ['25%', '95%'], []);
 
   const [range, setRange] = useState({});
 
@@ -69,7 +91,15 @@ const CalendarOverlay = ({title, bottomSheetRef, handleSheetChanges, onClose, on
           )}
         </View>
         <View style={{marginTop: offsets.offsetB}}>
-          <RangeCalendar range={range} onSelect={nextRange => setRange(nextRange)} />
+          <Calendar
+            locale={CUSTOM_LOCALE}
+            isMonthFirst
+            disabledBeforeToday
+            style={styles.calendar}
+            startDate={new Date().toISOString()}
+            onChange={({startDate, endDate}) => console.log({startDate, endDate})}
+          />
+          {/*<RangeCalendar range={range} onSelect={nextRange => setRange(nextRange)} />*/}
         </View>
         <View style={styles.bottom_actions}>
           <Reserve

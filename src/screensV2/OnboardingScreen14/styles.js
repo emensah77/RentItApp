@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 80,
+    // marginBottom: 80,
   },
   topButtons: {
     flexDirection: 'row',
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 32,
     color: '#1F2D3D',
-    marginBottom: 50,
+    // marginBottom: 50,
   },
   titleText: {
     color: '#4D4D4D',
@@ -68,6 +68,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 15,
+  },
+  imgItem: {
+    marginTop: offsets.offsetC,
   },
   itemImage: {
     width: 150,

@@ -1,7 +1,8 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Image, Pressable, TextInput, SafeAreaView, FlatList, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
@@ -16,6 +17,7 @@ const OnboardingScreen12 = () => {
   const navigation = useNavigation();
 
   const route = useRoute();
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const saveProgress = async progressData => {
     try {
@@ -41,7 +43,7 @@ const OnboardingScreen12 = () => {
   };
 
   const goFaqs = () => {
-    navigation.navigate('OnboardingScreen9');
+    navigation.navigate('OnboardingScreen7');
   };
   const items = [
     {
@@ -98,29 +100,47 @@ const OnboardingScreen12 = () => {
       key: '10',
     },
   ];
-  const renderItem = useCallback(({item}) => {
-    return (
-      <Pressable
-        style={styles.itemHome}
-        // eslint-disable-next-line react/jsx-no-bind
-        onPress={async () => {
-          await saveProgress({homeType: item.title});
-          navigation.navigate('OnboardingScreen7', {
-            type: item.title,
-          });
-        }}>
-        <Typography style={{paddingLeft: 20}} bold>
-          {item.title}
-        </Typography>
-        <Image source={{uri: item.image}} style={styles.itemImage} />
-      </Pressable>
-    );
+
+  const saveAndGo = useCallback(async item => {
+    await saveProgress({homeType: item.title});
+    navigation.navigate('OnboardingScreen7', {
+      type: item.title,
+    });
   }, []);
+
+  const renderItem = useCallback(
+    ({item}) => {
+      return (
+        <Pressable
+          style={[styles.itemHome]}
+          // eslint-disable-next-line react/jsx-no-bind
+          onPress={async () => {
+            setSelectedItem(item);
+            // await saveAndGo(item)
+          }}>
+          <Typography
+            style={{paddingLeft: 20}}
+            bold
+            style={item.key === selectedItem?.key && styles.selectedItemText}>
+            {item.title}
+          </Typography>
+          <Image
+            source={{uri: item.image}}
+            style={[styles.itemImage, item.key === selectedItem?.key && styles.selectedItemImage]}
+          />
+        </Pressable>
+      );
+    },
+    [selectedItem],
+  );
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
     <SafeAreaView>
       <View style={styles.mainContent}>
         <View style={styles.topBar}>
-          <Pressable style={styles.backButton}>
+          <Pressable style={styles.backButton} onPress={goBack}>
             <Image source={BackArrow} />
           </Pressable>
           <View style={styles.topButtons}>
@@ -155,7 +175,6 @@ const OnboardingScreen12 = () => {
             </Pressable>
           </View>
         </View>
-
         <Typography bold style={styles.title}>
           Which of these best describe your place?
         </Typography>
@@ -166,14 +185,24 @@ const OnboardingScreen12 = () => {
       </View>
       <View
         style={{
-          width: '100%',
-          paddingHorizontal: offsets.offsetB,
+          width: wp(100),
           position: 'absolute',
           bottom: 0,
           left: 0,
         }}>
-        <DividedProgress total={16} progress={1} style={{marginBottom: offsets.offsetB}} />
-        <BottomActionsBar leftText="Back" rightText="Next" />
+        <View style={{paddingHorizontal: offsets.offsetB}}>
+          <DividedProgress total={6} progress={2} style={{marginBottom: offsets.offsetB}} />
+        </View>
+        <BottomActionsBar
+          leftText="Back"
+          rightText="Next"
+          rightAction={async () => {
+            if (!selectedItem) {
+              return;
+            }
+            await saveAndGo(selectedItem);
+          }}
+        />
       </View>
     </SafeAreaView>
   );

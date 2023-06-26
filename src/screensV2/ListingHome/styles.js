@@ -1,17 +1,23 @@
 import {Platform, StyleSheet} from 'react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 
 // eslint-disable-next-line import/prefer-default-export
 export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
-    paddingVertical: offsets.offsetC,
-    marginTop: Platform.OS === 'ios' ? 30 : 0,
-    height: hp(80),
+    // paddingVertical: offsets.offsetC,
+    // marginTop: Platform.OS === 'ios' ? 30 : 0,
+    // height: hp(80),
+  },
+  scrollContent: {
+    marginTop: offsets.offsetC * 2,
+    paddingTop: wp(20),
   },
   backButton: {
-    marginBottom: 80,
+    position: 'absolute',
+    left: offsets.offsetC,
+    top: offsets.offsetC,
   },
   title: {
     fontWeight: '700',
@@ -53,6 +59,9 @@ export const styles = StyleSheet.create({
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,
     shadowRadius: 3,
+    position: 'absolute',
+    bottom: 0,
+    width: wp(100),
   },
   bottomFixedButton: {
     paddingVertical: 16,

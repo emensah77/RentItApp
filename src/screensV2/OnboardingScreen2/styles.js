@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
-    marginTop: Platform.OS === 'ios' ? 40 : 0,
+    height: '100%',
   },
   topBar: {
     flexDirection: 'row',
@@ -83,6 +83,7 @@ export const styles = StyleSheet.create({
   bedCountText: {
     paddingLeft: 15,
     paddingRight: 15,
+    color: '#0047B3',
   },
   placesList: {
     marginTop: 60,

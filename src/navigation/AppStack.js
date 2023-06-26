@@ -36,6 +36,7 @@ import ConfirmCancellation from '../screensV2/ConfirmCancellation';
 import RefundPage from '../screensV2/RefundPage';
 import ListingSteps from '../screensV2/ListingSteps';
 import RequestBook from '../screensV2/RequestBook';
+import HouseTypeScreen from '../screens/HouseTypeScreen';
 
 const Stack = createStackNavigator();
 
@@ -107,7 +108,7 @@ const AppStack = () => {
 
       <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
 
-      {/* <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} /> */}
+      <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} />
 
       <Stack.Screen name="Post" component={PostScreen} options={noHeader} />
 

@@ -8,6 +8,10 @@ import Typography from '../../componentsV2/DataDisplay/Typography';
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen10 = () => {
   const navigation = useNavigation();
@@ -59,26 +63,7 @@ const OnboardingScreen10 = () => {
             <Image source={BackArrow} />
           </Pressable>
           <View style={styles.topButtons}>
-            <Pressable
-              style={styles.topButton}
-              onPress={async () => {
-                await saveProgress({
-                  title: value,
-                  type,
-                  bed,
-                  bedroom,
-                  bathroom,
-                  mode,
-                });
-                navigation.navigate('OnboardingScreen11', {
-                  type,
-                  bed,
-                  bedroom,
-                  bathroom,
-                  title: value,
-                  mode,
-                });
-              }}>
+            <Pressable style={styles.topButton} onPress={async () => {}}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -96,6 +81,42 @@ const OnboardingScreen10 = () => {
           style={styles.input}
           onChangeText={text => hellod(text)}
         />
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={6} progress={5} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar
+            leftText="Back"
+            rightText="Next"
+            rightAction={async () => {
+              if (!value) {
+                return;
+              }
+              await saveProgress({
+                title: value,
+                type,
+                bed,
+                bedroom,
+                bathroom,
+                mode,
+              });
+              navigation.navigate('OnboardingScreen11', {
+                type,
+                bed,
+                bedroom,
+                bathroom,
+                title: value,
+                mode,
+              });
+            }}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

@@ -1,9 +1,8 @@
 import React from 'react';
-import {View, Image, Pressable} from 'react-native';
+import {View, Image, Pressable, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
-import TopBar from '../../componentsV2/DataDisplay/TopBar';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
@@ -12,6 +11,8 @@ import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import IconWoman from '../../../assets/data/images/woman-big.png';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import {offsets} from '../../styles/globalStyles';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen1 = () => {
   const navigation = useNavigation();
@@ -39,23 +40,23 @@ const OnboardingScreen1 = () => {
     }
   };
   const goFaqs = () => {
-    navigation.navigate('OnboardingScreen2');
+    navigation.navigate('OnboardingScreen12');
   };
+
+  const goBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.mainContent}>
       <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
+        <Pressable style={styles.backButton} onPress={goBack}>
           <Image source={BackArrow} />
         </Pressable>
         <View style={styles.topButtons}>
           <Pressable
             style={styles.topButton}
-            onPress={async () => {
-              await saveProgress({homeType: item.title});
-              navigation.navigate('OnboardingScreen2', {
-                type: item.title,
-              });
-            }}>
+            onPress={() => navigation.navigate('OnboardingScreen12')}>
             <Typography style={styles.topButtonText}>Save & exit</Typography>
           </Pressable>
           <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -63,25 +64,34 @@ const OnboardingScreen1 = () => {
           </Pressable>
         </View>
       </View>
-
-      <Image source={IconWoman} style={{marginBottom: 44}} />
-      <Typography style={styles.stepText}>Step 1</Typography>
-      <Typography bold style={styles.title}>
-        Tell us about your place
-      </Typography>
-      <Typography style={styles.text}>
-        In this step, we’ll ask you which type of property you have and if guest will book the
-        entire place or just a room.{' '}
-      </Typography>
+      <ScrollView style={styles.scrollContent}>
+        <View style={{width: '100%', alignItems: 'center'}}>
+          <Image source={IconWoman} />
+        </View>
+        <Typography style={styles.stepText}>Step 1</Typography>
+        <Typography bold style={styles.title}>
+          Tell us about your place
+        </Typography>
+        <Typography style={styles.text}>
+          In this step, we’ll ask you which type of property you have and if guest will book the
+          entire place or just a room.{' '}
+        </Typography>
+      </ScrollView>
       <View
         style={{
-          width: '100%',
-          paddingHorizontal: offsets.offsetB,
+          width: wp(100),
           position: 'absolute',
           bottom: 0,
           left: 0,
         }}>
-        <DividedProgress />
+        <View style={{paddingHorizontal: offsets.offsetB}}>
+          <DividedProgress total={6} progress={1} style={{marginBottom: offsets.offsetB}} />
+        </View>
+        <BottomActionsBar
+          leftText="Back"
+          rightText="Next"
+          rightAction={() => navigation.navigate('OnboardingScreen12')}
+        />
       </View>
     </View>
   );

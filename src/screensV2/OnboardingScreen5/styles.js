@@ -10,15 +10,15 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
-    marginTop: Platform.OS === 'ios' ? 40 : 0,
-    backgroundColor: '#fff',
-    // height: hp(100),
+    // marginTop: Platform.OS === 'ios' ? 40 : 0,
+    // backgroundColor: '#fff',
+    height: hp(100),
   },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 80,
+    // marginBottom: 80,
   },
   topButtons: {
     flexDirection: 'row',
@@ -50,6 +50,7 @@ export const styles = StyleSheet.create({
     fontSize: 26,
     lineHeight: 32,
     color: '#1F2D3D',
+    marginTop: offsets.offsetC,
   },
   titleText: {
     color: '#4D4D4D',
@@ -128,8 +129,18 @@ export const styles = StyleSheet.create({
       width: 0,
       height: 6,
     },
+    borderRadius: 10,
     shadowOpacity: 0.16,
     shadowRadius: 4.65,
     elevation: 6,
+    marginBottom: hp(30),
+    paddingBottom: 10,
+  },
+  placesText: {
+    textAlign: 'center',
+    paddingTop: 20,
+    paddingBottom: 20,
+    width: wp(76),
+    marginLeft: wp(7),
   },
 });

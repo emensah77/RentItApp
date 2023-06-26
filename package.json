@@ -71,6 +71,7 @@
     "react-native-background-fetch": "^4.1.7",
     "react-native-background-geolocation": "^4.9.4",
     "react-native-bouncy-checkbox": "^3.0.6",
+    "react-native-calendar-range-picker": "^1.5.3",
     "react-native-calendars": "^1.1294.0",
     "react-native-dotenv": "^3.4.8",
     "react-native-dropdown-picker": "^5.4.6",
@@ -151,6 +152,7 @@
     "metro": "^0.72.3",
     "metro-core": "^0.72.3",
     "metro-react-native-babel-preset": "^0.67.0",
+    "metro-react-native-babel-transformer": "^0.76.6",
     "prettier": "^2.8.8",
     "react-test-renderer": "18.2.0",
     "typescript": "^3.3.1"

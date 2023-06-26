@@ -11,6 +11,10 @@ import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import IconMan from '../../../assets/data/images/second-step.png';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen14 = () => {
   const navigation = useNavigation();
@@ -54,9 +58,7 @@ const OnboardingScreen14 = () => {
       console.error('Error saving progress:', error);
     }
   };
-  const goFaqs = () => {
-    navigation.navigate('OnboardingScreen9');
-  };
+  const goFaqs = () => {};
 
   return (
     <SafeAreaView>
@@ -88,7 +90,7 @@ const OnboardingScreen14 = () => {
                   currency,
                   address,
                 });
-                navigation.navigate('OnboardingScreen9', {
+                navigation.navigate('OnboardingScreen3', {
                   title,
                   type,
                   description,
@@ -115,7 +117,6 @@ const OnboardingScreen14 = () => {
             </Pressable>
           </View>
         </View>
-
         <Image source={IconMan} style={styles.imgItem} />
         <Typography style={styles.stepText}>Step 2</Typography>
         <Typography bold style={styles.title}>
@@ -125,6 +126,24 @@ const OnboardingScreen14 = () => {
           In this step, we’ll ask you which type of amenities your home offers, pictures of your
           home, the location, the price.
         </Typography>
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={6} progress={0} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar
+            leftText="Back"
+            rightText="Next"
+            rightAction={async () => {
+              navigation.navigate('OnboardingScreen3');
+            }}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

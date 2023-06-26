@@ -108,6 +108,7 @@
 	<string>Location required when app is in use</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Manrope.ttf</string>
 		<string>Montserrat-Black.ttf</string>
 		<string>Fontisto.ttf</string>
 		<string>Feather.ttf</string>

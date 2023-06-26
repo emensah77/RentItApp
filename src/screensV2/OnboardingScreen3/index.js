@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {View, Image, Pressable, FlatList} from 'react-native';
+import {View, Image, Pressable, FlatList, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -11,6 +11,10 @@ import {styles} from './styles';
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import Checkbox from '../../../assets/data/images/checkbox.svg';
 import CheckboxActive from '../../../assets/data/images/checkbox-active.svg';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen3 = () => {
   const navigation = useNavigation();
@@ -82,9 +86,7 @@ const OnboardingScreen3 = () => {
     }
   };
 
-  const goFaqs = () => {
-    navigation.navigate('OnboardingScreen4');
-  };
+  const goFaqs = () => {};
 
   const changeItem = id => {
     const _data = [...uniqueItem];
@@ -117,15 +119,69 @@ const OnboardingScreen3 = () => {
   );
 
   return (
-    <View style={styles.mainContent}>
-      <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
-          <Image source={BackArrow} />
-        </Pressable>
-        <View style={styles.topButtons}>
-          <Pressable
-            style={styles.topButton}
-            onPress={async () => {
+    <SafeAreaView>
+      <View style={styles.mainContent}>
+        <View style={styles.topBar}>
+          <Pressable style={styles.backButton}>
+            <Image source={BackArrow} />
+          </Pressable>
+          <View style={styles.topButtons}>
+            <Pressable
+              style={styles.topButton}
+              onPress={async () => {
+                await saveProgress({
+                  type,
+                  title,
+                  description,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  mode,
+                  amenities: uniqueItem,
+                });
+              }}>
+              <Typography style={styles.topButtonText}>Save & exit</Typography>
+            </Pressable>
+            <Pressable style={styles.topButton} onPress={goFaqs}>
+              <Typography style={styles.topButtonText}>FAQs</Typography>
+            </Pressable>
+          </View>
+        </View>
+
+        <Typography bold style={styles.title}>
+          Tell your guest what your place has to offer.
+        </Typography>
+
+        <View style={styles.placesList}>
+          <Typography style={{marginBottom: 20}} bold>
+            Amenities
+          </Typography>
+          <FlatList data={items} renderItem={renderItems} />
+        </View>
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={4} progress={1} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar
+            leftText="Back"
+            rightText="Next"
+            rightAction={async () => {
+              navigation.navigate('OnboardingScreen4', {
+                type,
+                title,
+                description,
+                bed,
+                bedroom,
+                bathroom,
+                mode,
+                amenities: uniqueItem,
+              });
               await saveProgress({
                 type,
                 title,
@@ -136,36 +192,11 @@ const OnboardingScreen3 = () => {
                 mode,
                 amenities: uniqueItem,
               });
-              navigation.navigate('OnboardingScreen5', {
-                type,
-                title,
-                description,
-                bed,
-                bedroom,
-                bathroom,
-                mode,
-                amenities: uniqueItem,
-              });
-            }}>
-            <Typography style={styles.topButtonText}>Save & exit</Typography>
-          </Pressable>
-          <Pressable style={styles.topButton} onPress={goFaqs}>
-            <Typography style={styles.topButtonText}>FAQs</Typography>
-          </Pressable>
+            }}
+          />
         </View>
       </View>
-
-      <Typography bold style={styles.title}>
-        Tell your guest what your place has to offer.
-      </Typography>
-
-      <View style={styles.placesList}>
-        <Typography style={{marginBottom: 20}} bold>
-          Amenities
-        </Typography>
-        <FlatList data={items} renderItem={renderItems} />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

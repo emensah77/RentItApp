@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Image, Text, Pressable} from 'react-native';
+import {View, Image, Text, Pressable, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -9,6 +9,10 @@ import Divider from '../../components/Divider';
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen2 = () => {
   const navigation = useNavigation();
@@ -69,16 +73,106 @@ const OnboardingScreen2 = () => {
       setBathRoomsCount(bathRoomsCount - 1);
     }
   };
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
-    <View style={styles.mainContent}>
-      <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
-          <Image source={BackArrow} />
-        </Pressable>
-        <View style={styles.topButtons}>
-          <Pressable
-            style={styles.topButton}
-            onPress={async () => {
+    <SafeAreaView>
+      <View style={styles.mainContent}>
+        <View style={styles.topBar}>
+          <Pressable style={styles.backButton} onPress={goBack}>
+            <Image source={BackArrow} />
+          </Pressable>
+          <View style={styles.topButtons}>
+            <Pressable
+              style={styles.topButton}
+              onPress={async () => {
+                await saveProgress({
+                  type,
+                  mode,
+                  bedRoomCount,
+                  bathRoomsCount,
+                  bedCount,
+                });
+                navigation.navigate('OnboardingScreen10', {
+                  type,
+                  mode,
+                  bedCount,
+                  bedRoomCount,
+                  bathRoomsCount,
+                });
+              }}>
+              <Typography style={styles.topButtonText}>Save & exit</Typography>
+            </Pressable>
+            <Pressable style={styles.topButton} onPress={goFaqs}>
+              <Typography style={styles.topButtonText}>FAQs</Typography>
+            </Pressable>
+          </View>
+        </View>
+
+        <Typography bold style={styles.title}>
+          How many bedrooms and bathrooms?
+        </Typography>
+        <View style={styles.placesList}>
+          <View style={styles.placeItem}>
+            <Typography style={styles.placeName}>Beds</Typography>
+            <View style={styles.bedCount}>
+              <Pressable onPress={() => bedPlus('minus')} style={styles.increment}>
+                <Text style={styles.incrementText}>-</Text>
+              </Pressable>
+              <Typography style={styles.bedCountText} bold>
+                {bedCount}
+              </Typography>
+              <Pressable onPress={() => bedPlus('plus')} style={styles.increment}>
+                <Text style={styles.incrementText}>+</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          <View style={[styles.placeItem, styles.placeSecondItem]}>
+            <Typography style={styles.placeName}>Bedrooms</Typography>
+            <View style={styles.bedCount}>
+              <Pressable onPress={() => bedRoomPlus('minus')} style={styles.increment}>
+                <Text style={styles.incrementText}>-</Text>
+              </Pressable>
+              <Typography style={styles.bedCountText} bold>
+                {bedRoomCount}
+              </Typography>
+              <Pressable onPress={() => bedRoomPlus('plus')} style={styles.increment}>
+                <Text style={styles.incrementText}>+</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          <View style={[styles.placeItem, styles.placeSecondItem]}>
+            <Typography style={styles.placeName}>Bathrooms</Typography>
+            <View style={styles.bedCount}>
+              <Pressable onPress={() => bathroomsPlus('minus')} style={styles.increment}>
+                <Text style={styles.incrementText}>-</Text>
+              </Pressable>
+              <Typography style={styles.bedCountText} bold>
+                {bathRoomsCount}
+              </Typography>
+              <Pressable onPress={() => bathroomsPlus('plus')} style={styles.increment}>
+                <Text style={styles.incrementText}>+</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={6} progress={4} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar
+            leftText="Back"
+            rightText="Next"
+            rightAction={async () => {
               await saveProgress({
                 type,
                 mode,
@@ -93,65 +187,11 @@ const OnboardingScreen2 = () => {
                 bedRoomCount,
                 bathRoomsCount,
               });
-            }}>
-            <Typography style={styles.topButtonText}>Save & exit</Typography>
-          </Pressable>
-          <Pressable style={styles.topButton} onPress={goFaqs}>
-            <Typography style={styles.topButtonText}>FAQs</Typography>
-          </Pressable>
+            }}
+          />
         </View>
       </View>
-
-      <Typography bold style={styles.title}>
-        How many bedrooms and bathrooms?
-      </Typography>
-      <View style={styles.placesList}>
-        <View style={styles.placeItem}>
-          <Typography style={styles.placeName}>Beds</Typography>
-          <View style={styles.bedCount}>
-            <Pressable onPress={() => bedPlus('minus')} style={styles.increment}>
-              <Text style={styles.incrementText}>-</Text>
-            </Pressable>
-            <Typography style={styles.bedCountText} bold>
-              {bedCount}
-            </Typography>
-            <Pressable onPress={() => bedPlus('plus')} style={styles.increment}>
-              <Text style={styles.incrementText}>+</Text>
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={[styles.placeItem, styles.placeSecondItem]}>
-          <Typography style={styles.placeName}>Bedrooms</Typography>
-          <View style={styles.bedCount}>
-            <Pressable onPress={() => bedRoomPlus('minus')} style={styles.increment}>
-              <Text style={styles.incrementText}>-</Text>
-            </Pressable>
-            <Typography style={styles.bedCountText} bold>
-              {bedRoomCount}
-            </Typography>
-            <Pressable onPress={() => bedRoomPlus('plus')} style={styles.increment}>
-              <Text style={styles.incrementText}>+</Text>
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={[styles.placeItem, styles.placeSecondItem]}>
-          <Typography style={styles.placeName}>Bathrooms</Typography>
-          <View style={styles.bedCount}>
-            <Pressable onPress={() => bathroomsPlus('minus')} style={styles.increment}>
-              <Text style={styles.incrementText}>-</Text>
-            </Pressable>
-            <Typography style={styles.bedCountText} bold>
-              {bathRoomsCount}
-            </Typography>
-            <Pressable onPress={() => bathroomsPlus('plus')} style={styles.increment}>
-              <Text style={styles.incrementText}>+</Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

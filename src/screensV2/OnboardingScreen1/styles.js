@@ -1,19 +1,27 @@
 import {Platform, StyleSheet} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {offsets} from '../../styles/globalStyles';
 
 // eslint-disable-next-line import/prefer-default-export
 export const styles = StyleSheet.create({
   mainContent: {
+    height: '100%',
     paddingHorizontal: offsets.offsetC,
-    paddingVertical: offsets.offsetC,
-    marginTop: Platform.OS === 'ios' ? 40 : 0,
+    // paddingVertical: offsets.offsetC,
+    // marginTop: Platform.OS === 'ios' ? 40 : 0,
+  },
+  scrollContent: {
+    marginTop: wp(20),
   },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 80,
+    position: 'absolute',
+    top: offsets.offsetC,
+    width: wp(100),
+    paddingHorizontal: offsets.offsetC,
   },
   topButtons: {
     flexDirection: 'row',

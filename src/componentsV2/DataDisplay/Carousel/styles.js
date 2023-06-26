@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   round: {
-    borderRadius: 12,
+    borderRadius: 8,
     overflow: 'hidden',
   },
   counter: {

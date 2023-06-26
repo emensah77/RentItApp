@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Platform} from 'react-native';
 import {Marker} from 'react-native-maps';
 
 const CustomMarker = props => {
@@ -9,15 +9,13 @@ const CustomMarker = props => {
       <View
         style={{
           backgroundColor: isSelected ? 'black' : 'white',
-          padding: isSelected ? 10 : 5,
-          elevation: isSelected ? 3 : 0,
+          padding: 5,
+          elevation: isSelected ? 2 : 0,
           borderRadius: 20,
-          borderColor: 'grey',
-          borderWidth: 1,
         }}>
         <Text
           style={{
-            fontSize: isSelected ? 16 : 14,
+            fontSize: 14,
             color: isSelected ? 'white' : 'black',
             fontWeight: 'bold',
           }}>

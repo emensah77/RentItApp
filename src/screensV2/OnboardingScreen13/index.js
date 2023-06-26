@@ -9,6 +9,10 @@ import Typography from '../../componentsV2/DataDisplay/Typography';
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen13 = () => {
   const navigation = useNavigation();
@@ -63,31 +67,7 @@ const OnboardingScreen13 = () => {
     }
   };
 
-  const goFaqs = () => {
-    navigation.navigate('OnboardingScreen9', {
-      title,
-      type,
-      description,
-      bed,
-      bedroom,
-      bathroom,
-      imageUrls,
-      homeprice,
-      latitude,
-      longitude,
-      mode,
-      amenities,
-      phoneNumber: secondformattedValue,
-      marketerNumber:
-        usersWithPrivileges.includes(user?.uid) || user?.marketer_status === 'ACCEPTED'
-          ? formattedValue
-          : null,
-      locality,
-      sublocality,
-      currency,
-      address,
-    });
-  };
+  const goFaqs = () => {};
 
   const goBack = () => {
     navigation.goBack();
@@ -105,59 +85,105 @@ const OnboardingScreen13 = () => {
               style={styles.topButton}
               // eslint-disable-next-line react/jsx-no-bind
               onPress={async () => {
+                await saveProgress({
+                  type,
+                  title,
+                  description,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  imageUrls,
+                  homeprice,
+                  latitude,
+                  longitude,
+                  mode,
+                  amenities,
+                  phoneNumber: secondformattedValue,
+                  // marketerNumber:
+                  //   usersWithPrivileges.includes(user.uid) || user?.marketer_status === 'ACCEPTED'
+                  //     ? formattedValue
+                  //     : null,
+                  locality,
+                  sublocality,
+                  currency,
+                  address,
+                });
+                navigation.navigate('OnboardingScreen9', {
+                  title,
+                  type,
+                  description,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  imageUrls,
+                  homeprice,
+                  latitude,
+                  longitude,
+                  mode,
+                  amenities,
+                  phoneNumber: secondformattedValue,
+                  // marketerNumber:
+                  //   usersWithPrivileges.includes(user.uid) || user?.marketer_status === 'ACCEPTED'
+                  //     ? formattedValue
+                  //     : null,
+                  locality,
+                  sublocality,
+                  currency,
+                  address,
+                });
                 const checkValid = phoneInput.current?.isValidNumber(value);
                 const checkSecondValid = phoneInput.current?.isValidNumber(phoneNumber);
-                if (checkSecondValid) {
-                  Alert.alert('Your phone number is correct', secondformattedValue);
-                  await saveProgress({
-                    type,
-                    title,
-                    description,
-                    bed,
-                    bedroom,
-                    bathroom,
-                    imageUrls,
-                    homeprice,
-                    latitude,
-                    longitude,
-                    mode,
-                    amenities,
-                    phoneNumber: secondformattedValue,
-                    marketerNumber:
-                      usersWithPrivileges.includes(user.uid) || user?.marketer_status === 'ACCEPTED'
-                        ? formattedValue
-                        : null,
-                    locality,
-                    sublocality,
-                    currency,
-                    address,
-                  });
-                  navigation.navigate('OnboardingScreen9', {
-                    title,
-                    type,
-                    description,
-                    bed,
-                    bedroom,
-                    bathroom,
-                    imageUrls,
-                    homeprice,
-                    latitude,
-                    longitude,
-                    mode,
-                    amenities,
-                    phoneNumber: secondformattedValue,
-                    marketerNumber:
-                      usersWithPrivileges.includes(user.uid) || user?.marketer_status === 'ACCEPTED'
-                        ? formattedValue
-                        : null,
-                    locality,
-                    sublocality,
-                    currency,
-                    address,
-                  });
-                } else {
-                  Alert.alert('Your phone number is not correct', secondformattedValue);
-                }
+                // if (!checkSecondValid) {
+                //   // Alert.alert('Your phone number is correct', secondformattedValue);
+                //   await saveProgress({
+                //     type,
+                //     title,
+                //     description,
+                //     bed,
+                //     bedroom,
+                //     bathroom,
+                //     imageUrls,
+                //     homeprice,
+                //     latitude,
+                //     longitude,
+                //     mode,
+                //     amenities,
+                //     phoneNumber: secondformattedValue,
+                //     marketerNumber:
+                //       usersWithPrivileges.includes(user.uid) || user?.marketer_status === 'ACCEPTED'
+                //         ? formattedValue
+                //         : null,
+                //     locality,
+                //     sublocality,
+                //     currency,
+                //     address,
+                //   });
+                //   navigation.navigate('OnboardingScreen9', {
+                //     title,
+                //     type,
+                //     description,
+                //     bed,
+                //     bedroom,
+                //     bathroom,
+                //     imageUrls,
+                //     homeprice,
+                //     latitude,
+                //     longitude,
+                //     mode,
+                //     amenities,
+                //     phoneNumber: secondformattedValue,
+                //     marketerNumber:
+                //       usersWithPrivileges.includes(user.uid) || user?.marketer_status === 'ACCEPTED'
+                //         ? formattedValue
+                //         : null,
+                //     locality,
+                //     sublocality,
+                //     currency,
+                //     address,
+                //   });
+                // } else {
+                //   Alert.alert('Your phone number is not correct', secondformattedValue);
+                // }
               }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
@@ -187,7 +213,7 @@ const OnboardingScreen13 = () => {
           countryPickerProps={{withAlphaFilter: true}}
           withShadow
           autoFocus
-          containerStyle={{borderRadius: 5}}
+          containerStyle={{borderRadius: 5, width: '100%'}}
           textContainerStyle={{backgroundColor: 'lightgrey'}}
         />
       </View>
@@ -216,6 +242,50 @@ const OnboardingScreen13 = () => {
           />
         </View>
       ) : null}
+      <View
+        style={{
+          width: wp(100),
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        <View style={{paddingHorizontal: offsets.offsetB}}>
+          <DividedProgress total={4} progress={1} style={{marginBottom: offsets.offsetB}} />
+        </View>
+        <BottomActionsBar
+          leftText="Back"
+          rightText="Next"
+          rightAction={async () => {
+            if (!secondformattedValue) {
+              alert('Please input your number');
+              return;
+            }
+            navigation.navigate('OnboardingScreen9', {
+              title,
+              type,
+              description,
+              bed,
+              bedroom,
+              bathroom,
+              imageUrls,
+              homeprice,
+              latitude,
+              longitude,
+              mode,
+              amenities,
+              phoneNumber: secondformattedValue,
+              marketerNumber:
+                usersWithPrivileges.includes(user?.uid) || user?.marketer_status === 'ACCEPTED'
+                  ? formattedValue
+                  : null,
+              locality,
+              sublocality,
+              currency,
+              address,
+            });
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };

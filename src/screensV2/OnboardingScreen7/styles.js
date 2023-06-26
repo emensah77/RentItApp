@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
-    paddingTop: Platform.OS === 'ios' ? 80 : 0,
     backgroundColor: '#fff',
     height: hp(100),
   },

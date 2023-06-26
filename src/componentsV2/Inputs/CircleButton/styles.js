@@ -27,5 +27,8 @@ export const styles = StyleSheet.create({
     backgroundColor: undefined,
     elevation: 0,
     shadowOffset: undefined,
+    shadowColor: undefined,
+    shadowOpacity: 0,
+    shadowRadius: 0,
   },
 });

@@ -24,4 +24,22 @@ export const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
+  calendar: {
+    container: {},
+    monthContainer: {},
+    weekContainer: {},
+    monthNameText: {
+      fontWeight: 'bold',
+    },
+    dayNameText: {},
+    dayText: {},
+    dayTextColor: 'black',
+    holidayColor: 'black',
+    todayColor: 'black',
+    disabledTextColor: '#B0B0B0',
+    selectedDayTextColor: 'white',
+    selectedDayBackgroundColor: colors.active,
+    selectedBetweenDayTextColor: '#000',
+    selectedBetweenDayBackgroundTextColor: '#F2F2F2',
+  },
 });

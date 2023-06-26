@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
-
     backgroundColor: '#fff',
     height: hp(100),
   },
@@ -54,7 +53,7 @@ export const styles = StyleSheet.create({
   },
   titleText: {
     color: '#4D4D4D',
-    marginBottom: 85,
+    marginBottom: 130,
   },
   text: {
     fontWeight: '400',

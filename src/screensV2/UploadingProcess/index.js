@@ -6,9 +6,11 @@ import Typography from '../../componentsV2/DataDisplay/Typography/index.js';
 const UploadingProcess = ({icon, text, loadedText}) => {
   return (
     <View style={styles.content}>
-        <Image source={icon} style={styles.icon} />
-        <Typography style={styles.text} bold>{text}</Typography>
-        <Typography style={styles.uploadProcessText}>{loadedText}</Typography>
+      <Image source={icon} style={styles.icon} />
+      <Typography style={styles.text} bold>
+        {text}
+      </Typography>
+      <Typography style={styles.uploadProcessText}>{loadedText}</Typography>
     </View>
   );
 };

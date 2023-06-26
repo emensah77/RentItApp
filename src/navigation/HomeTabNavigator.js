@@ -48,6 +48,8 @@ const HomeTabNavigator = props => {
     'OnboardingScreen13',
     'OnboardingScreen14',
     'OnboardingScreen15',
+    'OnboardingScreen16',
+    'OnboardingScreen17',
   ];
   return (
     <Tab.Navigator

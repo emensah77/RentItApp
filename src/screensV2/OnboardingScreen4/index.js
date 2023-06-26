@@ -1,5 +1,5 @@
 import React, {useState, Platform, useEffect} from 'react';
-import {View, Image, Pressable} from 'react-native';
+import {View, Image, Pressable, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
@@ -15,6 +15,10 @@ import {styles} from './styles';
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import PlusIcon from '../../../assets/data/images/icons/plus-icon.svg';
 import CameraIcon from '../../../assets/data/images/icons/camera-icon.svg';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen3 = () => {
   const navigation = useNavigation();
@@ -245,15 +249,77 @@ const OnboardingScreen3 = () => {
     navigation.goBack();
   };
   return (
-    <View style={styles.mainContent}>
-      <View style={styles.topBar}>
-        <Pressable style={styles.backButton} onPress={goBack}>
-          <Image source={BackArrow} />
-        </Pressable>
-        <View style={styles.topButtons}>
-          <Pressable
-            style={styles.topButton}
-            onPress={async () => {
+    <SafeAreaView>
+      <View style={styles.mainContent}>
+        <View style={styles.topBar}>
+          <Pressable style={styles.backButton} onPress={goBack}>
+            <Image source={BackArrow} />
+          </Pressable>
+          <View style={styles.topButtons}>
+            <Pressable
+              style={styles.topButton}
+              onPress={async () => {
+                await saveProgress({
+                  type,
+                  title,
+                  description,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  mode,
+                  amenities,
+                });
+                navigation.navigate('OnboardingScreen16', {
+                  type,
+                  title,
+                  description,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  mode,
+                  amenities,
+                });
+              }}>
+              <Typography style={styles.topButtonText}>Save & exit</Typography>
+            </Pressable>
+            <Pressable style={styles.topButton} onPress={goFaqs}>
+              <Typography style={styles.topButtonText}>FAQs</Typography>
+            </Pressable>
+          </View>
+        </View>
+
+        <Typography bold style={styles.title}>
+          Let’s add pictures of your home.
+        </Typography>
+
+        <View style={styles.placesList}>
+          <Pressable style={styles.upload} onPress={openPicker}>
+            <PlusIcon width={20} height={20} />
+            <Typography style={{color: '#717171', paddingLeft: 10, paddingTop: 3}}>
+              Upload photos
+            </Typography>
+          </Pressable>
+          <Pressable style={styles.upload} onPress={openCamera}>
+            <CameraIcon width={20} height={20} />
+            <Typography style={{color: '#717171', paddingLeft: 10, paddingTop: 3}}>
+              Upload photos
+            </Typography>
+          </Pressable>
+        </View>
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={4} progress={2} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar
+            leftText="Back"
+            rightText="Next"
+            rightAction={async () => {
               await saveProgress({
                 type,
                 title,
@@ -262,9 +328,9 @@ const OnboardingScreen3 = () => {
                 bedroom,
                 bathroom,
                 mode,
-                amenities: selectedItems,
+                amenities,
               });
-              navigation.navigate('OnboardingScreen4', {
+              navigation.navigate('OnboardingScreen16', {
                 type,
                 title,
                 description,
@@ -272,32 +338,13 @@ const OnboardingScreen3 = () => {
                 bedroom,
                 bathroom,
                 mode,
-                amenities: selectedItems,
+                amenities,
               });
-            }}>
-            <Typography style={styles.topButtonText}>Save & exit</Typography>
-          </Pressable>
-          <Pressable style={styles.topButton} onPress={goFaqs}>
-            <Typography style={styles.topButtonText}>FAQs</Typography>
-          </Pressable>
+            }}
+          />
         </View>
       </View>
-
-      <Typography bold style={styles.title}>
-        Let’s add pictures of your home.
-      </Typography>
-
-      <View style={styles.placesList}>
-        <Pressable style={styles.upload} onPress={openPicker}>
-          <PlusIcon width={20} height={20} />
-          <Typography style={{color: '#717171', paddingLeft: 10}}>Upload photos</Typography>
-        </Pressable>
-        <Pressable style={styles.upload} onPress={openCamera}>
-          <CameraIcon width={20} height={20} />
-          <Typography style={{color: '#717171', paddingLeft: 10}}>Upload photos</Typography>
-        </Pressable>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -23,17 +23,16 @@ import ListItemText from '../../componentsV2/DataDisplay/ListItemText';
 import Flag from '../../../assets/data/images/flag.svg';
 
 import ShareIcon from '../../../assets/data/images/icons/share.svg';
-import DoorIcon from '../../../assets/data/images/icons/door-icon.svg';
 import MedalIcon from '../../../assets/data/images/icons/medal-icon.svg';
 import IconCalendar from '../../../assets/data/images/icons/calendar-icon.svg';
 import RentitGuaranteeImg from '../../../assets/data/images/additional/rentitGuarantee.png';
-import Icon4 from '../../../assets/data/images/icons/rules/icon4.png';
-import KitchenIcon from '../../../assets/data/images/icons/kitchen-icon.svg';
-import WifiIcon from '../../../assets/data/images/icons/wifi-icon.svg';
-import Dedicated from '../../../assets/data/images/icons/dedicated.svg';
-import CarIcon from '../../../assets/data/images/icons/car-icon.svg';
-import TvIcon from '../../../assets/data/images/icons/tv-icon.svg';
+import Furnished from '../../../assets/data/images/icons/furnished.svg';
+import Negotiable from '../../../assets/data/images/icons/negotiable.svg';
+import Verified from '../../../assets/data/images/icons/verified.svg';
 import Star from '../../../assets/data/images/icons/star.svg';
+import Check from '../../../assets/data/images/icons/listing-small.svg';
+import Cell from '../../../assets/data/images/icons/cell-icon.svg';
+import HostIcon from '../../../assets/data/images/icons/host-icon.svg';
 
 import RoomItem from '../../componentsV2/DataDisplay/RoomItem';
 import CommentItem from '../../componentsV2/DataDisplay/CommentItem';
@@ -42,8 +41,8 @@ import Button from '../../componentsV2/Inputs/Button';
 import RulesRow from '../../componentsV2/DataDisplay/RulesRow';
 import Reserve from '../../componentsV2/Inputs/Reserve';
 import {navigate} from '../../navigation/Router';
-import BottomSheet from '@gorhom/bottom-sheet';
 import CalendarOverlay from '../../componentsV2/Inputs/CalendarOverlay';
+import {extractDate} from '../../utils/formatter';
 
 const PostScreen = ({route}) => {
   const params = route.params || {};
@@ -81,24 +80,42 @@ const PostScreen = ({route}) => {
     },
   ];
 
-  const data = [
-    {
-      image: 1,
-      text: '1,128 Reviews',
-    },
-    {
-      image: 2,
-      text: 'Identity verified',
-    },
-    {
-      image: 3,
-      text: 'Superhost',
-    },
-    {
-      image: 4,
-      text: 'Rentit.homes supporter',
-    },
-  ];
+  const data = useMemo(() => {
+    const arr = [
+      {
+        image: <Star width={20} height={20} />,
+        text: `${post?.reviews?.items?.length || 0} Reviews`,
+      },
+    ];
+
+    if (post.verified) {
+      arr.push({
+        image: <HostIcon width={20} height={20} />,
+        text: 'Identity verified',
+      });
+    }
+
+    if (isSuperhost) {
+      arr.push({
+        image: <Check width={20} height={20} />,
+        text: 'Superhost',
+      });
+    }
+
+    arr.push({
+      image: <Cell width={20} height={20} />,
+      text: 'Rentit homes supporter',
+    });
+
+    return arr;
+  }, [post, isSuperhost]);
+
+  const reviewsCount = useMemo(() => {
+    return (
+      post?.reviews?.items?.reduce((acc, val) => acc + val.rating, 0) /
+        post?.reviews?.items?.length || 0
+    );
+  }, [post?.reviews]);
 
   // callbacks
   const handleSheetChanges = useCallback(index => {
@@ -194,6 +211,7 @@ const PostScreen = ({route}) => {
   const hostItem = useCallback(({item}) => {
     return <RulesRow image={item.image} text={item.text} />;
   });
+
   const moreInfoKeyExtractor = useCallback(item => item.id, []);
   const keyExtractor = useCallback(item => item.id, []);
 
@@ -227,6 +245,49 @@ const PostScreen = ({route}) => {
     navigate('RequestBook', {postId: post.id, dates});
   }, []);
 
+  const isRareFind = useMemo(() => post?.qualityScore >= 80, [post?.qualityScore]);
+  const isSuperhost = useMemo(() => post?.qualityScore >= 60, [post?.qualityScore]);
+
+  const availabilityDate = useMemo(() => {
+    try {
+      const now = Date.now();
+      const date = new Date(post.availabilityDate);
+
+      if (now < date.getTime()) {
+        return extractDate(date);
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }, [post?.availabilityDate]);
+
+  const houseRules = [
+    {
+      image: 5,
+      text: 'Check-in: After 15:00',
+    },
+    {
+      image: 5,
+      text: 'Check-out: 11:00',
+    },
+    {
+      image: 6,
+      text: 'Self check-in with lockbox',
+    },
+    {
+      image: 7,
+      text: 'No pets',
+    },
+    {
+      image: 8,
+      text: 'No parties',
+    },
+  ];
+
+  console.log('post?.qualityScore', post?.qualityScore);
+
   useEffect(() => {
     fetchPost(postId);
   }, [postId]);
@@ -241,6 +302,8 @@ const PostScreen = ({route}) => {
     },
     [],
   );
+
+  console.log('post', post);
 
   return (
     <SafeAreaView>
@@ -272,64 +335,60 @@ const PostScreen = ({route}) => {
           )}
           {!post?.temp && (
             <>
-              <PostAchievements style={{width: '80%', marginTop: offsets.offsetA}} post={post} />
+              <PostAchievements
+                style={{width: '80%', marginTop: offsets.offsetA}}
+                post={post}
+                reviewsCount={reviewsCount}
+              />
               <Typography style={{marginTop: offsets.offsetA}}>
-                Greater Manchester, England, United Kingdom
+                {post.locality}, {post.sublocality}
               </Typography>
               <Divider />
-              <ListItemText
-                primaryVariant="large"
-                primary="This is a rare find."
-                secondaryVariant="large"
-                secondary="City Superhost’s place on Rentit is usually fully booked"
-                union={true}
-              />
-              <Divider />
+              {isRareFind && (
+                <>
+                  <ListItemText
+                    primaryVariant="large"
+                    primary="This is a rare find."
+                    secondaryVariant="large"
+                    secondary={`${post.homeownerName}’s place on Rentit is usually fully booked`}
+                  />
+                  <Divider />
+                </>
+              )}
               <ListItemText
                 primaryVariant="headingLarge"
-                primary="Entire home hosted by City Superhost"
+                primary={`${post.type} hosted by ${post.homeownerName}`}
                 secondaryVariant="large"
-                secondary="6 guests - 3 bedrooms - 3 beds - 2 bathrooms"
+                secondary={`${post.maxGuests} guests - ${post.bedroom} bedrooms - ${post.bed} beds - ${post.bathroomNumber} bathrooms`}
               />
               <Divider />
-              <ListItemText
-                primary="Self check-in"
-                secondary="Check yourself in with the lockbox."
-                reverse
-                icon={<DoorIcon width={24} height={26} />}
-              />
-              <ListItemText
-                primary="City Superhost is a Superhost"
-                secondary="Superhosts are experienced, highly rated hosts who are committed to providing great stays for their guests"
-                reverse
-                icon={<MedalIcon width={24} height={26} />}
-              />
-              <ListItemText
-                primary="Free cancellation before 25 Oct"
-                reverse
-                icon={<IconCalendar width={24} height={26} />}
-              />
-              <Divider />
-              <Typography>
-                Every booking includes free protection from Host cancellations, listing
-                inaccuracies, and other issues like trouble checking in.
-              </Typography>
-              <Typography
-                // onPress={() => {}}
-                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
-                Learn more
-              </Typography>
-              <Divider />
-              <Typography>
-                You’ll love this home for your visit to Manchester whether you’re here for a long
-                time, short time, business or pleasure
-              </Typography>
-              <Typography
-                // onPress={() => {}}
-                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
-                Learn more
-              </Typography>
-              <Divider />
+              {/*<ListItemText*/}
+              {/*  primary="Self check-in"*/}
+              {/*  secondary="Check yourself in with the lockbox."*/}
+              {/*  reverse*/}
+              {/*  icon={<DoorIcon width={24} height={26} />}*/}
+              {/*/>*/}
+              {isSuperhost && (
+                <ListItemText
+                  primary={`${post.homeownerName} is a Superhost`}
+                  secondary="Superhosts are experienced, highly rated hosts who are committed to providing great stays for their guests"
+                  reverse
+                  icon={<MedalIcon width={24} height={26} />}
+                />
+              )}
+
+              {availabilityDate && (
+                <ListItemText
+                  primary={`Will be available on ${availabilityDate.day} ${availabilityDate.month}${
+                    availabilityDate.isNextYear ? `${availabilityDate.year}` : ''
+                  }`}
+                  reverse
+                  center
+                  icon={<IconCalendar width={24} height={26} />}
+                />
+              )}
+              {(isSuperhost || availabilityDate) && <Divider />}
+
               <Image source={RentitGuaranteeImg} width={239} height={24} />
               <Typography style={{marginTop: offsets.offsetA}}>
                 Every booking includes free protection from Host cancellations, listing
@@ -365,43 +424,42 @@ const PostScreen = ({route}) => {
               ) : (
                 <></>
               )}
-              <ListItemText
-                primary="Kitchen"
-                reverse
-                center
-                icon={<KitchenIcon width={24} height={26} />}
-              />
-              <ListItemText
-                primary="Wifi"
-                reverse
-                center
-                icon={<WifiIcon width={24} height={26} />}
-              />
-              <ListItemText
-                primary="Dedicated workspace"
-                reverse
-                center
-                icon={<Dedicated width={24} height={26} />}
-              />
-              <ListItemText
-                primary="Free driveway parking on premises - 1 space"
-                reverse
-                center
-                icon={<CarIcon width={24} height={26} />}
-              />
-              <ListItemText
-                primary="55” HDTV with Netflix"
-                reverse
-                center
-                icon={<TvIcon width={24} height={26} />}
-              />
-              <Button
-                variant="outlined"
-                text="Show All 54 amenities"
-                onPress={goReviewScreen}
-                style={{marginBottom: 15, marginTop: 15}}
-              />
-              <Divider />
+              {post.furnished === 'Yes' && (
+                <ListItemText
+                  primary="Furnished"
+                  secondary="This property comes with furniture included"
+                  reverse
+                  center
+                  icon={<Furnished width={24} height={26} />}
+                />
+              )}
+              {post.negotiable === 'Yes' && (
+                <ListItemText
+                  primary="Negotiable"
+                  secondary="The price of this property is open to negotiation with the owner"
+                  reverse
+                  center
+                  icon={<Negotiable width={24} height={26} />}
+                />
+              )}
+              {post.verified === 'Yes' && (
+                <ListItemText
+                  primary="Verified"
+                  secondary="This property has been verified by our team to ensure its authenticity and quality."
+                  reverse
+                  center
+                  icon={<Verified width={24} height={26} />}
+                />
+              )}
+              {/*<Button*/}
+              {/*  variant="outlined"*/}
+              {/*  text="Show All 54 amenities"*/}
+              {/*  onPress={goReviewScreen}*/}
+              {/*  style={{marginBottom: 15, marginTop: 15}}*/}
+              {/*/>*/}
+              {(post.furnished === 'Yes' ||
+                post.negotiable === 'Yes' ||
+                post.verified === 'Yes') && <Divider />}
               {similarPosts?.length ? (
                 <>
                   <View style={styles.starBlock}>
@@ -432,36 +490,41 @@ const PostScreen = ({route}) => {
               <Divider />
               <View style={styles.superHost}>
                 <Typography variant="xlarge" bold style={{width: 200}}>
-                  Hosted by City Superhost
+                  Hosted by {post.homeownerName}
                 </Typography>
-                <Typography variant="small" style={{color: '#717171'}}>
-                  Joined in February 2015
-                </Typography>
-                <Text style={styles.hostText}>Profesional Host</Text>
+                {/*<Typography variant="small" style={{color: '#717171'}}>*/}
+                {/*  Joined in February 2015*/}
+                {/*</Typography>*/}
+                {isSuperhost && <Text style={styles.hostText}>Profesional Host</Text>}
               </View>
-              <FlatList data={data} renderItem={hostItem} keyExtractor={keyExtractor} />
-              <Typography style={{marginTop: 19}}>
-                Hey! We are Matt and Ben - owners of UiClones - the best resource for editable user
-                interfaces of the worlds best a...
-              </Typography>
-              <View style={styles.coHosts}>
-                <Typography>Co-hosts: </Typography>
-                <View style={styles.imgHosts}>
-                  <Image source={Icon4} />
-                </View>
-              </View>
-              <Typography variant="large" bold style={{marginTop: 40}}>
-                City Superhost is a Superhost
-              </Typography>
-              <Typography style={{marginTop: 8}}>
-                Superhosts are experienced, highly rated hosts who are committed to providing great
-                stays for quests
-              </Typography>
-              <Typography style={{marginTop: 16}}>Repsonse rate: 100%</Typography>
-              <Typography style={{marginTop: 8, marginBottom: 20}}>
-                Response time: within an hour
-              </Typography>
-              <Button variant="outlined" text="Contact host" onPress={goReviewScreen} />
+              {/*<FlatList data={data} renderItem={hostItem} keyExtractor={keyExtractor} />*/}
+              {/*<Typography style={{marginTop: 19}}>*/}
+              {/*  Hey! We are Matt and Ben - owners of UiClones - the best resource for editable user*/}
+              {/*  interfaces of the worlds best a...*/}
+              {/*</Typography>*/}
+              {/*<View style={styles.coHosts}>*/}
+              {/*  <Typography>Co-hosts: </Typography>*/}
+              {/*  <View style={styles.imgHosts}>*/}
+              {/*    <Image source={Icon4} />*/}
+              {/*  </View>*/}
+              {/*</View>*/}
+              {isSuperhost && (
+                <>
+                  <Typography variant="large" bold style={{marginTop: 40}}>
+                    {post.homeownerName} is a Superhost
+                  </Typography>
+                  <Typography style={{marginTop: 8}}>
+                    Superhosts are experienced, highly rated hosts who are committed to providing
+                    great stays for quests
+                  </Typography>
+                </>
+              )}
+
+              {/*<Typography style={{marginTop: 16}}>Repsonse rate: 100%</Typography>*/}
+              {/*<Typography style={{marginTop: 8, marginBottom: 20}}>*/}
+              {/*  Response time: within an hour*/}
+              {/*</Typography>*/}
+              <Button variant="outlined" text="Contact host" onPress={() => {}} />
               <Typography style={{marginTop: 30}}>
                 To protect your payment, never transfer money or communicate outside of the Rentit
                 website or app.

@@ -3,8 +3,6 @@ import {View} from 'react-native';
 import globalStyles, {offsets} from '../../../styles/globalStyles';
 import Typography from '../Typography';
 
-import Union from '../../../../assets/data/images/icons/union.svg';
-
 const ListItemText = ({
   primaryVariant,
   primary,
@@ -13,7 +11,6 @@ const ListItemText = ({
   icon,
   reverse,
   center,
-  union,
 }) => {
   return (
     <View
@@ -37,7 +34,6 @@ const ListItemText = ({
         )}
       </View>
       <View style={{width: icon ? '12%' : undefined}}>{icon}</View>
-      {union && <Union width={20} height={20} />}
     </View>
   );
 };

@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 export const fonts = {
-  primary: undefined,
+  primary: 'Manrope ExtraLight',
 };
 
 export const colors = {
@@ -11,6 +11,7 @@ export const colors = {
   text: '#1F2D3D',
   border: 'lightgrey',
   gray: '#DDDDDD',
+  active: '#0047B3',
 };
 
 export const offsets = {

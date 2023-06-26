@@ -11,6 +11,10 @@ import Button from '../../componentsV2/Inputs/Button';
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen9 = () => {
   const navigation = useNavigation();
@@ -82,6 +86,7 @@ const OnboardingScreen9 = () => {
   };
   const handleAvailableForRent = value => {
     setAvailableForRent(value);
+    // showDatePicker();
     if (!value) {
       showDatePicker();
     }
@@ -273,6 +278,18 @@ const OnboardingScreen9 = () => {
           />
         </View>
       </ScrollView>
+      <View
+        style={{
+          width: wp(100),
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        }}>
+        <View style={{paddingHorizontal: offsets.offsetB}}>
+          <DividedProgress total={4} progress={2} style={{marginBottom: offsets.offsetB}} />
+        </View>
+        <BottomActionsBar leftText="Back" rightText="Next" rightAction={handleNextPress} />
+      </View>
     </SafeAreaView>
   );
 };

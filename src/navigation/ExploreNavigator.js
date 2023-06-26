@@ -24,6 +24,8 @@ import OnboardingScreen12 from '../screensV2/OnboardingScreen12';
 import OnboardingScreen13 from '../screensV2/OnboardingScreen13';
 import OnboardingScreen14 from '../screensV2/OnboardingScreen14';
 import OnboardingScreen15 from '../screensV2/OnboardingScreen15';
+import OnboardingScreen16 from '../screensV2/OnboardingScreen16';
+import OnboardingScreen17 from '../screensV2/OnboardingScreen17';
 import AccountManageScreen from '../screens/AccountManageScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 // import Notifications from '../screens/Notifications';
@@ -206,6 +208,20 @@ const Router = () => (
     <Stack.Screen
       name="OnboardingScreen15"
       component={OnboardingScreen15}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="OnboardingScreen16"
+      component={OnboardingScreen16}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="OnboardingScreen17"
+      component={OnboardingScreen17}
       options={{
         headerShown: false,
       }}

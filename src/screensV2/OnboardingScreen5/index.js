@@ -1,26 +1,25 @@
 import React, {useCallback, useState} from 'react';
-import {View, Image, Pressable, FlatList} from 'react-native';
+import {View, Image, Pressable, FlatList, SafeAreaView, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 import {useNavigation, useRoute} from '@react-navigation/native';
-
+import {TextInput} from 'react-native-gesture-handler';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
-import PlusIcon from '../../../assets/data/images/icons/plus-icon.svg';
-import CameraIcon from '../../../assets/data/images/icons/camera-icon.svg';
-import {TextInput} from 'react-native-gesture-handler';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
+import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
+import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen5 = () => {
   const navigation = useNavigation();
   const [currencyItem, setCurrencyItem] = useState(2);
-  const [currencyData, setCurrencyData] = useState('1');
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isSelected, setisSelected] = useState(false);
-  const [homeprice, sethomeprice] = useState(1);
-  const [value, setValue] = useState(1);
+  const [currencyData, setCurrencyData] = useState('200');
+
+  const [value, setValue] = useState(200);
   const route = useRoute();
   const title = route.params?.title;
   const type = route.params?.type;
@@ -31,7 +30,6 @@ const OnboardingScreen5 = () => {
   const imageUrls = route.params?.imageUrls;
   const mode = route.params?.mode;
   const amenities = route.params?.amenities;
-  const [currency, setCurrency] = useState('');
 
   const saveProgress = async progressData => {
     try {
@@ -82,7 +80,7 @@ const OnboardingScreen5 = () => {
   }, []);
 
   const changeCount = type => {
-    if (type === 'minus' && currencyData > 1) {
+    if (type === 'minus' && currencyData > 200) {
       setCurrencyData(Number(currencyData) - 1);
     }
     if (type === 'plus') {
@@ -106,16 +104,86 @@ const OnboardingScreen5 = () => {
     },
     [currencyItem],
   );
+
+  const goBack = () => {
+    navigation.goBack();
+  };
   return (
-    <View style={styles.mainContent}>
-      <View style={styles.topBar}>
-        <Pressable style={styles.backButton}>
-          <Image source={BackArrow} />
-        </Pressable>
-        <View style={styles.topButtons}>
-          <Pressable
-            style={styles.topButton}
-            onPress={async () => {
+    <SafeAreaView>
+      <View style={styles.mainContent}>
+        <View style={styles.topBar}>
+          <Pressable style={styles.backButton} onPress={goBack}>
+            <Image source={BackArrow} />
+          </Pressable>
+          <View style={styles.topButtons}>
+            <Pressable
+              style={styles.topButton}
+              onPress={async () => {
+                await saveProgress({
+                  title,
+                  type,
+                  description,
+                  bed,
+                  bedroom,
+                  bathroom,
+                  imageUrls,
+                  homeprice: value,
+                  mode,
+                  amenities,
+                  currencyData,
+                });
+              }}>
+              <Typography style={styles.topButtonText}>Save & exit</Typography>
+            </Pressable>
+            <Pressable style={styles.topButton} onPress={goFaqs}>
+              <Typography style={styles.topButtonText}>FAQs</Typography>
+            </Pressable>
+          </View>
+        </View>
+
+        <ScrollView>
+          <Typography bold style={styles.title}>
+            Let’s set the price of your home
+          </Typography>
+          <Typography style={styles.titleText}>You can change it anytime.</Typography>
+          <FlatList data={currencyDataItem} renderItem={renderItems} />
+
+          <View style={styles.currencyContent}>
+            <View style={styles.currencyType}>
+              <Pressable onPress={() => changeCount('minus')} style={styles.changeMinus}>
+                <Typography style={styles.textMinus}>-</Typography>
+              </Pressable>
+              <TextInput
+                value={String(currencyData)}
+                onChange={e => setCurrencyData(Number(e.target.value))}
+                name="currencyData"
+                style={styles.currencyInput}
+              />
+              <Pressable onPress={() => changeCount('plus')} style={styles.changeMinus}>
+                <Typography style={styles.textMinus}>+</Typography>
+              </Pressable>
+            </View>
+            <Typography style={{textAlign: 'center'}}>per month</Typography>
+
+            <Typography style={styles.placesText}>
+              Places like yours in your area usually ranges from 200gh to 400gh
+            </Typography>
+          </View>
+        </ScrollView>
+        <View
+          style={{
+            width: wp(100),
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+          }}>
+          <View style={{paddingHorizontal: offsets.offsetB}}>
+            <DividedProgress total={4} progress={3} style={{marginBottom: offsets.offsetB}} />
+          </View>
+          <BottomActionsBar
+            leftText="Back"
+            rightText="Next"
+            rightAction={async () => {
               await saveProgress({
                 title,
                 type,
@@ -142,43 +210,11 @@ const OnboardingScreen5 = () => {
                 amenities,
                 currencyData,
               });
-            }}>
-            <Typography style={styles.topButtonText}>Save & exit</Typography>
-          </Pressable>
-          <Pressable style={styles.topButton} onPress={goFaqs}>
-            <Typography style={styles.topButtonText}>FAQs</Typography>
-          </Pressable>
-        </View>
-      </View>
-
-      <Typography bold style={styles.title}>
-        Let’s set the price of your home
-      </Typography>
-      <Typography style={styles.titleText}>You can change it anytime.</Typography>
-      <FlatList data={currencyDataItem} renderItem={renderItems} />
-
-      <View style={styles.currencyContent}>
-        <View style={styles.currencyType}>
-          <Pressable onPress={() => changeCount('minus')} style={styles.changeMinus}>
-            <Typography style={styles.textMinus}>-</Typography>
-          </Pressable>
-          <TextInput
-            value={String(currencyData)}
-            onChange={e => setCurrencyData(Number(e.target.value))}
-            name="currencyData"
-            style={styles.currencyInput}
+            }}
           />
-          <Pressable onPress={() => changeCount('plus')} style={styles.changeMinus}>
-            <Typography style={styles.textMinus}>+</Typography>
-          </Pressable>
         </View>
-        <Typography style={{textAlign: 'center'}}>per month</Typography>
-
-        <Typography style={{textAlign: 'center', paddingTop: 20, paddingBottom: 20}}>
-          Places like yours in your area usually ranges froom 200gh to 400gh
-        </Typography>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

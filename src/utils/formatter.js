@@ -44,6 +44,8 @@ export function extractDate(date) {
     weekDay: '',
     day: '1',
     month: '',
+    year: 0,
+    isNextYear: false,
   };
 
   if (!(date instanceof Date)) {
@@ -59,6 +61,19 @@ export function extractDate(date) {
   obj.day = day;
   obj.weekDay = mapWeekToText(date.getDay());
   obj.month = mapMonthToText(date.getMonth());
+  obj.year = date.getFullYear();
+
+  const now = new Date();
+
+  if (obj.year < now.getFullYear()) {
+    obj.isNextYear = true;
+  }
 
   return obj;
+}
+
+export function calculatePriceForDays(from, to, monthPrice) {
+  const diff = to.getTime() - from.getTime();
+
+  return Math.ceil((monthPrice / 31) * (diff / (1000 * 3600 * 24)));
 }

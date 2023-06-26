@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
   mainContent: {
     paddingHorizontal: offsets.offsetC,
     paddingVertical: offsets.offsetC,
-    paddingTop: Platform.OS === 'ios' ? 80 : 0,
     backgroundColor: '#fff',
     height: hp(100),
   },
@@ -64,7 +63,9 @@ export const styles = StyleSheet.create({
     marginBottom: 50,
   },
   input: {
-    height: 52,
+    height: hp(40),
+    // paddingBottom: hp(10),
+    // height: 52,
     // background: '#F7F7F7',
     // borderWidth: 1,
     // borderColor: '#B0B0B0',
@@ -80,4 +81,5 @@ export const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 16,
   },
+  listing: {},
 });

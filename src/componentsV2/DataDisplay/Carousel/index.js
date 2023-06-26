@@ -13,6 +13,7 @@ const Carousel = ({
   images,
   round,
   minimal,
+  square,
   leftAction,
   leftImage,
   rightAction,
@@ -39,7 +40,11 @@ const Carousel = ({
 
       return (
         <FastImage
-          style={[styles.image, {width: imageWidth}]}
+          style={[
+            styles.image,
+            {width: imageWidth},
+            square ? {height: imageWidth ? imageWidth - 60 : imageWidth} : undefined,
+          ]}
           source={{
             uri: item,
             headers: {Authorization: 'token'},
@@ -54,7 +59,7 @@ const Carousel = ({
   const onLayout = useCallback(event => setImageWidth(event.nativeEvent.layout.width), []);
 
   return (
-    <View style={round ? styles.round : undefined}>
+    <View style={[round ? styles.round : undefined]}>
       <FlatList
         onLayout={onLayout}
         data={images?.filter(image => !!image)}

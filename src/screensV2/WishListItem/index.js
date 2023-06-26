@@ -1,5 +1,11 @@
-import React, {useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {View, Image, Pressable, Modal} from 'react-native';
+import BottomSheet from '@gorhom/bottom-sheet';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 import {styles} from './styles';
 import Typography from '../../componentsV2/DataDisplay/Typography';
@@ -8,13 +14,24 @@ import CloseIcon from '../../../assets/data/images/icons/close-icon.png';
 import MapIcon from '../../../assets/data/images/icons/map-icon.png';
 import Heart from '../../../assets/data/images/icons/heart.svg';
 import InputFieldNew from '../../InputFieldNew';
+import MapOverlay from '../../componentsV2/Inputs/MapOverlay';
 
 const WishtListItem = ({route}) => {
   const item = route?.params.item;
   const [open, setOpen] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
   const openModal = () => {
     setOpen(!open);
   };
+
+  const openMaps = () => {
+    setMapOpen(true);
+  };
+
+  const bottomSheetRef = useRef(null);
+  const handleSheetChanges = useCallback(index => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   return (
     <View style={styles.mainContent}>
@@ -48,7 +65,7 @@ const WishtListItem = ({route}) => {
           ${item.newPrice} total
         </Typography>
       </View>
-      <Pressable style={styles.mapBlock} onPress={openModal}>
+      <Pressable style={styles.mapBlock} onPress={openMaps}>
         <View style={styles.mapContent}>
           <Typography bold style={{color: '#fff'}}>
             Map
@@ -92,6 +109,7 @@ const WishtListItem = ({route}) => {
           </View>
         </Modal>
       )}
+      {mapOpen && <MapOverlay ref={bottomSheetRef} posts={[item]} />}
     </View>
   );
 };
