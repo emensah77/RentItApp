@@ -59,7 +59,8 @@ const GuestsScreen = props => {
       colors={['#009245', '#FCEE21']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -72,7 +73,8 @@ const GuestsScreen = props => {
         <Animatable.View animation="fadeInUpBig" duration={50} style={styles.footer}>
           <ScrollView
             contentContainerStyle={{paddingBottom: 100}}
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+          >
             <View>
               {/* <View style={styles.row}>
                         <View>
@@ -258,13 +260,15 @@ const GuestsScreen = props => {
                   marginHorizontal: 20,
                   borderRadius: 25,
                   marginBottom: 60,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontSize: 20,
                     color: 'white',
                     fontWeight: 'bold',
-                  }}>
+                  }}
+                >
                   Search
                 </Text>
               </Pressable>

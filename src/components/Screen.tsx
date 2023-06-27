@@ -150,7 +150,13 @@ function ScreenWithoutScrolling(props: ScreenProps) {
 }
 
 function ScreenWithScrolling(props: ScreenProps) {
-  const {children, keyboardShouldPersistTaps = 'handled', contentContainerStyle, ScrollViewProps, style} = props as ScrollScreenProps;
+  const {
+    children,
+    keyboardShouldPersistTaps = 'handled',
+    contentContainerStyle,
+    ScrollViewProps,
+    style,
+  } = props as ScrollScreenProps;
 
   const ref = useRef<ScrollView>();
 
@@ -178,7 +184,11 @@ function ScreenWithScrolling(props: ScreenProps) {
         ScrollViewProps?.onContentSizeChange?.(w, h);
       }}
       style={[$outerStyle, ScrollViewProps?.style, style]}
-      contentContainerStyle={[$innerStyle, ScrollViewProps?.contentContainerStyle, contentContainerStyle]}
+      contentContainerStyle={[
+        $innerStyle,
+        ScrollViewProps?.contentContainerStyle,
+        contentContainerStyle,
+      ]}
     >
       {children}
     </ScrollView>
@@ -208,7 +218,11 @@ export function Screen(props: ScreenProps) {
         {...KeyboardAvoidingViewProps}
         style={[$keyboardAvoidingViewStyle, KeyboardAvoidingViewProps?.style]}
       >
-        {isNonScrolling(props.preset) ? <ScreenWithoutScrolling {...props} /> : <ScreenWithScrolling {...props} />}
+        {isNonScrolling(props.preset) ? (
+          <ScreenWithoutScrolling {...props} />
+        ) : (
+          <ScreenWithScrolling {...props} />
+        )}
       </KeyboardAvoidingView>
     </View>
   );

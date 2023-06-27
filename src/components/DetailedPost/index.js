@@ -622,11 +622,13 @@ const DetailedPost = props => {
                 <Modal
                   visible={isDetailsModalVisible}
                   transparent
-                  onRequestClose={hideDetailsModal}>
+                  onRequestClose={hideDetailsModal}
+                >
                   <Pressable onPress={hideDetailsModal} style={styles.modalOverlay}>
                     <View
                       onStartShouldSetResponder={onStartShouldSetResponder}
-                      style={styles.modal}>
+                      style={styles.modal}
+                    >
                       <Text style={styles.modalTitle}>Enter your details. </Text>
                       <Text style={styles.font14}>
                         {' '}
@@ -655,7 +657,8 @@ const DetailedPost = props => {
                         opacity={!name || !phoneNumber || !location ? 0.5 : 1}
                         disabled={!name || !phoneNumber || !location}
                         onPress={handleSubmit}
-                        style={styles.submitButton}>
+                        style={styles.submitButton}
+                      >
                         <Text style={styles.submitText}>Next</Text>
                       </Pressable>
                     </View>
@@ -717,7 +720,8 @@ const DetailedPost = props => {
                     animationType="fade"
                     transparent
                     visible={fullscreen}
-                    onRequestClose={closeFullScreen}>
+                    onRequestClose={closeFullScreen}
+                  >
                     <View style={styles.modalContainer}>
                       <TouchableOpacity onPress={closeFullScreen}>
                         <Video
@@ -794,7 +798,8 @@ const DetailedPost = props => {
                   borderRadius: 10,
                   marginRight: 10,
                 },
-              ]}>
+              ]}
+            >
               {similarHomes.length > 0 ? (
                 <View>
                   <View>

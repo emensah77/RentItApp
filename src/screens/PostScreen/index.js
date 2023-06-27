@@ -163,7 +163,8 @@ const PostScreen = ({route}) => {
           flex: 1,
           justifyContent: 'center',
           alignContent: 'center',
-        }}>
+        }}
+      >
         <SkeletonContent
           containerStyle={{paddingBottom: 0, width: '100%'}}
           animationDirection="horizontalLeft"

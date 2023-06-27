@@ -56,7 +56,8 @@ const Payment = () => {
               position: 'absolute',
               right: 0,
               bottom: -30,
-            }}>
+            }}
+          >
             More Info
           </Typography>
         </View>

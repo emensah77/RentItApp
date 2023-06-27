@@ -25,23 +25,25 @@ const SearchResultsTabNavigator = props => {
         indicatorStyle: {
           backgroundColor: 'white',
         },
-      }}>
+      }}
+    >
       <Tab.Screen
         name="list"
         options={{
           headerShown: false,
           lazy: true,
-        }}>
+        }}
+      >
         {() => <SearchResults guests={guests} dates={dates} location={location} />}
       </Tab.Screen>
-      {/*<Tab.Screen*/}
-      {/*  name="list"*/}
-      {/*  options={{*/}
-      {/*    headerTitle: '', // Set this to an empty string or null*/}
-      {/*    tabBarLabel: () => null,*/}
-      {/*  }}>*/}
-      {/*  {() => <SearchResults guests={guests} viewport={viewport} />}*/}
-      {/*</Tab.Screen>*/}
+      {/* <Tab.Screen */}
+      {/*  name="list" */}
+      {/*  options={{ */}
+      {/*    headerTitle: '', // Set this to an empty string or null */}
+      {/*    tabBarLabel: () => null, */}
+      {/*  }}> */}
+      {/*  {() => <SearchResults guests={guests} viewport={viewport} />} */}
+      {/* </Tab.Screen> */}
 
       {/* <Tab.Screen
                 name={"map"}

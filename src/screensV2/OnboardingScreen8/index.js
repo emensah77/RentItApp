@@ -3,13 +3,13 @@ import {View, Image, Pressable, ScrollView, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import IconMan from '../../../assets/data/images/man-big.png';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
@@ -152,7 +152,8 @@ const OnboardingScreen8 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}>
+          }}
+        >
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={0} style={{marginBottom: offsets.offsetB}} />
           </View>

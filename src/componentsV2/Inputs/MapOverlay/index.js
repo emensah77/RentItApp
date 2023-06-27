@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import BottomSheet from '@gorhom/bottom-sheet';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Pressable, View} from 'react-native';
 import CustomMarker from '../../../components/CustomMarker';
 import {styles} from './styles';
 import CircleButton from '../CircleButton';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {Pressable, View} from 'react-native';
 
 const MapOverlay = ({posts, bottomSheetRef, handleSheetChanges, onClose}) => {
   const map = useRef();
@@ -32,7 +32,8 @@ const MapOverlay = ({posts, bottomSheetRef, handleSheetChanges, onClose}) => {
       ref={bottomSheetRef}
       index={1}
       snapPoints={snapPoints}
-      onChange={handleSheetChanges}>
+      onChange={handleSheetChanges}
+    >
       <>
         <View style={styles.top_actions}>
           <CircleButton
@@ -55,7 +56,8 @@ const MapOverlay = ({posts, bottomSheetRef, handleSheetChanges, onClose}) => {
               longitude: -0.183158678544458,
               latitudeDelta: 0.8,
               longitudeDelta: 0.8,
-            }}>
+            }}
+          >
             {posts.map(place => (
               <CustomMarker
                 isSelected

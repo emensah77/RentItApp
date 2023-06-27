@@ -105,21 +105,24 @@ const EFeedback = ({route}) => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: Platform.OS === 'ios' ? 50 : 25,
             width: '100%',
-          }}>
+          }}
+        >
           <View>
             <Text
               style={{
                 fontSize: 24,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}>
+              }}
+            >
               Feedback
             </Text>
           </View>
@@ -175,7 +178,8 @@ const EFeedback = ({route}) => {
                 onPress={submitHandler}
                 style={{margin: 2, marginBottom: 40}}
                 appearance="outline"
-                status="primary">
+                status="primary"
+              >
                 Submit
               </Button>
             </View>

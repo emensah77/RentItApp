@@ -27,9 +27,9 @@ const ConfirmCancellation = () => {
             Confirm cancellation
           </Typography>
           <RoomCardHorizontal
-            title={'Stunning Family home  close to the city centre'}
-            infoDateText={'February 13 - February 14, 2023'}
-            infoText={'1 adult'}
+            title="Stunning Family home  close to the city centre"
+            infoDateText="February 13 - February 14, 2023"
+            infoText="1 adult"
           />
           <Divider />
           <View style={styles.cancellationPolicy}>
@@ -59,10 +59,10 @@ const ConfirmCancellation = () => {
             <Typography style={styles.refundDetailsTitle} bold>
               Refund details
             </Typography>
-            <RefundDetailsItem title={'Accommodation'} price={'$32.00'} paid={'$32.00'} />
-            <RefundDetailsItem title={'Cleaning fee'} price={'$10.00'} paid={'$10.00'} />
-            <RefundDetailsItem title={'Service fee'} price={'$5.93'} paid={'$5.93'} />
-            <RefundDetailsItem title={'Taxes'} price={'$1.26'} paid={'$1.26'} />
+            <RefundDetailsItem title="Accommodation" price="$32.00" paid="$32.00" />
+            <RefundDetailsItem title="Cleaning fee" price="$10.00" paid="$10.00" />
+            <RefundDetailsItem title="Service fee" price="$5.93" paid="$5.93" />
+            <RefundDetailsItem title="Taxes" price="$1.26" paid="$1.26" />
             <Divider />
             <View
               style={{
@@ -70,7 +70,8 @@ const ConfirmCancellation = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 paddingTop: 16,
-              }}>
+              }}
+            >
               <Typography variant="large" bold>
                 Total refund
               </Typography>

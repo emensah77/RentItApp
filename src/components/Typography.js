@@ -33,7 +33,8 @@ const Typography = props => {
         position ? {alignSelf: position} : {},
         weight ? {fontWeight: weight} : {},
         size ? {fontSize: size} : {},
-      ]}>
+      ]}
+    >
       {children}
     </Text>
   );

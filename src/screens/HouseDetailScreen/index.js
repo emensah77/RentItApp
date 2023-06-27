@@ -267,7 +267,8 @@ const HouseDetailScreen = props => {
       colors={['#ff0084', '#33001b']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -278,10 +279,12 @@ const HouseDetailScreen = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}>
+        style={styles.footer}
+      >
         <ScrollView
           contentContainerStyle={{paddingBottom: 200}}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <FastImage
             style={styles.image}
             source={{
@@ -301,7 +304,8 @@ const HouseDetailScreen = props => {
                 fontSize: 16,
                 paddingBottom: 20,
                 fontFamily: 'Montserrat-Bold',
-              }}>
+              }}
+            >
               Reservation Details
             </Text>
             <Text style={{paddingBottom: 5, fontFamily: 'Montserrat-Bold'}}>Confirmation Code</Text>
@@ -333,7 +337,8 @@ const HouseDetailScreen = props => {
                 fontSize: 16,
                 paddingBottom: 15,
                 fontFamily: 'Montserrat-Bold',
-              }}>
+              }}
+            >
               Getting there
             </Text>
             <Text
@@ -341,7 +346,8 @@ const HouseDetailScreen = props => {
                 fontSize: 12,
                 paddingBottom: 5,
                 fontFamily: 'Montserrat-Bold',
-              }}>
+              }}
+            >
               Click on the map to get directions to your new home
             </Text>
 
@@ -358,11 +364,13 @@ const HouseDetailScreen = props => {
                 longitude: homelongitude,
                 latitudeDelta: 0.8,
                 longitudeDelta: 0.8,
-              }}>
+              }}
+            >
               <Marker
                 coordinate={{latitude: homelatitude, longitude: homelongitude}}
                 title="Home"
-                description="This is where your house is located">
+                description="This is where your house is located"
+              >
                 <View
                   style={{
                     borderRadius: 100,
@@ -371,7 +379,8 @@ const HouseDetailScreen = props => {
                     width: 50,
                     height: 50,
                     backgroundColor: 'white',
-                  }}>
+                  }}
+                >
                   <Fontisto name="home" size={25} color="blue" />
                 </View>
               </Marker>

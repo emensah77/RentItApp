@@ -13,9 +13,7 @@ const Reserve = ({topComponent, bottomComponent, price, currency, onPress, butto
       <View style={styles.reserveBlockInfo}>
         {!topComponent && (
           <Typography variant="large" bold>
-            {formatCurrency(currency)}
-            {` `}
-            {price} / month
+            {formatCurrency(currency)} {price} / month
           </Typography>
         )}
         {!bottomComponent && (

@@ -362,12 +362,12 @@ const PostScreen = ({route}) => {
                 secondary={`${post.maxGuests} guests - ${post.bedroom} bedrooms - ${post.bed} beds - ${post.bathroomNumber} bathrooms`}
               />
               <Divider />
-              {/*<ListItemText*/}
-              {/*  primary="Self check-in"*/}
-              {/*  secondary="Check yourself in with the lockbox."*/}
-              {/*  reverse*/}
-              {/*  icon={<DoorIcon width={24} height={26} />}*/}
-              {/*/>*/}
+              {/* <ListItemText */}
+              {/*  primary="Self check-in" */}
+              {/*  secondary="Check yourself in with the lockbox." */}
+              {/*  reverse */}
+              {/*  icon={<DoorIcon width={24} height={26} />} */}
+              {/* /> */}
               {isSuperhost && (
                 <ListItemText
                   primary={`${post.homeownerName} is a Superhost`}
@@ -396,14 +396,16 @@ const PostScreen = ({route}) => {
               </Typography>
               <Typography
                 // onPress={() => {}}
-                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}
+              >
                 Learn more
               </Typography>
               <Divider />
               <Typography style={{marginTop: offsets.offsetA}}>{post?.description}</Typography>
               <Typography
                 // onPress={() => {}}
-                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}
+              >
                 Learn more
               </Typography>
               <Divider />
@@ -451,12 +453,12 @@ const PostScreen = ({route}) => {
                   icon={<Verified width={24} height={26} />}
                 />
               )}
-              {/*<Button*/}
-              {/*  variant="outlined"*/}
-              {/*  text="Show All 54 amenities"*/}
-              {/*  onPress={goReviewScreen}*/}
-              {/*  style={{marginBottom: 15, marginTop: 15}}*/}
-              {/*/>*/}
+              {/* <Button */}
+              {/*  variant="outlined" */}
+              {/*  text="Show All 54 amenities" */}
+              {/*  onPress={goReviewScreen} */}
+              {/*  style={{marginBottom: 15, marginTop: 15}} */}
+              {/* /> */}
               {(post.furnished === 'Yes' ||
                 post.negotiable === 'Yes' ||
                 post.verified === 'Yes') && <Divider />}
@@ -492,22 +494,22 @@ const PostScreen = ({route}) => {
                 <Typography variant="xlarge" bold style={{width: 200}}>
                   Hosted by {post.homeownerName}
                 </Typography>
-                {/*<Typography variant="small" style={{color: '#717171'}}>*/}
-                {/*  Joined in February 2015*/}
-                {/*</Typography>*/}
+                {/* <Typography variant="small" style={{color: '#717171'}}> */}
+                {/*  Joined in February 2015 */}
+                {/* </Typography> */}
                 {isSuperhost && <Text style={styles.hostText}>Profesional Host</Text>}
               </View>
-              {/*<FlatList data={data} renderItem={hostItem} keyExtractor={keyExtractor} />*/}
-              {/*<Typography style={{marginTop: 19}}>*/}
-              {/*  Hey! We are Matt and Ben - owners of UiClones - the best resource for editable user*/}
-              {/*  interfaces of the worlds best a...*/}
-              {/*</Typography>*/}
-              {/*<View style={styles.coHosts}>*/}
-              {/*  <Typography>Co-hosts: </Typography>*/}
-              {/*  <View style={styles.imgHosts}>*/}
-              {/*    <Image source={Icon4} />*/}
-              {/*  </View>*/}
-              {/*</View>*/}
+              {/* <FlatList data={data} renderItem={hostItem} keyExtractor={keyExtractor} /> */}
+              {/* <Typography style={{marginTop: 19}}> */}
+              {/*  Hey! We are Matt and Ben - owners of UiClones - the best resource for editable user */}
+              {/*  interfaces of the worlds best a... */}
+              {/* </Typography> */}
+              {/* <View style={styles.coHosts}> */}
+              {/*  <Typography>Co-hosts: </Typography> */}
+              {/*  <View style={styles.imgHosts}> */}
+              {/*    <Image source={Icon4} /> */}
+              {/*  </View> */}
+              {/* </View> */}
               {isSuperhost && (
                 <>
                   <Typography variant="large" bold style={{marginTop: 40}}>
@@ -520,10 +522,10 @@ const PostScreen = ({route}) => {
                 </>
               )}
 
-              {/*<Typography style={{marginTop: 16}}>Repsonse rate: 100%</Typography>*/}
-              {/*<Typography style={{marginTop: 8, marginBottom: 20}}>*/}
-              {/*  Response time: within an hour*/}
-              {/*</Typography>*/}
+              {/* <Typography style={{marginTop: 16}}>Repsonse rate: 100%</Typography> */}
+              {/* <Typography style={{marginTop: 8, marginBottom: 20}}> */}
+              {/*  Response time: within an hour */}
+              {/* </Typography> */}
               <Button variant="outlined" text="Contact host" onPress={() => {}} />
               <Typography style={{marginTop: 30}}>
                 To protect your payment, never transfer money or communicate outside of the Rentit

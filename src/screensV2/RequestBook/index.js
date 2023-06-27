@@ -1,6 +1,7 @@
 import React from 'react';
 import {Pressable, View, ScrollView, Image} from 'react-native';
 
+import {useSelector} from 'react-redux';
 import {styles} from './styles';
 
 import Typography from '../../componentsV2/DataDisplay/Typography';
@@ -13,7 +14,6 @@ import PayPalIcon from '../../../assets/data/images/icons/paypal-icon.png';
 import CardIcon from '../../../assets/data/images/icons/card-icon.png';
 import PlusIcon from '../../../assets/data/images/icons/plus-grey-icon.png';
 import RentitGuaranteeImg from '../../../assets/data/images/RentitGuarantee.png';
-import {useSelector} from 'react-redux';
 import {postSelectors} from '../../redux/post.slice';
 
 const RequestBook = () => {
@@ -28,8 +28,8 @@ const RequestBook = () => {
           imageUrl={post.images[0]}
           title={post.title}
           infoDateText={post.description}
-          infoBottomText={'4.76(28)'}
-          infoSuperhost={'  Superhost'}
+          infoBottomText="4.76(28)"
+          infoSuperhost="  Superhost"
         />
         <Divider />
         <View style={styles.rentitImgTitle}>
@@ -37,7 +37,7 @@ const RequestBook = () => {
           <Image source={RentitGuaranteeImg} style={styles.img} />
         </View>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography style={styles.title} bold>
           Your trip
@@ -63,13 +63,13 @@ const RequestBook = () => {
           </View>
         </View>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography style={styles.title} bold>
           Choose how to pay
         </Typography>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography style={styles.title} bold>
           Price details
@@ -104,7 +104,7 @@ const RequestBook = () => {
           </Pressable>
         </View>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography style={styles.title} bold>
           Pay with
@@ -133,7 +133,7 @@ const RequestBook = () => {
           </Pressable>
         </View>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography style={styles.title} bold>
           Required for your trip
@@ -165,7 +165,7 @@ const RequestBook = () => {
           </Pressable>
         </View>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography style={styles.title} bold>
           Cancellation policy
@@ -179,7 +179,7 @@ const RequestBook = () => {
           </Pressable>
         </Typography>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <View style={styles.reservationInfo}>
           <Image source={DateClockIcon} width={30} height={28} style={{marginRight: 16}} />
@@ -192,7 +192,7 @@ const RequestBook = () => {
           </Typography>
         </View>
       </View>
-      <View style={styles.bottomSpace}></View>
+      <View style={styles.bottomSpace} />
       <View style={styles.content}>
         <Typography variant="default" style={{marginBottom: 20}}>
           By selecting the button below, I agree to the

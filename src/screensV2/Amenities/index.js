@@ -72,7 +72,8 @@ const Amenities = () => {
         <Typography
           variant="headingLarge"
           bold
-          style={{marginTop: offsets.offsetC, marginBottom: 40}}>
+          style={{marginTop: offsets.offsetC, marginBottom: 40}}
+        >
           Amenities
         </Typography>
         <Typography variant="large" bold style={{marginBottom: 20}}>

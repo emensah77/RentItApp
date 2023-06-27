@@ -51,32 +51,37 @@ const House = props => {
         marginHorizontal: 20,
         paddingBottom: 20,
         justifyContent: 'flex-start',
-      }}>
+      }}
+    >
       <Image source={{uri: item.image}} style={{width: 150, height: 150, borderRadius: 15}} />
       <View style={{flex: 1, marginHorizontal: 15}}>
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
           }}
-          numberOfLines={1}>
+          numberOfLines={1}
+        >
           {item.title}
         </Text>
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
-          }}>
+          }}
+        >
           GH₵ {item.amount}
         </Text>
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
-          }}>
+          }}
+        >
           {item.bed} bedrooms
         </Text>
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
-          }}>
+          }}
+        >
           Payment Status: {item?.paymentStatus}
         </Text>
       </View>
@@ -146,7 +151,8 @@ const House = props => {
           backgroundColor: '#fff',
           flex: 1,
           paddingBottom: 180,
-        }}>
+        }}
+      >
         <StatusBar hidden />
         <LinearGradient
           colors={['#ff0084', '#33001b']}
@@ -161,14 +167,16 @@ const House = props => {
               paddingHorizontal: 20,
               justifyContent: 'center',
             },
-          ]}>
+          ]}
+        >
           <View style={{paddingTop: 15}}>
             <Text
               style={{
                 fontSize: 32,
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
-              }}>
+              }}
+            >
               Your Home
             </Text>
           </View>
@@ -179,7 +187,8 @@ const House = props => {
             style={{
               fontFamily: 'Montserrat-Bold',
               fontSize: 20,
-            }}>
+            }}
+          >
             Homes you have rented
           </Text>
         </View>
@@ -195,7 +204,8 @@ const House = props => {
         style={{
           backgroundColor: '#fff',
           flex: 1,
-        }}>
+        }}
+      >
         <StatusBar hidden />
         <LinearGradient
           colors={['#ff0084', '#33001b']}
@@ -210,14 +220,16 @@ const House = props => {
               paddingHorizontal: 20,
               justifyContent: 'center',
             },
-          ]}>
+          ]}
+        >
           <View style={{paddingTop: 15}}>
             <Text
               style={{
                 fontSize: 32,
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
-              }}>
+              }}
+            >
               Your Home
             </Text>
           </View>
@@ -227,7 +239,8 @@ const House = props => {
             style={{
               fontFamily: 'Montserrat-Bold',
               fontSize: 20,
-            }}>
+            }}
+          >
             No Home yet
           </Text>
           <View style={{padding: 10}}>
@@ -249,13 +262,15 @@ const House = props => {
               height: '50%',
 
               borderRadius: 10,
-            }}>
+            }}
+          >
             <FontAwesomeIcon icon={faHouseUser} size={75} color="black" />
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: 'Montserrat-Bold',
-              }}>
+              }}
+            >
               Find your next Home
             </Text>
           </TouchableOpacity>

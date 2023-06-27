@@ -4,12 +4,12 @@ import auth from '@react-native-firebase/auth';
 
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
@@ -93,10 +93,12 @@ const OnboardingScreen5 = () => {
       return (
         <Pressable
           style={[styles.currencyBlock, currencyItem === item.id ? styles.currencySelect : '']}
-          onPress={() => changeItem(item.id)}>
+          onPress={() => changeItem(item.id)}
+        >
           <Typography
             style={[currencyItem === item.id ? styles.selectText : '', styles.textStyle]}
-            bold>
+            bold
+          >
             {item.text}
           </Typography>
         </Pressable>
@@ -132,7 +134,8 @@ const OnboardingScreen5 = () => {
                   amenities,
                   currencyData,
                 });
-              }}>
+              }}
+            >
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -176,7 +179,8 @@ const OnboardingScreen5 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}>
+          }}
+        >
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={3} style={{marginBottom: offsets.offsetB}} />
           </View>

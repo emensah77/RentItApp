@@ -68,21 +68,24 @@ const Review = props => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: Platform.OS === 'ios' ? 50 : 25,
             width: '100%',
-          }}>
+          }}
+        >
           <View>
             <Text
               style={{
                 fontSize: 24,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}>
+              }}
+            >
               Reviews
             </Text>
           </View>
@@ -108,10 +111,12 @@ const Review = props => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   paddingTop: 20,
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   style={{flexDirection: 'row', alignItems: 'center'}}
-                  onPress={() => navigation.navigate('Feedback')}>
+                  onPress={() => navigation.navigate('Feedback')}
+                >
                   <FontAwesomeIcon icon={faPlusCircle} size={18} color="blue" />
                   <Text
                     style={{
@@ -119,7 +124,8 @@ const Review = props => {
                       fontSize: 16,
                       fontWeight: 'bold',
                       color: 'blue',
-                    }}>
+                    }}
+                  >
                     Write a review
                   </Text>
                 </TouchableOpacity>

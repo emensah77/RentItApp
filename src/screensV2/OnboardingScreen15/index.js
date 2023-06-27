@@ -6,6 +6,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import firestore from '@react-native-firebase/firestore';
 import axios from 'axios';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
@@ -15,7 +16,6 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import PlusIcon from '../../../assets/data/images/icons/plus-icon.svg';
 import CameraIcon from '../../../assets/data/images/icons/camera-icon.svg';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
@@ -304,7 +304,8 @@ const OnboardingScreen15 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}>
+          }}
+        >
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={2} style={{marginBottom: offsets.offsetB}} />
           </View>

@@ -75,7 +75,8 @@ const OnboardingScreen2 = props => {
       colors={['blue', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -89,7 +90,8 @@ const OnboardingScreen2 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}>
+        style={styles.footer}
+      >
         <ScrollView>
           <View style={styles.row}>
             <View>
@@ -116,7 +118,8 @@ const OnboardingScreen2 = props => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Pressable
                 onPress={() => setbedroom(Math.max(0, bedroom - 1))}
-                style={styles.button1}>
+                style={styles.button1}
+              >
                 <Text style={{fontSize: 20, color: 'black'}}>-</Text>
               </Pressable>
 
@@ -136,7 +139,8 @@ const OnboardingScreen2 = props => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Pressable
                 onPress={() => setbathroom(Math.max(0, bathroom - 1))}
-                style={styles.button1}>
+                style={styles.button1}
+              >
                 <Text style={{fontSize: 20, color: 'black'}}>-</Text>
               </Pressable>
 
@@ -175,13 +179,15 @@ const OnboardingScreen2 = props => {
               alignItems: 'center',
               paddingHorizontal: 20,
               paddingVertical: 20,
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
                 fontSize: 18,
-              }}>
+              }}
+            >
               Next
             </Text>
           </TouchableOpacity>

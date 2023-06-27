@@ -144,7 +144,8 @@ const ProfileScreen = ({route}) => {
       style={{
         backgroundColor: '#fff',
         flex: 1,
-      }}>
+      }}
+    >
       <StatusBar hidden />
 
       <Modal
@@ -160,14 +161,16 @@ const ProfileScreen = ({route}) => {
         onRequestClose={() => {
           navigation.goBack();
           console.log('Modal has been closed.');
-        }}>
+        }}
+      >
         <View style={{flex: 1}}>
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
               flexDirection: 'column',
               justifyContent: 'space-evenly',
-            }}>
+            }}
+          >
             <View>
               <Pressable onPress={() => setmodalvisible(!modalvisible)} style={{margin: 10}}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
@@ -310,7 +313,8 @@ const ProfileScreen = ({route}) => {
                 borderRadius: 10,
                 alignItems: 'center',
                 backgroundColor: 'black',
-              }}>
+              }}
+            >
               <Text style={{paddingTop: 10, color: 'white'}}>Submit</Text>
             </TouchableOpacity>
           </ScrollView>
@@ -329,24 +333,28 @@ const ProfileScreen = ({route}) => {
             borderBottomRightRadius: 20,
             paddingHorizontal: 20,
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: Platform.OS === 'ios' ? 50 : 25,
             width: '100%',
-          }}>
+          }}
+        >
           <View
             style={{
               width: '50%',
-            }}>
+            }}
+          >
             <Text
               style={{
                 fontSize: 24,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}>
+              }}
+            >
               Hi {user?._user?.displayName}
             </Text>
           </View>

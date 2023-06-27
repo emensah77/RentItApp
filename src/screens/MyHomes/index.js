@@ -1,6 +1,15 @@
 import {API, graphqlOperation} from 'aws-amplify';
 import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, TouchableOpacity, StatusBar, View, Text, StyleSheet, Platform} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  TouchableOpacity,
+  StatusBar,
+  View,
+  Text,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
@@ -75,7 +84,9 @@ const MyHomes = () => {
         <ActivityIndicator size="large" color="blue" />
       </View>
     ) : (
-      <Text style={{alignSelf: 'center', fontSize: 17, fontWeight: 'bold'}}>Yay! you have seen it all</Text>
+      <Text style={{alignSelf: 'center', fontSize: 17, fontWeight: 'bold'}}>
+        Yay! you have seen it all
+      </Text>
     );
 
   return (

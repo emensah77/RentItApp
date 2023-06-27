@@ -45,7 +45,8 @@ const Welcome = () => {
           showsButtons={false}
           dot={<></>}
           activeDot={<></>}
-          onIndexChanged={setIndex}>
+          onIndexChanged={setIndex}
+        >
           <Image src={one} width={width} height={0.7 * height} mode="stretch" />
           <Image src={two} width={width} height={0.7 * height} mode="stretch" />
           <Image src={three} width={width} height={0.7 * height} mode="stretch" />
@@ -61,7 +62,8 @@ const Welcome = () => {
             height={26}
             weight="200"
             color="#194CC3"
-            accessibilityLabel="welcomemessage">
+            accessibilityLabel="welcomemessage"
+          >
             Buy, Sell, Rent a Home
           </Typography>
         </Container>

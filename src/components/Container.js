@@ -33,7 +33,8 @@ const Container = props => {
         height ? {maxHeight: height, height} : {},
         color ? {backgroundColor: color} : {},
         position ? {alignSelf: position} : {},
-      ]}>
+      ]}
+    >
       {children}
     </Pressable>
   );

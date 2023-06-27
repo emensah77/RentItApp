@@ -96,7 +96,8 @@ function StarButton(props) {
       activeOpacity={activeOpacity}
       disabled={disabled}
       style={buttonStyle}
-      onPress={disabled ? () => {} : onButtonPress}>
+      onPress={disabled ? () => {} : onButtonPress}
+    >
       {renderIcon()}
     </TouchableOpacity>
   );

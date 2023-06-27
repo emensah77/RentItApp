@@ -72,24 +72,28 @@ const ManageProfile = () => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}>
+        ]}
+      >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: Platform.OS === 'ios' ? 50 : 25,
             width: '100%',
-          }}>
+          }}
+        >
           <View
             style={{
               width: '50%',
-            }}>
+            }}
+          >
             <Text
               style={{
                 fontSize: 24,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}>
+              }}
+            >
               {profile?.displayName}
             </Text>
           </View>
@@ -114,7 +118,8 @@ const ManageProfile = () => {
       <View style={{padding: 15, flex: 1}}>
         <ScrollView
           contentContainerStyle={{paddingBottom: 20}}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={{...styles.label, marginTop: 10}}>Display Name</Text>
           <TextInput
             value={name}
@@ -158,13 +163,15 @@ const ManageProfile = () => {
               borderRadius: 10,
               alignSelf: 'center',
               flex: 1,
-            }}>
+            }}
+          >
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: 'Montserrat-Bold',
                 color: 'white',
-              }}>
+              }}
+            >
               Submit
             </Text>
           </TouchableOpacity>

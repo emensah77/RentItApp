@@ -26,7 +26,8 @@ const ListNotification = props => {
             borderRadius: 10,
           },
         ]}
-        level="1">
+        level="1"
+      >
         <View style={{backgroundColor: 'pink', borderRadius: 10}}>
           <Image source={{uri: notification?.image}} style={[styles.avatar, {borderRadius: 10}]} />
         </View>
@@ -35,7 +36,8 @@ const ListNotification = props => {
             marginHorizontal: 10,
             flex: 1,
             justifyContent: 'space-around',
-          }}>
+          }}
+        >
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text category="h6">{notification.title?.slice(0, 15)}</Text>
             <Text category="label">{moment(new Date(notification?.createdAt)).fromNow()}</Text>

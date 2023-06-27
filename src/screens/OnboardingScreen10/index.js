@@ -91,7 +91,8 @@ const OnboardingScreen10 = props => {
       colors={['purple', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -105,7 +106,8 @@ const OnboardingScreen10 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}>
+        style={styles.footer}
+      >
         <ScrollView>
           <FlatList
             data={items}
@@ -126,7 +128,8 @@ const OnboardingScreen10 = props => {
                   paddingHorizontal: 20,
                   marginHorizontal: 20,
                   flex: 1,
-                }}>
+                }}
+              >
                 <View style={{justifyContent: 'center'}}>
                   <Text style={{fontWeight: 'bold'}}>{item.title}</Text>
                 </View>
@@ -156,13 +159,15 @@ const OnboardingScreen10 = props => {
               alignItems: 'center',
               paddingHorizontal: 20,
               paddingVertical: 20,
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
                 fontSize: 18,
-              }}>
+              }}
+            >
               Next
             </Text>
           </TouchableOpacity>

@@ -1,11 +1,11 @@
 import React from 'react';
 import {View} from 'react-native';
-import Typography from '../Typography';
-import {styles} from './styles';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Typography from '../Typography';
+import {styles} from './styles';
 
 const PrivacyItem = ({item}) => {
   return (

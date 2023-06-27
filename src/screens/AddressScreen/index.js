@@ -220,7 +220,8 @@ const AddressScreen = props => {
         animationType="none"
         visible={isLoading}
         style={{zIndex: 1100}}
-        onRequestClose={() => {}}>
+        onRequestClose={() => {}}
+      >
         <View
           style={{
             flex: 1,
@@ -229,7 +230,8 @@ const AddressScreen = props => {
             justifyContent: 'space-around',
             backgroundColor: '#rgba(0, 0, 0, 0.5)',
             zIndex: 1000,
-          }}>
+          }}
+        >
           <View
             style={{
               backgroundColor: '#FFFFFF',
@@ -239,7 +241,8 @@ const AddressScreen = props => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-around',
-            }}>
+            }}
+          >
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>Uploading...</Text>
 
             <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
@@ -295,7 +298,8 @@ const AddressScreen = props => {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}>
+      contentContainerStyle={{justifyContent: 'center', alignItems: 'center'}}
+    >
       <Modal
         style={{
           flex: 1,
@@ -309,14 +313,16 @@ const AddressScreen = props => {
         onRequestClose={() => {
           navigation.goBack();
           console.log('Modal has been closed.');
-        }}>
+        }}
+      >
         <View style={{flex: 1}}>
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
               flexDirection: 'column',
               justifyContent: 'space-evenly',
-            }}>
+            }}
+          >
             <View>
               <Pressable onPress={() => navigation.goBack()} style={{margin: 10}}>
                 <FontAwesomeIcon icon={faArrowLeft} size={20} />
@@ -338,7 +344,8 @@ const AddressScreen = props => {
                 alignSelf: 'center',
                 width: 250,
                 height: 35,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   marginVertical: 5,
@@ -346,7 +353,8 @@ const AddressScreen = props => {
                   fontSize: 14,
                   fontWeight: 'bold',
                   color: 'white',
-                }}>
+                }}
+              >
                 Take a picture of your ID Card
               </Text>
             </Pressable>
@@ -406,7 +414,8 @@ const AddressScreen = props => {
                 borderRadius: 10,
                 alignItems: 'center',
                 backgroundColor: 'black',
-              }}>
+              }}
+            >
               <Text style={{paddingTop: 10, color: 'white'}}>Submit</Text>
             </TouchableOpacity>
           </ScrollView>
@@ -435,7 +444,8 @@ const AddressScreen = props => {
             marginBottom: 10,
             fontFamily: 'Montserrat-Bold',
             alignSelf: 'center',
-          }}>
+          }}
+        >
           Your Rent Details
         </Text>
         <Text style={{marginBottom: 10, fontFamily: 'Montserrat'}}>
@@ -521,7 +531,8 @@ const AddressScreen = props => {
           margin: 10,
           flexDirection: 'row',
           justifyContent: 'space-between',
-        }}>
+        }}
+      >
         <View style={{padding: 20, flex: 1}}>
           {/* <Text style={{paddingBottom:10, fontFamily:'Montserrat-Regular'}}>Years</Text> */}
           <Text style={{paddingBottom: 10, fontFamily: 'Montserrat-Regular'}}>Months</Text>
@@ -539,7 +550,8 @@ const AddressScreen = props => {
               paddingBottom: 10,
               fontFamily: 'Montserrat-Regular',
               alignSelf: 'center',
-            }}>
+            }}
+          >
             {noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : '0'}
           </Text>
           <Text
@@ -547,7 +559,8 @@ const AddressScreen = props => {
               paddingBottom: 10,
               fontFamily: 'Montserrat-Regular',
               alignSelf: 'center',
-            }}>
+            }}
+          >
             {noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).weeks : '0'}
           </Text>
           <Text
@@ -555,7 +568,8 @@ const AddressScreen = props => {
               paddingBottom: 10,
               fontFamily: 'Montserrat-Regular',
               alignSelf: 'center',
-            }}>
+            }}
+          >
             {noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).days : '0'}
           </Text>
           <Text
@@ -563,7 +577,8 @@ const AddressScreen = props => {
               paddingBottom: 10,
               fontFamily: 'Montserrat-Bold',
               alignSelf: 'center',
-            }}>
+            }}
+          >
             {post.currency === null ? 'GH₵' : post.currency[0] === 'usd' ? '$' : 'GH₵'}
 
             {/* {(Math.round(amount*(years+(months/12)))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} */}
@@ -583,7 +598,8 @@ const AddressScreen = props => {
         <Text
           style={{
             fontFamily: 'Montserrat-Regular',
-          }}>
+          }}
+        >
           Free cancellation before you move in to the house. Once you move in, cancel and get a
           refund , minus the number of days you have already stayed in the house.
         </Text>
@@ -617,12 +633,14 @@ const AddressScreen = props => {
             homeWeeks: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).weeks : null,
             homeDays: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : null,
           })
-        }>
+        }
+      >
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
             color: 'white',
-          }}>
+          }}
+        >
           Pay with Mobile Money
         </Text>
       </TouchableOpacity>
@@ -654,12 +672,14 @@ const AddressScreen = props => {
             homeWeeks: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).weeks : null,
             homeDays: noOfSelectedDays > 0 ? convertDays(noOfSelectedDays).months : null,
           })
-        }>
+        }
+      >
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
             color: 'white',
-          }}>
+          }}
+        >
           Pay with ATM Card
         </Text>
       </TouchableOpacity>

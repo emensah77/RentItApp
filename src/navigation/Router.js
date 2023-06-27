@@ -75,7 +75,8 @@ const Router = () => {
       onStateChange={onStateChange}
       linking={linking}
       onP
-      fallback={<ActivityIndicator color="blue" size="large" />}>
+      fallback={<ActivityIndicator color="blue" size="large" />}
+    >
       <AppStack />
     </NavigationContainer>
   );

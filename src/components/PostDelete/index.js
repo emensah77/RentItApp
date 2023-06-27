@@ -52,7 +52,8 @@ const PostDelete = props => {
             position: 'absolute',
             backgroundColor: 'transparent',
           }}
-          onPress={handleClick}>
+          onPress={handleClick}
+        >
           <Fontisto name="heart" size={30} color={isLike ? colorStyle : 'yellow'} />
         </Pressable>
       </View>

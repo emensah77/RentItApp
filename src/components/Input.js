@@ -89,7 +89,8 @@ const Input = props => {
           suffix={suffix}
           disabled={disabled}
           groupBefore={groupBefore}
-          groupAfter={groupAfter}>
+          groupAfter={groupAfter}
+        >
           {value || label}
         </Button>
         {showDatePicker && (

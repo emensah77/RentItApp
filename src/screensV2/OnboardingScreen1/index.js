@@ -3,6 +3,7 @@ import {View, Image, Pressable, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
@@ -11,7 +12,6 @@ import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import IconWoman from '../../../assets/data/images/woman-big.png';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import {offsets} from '../../styles/globalStyles';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
 
 const OnboardingScreen1 = () => {
@@ -56,7 +56,8 @@ const OnboardingScreen1 = () => {
         <View style={styles.topButtons}>
           <Pressable
             style={styles.topButton}
-            onPress={() => navigation.navigate('OnboardingScreen12')}>
+            onPress={() => navigation.navigate('OnboardingScreen12')}
+          >
             <Typography style={styles.topButtonText}>Save & exit</Typography>
           </Pressable>
           <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -83,7 +84,8 @@ const OnboardingScreen1 = () => {
           position: 'absolute',
           bottom: 0,
           left: 0,
-        }}>
+        }}
+      >
         <View style={{paddingHorizontal: offsets.offsetB}}>
           <DividedProgress total={6} progress={1} style={{marginBottom: offsets.offsetB}} />
         </View>

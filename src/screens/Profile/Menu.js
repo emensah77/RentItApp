@@ -191,7 +191,8 @@ const Menu = () => {
             Show Profile
           </Typography>
         </Typography>
-      }>
+      }
+    >
       <CardDisplay
         leftImageWidth={37.37}
         leftImageHeight={33.84}

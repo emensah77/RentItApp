@@ -16,7 +16,8 @@ const PlusMinus = ({value = 0, min, max, onChange}) => {
           if (min === undefined || value - 1 >= min) {
             onChange(value - 1);
           }
-        }}>
+        }}
+      >
         <Typography>-</Typography>
       </Pressable>
       <Typography style={styles.value}>{value}</Typography>
@@ -29,7 +30,8 @@ const PlusMinus = ({value = 0, min, max, onChange}) => {
           if (max === undefined || value + 1 <= max) {
             onChange(value + 1);
           }
-        }}>
+        }}
+      >
         <Typography>+</Typography>
       </Pressable>
     </View>

@@ -3,7 +3,7 @@ import {View} from 'react-native-animatable';
 
 import {styles} from './styles';
 
-import Typography from '../../../componentsV2/DataDisplay/Typography';
+import Typography from '../Typography';
 
 // import Star from '../../../../assets/data/images/icons/star.svg';
 // import Check from '../../../../assets/data/images/icons/listing-small.svg';

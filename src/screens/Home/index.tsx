@@ -240,7 +240,8 @@ const HomeScreen = () => {
         backgroundPermissionRationale: {
           title:
             '{applicationName} uses your location to provide you with relevant recommendations about homes near you, and notifications for price changes in homes near you, including when the app is in the background.',
-          message: 'If you will like to receive these recommendations and notifications, choose Allow all the time.',
+          message:
+            'If you will like to receive these recommendations and notifications, choose Allow all the time.',
           positiveAction: '{backgroundPermissionOptionLabel}',
           negativeAction: 'Cancel',
         },
@@ -471,13 +472,17 @@ const HomeScreen = () => {
       return true;
     }
 
-    const hasPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
 
     if (hasPermission) {
       return true;
     }
 
-    const newStatus = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    const newStatus = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
 
     if (newStatus === PermissionsAndroid.RESULTS.GRANTED) {
       return true;
@@ -648,33 +653,39 @@ const HomeScreen = () => {
     }
   }, [fetchingMore, latitude, longitude, nextToken, personalizedHomes, posts, status]);
 
-  const personalizedHomes = useCallback(async (userLatitude, userLongitude, homeType, newNextToken) => {
-    try {
-      // setIsLoadingType(true);
-      const response = await fetch('https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userLocation: {
-            latitude: userLatitude,
-            longitude: userLongitude,
+  const personalizedHomes = useCallback(
+    async (userLatitude, userLongitude, homeType, newNextToken) => {
+      try {
+        // setIsLoadingType(true);
+        const response = await fetch(
+          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userLocation: {
+                latitude: userLatitude,
+                longitude: userLongitude,
+              },
+              homeType,
+              nextToken: newNextToken,
+            }),
           },
-          homeType,
-          nextToken: newNextToken,
-        }),
-      });
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      return data;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // setIsLoadingType(false); // Set loading state to false
-    }
-  }, []);
+        return data;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        // setIsLoadingType(false); // Set loading state to false
+      }
+    },
+    [],
+  );
 
   const onEndReached = useCallback(() => {
     fetchMoreData();
@@ -880,14 +891,17 @@ const HomeScreen = () => {
   useEffect(() => {
     setIsVideoLoading(true);
     const fetchUserDataAndVideoUrl = async () => {
-      const response = await fetch('https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          action: 'fetchVideoUrl',
-          userId: auth().currentUser.uid,
-        }),
-      });
+      const response = await fetch(
+        'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            action: 'fetchVideoUrl',
+            userId: auth().currentUser.uid,
+          }),
+        },
+      );
 
       const data = await response.json();
       setHasWatchedVideo(data.hasWatchedVideo);
@@ -984,7 +998,13 @@ const HomeScreen = () => {
   return (
     <Screen safeAreaEdges={['top']} backgroundColor="white">
       <View style={styles.container}>
-        <Modal style={styles.modal} animationType="slide" transparent={false} visible={modalvisible} onRequestClose={close}>
+        <Modal
+          style={styles.modal}
+          animationType="slide"
+          transparent={false}
+          visible={modalvisible}
+          onRequestClose={close}
+        >
           <View style={styles.modalContainer}>
             <ScrollView contentContainerStyle={styles.modalScrollView}>
               <View style={styles.marginTop10}>
@@ -993,15 +1013,29 @@ const HomeScreen = () => {
                 </Pressable>
                 <View style={styles.priceRangeContainer}>
                   <Text style={styles.priceText}>Price range</Text>
-                  <MultiSlider min={minimumvalue} max={maximumvalue} step={100} sliderLength={310} onValuesChange={onValuesChange} />
+                  <MultiSlider
+                    min={minimumvalue}
+                    max={maximumvalue}
+                    step={100}
+                    sliderLength={310}
+                    onValuesChange={onValuesChange}
+                  />
                 </View>
 
                 <View style={styles.valueContainer}>
                   <View style={styles.valueInnerContainer}>
-                    <TextInput keyboardType="numeric" onChangeText={hellod1} placeholder={minimumvalue.toLocaleString()} />
+                    <TextInput
+                      keyboardType="numeric"
+                      onChangeText={hellod1}
+                      placeholder={minimumvalue.toLocaleString()}
+                    />
                   </View>
                   <View style={styles.textWrapper}>
-                    <TextInput keyboardType="numeric" onChangeText={hellod2} placeholder={maximumvalue.toLocaleString()} />
+                    <TextInput
+                      keyboardType="numeric"
+                      onChangeText={hellod2}
+                      placeholder={maximumvalue.toLocaleString()}
+                    />
                   </View>
                 </View>
               </View>
@@ -1012,14 +1046,18 @@ const HomeScreen = () => {
                 <Pressable style={[styles.rentPressable, rentStyle]} onPress={handle}>
                   <View style={styles.rentContainer}>
                     <Text style={styles.forRent}>For Rent</Text>
-                    <Text style={styles.forRentDesc}>You are looking for homes that are available for rent only</Text>
+                    <Text style={styles.forRentDesc}>
+                      You are looking for homes that are available for rent only
+                    </Text>
                   </View>
                 </Pressable>
 
                 <Pressable style={[styles.salePressable, saleStyle]} onPress={handle1}>
                   <View style={styles.forSale}>
                     <Text style={styles.forSaleText}>For Sale</Text>
-                    <Text style={styles.forSaleDesc}>You are looking for homes that are available for sale only</Text>
+                    <Text style={styles.forSaleDesc}>
+                      You are looking for homes that are available for sale only
+                    </Text>
                   </View>
                 </Pressable>
               </View>
@@ -1090,7 +1128,11 @@ const HomeScreen = () => {
               </View>
             </ScrollView>
 
-            <TouchableOpacity disabled={posts.length === 0} onPress={filter} style={[styles.showHomes, showHomesOpacity]}>
+            <TouchableOpacity
+              disabled={posts.length === 0}
+              onPress={filter}
+              style={[styles.showHomes, showHomesOpacity]}
+            >
               <Text style={styles.showHomesText}>Show {posts.length} homes</Text>
             </TouchableOpacity>
           </View>
@@ -1106,7 +1148,11 @@ const HomeScreen = () => {
                 <Typography style={{color: '#717171'}}>Anywhere ⦁ Any week ⦁ Add guests</Typography>
               </View>
             </View>
-            <CircleButton minimal style={styles.searchFilter} image={<FilterMinIcon width={20} />} />
+            <CircleButton
+              minimal
+              style={styles.searchFilter}
+              image={<FilterMinIcon width={20} />}
+            />
           </Pressable>
           <SizedBox height={20} />
           <View style={[styles.mainScrollView, styles.mainScrollViewTop, styles.filtersWrapper]}>
@@ -1134,7 +1180,9 @@ const HomeScreen = () => {
               }}
               snapToOffsets={filtersLayout?.map(data => data?.x || 0)}
               onMomentumScrollEnd={event => {
-                const activeIndex = filtersLayout.findIndex(data => event.nativeEvent.contentOffset.x === data.x);
+                const activeIndex = filtersLayout.findIndex(
+                  data => event.nativeEvent.contentOffset.x === data.x,
+                );
 
                 if (activeIndex > -1) {
                   Animated.timing(activeIndicatorWidth, {
@@ -1166,7 +1214,15 @@ const HomeScreen = () => {
                 >
                   {category.icon}
 
-                  <Text style={[styles.padding6, styles.textTab, status === category.status && styles.textTabActive]}>{category.status}</Text>
+                  <Text
+                    style={[
+                      styles.padding6,
+                      styles.textTab,
+                      status === category.status && styles.textTabActive,
+                    ]}
+                  >
+                    {category.status}
+                  </Text>
                 </TouchableOpacity>
               ))}
               <View style={{width: wp(61)}} />
@@ -1296,7 +1352,13 @@ const HomeScreen = () => {
                     <ActivityIndicator size="large" color="white" />
                   </View>
                 ) : (
-                  <Video ref={videoRef} source={{uri: videoUrl}} resizeMode="cover" style={styles.video} onEnd={handleVideoPlaybackComplete} />
+                  <Video
+                    ref={videoRef}
+                    source={{uri: videoUrl}}
+                    resizeMode="cover"
+                    style={styles.video}
+                    onEnd={handleVideoPlaybackComplete}
+                  />
                 )}
               </View>
             </View>

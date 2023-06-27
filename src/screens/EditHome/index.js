@@ -113,7 +113,8 @@ const EditHome = () => {
       style={{
         backgroundColor: 'white',
         flex: 1,
-      }}>
+      }}
+    >
       <ImageCarousel postId={homeInfo.id} images={homeInfo.images} />
       <ScrollView contentContainerStyle={{paddingBottom: 150}} showsVerticalScrollIndicator={false}>
         <View style={{paddingHorizontal: 20}}>
@@ -224,13 +225,15 @@ const EditHome = () => {
               flex: 1,
               alignItems: 'center',
               marginTop: 20,
-            }}>
+            }}
+          >
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: 'Montserrat-Bold',
                 color: 'white',
-              }}>
+              }}
+            >
               Update
             </Text>
           </TouchableOpacity>

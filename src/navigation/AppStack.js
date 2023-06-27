@@ -104,7 +104,11 @@ const AppStack = () => {
 
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />
 
-      <Stack.Screen name="Destination Search" component={DestinationSearchScreen} options={noHeaderWithATitle} />
+      <Stack.Screen
+        name="Destination Search"
+        component={DestinationSearchScreen}
+        options={noHeaderWithATitle}
+      />
 
       <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
 

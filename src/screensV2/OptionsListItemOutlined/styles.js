@@ -6,14 +6,14 @@ export const styles = StyleSheet.create({
     borderColor: '#BFBFBF',
     borderRadius: 21,
     padding: 20,
-    marginBottom: 32
+    marginBottom: 32,
   },
   optionTextBold: {
     fontWeight: '700',
     fontSize: 18,
     lineHeight: 24,
     color: '#1F2D3D',
-    marginBottom: 8
+    marginBottom: 8,
   },
   optionTextLight: {
     fontWeight: '400',

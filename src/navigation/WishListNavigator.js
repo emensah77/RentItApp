@@ -24,7 +24,12 @@ const WishListNavigation = () => {
   return (
     <Stack.Navigator initialRouteName="Wishlists">
       {SCREENS.map(screen => (
-        <Stack.Screen key={screen.name} name={screen.name} options={screen.options} component={screen.component} />
+        <Stack.Screen
+          key={screen.name}
+          name={screen.name}
+          options={screen.options}
+          component={screen.component}
+        />
       ))}
     </Stack.Navigator>
   );

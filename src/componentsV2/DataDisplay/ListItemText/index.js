@@ -18,7 +18,8 @@ const ListItemText = ({
         globalStyles.rowBetween,
         {flexDirection: reverse ? 'row-reverse' : 'row'},
         {marginVertical: offsets.offsetA, alignItems: center ? 'center' : undefined},
-      ]}>
+      ]}
+    >
       <View style={{width: icon ? '88%' : undefined}}>
         {typeof primary === 'string' ? (
           <Typography variant={primaryVariant} bold>

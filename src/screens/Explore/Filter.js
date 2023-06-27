@@ -158,7 +158,8 @@ const Explore = () => {
             Show {count} homes
           </Button>
         </Container>
-      }>
+      }
+    >
       <Typography type="heading" left width="100%">
         Price range
       </Typography>
@@ -251,11 +252,13 @@ const Explore = () => {
             <Container row>
               <Container
                 type={`chip${isSelected(title.toLowerCase(), 0) ? 'Selected' : 'DeSelected'}`}
-                onPress={onToggleSelection(title.toLowerCase(), 0)}>
+                onPress={onToggleSelection(title.toLowerCase(), 0)}
+              >
                 <Typography
                   color={isSelected(title.toLowerCase(), 0) ? '#FFFFFF' : '#000000'}
                   weight="700"
-                  size={14}>
+                  size={14}
+                >
                   Any
                 </Typography>
               </Container>
@@ -264,11 +267,13 @@ const Explore = () => {
                 <Container
                   key={Math.random()}
                   type={`chip${isSelected(title.toLowerCase(), i + 1) ? 'Selected' : 'DeSelected'}`}
-                  onPress={onToggleSelection(title.toLowerCase(), i + 1)}>
+                  onPress={onToggleSelection(title.toLowerCase(), i + 1)}
+                >
                   <Typography
                     color={isSelected(title.toLowerCase(), i + 1) ? '#FFFFFF' : '#000000'}
                     weight="700"
-                    size={14}>
+                    size={14}
+                  >
                     {i + 1}
                   </Typography>
                 </Container>
@@ -291,7 +296,8 @@ const Explore = () => {
           width="45%"
           height={121}
           onPress={onToggleSelection('propertyTypes', 'house')}
-          type={isSelected('propertyTypes', 'house') ? 'selected' : 'deselected'}>
+          type={isSelected('propertyTypes', 'house') ? 'selected' : 'deselected'}
+        >
           <Image
             src={isSelected('propertyTypes', 'house') ? houseBlue : house}
             width={30}
@@ -302,7 +308,8 @@ const Explore = () => {
             type="left"
             color={isSelected('propertyTypes', 'house') ? '#0047B3' : '#252525'}
             weight="800"
-            size={16}>
+            size={16}
+          >
             House
           </Typography>
         </Container>
@@ -313,7 +320,8 @@ const Explore = () => {
           width="45%"
           height={121}
           onPress={onToggleSelection('propertyTypes', 'apartment')}
-          type={isSelected('propertyTypes', 'apartment') ? 'selected' : 'deselected'}>
+          type={isSelected('propertyTypes', 'apartment') ? 'selected' : 'deselected'}
+        >
           <Image
             src={isSelected('propertyTypes', 'apartment') ? apartmentBlue : apartment}
             width={30}
@@ -324,7 +332,8 @@ const Explore = () => {
             type="left"
             color={isSelected('propertyTypes', 'apartment') ? '#0047B3' : '#252525'}
             weight="800"
-            size={16}>
+            size={16}
+          >
             Apartment
           </Typography>
         </Container>
@@ -337,7 +346,8 @@ const Explore = () => {
           width="45%"
           height={121}
           onPress={onToggleSelection('propertyTypes', 'guesthouse')}
-          type={isSelected('propertyTypes', 'guesthouse') ? 'selected' : 'deselected'}>
+          type={isSelected('propertyTypes', 'guesthouse') ? 'selected' : 'deselected'}
+        >
           <Image
             src={isSelected('propertyTypes', 'guesthouse') ? guesthouseBlue : guesthouse}
             width={30}
@@ -348,7 +358,8 @@ const Explore = () => {
             type="left"
             color={isSelected('propertyTypes', 'guesthouse') ? '#0047B3' : '#252525'}
             weight="800"
-            size={16}>
+            size={16}
+          >
             Guesthouse
           </Typography>
         </Container>
@@ -359,7 +370,8 @@ const Explore = () => {
           width="45%"
           height={121}
           onPress={onToggleSelection('propertyTypes', 'hotel')}
-          type={isSelected('propertyTypes', 'hotel') ? 'selected' : 'deselected'}>
+          type={isSelected('propertyTypes', 'hotel') ? 'selected' : 'deselected'}
+        >
           <Image
             src={isSelected('propertyTypes', 'hotel') ? hotelBlue : hotel}
             width={30}
@@ -370,7 +382,8 @@ const Explore = () => {
             type="left"
             color={isSelected('propertyTypes', 'hotel') ? '#0047B3' : '#252525'}
             weight="800"
-            size={16}>
+            size={16}
+          >
             Hotel
           </Typography>
         </Container>

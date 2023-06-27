@@ -42,7 +42,7 @@ const SelectReason = () => {
         Please select a reason
       </Typography>
       <FlatList data={data} renderItem={cancelationItem} keyExtractor={keyExtractor} />
-      {/* 
+      {/*
       <ArrowLink text={'I made the reservation by accident'} onPress={goCancelationScreen} />
       <Divider />
       <ArrowLink text={'My host needs to cancel'} onPress={goCancelationScreen} />

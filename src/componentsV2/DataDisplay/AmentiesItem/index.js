@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image} from 'react-native-animatable';
-import Typography from '../../../componentsV2/DataDisplay/Typography';
+import Typography from '../Typography';
 import {styles} from './styles';
 
 import BathIcon from '../../../../assets/data/images/icons/bath-icon.svg';

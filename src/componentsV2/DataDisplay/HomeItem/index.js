@@ -25,7 +25,10 @@ const HomeItem = ({item}) => {
 
     const startObj = extractDate(today);
     const tillObj = extractDate(till);
-    const monthlyPrice = item.mode === 'For sale' ? Math.round((item.newPrice * 1.07) / 12) : Math.round((item.newPrice * 1.07) / 12);
+    const monthlyPrice =
+      item.mode === 'For sale'
+        ? Math.round((item.newPrice * 1.07) / 12)
+        : Math.round((item.newPrice * 1.07) / 12);
 
     return {
       sameMonth: startObj.month === tillObj.month,
@@ -73,7 +76,9 @@ const HomeItem = ({item}) => {
       </Typography>
       <SizedBox height={3} />
       <View style={styles.prices}>
-        <Typography bold variant="large">{`${formatCurrency(item.currency)} ${range.price} `}</Typography>
+        <Typography bold variant="large">{`${formatCurrency(item.currency)} ${
+          range.price
+        } `}</Typography>
         <Typography variant="large">Total</Typography>
       </View>
     </Pressable>

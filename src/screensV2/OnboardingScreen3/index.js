@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 
 import {useNavigation, useRoute} from '@react-navigation/native';
 
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
@@ -11,7 +12,6 @@ import {styles} from './styles';
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import Checkbox from '../../../assets/data/images/checkbox.svg';
 import CheckboxActive from '../../../assets/data/images/checkbox-active.svg';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
@@ -139,7 +139,8 @@ const OnboardingScreen3 = () => {
                   mode,
                   amenities: uniqueItem,
                 });
-              }}>
+              }}
+            >
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -164,7 +165,8 @@ const OnboardingScreen3 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}>
+          }}
+        >
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={1} style={{marginBottom: offsets.offsetB}} />
           </View>

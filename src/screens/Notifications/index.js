@@ -78,7 +78,8 @@ const Notifications = () => {
             <TouchableOpacity
               disabled={notification}
               onPress={onPress}
-              style={styles.positiveActionTextWrapper}>
+              style={styles.positiveActionTextWrapper}
+            >
               <Text style={styles.positiveActionText}>
                 {notification ? 'Already Enabled' : 'Turn on'}
               </Text>

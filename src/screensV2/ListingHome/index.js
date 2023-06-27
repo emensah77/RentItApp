@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {Pressable, View, Image, ScrollView} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 import {styles} from './styles';
 
@@ -10,7 +11,6 @@ import Icon2 from '../../../assets/data/images/man-1.png';
 import Icon3 from '../../../assets/data/images/man-2.png';
 
 import ListingSteps from '../ListingSteps';
-import {useNavigation} from '@react-navigation/native';
 
 const ListingHome = () => {
   const navigation = useNavigation();

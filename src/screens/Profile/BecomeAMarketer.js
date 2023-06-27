@@ -118,7 +118,8 @@ const BecomeAMarketer = () => {
           type="tertiary"
           onPress={request}
           loading={loading}
-          fitWidth>
+          fitWidth
+        >
           {status.state === 'pending' ? 'In Review' : 'Request Now'}
         </Button>
       ) : null}

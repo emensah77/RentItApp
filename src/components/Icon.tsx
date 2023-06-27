@@ -1,6 +1,14 @@
 import * as React from 'react';
 import {ComponentType} from 'react';
-import {Image, ImageStyle, StyleProp, TouchableOpacity, TouchableOpacityProps, View, ViewStyle} from 'react-native';
+import {
+  Image,
+  ImageStyle,
+  StyleProp,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 export type IconTypes = keyof typeof iconRegistry;
 
@@ -43,17 +51,35 @@ interface IconProps extends TouchableOpacityProps {
  * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Icon.md)
  */
 export const Icon = (props: IconProps) => {
-  const {icon, color, size, style: $imageStyleOverride, containerStyle: $containerStyleOverride, ...WrapperProps} = props;
+  const {
+    icon,
+    color,
+    size,
+    style: $imageStyleOverride,
+    containerStyle: $containerStyleOverride,
+    ...WrapperProps
+  } = props;
 
   const isPressable = !!WrapperProps.onPress;
   // @ts-ignore
-  const Wrapper: ComponentType<TouchableOpacityProps> = WrapperProps?.onPress ? TouchableOpacity : View;
+  const Wrapper: ComponentType<TouchableOpacityProps> = WrapperProps?.onPress
+    ? TouchableOpacity
+    : View;
 
   return (
-    <Wrapper accessibilityRole={isPressable ? 'imagebutton' : undefined} {...WrapperProps} style={$containerStyleOverride}>
+    <Wrapper
+      accessibilityRole={isPressable ? 'imagebutton' : undefined}
+      {...WrapperProps}
+      style={$containerStyleOverride}
+    >
       {/* @ts-ignore */}
       <Image
-        style={[$imageStyle, color && {tintColor: color}, size && {width: size, height: size}, $imageStyleOverride]}
+        style={[
+          $imageStyle,
+          color && {tintColor: color},
+          size && {width: size, height: size},
+          $imageStyleOverride,
+        ]}
         source={iconRegistry[icon]}
       />
     </Wrapper>

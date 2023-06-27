@@ -170,7 +170,8 @@ const MarketerDashboard = () => {
         region={defaultRegion}
         onUserLocationChange={onUserLocationChange}
         mapType={mapType}
-        onRegionChangeComplete={region => setRegion(region)}>
+        onRegionChangeComplete={region => setRegion(region)}
+      >
         {locations.length > 0 &&
           locations.map((location, index) => (
             <Marker
@@ -222,7 +223,8 @@ const MarketerDashboard = () => {
         {startDate && endDate && (
           <TouchableOpacity
             style={styles.fetchButton}
-            onPress={() => fetchLocationData(user.uid, startDate, endDate)}>
+            onPress={() => fetchLocationData(user.uid, startDate, endDate)}
+          >
             <Text style={styles.fetchButtonText}>Fetch Location History</Text>
           </TouchableOpacity>
         )}

@@ -53,7 +53,8 @@ const CardDisplay = props => {
       row
       type={
         center ? 'center' : spaceBetween ? 'spaceBetween' : reverse ? 'rowReverse' : 'flexStart'
-      }>
+      }
+    >
       {leftImageSrc && (!!leftImageSrc.uri || typeof leftImageSrc === 'number') ? (
         <Container center width={40} height={30} onPress={onPress}>
           <Image
@@ -100,7 +101,8 @@ const CardDisplay = props => {
             <Container row type={center ? 'center' : 'flexStart'} onPress={onPress}>
               <Typography
                 type={bold ? 'levelOneThick' : 'notice'}
-                numberOfLines={numberOfLines || (!(name && location) ? 3 : 2)}>
+                numberOfLines={numberOfLines || (!(name && location) ? 3 : 2)}
+              >
                 {description}
               </Typography>
             </Container>

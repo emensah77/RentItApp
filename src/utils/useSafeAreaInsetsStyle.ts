@@ -25,7 +25,17 @@ const edgeInsetMap = {
 export function useSafeAreaInsetsStyle(
   safeAreaEdges: ExtendedEdge[] = [],
   property: 'padding' | 'margin' = 'padding',
-): Pick<FlexStyle, 'marginBottom' | 'marginEnd' | 'marginStart' | 'marginTop' | 'paddingBottom' | 'paddingEnd' | 'paddingStart' | 'paddingTop'> {
+): Pick<
+  FlexStyle,
+  | 'marginBottom'
+  | 'marginEnd'
+  | 'marginStart'
+  | 'marginTop'
+  | 'paddingBottom'
+  | 'paddingEnd'
+  | 'paddingStart'
+  | 'paddingTop'
+> {
   const insets = useSafeAreaInsets();
 
   return safeAreaEdges.reduce((acc, e) => {

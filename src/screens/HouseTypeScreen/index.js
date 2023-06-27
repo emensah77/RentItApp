@@ -11,13 +11,13 @@ import {
 
 import {useNavigation, useRoute} from '@react-navigation/native';
 
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import styles from './styles.js';
 
 import CloseIcon from '../../../assets/data/images/icons/close-icon.png';
 
 import CircleButton from '../../componentsV2/Inputs/CircleButton';
 import Typography from '../../componentsV2/DataDisplay/Typography';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import SuggestionRow from '../DestinationSearch/SuggestionRow';
 import SearchIcon from '../../../assets/data/images/icons/search-icon.svg';
 import CalendarWrapper from '../../componentsV2/Inputs/CalendarWrapper';
@@ -91,7 +91,8 @@ const HouseTypeScreen = props => {
             </Typography>
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.searchContent}>
+              style={styles.searchContent}
+            >
               <SearchIcon width={16} height={16} style={styles.searchIcon} />
 
               <GooglePlacesAutocomplete

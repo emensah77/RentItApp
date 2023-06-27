@@ -525,14 +525,16 @@ const OnboardingScreen6 = () => {
           longitude: -0.183158678544458,
           latitudeDelta: 0.8,
           longitudeDelta: 0.8,
-        }}>
+        }}
+      >
         <Marker
           coordinate={{
             latitude: latitude || 5.602028159656166,
             longitude: longitude || -0.183158678544458,
           }}
           title="Home"
-          description="This is where your house is located">
+          description="This is where your house is located"
+        >
           <View style={styles.home}>
             <Fontisto name="home" size={25} color="blue" />
           </View>
@@ -548,7 +550,8 @@ const OnboardingScreen6 = () => {
 
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.flex}>
+          style={styles.flex}
+        >
           <GooglePlacesAutocomplete
             placeholder="Type where your home is located"
             ref={ref}
@@ -626,7 +629,8 @@ const OnboardingScreen6 = () => {
           <TouchableOpacity
             disabled={latitude === null || longitude === null}
             onPress={next}
-            style={[styles.nextTouchable, nextOpacity]}>
+            style={[styles.nextTouchable, nextOpacity]}
+          >
             <Text style={styles.nextText}>Next</Text>
           </TouchableOpacity>
 

@@ -55,8 +55,7 @@ const RefundPage = () => {
           <View style={styles.detailSteps}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 60}}>
               <Image source={RoundCheckIcon} width={25} height={25} style={{marginRight: 3}} />
-              <View
-                style={{width: 16, height: 1, backgroundColor: '#000000', marginRight: 16}}></View>
+              <View style={{width: 16, height: 1, backgroundColor: '#000000', marginRight: 16}} />
               <View>
                 <Typography style={styles.detailStepsTitle}>Refund initiated</Typography>
                 <Typography style={styles.detailStepsText}>Aug 23</Typography>
@@ -64,8 +63,7 @@ const RefundPage = () => {
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 60}}>
               <Image source={RoundCheckIcon} width={25} height={25} style={{marginRight: 3}} />
-              <View
-                style={{width: 16, height: 1, backgroundColor: '#000000', marginRight: 16}}></View>
+              <View style={{width: 16, height: 1, backgroundColor: '#000000', marginRight: 16}} />
               <View>
                 <Typography style={styles.detailStepsTitle}>Refund sent</Typography>
                 <Typography style={styles.detailStepsText}>Aug 23</Typography>
@@ -73,8 +71,7 @@ const RefundPage = () => {
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image source={RoundCheckIcon} width={25} height={25} style={{marginRight: 3}} />
-              <View
-                style={{width: 16, height: 1, backgroundColor: '#000000', marginRight: 16}}></View>
+              <View style={{width: 16, height: 1, backgroundColor: '#000000', marginRight: 16}} />
               <View>
                 <Typography style={styles.detailStepsTitle}>Estimated arrival</Typography>
                 <Typography style={styles.detailStepsText}>By Aug 28</Typography>
@@ -87,9 +84,9 @@ const RefundPage = () => {
             Your reservation
           </Typography>
           <RoomCardHorizontal
-            title={'Stunning Family home  close to the city centre'}
-            statusText={'canceled'}
-            infoText={'Reservation code: HBACDEFQAZKC '}
+            title="Stunning Family home  close to the city centre"
+            statusText="canceled"
+            infoText="Reservation code: HBACDEFQAZKC "
           />
         </View>
       </ScrollView>

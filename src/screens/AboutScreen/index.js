@@ -28,7 +28,8 @@ const AboutScreen = props => {
             imageStyle={{
               borderBottomRightRadius: 25,
               borderBottomLeftRadius: 25,
-            }}>
+            }}
+          >
             <View style={styles.DarkOverlay} />
             <View style={styles.searchContainer}>
               <Text style={styles.UserGreetings}>Hey, Welcome</Text>
@@ -45,7 +46,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               How It Works?
             </Text>
 
@@ -65,7 +67,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               Trust and Safety
             </Text>
 
@@ -85,7 +88,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               Cancellation Options
             </Text>
 
@@ -105,7 +109,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               Help and Support
             </Text>
 
@@ -127,7 +132,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               How It Works?
             </Text>
 
@@ -146,7 +152,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               Trust and Safety
             </Text>
 
@@ -166,7 +173,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               Cancellation Options
             </Text>
 
@@ -185,7 +193,8 @@ const AboutScreen = props => {
                 fontSize: 20,
                 fontWeight: 'bold',
                 fontFamily: 'Montserrat',
-              }}>
+              }}
+            >
               Help and Support
             </Text>
 

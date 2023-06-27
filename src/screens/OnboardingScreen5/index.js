@@ -98,7 +98,8 @@ const OnboardingScreen5 = props => {
       colors={['blue', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -112,7 +113,8 @@ const OnboardingScreen5 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}>
+        style={styles.footer}
+      >
         <ScrollView>
           <View>
             <Text>Choose the currency you want the price of your home in</Text>
@@ -130,7 +132,8 @@ const OnboardingScreen5 = props => {
                   flex: 1,
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                }}>
+                }}
+              >
                 <Text style={{fontSize: 20}}>US Dollar</Text>
                 <Text style={{fontSize: 20}}>$</Text>
               </TouchableOpacity>
@@ -146,7 +149,8 @@ const OnboardingScreen5 = props => {
                   flex: 1,
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                }}>
+                }}
+              >
                 <Text style={{fontSize: 20}}>Ghana Cedis</Text>
                 <Text style={{fontSize: 20}}>GHS</Text>
               </TouchableOpacity>
@@ -157,7 +161,8 @@ const OnboardingScreen5 = props => {
               flex: 1,
               flexDirection: 'row',
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <TouchableOpacity
               onPress={() => setValue(Math.max(1, value - 1))}
               style={{
@@ -170,7 +175,8 @@ const OnboardingScreen5 = props => {
                 height: 40,
                 width: 40,
                 borderRadius: 20,
-              }}>
+              }}
+            >
               <View style={{justifyContent: 'center'}}>
                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>-</Text>
               </View>
@@ -182,7 +188,8 @@ const OnboardingScreen5 = props => {
                 flexDirection: 'row',
                 marginBottom: 20,
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <Text style={{alignSelf: 'center', fontSize: 24, fontWeight: '600'}}>
                 {currency === 'usd' ? '$' : currency === 'ghs' ? 'GHS' : ''}
               </Text>
@@ -205,7 +212,8 @@ const OnboardingScreen5 = props => {
                   borderColor: 'darkgray',
                   borderRadius: 10,
                   padding: 10,
-                }}>
+                }}
+              >
                 {value}
               </TextInput>
 
@@ -224,7 +232,8 @@ const OnboardingScreen5 = props => {
                 height: 40,
                 width: 40,
                 borderRadius: 20,
-              }}>
+              }}
+            >
               <View style={{justifyContent: 'center'}}>
                 <Text style={{fontSize: 25, fontWeight: 'bold'}}>+</Text>
               </View>
@@ -270,13 +279,15 @@ const OnboardingScreen5 = props => {
               alignItems: 'center',
               paddingHorizontal: 20,
               paddingVertical: 20,
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: 'white',
                 fontFamily: 'Montserrat-SemiBold',
                 fontSize: 14,
-              }}>
+              }}
+            >
               Next
             </Text>
           </Pressable>

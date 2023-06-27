@@ -5,13 +5,13 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 import Button from '../../componentsV2/Inputs/Button';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
@@ -284,7 +284,8 @@ const OnboardingScreen9 = () => {
           position: 'absolute',
           bottom: 0,
           left: 0,
-        }}>
+        }}
+      >
         <View style={{paddingHorizontal: offsets.offsetB}}>
           <DividedProgress total={4} progress={2} style={{marginBottom: offsets.offsetB}} />
         </View>

@@ -132,7 +132,8 @@ const OnboardingScreen11 = props => {
       colors={['blue', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -146,7 +147,8 @@ const OnboardingScreen11 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}>
+        style={styles.footer}
+      >
         <ScrollView>
           <Text style={{fontSize: 18, fontWeight: '600', marginBottom: 10}}>
             We will call you to verify the number
@@ -156,7 +158,8 @@ const OnboardingScreen11 = props => {
               flex: 1,
               flexDirection: 'row',
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             {/* <View style={{flex:1, flexDirection:'row', marginBottom:20, justifyContent:'center'}}>
 
                        <TextInput
@@ -286,13 +289,15 @@ const OnboardingScreen11 = props => {
               alignItems: 'center',
               paddingHorizontal: 20,
               paddingVertical: 20,
-            }}>
+            }}
+          >
             <Text
               style={{
                 color: 'white',
                 fontFamily: 'Montserrat-SemiBold',
                 fontSize: 14,
-              }}>
+              }}
+            >
               Next
             </Text>
           </TouchableOpacity>

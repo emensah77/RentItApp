@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, ScrollView, FlatList, Image, Pressable, SafeAreaView} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 import {styles} from './styles';
 import Divider from '../../componentsV2/DataDisplay/Divider';
@@ -12,7 +13,6 @@ import {fetchPost_req, fetchSimilarPosts_req} from '../../api/posts.api';
 import Carousel from '../../componentsV2/DataDisplay/Carousel';
 import {offsets} from '../../styles/globalStyles';
 import RoomItem from '../../componentsV2/DataDisplay/RoomItem';
-import {useNavigation} from '@react-navigation/native';
 
 const HomeScreen = () => {
   const params = route.params || {};
@@ -219,7 +219,7 @@ const HomeScreen = () => {
               <Typography>Mon, Feb 13, 2023</Typography>
               <Typography>1:00 PM</Typography>
             </View>
-            <View style={styles.border}></View>
+            <View style={styles.border} />
             <View style={styles.checkout}>
               <Typography bold style={{paddingBottom: 10}}>
                 Checkout

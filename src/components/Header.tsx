@@ -1,5 +1,12 @@
 import React, {ReactElement} from 'react';
-import {StyleProp, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle} from 'react-native';
+import {
+  StyleProp,
+  TextStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewStyle,
+} from 'react-native';
 import {Icon, IconTypes} from '@components/Icon';
 import {colors, spacing} from '@theme/index';
 import {ExtendedEdge, useSafeAreaInsetsStyle} from '@utils/useSafeAreaInsetsStyle';
@@ -148,7 +155,11 @@ export function Header(props: HeaderProps) {
 
         {!!titleContent && (
           <View
-            style={[titleMode === 'center' && $titleWrapperCenter, titleMode === 'flex' && $titleWrapperFlex, $titleContainerStyleOverride]}
+            style={[
+              titleMode === 'center' && $titleWrapperCenter,
+              titleMode === 'flex' && $titleWrapperFlex,
+              $titleContainerStyleOverride,
+            ]}
             pointerEvents="none"
           >
             <Text size="md" text={titleContent} style={[$title, $titleStyleOverride]} />
@@ -177,14 +188,27 @@ function HeaderAction(props: HeaderActionProps) {
 
   if (content) {
     return (
-      <TouchableOpacity style={[$actionTextContainer, {backgroundColor}]} onPress={onPress} disabled={!onPress} activeOpacity={0.8}>
+      <TouchableOpacity
+        style={[$actionTextContainer, {backgroundColor}]}
+        onPress={onPress}
+        disabled={!onPress}
+        activeOpacity={0.8}
+      >
         <Text size="md" text={content} style={$actionText} />
       </TouchableOpacity>
     );
   }
 
   if (icon) {
-    return <Icon size={24} icon={icon} color={iconColor} onPress={onPress} containerStyle={[$actionIconContainer, {backgroundColor}]} />;
+    return (
+      <Icon
+        size={24}
+        icon={icon}
+        color={iconColor}
+        onPress={onPress}
+        containerStyle={[$actionIconContainer, {backgroundColor}]}
+      />
+    );
   }
 
   return <View style={[$actionFillerContainer, {backgroundColor}]} />;

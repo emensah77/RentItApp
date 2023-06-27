@@ -343,7 +343,8 @@ const OnboardingScreen4 = props => {
         animationType="none"
         visible={isLoading}
         style={{zIndex: 1100}}
-        onRequestClose={() => {}}>
+        onRequestClose={() => {}}
+      >
         <View
           style={{
             flex: 1,
@@ -352,7 +353,8 @@ const OnboardingScreen4 = props => {
             justifyContent: 'space-around',
             backgroundColor: '#rgba(0, 0, 0, 0.5)',
             zIndex: 1000,
-          }}>
+          }}
+        >
           <View
             style={{
               backgroundColor: '#FFFFFF',
@@ -362,7 +364,8 @@ const OnboardingScreen4 = props => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-around',
-            }}>
+            }}
+          >
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>Uploading...</Text>
 
             <ActivityIndicator animating size="large" color="blue" style={{opacity: 1}} />
@@ -376,7 +379,8 @@ const OnboardingScreen4 = props => {
       colors={['purple', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -390,7 +394,8 @@ const OnboardingScreen4 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}>
+        style={styles.footer}
+      >
         {images.length != 0 ? (
           <View style={{flex: 1}}>
             <TouchableOpacity
@@ -402,7 +407,8 @@ const OnboardingScreen4 = props => {
                 borderRadius: 10,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              }}>
+              }}
+            >
               <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
                 Add {images.length >= 5 ? 'more' : 'at least 5'} photos
               </Text>
@@ -422,7 +428,8 @@ const OnboardingScreen4 = props => {
                     flex: 1,
                     flexDirection: 'column',
                     margin: 5,
-                  }}>
+                  }}
+                >
                   <Image
                     source={{uri: item.uri}}
                     style={{
@@ -435,7 +442,8 @@ const OnboardingScreen4 = props => {
                   />
                   <TouchableOpacity
                     style={styles.deleteImageButton}
-                    onPress={() => handleDeleteImage(item)}>
+                    onPress={() => handleDeleteImage(item)}
+                  >
                     <FontAwesomeIcon
                       icon={faTrash}
                       color="black"
@@ -484,13 +492,15 @@ const OnboardingScreen4 = props => {
                 paddingVertical: 20,
                 marginTop: 15,
                 opacity: images.length < 5 ? 0.2 : 1,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: 'white',
                   fontFamily: 'Montserrat-Bold',
                   fontSize: 18,
-                }}>
+                }}
+              >
                 Next
               </Text>
             </TouchableOpacity>
@@ -513,7 +523,8 @@ const OnboardingScreen4 = props => {
                 paddingHorizontal: 20,
                 marginHorizontal: 20,
                 flex: 1,
-              }}>
+              }}
+            >
               <View style={{justifyContent: 'center'}}>
                 <Text style={{fontWeight: 'bold'}}>Upload photos</Text>
               </View>
@@ -536,7 +547,8 @@ const OnboardingScreen4 = props => {
                 paddingHorizontal: 20,
                 marginHorizontal: 20,
                 flex: 1,
-              }}>
+              }}
+            >
               <View style={{justifyContent: 'center'}}>
                 <Text style={{fontWeight: 'bold'}}>Take new photos</Text>
               </View>
@@ -566,13 +578,15 @@ const OnboardingScreen4 = props => {
                 alignItems: 'center',
                 paddingHorizontal: 20,
                 paddingVertical: 20,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: 'white',
                   fontFamily: 'Montserrat-Bold',
                   fontSize: 18,
-                }}>
+                }}
+              >
                 Next
               </Text>
             </TouchableOpacity>

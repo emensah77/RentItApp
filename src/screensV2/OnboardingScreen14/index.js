@@ -5,13 +5,13 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
 
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Typography from '../../componentsV2/DataDisplay/Typography';
 
 import {styles} from './styles';
 
 import BackArrow from '../../../assets/data/images/icons/back-arrow.png';
 import IconMan from '../../../assets/data/images/second-step.png';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {offsets} from '../../styles/globalStyles';
 import DividedProgress from '../../componentsV2/DataDisplay/DividedProgress';
 import BottomActionsBar from '../../componentsV2/Inputs/BottomActionsBar';
@@ -108,7 +108,8 @@ const OnboardingScreen14 = () => {
                   currency,
                   address,
                 });
-              }}>
+              }}
+            >
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             {/* //OnboardingScreen13 */}
@@ -132,7 +133,8 @@ const OnboardingScreen14 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}>
+          }}
+        >
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={6} progress={0} style={{marginBottom: offsets.offsetB}} />
           </View>
