@@ -4,7 +4,7 @@ import {View, ActivityIndicator, StyleSheet} from 'react-native';
 const PageSpinner = () => {
   return (
     <View style={styles.pageSpinner}>
-      <ActivityIndicator size="large" color="blue" />
+      <ActivityIndicator size="large" color="#194CC3" />
     </View>
   );
 };

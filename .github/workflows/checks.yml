@@ -47,5 +47,5 @@ jobs:
           REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
           EOF
 
-      # - name: Run tests
-      #   run: npm run test
+      - name: Run tests
+        run: yarn test

@@ -7,6 +7,7 @@ export {default as Error} from './Error';
 export {default as Header} from './Header';
 export {default as Image} from './Image';
 export {default as Input} from './Input';
+export {default as Loader} from './Loader';
 export {default as Page} from './Page';
 export {default as PageSpinner} from './PageSpinner';
 export {default as Tabs} from './Tabs';

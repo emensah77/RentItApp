@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import {View, Image} from 'react-native';
 
 const RentitImage = props => {
-  const {width, height, circle, src} = props;
+  const {width, height, circle, src, mode} = props;
 
   const containerStyle = useMemo(
     () => ({
@@ -17,8 +17,13 @@ const RentitImage = props => {
   );
 
   const imageStyle = useMemo(
-    () => ({width: circle || width, height: circle || height, alignSelf: 'flex-start'}),
-    [circle, width, height],
+    () => ({
+      width: circle || width,
+      height: circle || height,
+      alignSelf: 'flex-start',
+      resizeMode: mode || 'cover',
+    }),
+    [circle, width, height, mode],
   );
 
   return (
