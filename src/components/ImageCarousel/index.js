@@ -100,8 +100,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        onPress={() => navigation.goBack()}
-      >
+        onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={15} style={{color: 'black'}} />
       </Pressable>
       <Pressable
@@ -120,8 +119,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        onPress={handleChangeFavorite}
-      >
+        onPress={handleChangeFavorite}>
         <Fontisto name="heart" size={15} color={isFav ? 'deeppink' : 'black'} />
       </Pressable>
       <Pressable
@@ -140,8 +138,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        onPress={onShare}
-      >
+        onPress={onShare}>
         <FontAwesomeIcon icon={faShare} size={15} />
       </Pressable>
       <View
@@ -156,16 +153,14 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           alignItems: 'center',
           backgroundColor: 'black',
           width: 60,
-        }}
-      >
+        }}>
         <Text
           style={{
             margin: 5,
             color: 'white',
             fontSize: 15,
             fontWeight: 'bold',
-          }}
-        >
+          }}>
           {activeIndex + 1}/{images.length}
         </Text>
       </View>

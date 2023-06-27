@@ -108,8 +108,7 @@ const OnboardingScreen14 = () => {
                   currency,
                   address,
                 });
-              }}
-            >
+              }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             {/* //OnboardingScreen13 */}
@@ -133,8 +132,7 @@ const OnboardingScreen14 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}
-        >
+          }}>
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={6} progress={0} style={{marginBottom: offsets.offsetB}} />
           </View>

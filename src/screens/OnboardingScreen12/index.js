@@ -198,8 +198,7 @@ const OnboardingScreen12 = props => {
       colors={['blue', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}
-    >
+      style={styles.container}>
       <StatusBar hidden />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -211,15 +210,13 @@ const OnboardingScreen12 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}
-      >
+        style={styles.footer}>
         <ScrollView>
           {usersWithPrivileges.includes(auth().currentUser.uid) ||
           user?.marketer_status === 'ACCEPTED' ? (
             <TouchableOpacity
               style={[styles.optionButton, loyalty && styles.selectedOptionButton]}
-              onPress={handleLoyaltyPress}
-            >
+              onPress={handleLoyaltyPress}>
               <FontAwesomeIcon icon={faCrown} style={styles.optionIcon} color="blue" />
               <View>
                 <Text style={styles.optionButtonText}>Loyalty Home</Text>
@@ -232,8 +229,7 @@ const OnboardingScreen12 = props => {
 
           <TouchableOpacity
             style={[styles.optionButton, negotiable && styles.selectedOptionButton]}
-            onPress={handleNegotiablePress}
-          >
+            onPress={handleNegotiablePress}>
             <FontAwesomeIcon icon={faHandshake} style={styles.optionIcon} color="blue" />
             <View>
               <Text style={styles.optionButtonText}>Negotiable</Text>
@@ -243,8 +239,7 @@ const OnboardingScreen12 = props => {
 
           <TouchableOpacity
             style={[styles.optionButton, furnished && styles.selectedOptionButton]}
-            onPress={handleFurnishedPress}
-          >
+            onPress={handleFurnishedPress}>
             <FontAwesomeIcon icon={faCouch} style={styles.optionIcon} color="blue" />
             <View>
               <Text style={styles.optionButtonText}>Furnished</Text>
@@ -272,8 +267,7 @@ const OnboardingScreen12 = props => {
                   styles.availableForRentButton,
                   availableForRent === true && styles.selectedAvailableForRentButton,
                 ]}
-                onPress={() => handleAvailableForRent(true)}
-              >
+                onPress={() => handleAvailableForRent(true)}>
                 <Text style={styles.availableForRentButtonText}>Yes</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -281,8 +275,7 @@ const OnboardingScreen12 = props => {
                   styles.availableForRentButton,
                   availableForRent === false && styles.selectedAvailableForRentButton,
                 ]}
-                onPress={() => handleAvailableForRent(false)}
-              >
+                onPress={() => handleAvailableForRent(false)}>
                 <Text style={styles.availableForRentButtonText}>No</Text>
               </TouchableOpacity>
             </View>
@@ -311,8 +304,7 @@ const OnboardingScreen12 = props => {
               homeownerName && availableForRent !== null ? null : styles.disabledNextButton,
             ]}
             onPress={handleNextPress}
-            disabled={!homeownerName || availableForRent === null}
-          >
+            disabled={!homeownerName || availableForRent === null}>
             <Text style={styles.nextButtonText}>Next</Text>
           </TouchableOpacity>
         </ScrollView>

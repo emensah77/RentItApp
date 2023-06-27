@@ -60,8 +60,7 @@ function WishListProvider({children}) {
         favorite,
         handleChangeFavorite,
         checkIsFav,
-      }}
-    >
+      }}>
       {children}
     </WishListContext.Provider>
   );

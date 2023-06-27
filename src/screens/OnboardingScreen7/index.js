@@ -327,8 +327,7 @@ const OnboardingScreen7 = props => {
       colors={['purple', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}
-    >
+      style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -342,8 +341,7 @@ const OnboardingScreen7 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}
-      >
+        style={styles.footer}>
         <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
           {' '}
           Take a picture of your ID Card {'\n'} and light bill of your home{' '}
@@ -360,8 +358,7 @@ const OnboardingScreen7 = props => {
                 borderRadius: 10,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              }}
-            >
+              }}>
               <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
                 Add {images.length >= 5 ? 'more' : 'at least 5'} photos
               </Text>
@@ -381,8 +378,7 @@ const OnboardingScreen7 = props => {
                     flex: 1,
                     flexDirection: 'column',
                     margin: 5,
-                  }}
-                >
+                  }}>
                   <Image
                     source={{uri: item.uri}}
                     style={{
@@ -411,15 +407,13 @@ const OnboardingScreen7 = props => {
                 paddingVertical: 20,
                 marginTop: 15,
                 opacity: images.length < 5 ? 0.2 : 1,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: 'white',
                   fontFamily: 'Montserrat-Bold',
                   fontSize: 14,
-                }}
-              >
+                }}>
                 Submit
               </Text>
             </TouchableOpacity>
@@ -439,8 +433,7 @@ const OnboardingScreen7 = props => {
                 paddingHorizontal: 20,
                 marginHorizontal: 20,
                 flex: 1,
-              }}
-            >
+              }}>
               <View style={{justifyContent: 'center'}}>
                 <Text style={{fontWeight: 'bold'}}>Upload a picture of your ID or bill</Text>
               </View>
@@ -463,8 +456,7 @@ const OnboardingScreen7 = props => {
                 paddingHorizontal: 20,
                 marginHorizontal: 20,
                 flex: 1,
-              }}
-            >
+              }}>
               <View style={{justifyContent: 'center'}}>
                 <Text style={{fontWeight: 'bold'}}>Take a picture of your ID or bill</Text>
               </View>
@@ -484,15 +476,13 @@ const OnboardingScreen7 = props => {
                   alignItems: 'center',
                   paddingHorizontal: 20,
                   paddingVertical: 20,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     color: 'white',
                     fontFamily: 'Montserrat-Bold',
                     fontSize: 14,
-                  }}
-                >
+                  }}>
                   Submit
                 </Text>
               </TouchableOpacity>
@@ -509,15 +499,13 @@ const OnboardingScreen7 = props => {
                   alignItems: 'center',
                   paddingHorizontal: 20,
                   paddingVertical: 20,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     color: 'white',
                     fontFamily: 'Montserrat-Bold',
                     fontSize: 14,
-                  }}
-                >
+                  }}>
                   Submit
                 </Text>
               </TouchableOpacity>

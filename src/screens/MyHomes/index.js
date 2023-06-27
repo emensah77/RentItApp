@@ -53,8 +53,7 @@ const MyHomes = () => {
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'flex-end',
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('EditHome', {homeInfo: item})}
           style={{
@@ -62,15 +61,13 @@ const MyHomes = () => {
             borderColor: 'blue',
             backgroundColor: 'blue',
             borderRadius: 10,
-          }}
-        >
+          }}>
           <Text
             style={{
               fontSize: 17,
               fontFamily: 'Montserrat-Bold',
               color: 'white',
-            }}
-          >
+            }}>
             Edit
           </Text>
         </TouchableOpacity>
@@ -105,24 +102,21 @@ const MyHomes = () => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}
-      >
+        ]}>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: Platform.OS === 'ios' ? 50 : 25,
             width: '100%',
-          }}
-        >
+          }}>
           <View style={{flex: 1, alignItems: 'center'}}>
             <Text
               style={{
                 fontSize: 24,
                 color: '#fff',
                 fontWeight: 'bold',
-              }}
-            >
+              }}>
               My Homes
             </Text>
           </View>
@@ -134,8 +128,7 @@ const MyHomes = () => {
           style={{
             flex: 1,
             backgroundColor: 'white',
-          }}
-        >
+          }}>
           {loading ? (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
               <ActivityIndicator size="large" color="deeppink" />

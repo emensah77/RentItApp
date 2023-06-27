@@ -23,8 +23,7 @@ const Card = props => {
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: 'transparent',
-            }}
-          >
+            }}>
             <FontAwesome name="heart-o" size={18} color="black" />
           </View>
         </View>
@@ -46,8 +45,7 @@ const Card = props => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 5,
-          }}
-        >
+          }}>
           <Text style={{fontSize: 14, fontWeight: 'bold'}}>${post.newPrice}</Text>
         </View>
       </View>

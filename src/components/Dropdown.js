@@ -73,8 +73,7 @@ const Dropdown = props => {
         onPress={toggle}
         suffix={suffix}
         groupBefore={groupBefore}
-        groupAfter={groupAfter}
-      >
+        groupAfter={groupAfter}>
         {value || label}
       </Button>
       {!open || !Array.isArray(originalData) ? null : (
@@ -132,8 +131,7 @@ const Item = ({
     type="dropdownItem"
     key={item[index][displayKey]}
     onPress={onSelect(item[index])}
-    ripple={ripple}
-  >
+    ripple={ripple}>
     <Image
       source={{uri: _.get(item[index], imageKey)}}
       loadingIndicatorSource={<ActivityIndicator size="large" color="blue" />}

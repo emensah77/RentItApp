@@ -56,8 +56,7 @@ const OnboardingScreen1 = () => {
         <View style={styles.topButtons}>
           <Pressable
             style={styles.topButton}
-            onPress={() => navigation.navigate('OnboardingScreen12')}
-          >
+            onPress={() => navigation.navigate('OnboardingScreen12')}>
             <Typography style={styles.topButtonText}>Save & exit</Typography>
           </Pressable>
           <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -84,8 +83,7 @@ const OnboardingScreen1 = () => {
           position: 'absolute',
           bottom: 0,
           left: 0,
-        }}
-      >
+        }}>
         <View style={{paddingHorizontal: offsets.offsetB}}>
           <DividedProgress total={6} progress={1} style={{marginBottom: offsets.offsetB}} />
         </View>

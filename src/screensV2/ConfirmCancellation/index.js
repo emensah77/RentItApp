@@ -70,8 +70,7 @@ const ConfirmCancellation = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 paddingTop: 16,
-              }}
-            >
+              }}>
               <Typography variant="large" bold>
                 Total refund
               </Typography>

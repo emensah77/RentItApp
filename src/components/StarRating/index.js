@@ -99,8 +99,7 @@ function StarRating(props) {
         key={i}
         ref={node => {
           starRef.push(node);
-        }}
-      >
+        }}>
         <StarButton
           activeOpacity={activeOpacity}
           buttonStyle={buttonStyle}

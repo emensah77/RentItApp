@@ -93,12 +93,10 @@ const OnboardingScreen5 = () => {
       return (
         <Pressable
           style={[styles.currencyBlock, currencyItem === item.id ? styles.currencySelect : '']}
-          onPress={() => changeItem(item.id)}
-        >
+          onPress={() => changeItem(item.id)}>
           <Typography
             style={[currencyItem === item.id ? styles.selectText : '', styles.textStyle]}
-            bold
-          >
+            bold>
             {item.text}
           </Typography>
         </Pressable>
@@ -134,8 +132,7 @@ const OnboardingScreen5 = () => {
                   amenities,
                   currencyData,
                 });
-              }}
-            >
+              }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -179,8 +176,7 @@ const OnboardingScreen5 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}
-        >
+          }}>
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={3} style={{marginBottom: offsets.offsetB}} />
           </View>

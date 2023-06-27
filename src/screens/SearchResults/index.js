@@ -298,14 +298,12 @@ const SearchResultsScreen = ({guests, viewport}) => {
         flex: 1,
         padding: 15,
         backgroundColor: 'white',
-      }}
-    >
+      }}>
       <Text
         style={{
           fontFamily: 'Montserrat-Bold',
           fontSize: 20,
-        }}
-      >
+        }}>
         No Homes Here
       </Text>
       <View style={{paddingVertical: 10}}>
@@ -326,15 +324,13 @@ const SearchResultsScreen = ({guests, viewport}) => {
           backgroundColor: 'black',
           paddingVertical: 13,
           borderRadius: 10,
-        }}
-      >
+        }}>
         <Text
           style={{
             fontSize: 16,
             fontFamily: 'Montserrat-Bold',
             color: 'white',
-          }}
-        >
+          }}>
           Search Again
         </Text>
       </TouchableOpacity>
@@ -389,17 +385,14 @@ const SearchResultsScreen = ({guests, viewport}) => {
             contentContainerStyle={{
               paddingRight: Platform.OS === 'android' ? 20 : 0,
               backgroundColor: 'white',
-            }}
-          >
+            }}>
             {categories.map((category, index) => (
               <TouchableOpacity
                 key={index.toString()}
                 onPress={() => setStatusFilter(category.status)}
-                style={[styless.button, status === category.status && styless.btnTabActive]}
-              >
+                style={[styless.button, status === category.status && styless.btnTabActive]}>
                 <Text
-                  style={[styless.textTab, status === category.status && styless.textTabActive]}
-                >
+                  style={[styless.textTab, status === category.status && styless.textTabActive]}>
                   {category.status}
                 </Text>
               </TouchableOpacity>
@@ -419,16 +412,14 @@ const SearchResultsScreen = ({guests, viewport}) => {
               position: 'relative',
               top: 20,
               zIndex: 1,
-            }}
-          >
+            }}>
             <Feather name="home" size={25} color="white" />
             <Text
               style={{
                 color: 'white',
                 fontSize: 18,
                 fontWeight: 'bold',
-              }}
-            >
+              }}>
               {loading ? 'Loading...' : `${+' ' + homeCount.current} homes to rent`}
             </Text>
           </View>
@@ -439,8 +430,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: 20,
-                }}
-              >
+                }}>
                 <ActivityIndicator size="large" color="blue" />
               </View>
             ) : (
@@ -480,8 +470,7 @@ const SearchResultsScreen = ({guests, viewport}) => {
             backgroundColor: 'white',
             alignItems: 'center',
             justifyContent: 'center',
-          }}
-        >
+          }}>
           <AnimatedEllipsis
             animationDelay={100}
             style={{

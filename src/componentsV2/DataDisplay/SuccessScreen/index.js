@@ -12,8 +12,7 @@ const SuccessScreen = ({title, text}) => {
       source={Bg}
       imageStyle={{
         resizeMode: 'contain',
-      }}
-    >
+      }}>
       <Typography style={styles.successTitle}>{title}</Typography>
       <Typography style={styles.successText}>{text}</Typography>
     </ImageBackground>

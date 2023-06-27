@@ -12,15 +12,13 @@ const CustomMarker = props => {
           padding: 5,
           elevation: isSelected ? 2 : 0,
           borderRadius: 20,
-        }}
-      >
+        }}>
         <Text
           style={{
             fontSize: 14,
             color: isSelected ? 'white' : 'black',
             fontWeight: 'bold',
-          }}
-        >
+          }}>
           GH₵ {Math.round(price * 1.07)}
         </Text>
       </View>

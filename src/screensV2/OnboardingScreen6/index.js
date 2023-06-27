@@ -215,8 +215,7 @@ const OnboardingScreen6 = () => {
             <Pressable
               style={styles.topButton}
               // eslint-disable-next-line react/jsx-no-bind
-              onPress={next}
-            >
+              onPress={next}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -231,8 +230,7 @@ const OnboardingScreen6 = () => {
           {/* <InputField style={styles.input} placeHolder={'Type where your home is located'} /> */}
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.input}
-          >
+            style={styles.input}>
             <GooglePlacesAutocomplete
               placeholder="Type where your home is located"
               ref={ref}
@@ -264,8 +262,7 @@ const OnboardingScreen6 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}
-        >
+          }}>
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={4} style={{marginBottom: offsets.offsetB}} />
           </View>

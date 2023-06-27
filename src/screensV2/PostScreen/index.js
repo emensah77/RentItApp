@@ -396,16 +396,14 @@ const PostScreen = ({route}) => {
               </Typography>
               <Typography
                 // onPress={() => {}}
-                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}
-              >
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
                 Learn more
               </Typography>
               <Divider />
               <Typography style={{marginTop: offsets.offsetA}}>{post?.description}</Typography>
               <Typography
                 // onPress={() => {}}
-                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}
-              >
+                style={{textDecorationLine: 'underline', marginTop: offsets.offsetA}}>
                 Learn more
               </Typography>
               <Divider />

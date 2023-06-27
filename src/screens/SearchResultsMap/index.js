@@ -353,16 +353,14 @@ const SearchResultsMaps = ({guests, viewport}) => {
           position: 'absolute',
           top: 20,
           zIndex: 1,
-        }}
-      >
+        }}>
         <Feather name="home" size={25} color="white" />
         <Text
           style={{
             fontSize: 18,
             color: 'white',
             fontWeight: 'bold',
-          }}
-        >
+          }}>
           {' '}
           {posts.length} homes to rent
         </Text>
@@ -381,8 +379,7 @@ const SearchResultsMaps = ({guests, viewport}) => {
           longitude: -0.183158678544458,
           latitudeDelta: 0.8,
           longitudeDelta: 0.8,
-        }}
-      >
+        }}>
         {posts.map(place => (
           <CustomMarker
             isSelected={place.id === selectedPlacedId}

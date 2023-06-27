@@ -160,8 +160,7 @@ export function Header(props: HeaderProps) {
               titleMode === 'flex' && $titleWrapperFlex,
               $titleContainerStyleOverride,
             ]}
-            pointerEvents="none"
-          >
+            pointerEvents="none">
             <Text size="md" text={titleContent} style={[$title, $titleStyleOverride]} />
           </View>
         )}
@@ -192,8 +191,7 @@ function HeaderAction(props: HeaderActionProps) {
         style={[$actionTextContainer, {backgroundColor}]}
         onPress={onPress}
         disabled={!onPress}
-        activeOpacity={0.8}
-      >
+        activeOpacity={0.8}>
         <Text size="md" text={content} style={$actionText} />
       </TouchableOpacity>
     );

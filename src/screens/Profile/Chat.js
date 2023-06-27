@@ -219,8 +219,7 @@ const Chat = props => {
             trim={false}
           />
         </>
-      }
-    >
+      }>
       <Container width="100%" type="top-10-center">
         {home?.title ? (
           <>
@@ -235,8 +234,7 @@ const Chat = props => {
                   size={15}
                   width="100%"
                   position="flex-start"
-                  color="#252525"
-                >
+                  color="#252525">
                   {home?.title}
                 </Typography>
               }
@@ -337,8 +335,7 @@ const Chat = props => {
                   <Typography
                     type="levelOneThick"
                     size={12}
-                    color={msg.pending ? '#555' : '#717171'}
-                  >
+                    color={msg.pending ? '#555' : '#717171'}>
                     {currentDay}
                   </Typography>
                 </>

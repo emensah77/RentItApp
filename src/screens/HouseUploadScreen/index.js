@@ -69,8 +69,7 @@ const HouseUploadScreen = props => {
         source={{
           uri: 'https://envato-shoebox-0.imgix.net/f553/d600-29fe-48ea-8e10-d88c190c4d37/7_T13A4174.jpg?auto=compress%2Cformat&fit=max&mark=https%3A%2F%2Felements-assets.envato.com%2Fstatic%2Fwatermark2.png&markalign=center%2Cmiddle&markalpha=18&w=1600&s=d36a454b3e1ca7c15572d8b4bcddad6a',
         }}
-        style={styles.image}
-      >
+        style={styles.image}>
         <Pressable
           style={{
             margin: 20,
@@ -87,8 +86,7 @@ const HouseUploadScreen = props => {
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onPress={() => navigation.goBack()}
-        >
+          onPress={() => navigation.goBack()}>
           <Fontisto name="angle-left" size={15} style={{color: 'black'}} />
         </Pressable>
       </ImageBackground>
@@ -97,8 +95,7 @@ const HouseUploadScreen = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}
-      >
+        style={styles.footer}>
         <Text style={styles.text_header}> Upload your home in {'\n'} 10 easy steps </Text>
         <TouchableOpacity
           onPress={() => {
@@ -115,15 +112,13 @@ const HouseUploadScreen = props => {
             paddingVertical: 20,
             alignItems: 'center',
             backgroundColor: 'deeppink',
-          }}
-        >
+          }}>
           <Text
             style={{
               color: 'white',
               fontSize: 18,
               fontFamily: 'Montserrat-Bold',
-            }}
-          >
+            }}>
             {buttonText}
           </Text>
         </TouchableOpacity>

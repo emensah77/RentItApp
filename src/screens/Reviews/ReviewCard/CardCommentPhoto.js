@@ -50,8 +50,7 @@ export default function CardCommentPhoto({
         <View
           style={{
             flex: 1,
-          }}
-        >
+          }}>
           <Text style={{fontWeight: '600', marginLeft: 3}} numberOfLines={1}>
             {userInfo?.displayName || userInfo?.fname}
           </Text>
@@ -71,8 +70,7 @@ export default function CardCommentPhoto({
               footnote
               grayColor
               numberOfLines={1}
-              style={{paddingHorizontal: 4, color: 'gray'}}
-            >
+              style={{paddingHorizontal: 4, color: 'gray'}}>
               {date}
             </Text>
           </View>
@@ -83,8 +81,7 @@ export default function CardCommentPhoto({
           style={{
             marginTop: 10,
             marginLeft: 10,
-          }}
-        >
+          }}>
           {comment}
         </Text>
       </View>

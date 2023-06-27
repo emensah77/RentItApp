@@ -28,8 +28,7 @@ const Button = props => {
           fitWidth ? button.fitWidth : {},
           width ? {width} : {},
           color ? {backgroundColor: color} : {},
-        ]}
-      >
+        ]}>
         {prefix && (
           <Image
             source={prefix}

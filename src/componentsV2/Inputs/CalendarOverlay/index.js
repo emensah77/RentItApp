@@ -70,8 +70,7 @@ const CalendarOverlay = ({title, bottomSheetRef, handleSheetChanges, onClose, on
       ref={bottomSheetRef}
       index={1}
       snapPoints={snapPoints}
-      onChange={handleSheetChanges}
-    >
+      onChange={handleSheetChanges}>
       <View style={styles.main}>
         <View style={styles.top_actions}>
           <CircleButton
@@ -116,8 +115,7 @@ const CalendarOverlay = ({title, bottomSheetRef, handleSheetChanges, onClose, on
             }
             bottomComponent={
               <View
-                style={{marginTop: offsets.offsetA, flexDirection: 'row', alignItems: 'center'}}
-              >
+                style={{marginTop: offsets.offsetA, flexDirection: 'row', alignItems: 'center'}}>
                 <FontAwesome name="star" size={14} color="black" />
                 <Typography style={{marginLeft: wp(2)}} bold variant="large">
                   4.76

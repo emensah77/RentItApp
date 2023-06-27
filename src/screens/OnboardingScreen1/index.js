@@ -109,8 +109,7 @@ const OnboardingScreen1 = props => {
       colors={['purple', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}
-    >
+      style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -124,8 +123,7 @@ const OnboardingScreen1 = props => {
         useNativeDriver
         animation="fadeInUpBig"
         duration={1500}
-        style={styles.footer}
-      >
+        style={styles.footer}>
         <ScrollView>
           <Text style={{fontSize: 18, fontFamily: 'Montserrat-Bold'}}>
             Select the type {'\n'} of your home{' '}
@@ -140,8 +138,7 @@ const OnboardingScreen1 = props => {
                   navigation.navigate('OnboardingScreen10', {
                     type: item.title,
                   });
-                }}
-              >
+                }}>
                 <View style={{justifyContent: 'center'}}>
                   <Text style={{fontWeight: 'bold'}}>{item.title}</Text>
                 </View>

@@ -44,8 +44,7 @@ const CancelationPolicy = () => {
         <Typography
           variant="xlarge"
           bold
-          style={{textAlign: 'center', paddingTop: 40, marginBottom: 52}}
-        >
+          style={{textAlign: 'center', paddingTop: 40, marginBottom: 52}}>
           Cancelation policy
         </Typography>
         <Typography variant="large">

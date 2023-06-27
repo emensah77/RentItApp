@@ -218,8 +218,7 @@ const PaymentScreen = props => {
         justifyContent: 'center',
         backgroundColor: 'white',
         flex: 1,
-      }}
-    >
+      }}>
       {paymentUrl ? (
         <WebView
           source={{uri: paymentUrl}}

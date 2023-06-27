@@ -155,8 +155,7 @@ const SearchResults = ({guests, dates, location}) => {
     ({item, index}) => (
       <View
         key={item.id}
-        style={{width: '92%', marginLeft: '4%', marginTop: index !== 0 ? wp(10.25) : wp(3)}}
-      >
+        style={{width: '92%', marginLeft: '4%', marginTop: index !== 0 ? wp(10.25) : wp(3)}}>
         <HomeItem item={item} />
       </View>
     ),
@@ -232,8 +231,7 @@ const SearchResults = ({guests, dates, location}) => {
                     longitude: -0.183158678544458,
                     latitudeDelta: 0.8,
                     longitudeDelta: 0.8,
-                  }}
-                >
+                  }}>
                   {posts.map(place => (
                     <CustomMarker
                       isSelected={place.id === selectedPlacedId}
@@ -260,14 +258,12 @@ const SearchResults = ({guests, dates, location}) => {
                 ref={bottomSheetRef}
                 index={1}
                 snapPoints={snapPoints}
-                onChange={handleSheetChanges}
-              >
+                onChange={handleSheetChanges}>
                 <View style={{alignItems: 'center', width: '100%'}}>
                   <Typography
                     variant="large"
                     bold
-                    style={{marginBottom: offsets.offsetB, marginTop: offsets.offsetA}}
-                  >
+                    style={{marginBottom: offsets.offsetB, marginTop: offsets.offsetA}}>
                     {posts?.length} homes
                   </Typography>
                   <FlatList

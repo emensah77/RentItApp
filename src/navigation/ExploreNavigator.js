@@ -52,8 +52,7 @@ const Router = () => (
       headerTitleStyle: {
         fontWeight: 'bold',
       },
-    }}
-  >
+    }}>
     <Stack.Screen
       name="Welcome"
       component={HomeScreen}

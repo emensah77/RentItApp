@@ -32,8 +32,7 @@ const MapOverlay = ({posts, bottomSheetRef, handleSheetChanges, onClose}) => {
       ref={bottomSheetRef}
       index={1}
       snapPoints={snapPoints}
-      onChange={handleSheetChanges}
-    >
+      onChange={handleSheetChanges}>
       <>
         <View style={styles.top_actions}>
           <CircleButton
@@ -56,8 +55,7 @@ const MapOverlay = ({posts, bottomSheetRef, handleSheetChanges, onClose}) => {
               longitude: -0.183158678544458,
               latitudeDelta: 0.8,
               longitudeDelta: 0.8,
-            }}
-          >
+            }}>
             {posts.map(place => (
               <CustomMarker
                 isSelected

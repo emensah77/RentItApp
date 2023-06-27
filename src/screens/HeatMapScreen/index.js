@@ -459,8 +459,7 @@ const HeatMapScreen = ({navigation}) => {
           longitude: -0.183158678544458,
           latitudeDelta: 0.8,
           longitudeDelta: 0.8,
-        }}
-      >
+        }}>
         {heatmapVisible && (
           <Heatmap points={heatmapData} radius={50} opacity={1} gradient={customGradient} />
         )}
@@ -472,8 +471,7 @@ const HeatMapScreen = ({navigation}) => {
               latitude: selectedPoint.latitude,
               longitude: selectedPoint.longitude,
             }}
-            onPress={handleMarkerPress}
-          >
+            onPress={handleMarkerPress}>
             <View
               style={{
                 backgroundColor: 'white',
@@ -483,8 +481,7 @@ const HeatMapScreen = ({navigation}) => {
                 borderColor: '#ccc',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
+              }}>
               <Text style={{fontSize: 16, fontWeight: 'bold'}}>{selectedPoint.place}</Text>
               <Text>
                 Count:
@@ -561,8 +558,7 @@ const HeatMapScreen = ({navigation}) => {
           paddingHorizontal: 10,
           paddingVertical: 9,
           zIndex: 2,
-        }}
-      >
+        }}>
         <Text style={{fontSize: 14, fontWeight: 'bold'}}>Back</Text>
       </TouchableOpacity>
 
@@ -573,8 +569,7 @@ const HeatMapScreen = ({navigation}) => {
           right: 20,
           flexDirection: 'column',
           zIndex: 2,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => handleZoom(true)}
           style={{
@@ -583,8 +578,7 @@ const HeatMapScreen = ({navigation}) => {
             marginBottom: 10,
             paddingHorizontal: 16,
             paddingVertical: 10,
-          }}
-        >
+          }}>
           <Text style={{fontSize: 24, fontWeight: 'bold'}}>+</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -594,8 +588,7 @@ const HeatMapScreen = ({navigation}) => {
             borderRadius: 20,
             paddingHorizontal: 18,
             paddingVertical: 10,
-          }}
-        >
+          }}>
           <Text style={{fontSize: 24, fontWeight: 'bold'}}>-</Text>
         </TouchableOpacity>
       </View>
@@ -613,8 +606,7 @@ const HeatMapScreen = ({navigation}) => {
           paddingHorizontal: 10,
           paddingVertical: 9,
           zIndex: 2,
-        }}
-      >
+        }}>
         <Text style={{fontSize: 14, fontWeight: 'bold'}}>{isOnline ? 'Stop' : 'Start'}</Text>
       </TouchableOpacity>
       {!heatmapVisible && (
@@ -636,8 +628,7 @@ const HeatMapScreen = ({navigation}) => {
             alignSelf: 'center',
             alignContent: 'center',
             zIndex: 2,
-          }}
-        >
+          }}>
           <ActivityIndicator size="large" color="#0000ff" />
           <Text style={{marginTop: 10}}>Loading demand...</Text>
         </View>
@@ -658,8 +649,7 @@ const HeatMapScreen = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 2,
-          }}
-        >
+          }}>
           <Text style={{fontWeight: 'bold', fontSize: 18}}>
             Distance: {routeInfo.distance.toFixed(2)} km
           </Text>

@@ -90,8 +90,7 @@ const OnboardingScreen11 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}
-        >
+          }}>
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={6} progress={6} style={{marginBottom: offsets.offsetB}} />
           </View>

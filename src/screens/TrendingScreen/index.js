@@ -108,8 +108,7 @@ const Trending = props => {
           backgroundColor: '#fff',
           flex: 1,
           paddingBottom: 180,
-        }}
-      >
+        }}>
         <StatusBar hidden />
         <LinearGradient
           colors={['purple', 'deeppink']}
@@ -123,16 +122,14 @@ const Trending = props => {
               paddingHorizontal: 20,
               justifyContent: 'center',
             },
-          ]}
-        >
+          ]}>
           <View style={{paddingTop: 15}}>
             <Text
               style={{
                 fontSize: 32,
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
-              }}
-            >
+              }}>
               Trending
             </Text>
           </View>
@@ -143,8 +140,7 @@ const Trending = props => {
             style={{
               fontFamily: 'Montserrat-Bold',
               fontSize: 20,
-            }}
-          >
+            }}>
             Most Popular
           </Text>
         </View>
@@ -157,8 +153,7 @@ const Trending = props => {
               marginHorizontal: 20,
               justifyContent: 'flex-start',
               alignContent: 'center',
-            }}
-          >
+            }}>
             <SkeletonContent
               containerStyle={{paddingBottom: 100, width: 300}}
               animationDirection="horizontalLeft"
@@ -211,8 +206,7 @@ const Trending = props => {
         style={{
           backgroundColor: '#fff',
           flex: 1,
-        }}
-      >
+        }}>
         <StatusBar hidden />
         <LinearGradient
           colors={['purple', 'deeppink']}
@@ -227,16 +221,14 @@ const Trending = props => {
               paddingHorizontal: 20,
               justifyContent: 'center',
             },
-          ]}
-        >
+          ]}>
           <View style={{paddingTop: 15}}>
             <Text
               style={{
                 fontSize: 32,
                 color: 'white',
                 fontFamily: 'Montserrat-Bold',
-              }}
-            >
+              }}>
               Trending
             </Text>
           </View>
@@ -246,8 +238,7 @@ const Trending = props => {
             style={{
               fontFamily: 'Montserrat-Bold',
               fontSize: 20,
-            }}
-          >
+            }}>
             No trends yet
           </Text>
           <View style={{padding: 10}}>
@@ -268,14 +259,12 @@ const Trending = props => {
               height: '20%',
 
               borderRadius: 10,
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 16,
                 fontFamily: 'Montserrat-Bold',
-              }}
-            >
+              }}>
               Start exploring
             </Text>
           </TouchableOpacity>

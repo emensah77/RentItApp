@@ -57,8 +57,7 @@ const AppNotifications = () => {
       style={{
         backgroundColor: '#fff',
         flex: 1,
-      }}
-    >
+      }}>
       <StatusBar hidden />
       <LinearGradient
         colors={['purple', 'deeppink']}
@@ -72,8 +71,7 @@ const AppNotifications = () => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}
-      >
+        ]}>
         <View style={{paddingTop: 15}}>
           <Text
             style={{
@@ -81,8 +79,7 @@ const AppNotifications = () => {
               color: 'white',
               fontFamily: 'Montserrat-Bold',
             }}
-            category="h6"
-          >
+            category="h6">
             Notifications
           </Text>
         </View>
@@ -94,24 +91,21 @@ const AppNotifications = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           margin: 5,
-        }}
-      >
+        }}>
         <Text
           style={{
             fontFamily: 'Montserrat-Bold',
             fontSize: 17,
             color: '#3366FF',
           }}
-          category="s1"
-        >
+          category="s1">
           New Notifications ({totalUnRead})
         </Text>
         <Button
           disabled={notifications?.length === 0}
           appearance="ghost"
           status="primary"
-          onPress={clearHandler}
-        >
+          onPress={clearHandler}>
           CLEAR ALL
           <View style={{paddingLeft: 5}}>
             <FontAwesomeIcon
@@ -130,8 +124,7 @@ const AppNotifications = () => {
             marginHorizontal: 20,
             justifyContent: 'flex-start',
             alignContent: 'center',
-          }}
-        >
+          }}>
           <SkeletonContent
             containerStyle={{paddingBottom: 100, width: 400}}
             animationDirection="horizontalLeft"

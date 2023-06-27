@@ -15,8 +15,7 @@ const ActivityLoader = props => {
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 50,
-      }}
-    >
+      }}>
       <SkeletonContent
         containerStyle={{paddingBottom: 100, width: 300}}
         animationDirection="horizontalLeft"

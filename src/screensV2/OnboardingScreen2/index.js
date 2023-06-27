@@ -101,8 +101,7 @@ const OnboardingScreen2 = () => {
                   bedRoomCount,
                   bathRoomsCount,
                 });
-              }}
-            >
+              }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -166,8 +165,7 @@ const OnboardingScreen2 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}
-        >
+          }}>
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={6} progress={4} style={{marginBottom: offsets.offsetB}} />
           </View>

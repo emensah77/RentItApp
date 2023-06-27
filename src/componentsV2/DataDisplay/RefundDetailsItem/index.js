@@ -12,8 +12,7 @@ const RefundDetailsItem = ({title, price, paid}) => {
           alignItems: 'center',
           justifyContent: 'space-between',
           marginBottom: 5,
-        }}
-      >
+        }}>
         <Typography style={styles.title}>{title}</Typography>
         <Typography style={styles.title}>{price}</Typography>
       </View>

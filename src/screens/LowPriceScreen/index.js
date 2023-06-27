@@ -57,8 +57,7 @@ const LowPriceScreen = props => {
         backgroundColor: '#fff',
         flex: 1,
         paddingBottom: 180,
-      }}
-    >
+      }}>
       <StatusBar hidden />
       <LinearGradient
         colors={['#ff00cc', '#333999']}
@@ -73,16 +72,14 @@ const LowPriceScreen = props => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}
-      >
+        ]}>
         <View style={{paddingTop: 15}}>
           <Text
             style={{
               fontSize: 32,
               color: 'white',
               fontFamily: 'Montserrat-Bold',
-            }}
-          >
+            }}>
             Discount
           </Text>
         </View>
@@ -94,16 +91,14 @@ const LowPriceScreen = props => {
             fontFamily: 'Montserrat-Bold',
             fontSize: 20,
             paddingBottom: 10,
-          }}
-        >
+          }}>
           Most Affordable
         </Text>
         <Text
           style={{
             fontFamily: 'Montserrat-Regular',
             fontSize: 18,
-          }}
-        >
+          }}>
           The cheapest homes selected for you
         </Text>
       </View>
@@ -116,8 +111,7 @@ const LowPriceScreen = props => {
             marginHorizontal: 20,
             justifyContent: 'flex-start',
             alignContent: 'center',
-          }}
-        >
+          }}>
           <SkeletonContent
             containerStyle={{paddingBottom: 0, width: 300}}
             animationDirection="horizontalLeft"

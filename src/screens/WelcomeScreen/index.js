@@ -42,8 +42,7 @@ const WelcomeScreen = ({props}) => {
             marginTop: 100,
             backgroundColor: 'white',
             paddingBottom: 20,
-          }}
-        >
+          }}>
           <Text style={{fontSize: 22, fontWeight: 'bold', padding: 10}}>
             Welcome {user?._user?.displayName}
           </Text>
@@ -62,8 +61,7 @@ const WelcomeScreen = ({props}) => {
                 fontSize: 13,
                 fontWeight: '600',
                 color: 'black',
-              }}
-            >
+              }}>
               Name
             </Text>
             <TextInput
@@ -85,8 +83,7 @@ const WelcomeScreen = ({props}) => {
                 fontSize: 10,
                 marginBottom: 13,
                 color: 'blue',
-              }}
-            >
+              }}>
               Make sure it matches the name on your government ID.
             </Text>
             <Text
@@ -95,8 +92,7 @@ const WelcomeScreen = ({props}) => {
                 fontSize: 13,
                 fontWeight: '600',
                 color: 'black',
-              }}
-            >
+              }}>
               Email
             </Text>
             <TextInput
@@ -117,8 +113,7 @@ const WelcomeScreen = ({props}) => {
                 fontSize: 10,
                 marginBottom: 13,
                 color: 'blue',
-              }}
-            >
+              }}>
               We'll email you home confirmations and receipts.
             </Text>
           </View>
@@ -215,8 +210,7 @@ const WelcomeScreen = ({props}) => {
               marginTop: 25,
               alignSelf: 'flex-end',
               marginHorizontal: 25,
-            }}
-          >
+            }}>
             <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white'}}>
               Agree and Continue
             </Text>

@@ -70,8 +70,7 @@ export const Icon = (props: IconProps) => {
     <Wrapper
       accessibilityRole={isPressable ? 'imagebutton' : undefined}
       {...WrapperProps}
-      style={$containerStyleOverride}
-    >
+      style={$containerStyleOverride}>
       {/* @ts-ignore */}
       <Image
         style={[

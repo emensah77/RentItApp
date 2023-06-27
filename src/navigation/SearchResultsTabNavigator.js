@@ -25,15 +25,13 @@ const SearchResultsTabNavigator = props => {
         indicatorStyle: {
           backgroundColor: 'white',
         },
-      }}
-    >
+      }}>
       <Tab.Screen
         name="list"
         options={{
           headerShown: false,
           lazy: true,
-        }}
-      >
+        }}>
         {() => <SearchResults guests={guests} dates={dates} location={location} />}
       </Tab.Screen>
       {/* <Tab.Screen */}

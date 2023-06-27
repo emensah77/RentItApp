@@ -41,8 +41,7 @@ const Wishlists = () => {
         backgroundColor: '#fff',
         flex: 1,
         paddingBottom: 180,
-      }}
-    >
+      }}>
       <StatusBar hidden />
       <LinearGradient
         colors={['purple', 'deeppink']}
@@ -56,16 +55,14 @@ const Wishlists = () => {
             paddingHorizontal: 20,
             justifyContent: 'center',
           },
-        ]}
-      >
+        ]}>
         <View style={{paddingTop: 15}}>
           <Text
             style={{
               fontSize: 32,
               color: 'white',
               fontFamily: 'Montserrat-Bold',
-            }}
-          >
+            }}>
             Wishlists
           </Text>
         </View>
@@ -79,8 +76,7 @@ const Wishlists = () => {
                 style={{
                   fontFamily: 'Montserrat-Bold',
                   fontSize: 20,
-                }}
-              >
+                }}>
                 Your Favorites
               </Text>
             </View>
@@ -96,8 +92,7 @@ const Wishlists = () => {
                   style={{
                     fontFamily: 'Montserrat-Bold',
                     fontSize: 20,
-                  }}
-                >
+                  }}>
                   No saves yet
                 </Text>
                 <View style={{padding: 10}}>
@@ -118,14 +113,12 @@ const Wishlists = () => {
                     height: '20%',
 
                     borderRadius: 10,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       fontSize: 16,
                       fontFamily: 'Montserrat-Bold',
-                    }}
-                  >
+                    }}>
                     Start exploring
                   </Text>
                 </TouchableOpacity>

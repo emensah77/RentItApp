@@ -18,8 +18,7 @@ const CheckoutScreen = props => {
       <TouchableOpacity
         onPress={() => {
           navigation.goBack();
-        }}
-      >
+        }}>
         <Text>Back</Text>
       </TouchableOpacity>
     </View>

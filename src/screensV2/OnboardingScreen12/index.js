@@ -117,13 +117,11 @@ const OnboardingScreen12 = () => {
           onPress={async () => {
             setSelectedItem(item);
             // await saveAndGo(item)
-          }}
-        >
+          }}>
           <Typography
             style={{paddingLeft: 20}}
             bold
-            style={item.key === selectedItem?.key && styles.selectedItemText}
-          >
+            style={item.key === selectedItem?.key && styles.selectedItemText}>
             {item.title}
           </Typography>
           <Image
@@ -191,8 +189,7 @@ const OnboardingScreen12 = () => {
           position: 'absolute',
           bottom: 0,
           left: 0,
-        }}
-      >
+        }}>
         <View style={{paddingHorizontal: offsets.offsetB}}>
           <DividedProgress total={6} progress={2} style={{marginBottom: offsets.offsetB}} />
         </View>

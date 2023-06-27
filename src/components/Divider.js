@@ -12,8 +12,7 @@ const Divider = props => {
         small ? global.noTextDividerContainer : {},
         typeof marginTop !== 'undefined' ? {marginTop} : {},
         typeof marginBottom !== 'undefined' ? {marginBottom} : {},
-      ]}
-    >
+      ]}>
       {children ? (
         <View style={[global.dividerTextContainer, small ? global.noTextDividerTextContainer : {}]}>
           <Text style={[typography.heading, global.dividerText]}>{children}</Text>

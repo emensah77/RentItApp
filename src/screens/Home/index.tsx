@@ -807,8 +807,7 @@ const HomeScreen = () => {
         style={{
           marginHorizontal: 20,
           marginTop: index !== 0 ? wp(10.25) : wp(3),
-        }}
-      >
+        }}>
         <HomeItem item={item} />
       </View>
     ),
@@ -1003,8 +1002,7 @@ const HomeScreen = () => {
           animationType="slide"
           transparent={false}
           visible={modalvisible}
-          onRequestClose={close}
-        >
+          onRequestClose={close}>
           <View style={styles.modalContainer}>
             <ScrollView contentContainerStyle={styles.modalScrollView}>
               <View style={styles.marginTop10}>
@@ -1131,8 +1129,7 @@ const HomeScreen = () => {
             <TouchableOpacity
               disabled={posts.length === 0}
               onPress={filter}
-              style={[styles.showHomes, showHomesOpacity]}
-            >
+              style={[styles.showHomes, showHomesOpacity]}>
               <Text style={styles.showHomesText}>Show {posts.length} homes</Text>
             </TouchableOpacity>
           </View>
@@ -1192,8 +1189,7 @@ const HomeScreen = () => {
                   }).start();
                 }
               }}
-              contentContainerStyle={styles.contentContainerStyle}
-            >
+              contentContainerStyle={styles.contentContainerStyle}>
               {categories.map((category, index) => (
                 <TouchableOpacity
                   onLayout={event => {
@@ -1210,8 +1206,7 @@ const HomeScreen = () => {
                     });
                     setStatusFilter(category.status);
                   }}
-                  style={[styles.button1, status === category.status && styles.btnTabActive]}
-                >
+                  style={[styles.button1, status === category.status && styles.btnTabActive]}>
                   {category.icon}
 
                   <Text
@@ -1219,8 +1214,7 @@ const HomeScreen = () => {
                       styles.padding6,
                       styles.textTab,
                       status === category.status && styles.textTabActive,
-                    ]}
-                  >
+                    ]}>
                     {category.status}
                   </Text>
                 </TouchableOpacity>
@@ -1275,8 +1269,7 @@ const HomeScreen = () => {
                     longitude: -0.183158678544458,
                     latitudeDelta: 0.8,
                     longitudeDelta: 0.8,
-                  }}
-                >
+                  }}>
                   {posts.map((place, index) => (
                     <CustomMarker
                       key={index}
@@ -1328,8 +1321,7 @@ const HomeScreen = () => {
             onPress={() => {
               setShowMap(true);
               bottomSheetRef.current?.snapToIndex(0);
-            }}
-          >
+            }}>
             <Typography bold style={{color: '#fff'}}>
               Map
             </Typography>

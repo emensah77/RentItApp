@@ -42,8 +42,7 @@ const AccountManageScreen = props => {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        onPress={() => navigation.goBack()}
-      >
+        onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={15} style={{color: 'black'}} />
       </Pressable>
 
@@ -80,8 +79,7 @@ const AccountManageScreen = props => {
               },
             );
           }}
-          style={{padding: 15}}
-        >
+          style={{padding: 15}}>
           <Fontisto name="trash" size={15} style={{color: 'black'}} />
         </Pressable>
       </View>

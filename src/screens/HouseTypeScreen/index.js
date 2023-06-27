@@ -91,8 +91,7 @@ const HouseTypeScreen = props => {
             </Typography>
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.searchContent}
-            >
+              style={styles.searchContent}>
               <SearchIcon width={16} height={16} style={styles.searchIcon} />
 
               <GooglePlacesAutocomplete

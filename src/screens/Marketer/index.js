@@ -144,24 +144,21 @@ const Marketer = () => {
                 paddingHorizontal: 20,
                 justifyContent: 'center',
               },
-            ]}
-          >
+            ]}>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginTop: Platform.OS === 'ios' ? 50 : 25,
                 width: '100%',
-              }}
-            >
+              }}>
               <View>
                 <Text
                   style={{
                     fontSize: 24,
                     color: '#fff',
                     fontWeight: 'bold',
-                  }}
-                >
+                  }}>
                   Become a marketer
                 </Text>
               </View>
@@ -183,8 +180,7 @@ const Marketer = () => {
                   marginTop: 10,
                   color: temp[firebaseUser?.marketer_status]?.color || 'blue',
                   alignSelf: 'center',
-                }}
-              >
+                }}>
                 {temp[firebaseUser?.marketer_status]?.infoText ||
                   'You can request to admin to become a marketer, once admin approves, enjoy the experience of Marketer in Rentit.'}
               </Typography>
@@ -204,13 +200,11 @@ const Marketer = () => {
                     flexWrap: 'wrap',
                     justifyContent: 'space-around',
                     marginTop: 10,
-                  }}
-                >
+                  }}>
                   <Button
                     disabled={!range?.startDate || !range?.endDate}
                     onPress={handleFilter}
-                    appearance="outline"
-                  >
+                    appearance="outline">
                     Apply
                   </Button>
                   <Button
@@ -219,8 +213,7 @@ const Marketer = () => {
                       setRange({});
                       handleFilter();
                     }}
-                    appearance="outline"
-                  >
+                    appearance="outline">
                     Reset
                   </Button>
                 </Layout>
@@ -229,8 +222,7 @@ const Marketer = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     marginTop: 10,
-                  }}
-                >
+                  }}>
                   <CardComponent
                     icon="home"
                     label="Total Homes"
@@ -249,8 +241,7 @@ const Marketer = () => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     marginTop: 10,
-                  }}
-                >
+                  }}>
                   <CardComponent
                     icon="check"
                     label="Available"
@@ -275,8 +266,7 @@ const Marketer = () => {
                       borderColor: temp[firebaseUser?.marketer_status]?.color || 'blue',
                       width: '60%',
                     }}
-                    onPress={submitHandler}
-                  >
+                    onPress={submitHandler}>
                     {temp[firebaseUser?.marketer_status]?.buttonText || 'Request Now'}
                   </Button>
                 </View>
@@ -296,8 +286,7 @@ const CardComponent = ({icon, label, text, color}) => (
       width: '48%',
       backgroundColor: color,
       marginBottom: 10,
-    }}
-  >
+    }}>
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <Fontisto name={icon} size={40} color="white" />
       <View style={{marginLeft: 10}}>

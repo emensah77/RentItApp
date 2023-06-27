@@ -48,8 +48,7 @@ const HomeTabNavigator = _props => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-      }}
-    >
+      }}>
       <Tab.Screen
         name="Explore"
         component={ExploreNavigator}
@@ -88,8 +87,7 @@ const HomeTabNavigator = _props => {
                   top: -3,
                   right: -10,
                   borderRadius: 10,
-                }}
-              >
+                }}>
                 {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
                             3
                         </Text> */}

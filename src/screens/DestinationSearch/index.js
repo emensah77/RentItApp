@@ -41,8 +41,7 @@ const DestinationSearch = props => {
       colors={['purple', 'deeppink']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}
-    >
+      style={styles.container}>
       <StatusBar hidden />
       <Pressable onPress={() => navigation.goBack()}>
         <Fontisto name="angle-left" size={25} style={{color: 'white', margin: 20, marginTop: 30}} />
@@ -55,8 +54,7 @@ const DestinationSearch = props => {
       <Animatable.View style={styles.footer}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{flex: 1}}
-        >
+          style={{flex: 1}}>
           <GooglePlacesAutocomplete
             placeholder="Type where you want to rent"
             ref={ref}

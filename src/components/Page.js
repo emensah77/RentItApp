@@ -40,8 +40,7 @@ const Page = props => {
           center
           leftIcon={leftIcon}
           rightIcon={rightIcon}
-          onClose={onLeftIconPress || navigation.goBack}
-        >
+          onClose={onLeftIconPress || navigation.goBack}>
           {header}
         </Header>
       ) : null}
@@ -49,8 +48,7 @@ const Page = props => {
       <Display
         style={global.page}
         contentContainerStyle={global.pageContent}
-        keyboardShouldPersistTaps="handled"
-      >
+        keyboardShouldPersistTaps="handled">
         {type === 'large' && header && !inline ? (
           <>
             <Whitespace marginTop={30} />

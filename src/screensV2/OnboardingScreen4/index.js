@@ -279,8 +279,7 @@ const OnboardingScreen3 = () => {
                   mode,
                   amenities,
                 });
-              }}
-            >
+              }}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -313,8 +312,7 @@ const OnboardingScreen3 = () => {
             position: 'absolute',
             bottom: 0,
             left: 0,
-          }}
-        >
+          }}>
           <View style={{paddingHorizontal: offsets.offsetB}}>
             <DividedProgress total={4} progress={2} style={{marginBottom: offsets.offsetB}} />
           </View>

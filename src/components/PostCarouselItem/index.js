@@ -27,8 +27,7 @@ const Post = props => {
   return (
     <Pressable
       onPress={goToPostPage}
-      style={(styles.container, {width: width - 60, marginHorizontal: 5})}
-    >
+      style={(styles.container, {width: width - 60, marginHorizontal: 5})}>
       {/* Image */}
       <View style={styles.innerContainer}>
         <FastImage

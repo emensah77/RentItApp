@@ -166,8 +166,7 @@ const DashboardScreen = () => {
       colors={['deeppink', 'blue']}
       start={{x: 0.1, y: 0.2}}
       end={{x: 1, y: 0.5}}
-      style={styles.container}
-    >
+      style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.header}>
           <Text style={styles.headerText}>My Dashboard</Text>

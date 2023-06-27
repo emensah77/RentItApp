@@ -72,8 +72,7 @@ const OnboardingScreen7 = () => {
       return (
         <Pressable
           style={[styles.itemData, item.id === checkItem ? styles.itemCheckData : '']}
-          onPress={() => checkData(item.id, item.isSelected, item.title)}
-        >
+          onPress={() => checkData(item.id, item.isSelected, item.title)}>
           <Typography bold>{item.title}</Typography>
           <Typography style={{color: '#4D4D4D'}}>{item.text}</Typography>
         </Pressable>
@@ -95,8 +94,7 @@ const OnboardingScreen7 = () => {
             <Pressable
               style={styles.topButton}
               // eslint-disable-next-line react/jsx-no-bind
-              onPress={async () => {}}
-            >
+              onPress={async () => {}}>
               <Typography style={styles.topButtonText}>Save & exit</Typography>
             </Pressable>
             <Pressable style={styles.topButton} onPress={goFaqs}>
@@ -115,8 +113,7 @@ const OnboardingScreen7 = () => {
           position: 'absolute',
           bottom: 0,
           left: 0,
-        }}
-      >
+        }}>
         <View style={{paddingHorizontal: offsets.offsetB}}>
           <DividedProgress total={6} progress={3} style={{marginBottom: offsets.offsetB}} />
         </View>

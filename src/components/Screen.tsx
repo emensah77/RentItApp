@@ -188,8 +188,7 @@ function ScreenWithScrolling(props: ScreenProps) {
         $innerStyle,
         ScrollViewProps?.contentContainerStyle,
         contentContainerStyle,
-      ]}
-    >
+      ]}>
       {children}
     </ScrollView>
   );
@@ -216,8 +215,7 @@ export function Screen(props: ScreenProps) {
         behavior={isIos ? 'padding' : undefined}
         keyboardVerticalOffset={keyboardOffset}
         {...KeyboardAvoidingViewProps}
-        style={[$keyboardAvoidingViewStyle, KeyboardAvoidingViewProps?.style]}
-      >
+        style={[$keyboardAvoidingViewStyle, KeyboardAvoidingViewProps?.style]}>
         {isNonScrolling(props.preset) ? (
           <ScreenWithoutScrolling {...props} />
         ) : (
