@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {standardWidth} from './global';
 
 const fontType = {
-  fontFamily: 'Manrope',
+  fontFamily: undefined,
   fontStyle: 'normal',
   maxWidth: standardWidth,
   width: 'auto',

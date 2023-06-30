@@ -1,38 +1,20 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faFacebook} from '@fortawesome/free-brands-svg-icons';
-import {
-  faCoffee,
-  faSearch,
-  faHeart,
-  faChartLine,
-  faHouseUser,
-  faUser,
-  faCoins,
-  faBell,
-} from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {Text, View} from 'react-native';
-import HomeScreen from '../screens/Home';
+import {View} from 'react-native';
+import {Icon} from '@components/Icon';
+import {palette} from '@theme/colors';
 import ExploreNavigator from './ExploreNavigator';
-import SearchResultsMaps from '../screens/SearchResultsMap';
-import PostScreen from '../screens/PostScreen';
 import ProfileScreen from '../screens/Profile';
-import LowPriceScreen from '../screens/LowPriceScreen';
-import Wishlists from '../screens/Wishlists';
 import Trending from '../screens/TrendingScreen';
-import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
+import WishListNavigation from './WishListNavigator';
 
 const Tab = createBottomTabNavigator();
 
-const HomeTabNavigator = props => {
+// eslint-disable-next-line no-unused-vars
+const HomeTabNavigator = _props => {
   const routes = [
     'HouseUpload',
     'OnboardingScreen1',
@@ -48,6 +30,10 @@ const HomeTabNavigator = props => {
     'OnboardingScreen11',
     'OnboardingScreen12',
     'OnboardingScreen13',
+    'OnboardingScreen14',
+    'OnboardingScreen15',
+    'OnboardingScreen16',
+    'OnboardingScreen17',
   ];
   return (
     <Tab.Navigator
@@ -66,8 +52,10 @@ const HomeTabNavigator = props => {
       <Tab.Screen
         name="Explore"
         component={ExploreNavigator}
+        // eslint-disable-next-line react/jsx-no-bind
         options={({route}) => ({
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faSearch} size={25} color={color} />,
+          tabBarIcon: ({color}) => <Icon icon="search" size={22} color={color} />,
+          // eslint-disable-next-line no-shadow
           tabBarVisible: (route => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
@@ -79,46 +67,14 @@ const HomeTabNavigator = props => {
           })(route),
         })}
       />
-      <Tab.Screen
-        name="House"
-        component={House}
-        options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />,
-        }}
-      />
-
-      <Tab.Screen
-        name="Discount"
-        component={LowPriceScreen}
-        options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faCoins} size={25} color={color} />
-            // <Fontisto name="user" size={25} color={color} />
-          ),
-        }}
-      />
 
       <Tab.Screen
         name="Wishlists"
-        component={Wishlists}
-        options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHeart} size={25} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Trending"
-        component={Trending}
-        options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faChartLine} size={25} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Alerts"
-        component={AppNotifications}
+        component={WishListNavigation}
         options={{
           tabBarIcon: ({color}) => (
             <View>
-              <FontAwesomeIcon icon={faBell} size={25} color={color} />
+              <Icon icon="heart" size={22} color={color} />
               <View
                 style={{
                   borderWidth: 1,
@@ -126,41 +82,42 @@ const HomeTabNavigator = props => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   position: 'absolute',
-                  width: 15,
-                  height: 15,
-                  backgroundColor: 'deeppink',
+                  width: 10,
+                  height: 10,
+                  backgroundColor: palette.pink,
                   top: -3,
-                  right: -3,
+                  right: -10,
                   borderRadius: 10,
                 }}>
                 {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
-                                3
-                            </Text> */}
+                            3
+                        </Text> */}
               </View>
             </View>
           ),
         }}
       />
       <Tab.Screen
+        name="Home"
+        component={Trending}
+        options={{
+          tabBarIcon: ({color}) => <Icon icon="home" size={22} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="Inbox"
+        component={AppNotifications}
+        options={{
+          tabBarIcon: ({color}) => <Icon icon="inbox" size={22} color={color} />,
+        }}
+      />
+      <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faUser} size={25} color={color} />,
+          tabBarIcon: ({color}) => <Icon icon="user" size={22} color={color} />,
         }}
       />
-
-      {/*
-            <Tab.Screen
-                        name={"Messages"}
-                        component={HomeScreen}
-                        options={{
-                            tabBarIcon: ({color}) => (
-                                <Feather name="message-square" size={25} color={color} />
-                            )
-                        }}
-                        />
-
-                    */}
     </Tab.Navigator>
   );
 };
