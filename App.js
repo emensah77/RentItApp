@@ -4,11 +4,11 @@ import SplashScreen from 'react-native-splash-screen';
 import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 
+import {Provider} from 'react-redux';
 import Providers from './src/navigation/Providers';
 import requestUserPermission, {notificationListener} from './src/utils/notificationService';
 import {WishListProvider} from './src/context/WishlistContext';
 
-import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
 
 const App = () => {

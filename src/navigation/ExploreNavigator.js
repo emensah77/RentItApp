@@ -9,18 +9,23 @@ import AddressScreen from '../screens/AddressScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import House from '../screens/House';
 import HouseDetailScreen from '../screens/HouseDetailScreen';
-import HouseUploadScreen from '../screens/HouseUploadScreen';
-import OnboardingScreen1 from '../screens/OnboardingScreen1';
-import OnboardingScreen2 from '../screens/OnboardingScreen2';
-import OnboardingScreen3 from '../screens/OnboardingScreen3';
-import OnboardingScreen4 from '../screens/OnboardingScreen4';
-import OnboardingScreen5 from '../screens/OnboardingScreen5';
-import OnboardingScreen6 from '../screens/OnboardingScreen6';
-import OnboardingScreen7 from '../screens/OnboardingScreen7';
-import OnboardingScreen8 from '../screens/OnboardingScreen8';
-import OnboardingScreen9 from '../screens/OnboardingScreen9';
-import OnboardingScreen10 from '../screens/OnboardingScreen10';
-import OnboardingScreen11 from '../screens/OnboardingScreen11';
+import OnboardingScreen1 from '../screensV2/OnboardingScreen1';
+import OnboardingScreen2 from '../screensV2/OnboardingScreen2';
+import OnboardingScreen3 from '../screensV2/OnboardingScreen3';
+import OnboardingScreen4 from '../screensV2/OnboardingScreen4';
+import OnboardingScreen5 from '../screensV2/OnboardingScreen5';
+import OnboardingScreen6 from '../screensV2/OnboardingScreen6';
+import OnboardingScreen7 from '../screensV2/OnboardingScreen7';
+import OnboardingScreen8 from '../screensV2/OnboardingScreen8';
+import OnboardingScreen9 from '../screensV2/OnboardingScreen9';
+import OnboardingScreen10 from '../screensV2/OnboardingScreen10';
+import OnboardingScreen11 from '../screensV2/OnboardingScreen11';
+import OnboardingScreen12 from '../screensV2/OnboardingScreen12';
+import OnboardingScreen13 from '../screensV2/OnboardingScreen13';
+import OnboardingScreen14 from '../screensV2/OnboardingScreen14';
+import OnboardingScreen15 from '../screensV2/OnboardingScreen15';
+import OnboardingScreen16 from '../screensV2/OnboardingScreen16';
+import OnboardingScreen17 from '../screensV2/OnboardingScreen17';
 import AccountManageScreen from '../screens/AccountManageScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 // import Notifications from '../screens/Notifications';
@@ -28,11 +33,12 @@ import ManageProfile from '../screens/ManageProfile';
 import Marketer from '../screens/Marketer';
 import MyHomes from '../screens/MyHomes';
 import EditHome from '../screens/EditHome';
-import OnboardingScreen12 from '../screens/OnboardingScreen12';
-import OnboardingScreen13 from '../screens/OnboardingScreen13';
+// import OnboardingScreen12 from '../screens/OnboardingScreen12';
+// import OnboardingScreen13 from '../screens/OnboardingScreen13';
 import HeatMapScreen from '../screens/HeatMapScreen';
 import MarketerDashboard from '../screens/MarketerDashboard';
 import DashboardScreen from '../screens/DashboardScreen';
+import ListingHome from '../screensV2/ListingHome';
 
 const Stack = createStackNavigator();
 
@@ -193,12 +199,42 @@ const Router = () => (
       }}
     />
     <Stack.Screen
-      name="HouseUpload"
-      component={HouseUploadScreen}
+      name="OnboardingScreen14"
+      component={OnboardingScreen14}
       options={{
         headerShown: false,
       }}
     />
+    <Stack.Screen
+      name="OnboardingScreen15"
+      component={OnboardingScreen15}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="OnboardingScreen16"
+      component={OnboardingScreen16}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="OnboardingScreen17"
+      component={OnboardingScreen17}
+      options={{
+        headerShown: false,
+      }}
+    />
+
+    <Stack.Screen
+      name="HouseUpload"
+      component={ListingHome}
+      options={{
+        headerShown: false,
+      }}
+    />
+    {/* HouseUploadScreen */}
     <Stack.Screen
       name="AccountManage"
       component={AccountManageScreen}

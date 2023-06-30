@@ -1,59 +1,106 @@
 import {StyleSheet} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {offsets} from '../../styles/globalStyles';
 
 const styles = StyleSheet.create({
-  button: {
-    borderWidth: 1,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    borderColor: 'darkgray',
-    alignItems: 'center',
+  container: {
+    width: wp(88),
+    marginLeft: wp(6),
+    marginTop: offsets.offsetC,
   },
-  row: {
+  backButton: {
+    position: 'absolute',
+    left: 0,
+  },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    width: '100%',
+    padding: wp(5.6),
+    shadowOpacity: 0.12,
+    // shadowColor: 'transparent',
+    elevation: 5,
+    borderWidth: 0.5,
+    borderColor: '#DEDEDE',
+    shadowRadius: 5,
+    paddingLeft: offsets.offsetC,
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    borderRadius: 26,
+    backgroundColor: 'white',
+    marginTop: wp(10),
+  },
+  contentMin: {
+    borderRadius: 16,
+    marginTop: offsets.offsetB,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderColor: 'darkgray',
-    marginHorizontal: 20,
   },
-  linearGradient: {
+  searchContent: {
+    position: 'relative',
+    // justifyContent: 'center',
+  },
+  contentActive: {
+    flexDirection: 'column',
+  },
+  searchInput: {
+    flexDirection: 'row',
+    background: '#F7F7F7',
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+    borderRadius: 12,
+    paddingHorizontal: wp(4.1),
+    height: wp(15.8),
+    alignItems: 'center',
+    marginTop: offsets.offsetB,
+    paddingLeft: wp(13),
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: offsets.offsetB,
+    top: 8 + wp(7.9),
+  },
+  switcher: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: offsets.offsetB,
+    height: wp(10.7),
+    // justifyContent: 'space-around',
+    backgroundColor: '#F2F2F2',
+    borderRadius: wp(5.3),
+  },
+  switcherItem: {
     alignItems: 'center',
     justifyContent: 'center',
-
-    height: 200,
-    width: '100%',
+    height: wp(8.2),
+    borderRadius: wp(4.1),
+    width: '50%',
+    marginLeft: wp(1.5),
   },
-
-  header: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 10,
-    paddingBottom: 20,
+  switcherItemActive: {
+    backgroundColor: 'white',
   },
-  footer: {
-    flex: 2,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+  counterInfoWrapper: {
+    marginTop: offsets.offsetA,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DEDEDE',
+    paddingBottom: offsets.offsetA,
   },
-  text_header: {
-    color: '#fff',
-    fontFamily: 'Montserrat-Bold',
-    paddingBottom: 10,
-    paddingHorizontal: 10,
-    fontSize: 30,
+  bottomWrapper: {
+    position: 'absolute',
+    width: wp(100),
+    bottom: 0,
+    left: 0,
   },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'blue',
+  contentTop: {
+    marginTop: wp(10),
   },
 });
 
