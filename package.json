@@ -9,6 +9,7 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testMatch **/*-test.js",
     "lint": "prettier --write . && eslint --fix .",
     "clean": "react-native-clean-project",
+    "postinstall": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "appium:start": "appium",
     "appium:test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testMatch **/*.appium.js",
     "appium:clean": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test",

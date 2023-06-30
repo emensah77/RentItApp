@@ -17,6 +17,7 @@ const Container = props => {
     onPress,
     ripple,
     hitSlop,
+    accessibilityLabel,
   } = props;
 
   return (
@@ -24,6 +25,8 @@ const Container = props => {
       onPress={onPress}
       android_ripple={ripple}
       hitSlop={hitSlop}
+      accessible
+      accessibilityLabel={accessibilityLabel}
       style={[
         row ? global.row : {},
         global[type],

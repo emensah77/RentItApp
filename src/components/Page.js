@@ -19,6 +19,7 @@ const Page = props => {
     leftIcon,
     rightIcon,
     onLeftIconPress,
+    accessibilityLabel,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
@@ -46,6 +47,8 @@ const Page = props => {
       ) : null}
 
       <Display
+        accessible
+        accessibilityLabel={accessibilityLabel}
         style={global.page}
         contentContainerStyle={[global.pageContent, reverse ? global.columnReverse : {}]}
         keyboardShouldPersistTaps="handled">

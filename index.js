@@ -2,7 +2,7 @@
  * @format
  */
 
-import {AppRegistry, LogBox} from 'react-native';
+import {AppRegistry} from 'react-native';
 import Amplify from '@aws-amplify/core';
 import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,11 +16,6 @@ import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
 
 Amplify.configure(config);
-['ViewPropTypes', 'ColorPropType', 'PointPropType'].map(item =>
-  LogBox.ignoreLogs([
-    `${item} will be removed from React Native. Migrate to ${item} exported from 'deprecated-react-native-prop-types'`,
-  ]),
-);
 
 Sentry.init({
   dsn: 'https://885eb00f1fb24206a506bef30f3bc2b1@o1224815.ingest.sentry.io/6369972',
