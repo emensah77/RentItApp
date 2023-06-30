@@ -75,10 +75,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Apk
-          path: android/app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: Aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          path: android/app/build/outputs/apk/release/*
