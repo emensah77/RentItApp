@@ -69,7 +69,13 @@ const Welcome = () => {
         <Whitespace marginTop={20} />
 
         <Container center>
-          <Button width={121} type="tertiary" fitWidth onPress={goTo} color="#194CC3">
+          <Button
+            accessibilityLabel="Go To Email"
+            width={121}
+            type="tertiary"
+            fitWidth
+            onPress={goTo}
+            color="#194CC3">
             Begin
           </Button>
         </Container>
