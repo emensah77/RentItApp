@@ -6,6 +6,7 @@ import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {SizedBox} from '@components/SizedBox';
 import {Icon} from '@components/Icon';
+import {Text} from '@components/Text';
 import {styles} from './styles';
 
 import Carousel from '../Carousel';
@@ -65,6 +66,7 @@ const HomeItem = ({item}) => {
         </View>
         <View style={styles.starBlock}>
           <Icon icon="starFilled" size={15} />
+          <Text text="dfd" />
           <Typography variant="large">4.76</Typography>
         </View>
       </View>

@@ -22,7 +22,6 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import {API, graphqlOperation} from 'aws-amplify';
@@ -46,7 +45,6 @@ import {registerTransistorAuthorizationListener} from './Authorization';
 import styles from './styles';
 
 import mixpanel from '../../MixpanelConfig';
-import useDwellTimeTracking from '../../hooks/useDwellTimeTracking';
 import {AuthContext} from '../../navigation/AuthProvider';
 import {listPosts, getUser} from '../../graphql/queries';
 import HomeItem from '../../componentsV2/DataDisplay/HomeItem';
@@ -57,10 +55,6 @@ import CustomMarker from '../../components/CustomMarker';
 import {mapStyle} from '../../configs/map';
 import {setPost} from '../../redux/post.slice';
 import CircleButton from '../../componentsV2/Inputs/CircleButton';
-// @ts-ignore
-import FilterIcon from '../../../assets/data/images/icons/filter.svg';
-// @ts-ignore
-import FilterMinIcon from '../../../assets/data/images/icons/filter-min.svg';
 // @ts-ignore
 import EntireFlatIcon from '../../../assets/data/images/icons/entire-flat.svg';
 // @ts-ignore
@@ -83,7 +77,7 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
 
   const [selectedButton, setSelectedButton] = useState('');
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState<any>([]);
   const [posts, setPosts] = useState([]);
   const [forceLocation] = useState(true);
   const [highAccuracy] = useState(true);
@@ -1170,35 +1164,12 @@ const HomeScreen = () => {
                 bottom: 0,
                 right: 20,
               }}
-              snapToOffsets={filtersLayout?.map(data => data?.x || 0)}
-              onMomentumScrollEnd={event => {
-                const activeIndex = filtersLayout.findIndex(
-                  data => event.nativeEvent.contentOffset.x === data.x,
-                );
-
-                if (activeIndex > -1) {
-                  Animated.timing(activeIndicatorWidth, {
-                    toValue: filtersLayout?.[activeIndex]?.width - wp(6) || 0,
-                    duration: 100,
-                    useNativeDriver: false,
-                  }).start();
-                }
-              }}
               contentContainerStyle={styles.contentContainerStyle}>
-              {categories.map((category, index) => (
+              {categories.map(category => (
                 <TouchableOpacity
-                  onLayout={event => {
-                    const {layout} = event.nativeEvent;
-                    const _filtersLayout = [...filtersLayout];
-                    _filtersLayout[index] = layout;
-                    setFiltersLayout(_filtersLayout);
-                  }}
                   key={category.id}
                   onPress={() => {
-                    filtersScrollRef.current.scrollTo({
-                      x: filtersLayout[index].x,
-                      animated: true,
-                    });
+                    setStatus(category.status);
                     setStatusFilter(category.status);
                   }}
                   style={[styles.button1, status === category.status && styles.btnTabActive]}>
@@ -1212,11 +1183,14 @@ const HomeScreen = () => {
                     ]}>
                     {category.status}
                   </Text>
+                  {status === category.status && (
+                    <Animated.View style={[styles.activeIndicator, {width: '100%'}]} />
+                  )}
                 </TouchableOpacity>
               ))}
               <View style={{width: wp(61)}} />
             </ScrollView>
-            <Animated.View style={[styles.activeIndicator, {width: activeIndicatorWidth || 100}]} />
+            {/* <Animated.View style={[styles.activeIndicator, {width: activeIndicatorWidth || 100}]} /> */}
           </View>
         </View>
 

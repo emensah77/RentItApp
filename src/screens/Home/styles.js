@@ -1,8 +1,5 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {offsets} from '../../styles/globalStyles';
 
@@ -269,7 +266,7 @@ const styles = StyleSheet.create({
     color: '#717171',
   },
   textTabActive: {
-    color: 'black',
+    color: '#0047B3',
     // fontWeight: 'bold',
     // color: 'white',
     // fontSize: 14,
@@ -298,8 +295,7 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: 'black',
     position: 'absolute',
-    bottom: offsets.offsetA,
-    left: wp(18.6),
+    bottom: -10,
   },
   contentContainerStyle: {
     paddingRight: Platform.OS === 'android' ? 20 : 0,

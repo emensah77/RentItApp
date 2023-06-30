@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     color: '#555',
     maxWidth: '90%',
   },
-  amenitiesAvailable: {margin: 10, fontSize: 20, fontFamily: 'Montserrat-Bold'},
+  amenitiesAvailable: {margin: 10, fontSize: 20, fontFamily: 'Manrope-VariableFont_wght'},
   amenitiesTheContainer: {flexDirection: 'row', flexWrap: 'wrap'},
   paddingHorizontal20: {paddingHorizontal: 20},
   reviewCounter: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 18,
     lineHeight: 26,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Manrope-VariableFont_wght',
   },
 
   hairline: {

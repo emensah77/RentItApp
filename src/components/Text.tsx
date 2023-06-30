@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle} from 'react-native';
-import {colors} from '@theme';
+import {colors, typography} from '@theme';
 
 type Sizes = keyof typeof $sizeStyles;
+type Weights = keyof typeof typography.primary;
 type Presets = keyof typeof $presets;
 
 export interface TextProps extends RNTextProps {
@@ -52,11 +53,16 @@ export function Text(props: TextProps) {
   const {weight, size, text, children, style: $styleOverride, ...rest} = props;
 
   const content = text || children;
-
-  const preset: Presets = props.preset || 'default';
   // @ts-ignore
-  const $styles = [{fontWeight: weight}, $presets[preset], $sizeStyles[size], $styleOverride];
-
+  const preset: Presets = $presets[props.preset] ? props.preset : 'default';
+  // @ts-ignore
+  const $styles = [
+    {fontFamily: typography.primary, fontWeight: weight},
+    $presets[preset],
+    // @ts-ignore
+    $sizeStyles[size],
+    $styleOverride,
+  ];
   return (
     // @ts-ignore
     <RNText {...rest} style={$styles}>
@@ -75,14 +81,18 @@ const $sizeStyles = {
   xxs: {fontSize: 12, lineHeight: 18} as TextStyle,
 };
 
+const $fontWeightStyles = Object.entries(typography.primary).reduce((acc, [weight, fontFamily]) => {
+  return {...acc, [weight]: {fontFamily}};
+}, {}) as Record<Weights, TextStyle>;
+
 const $baseStyle: StyleProp<TextStyle> = [$sizeStyles.sm, {color: colors.text}];
 
 const $presets = {
   default: $baseStyle,
 
-  bold: [$baseStyle] as StyleProp<TextStyle>,
+  bold: [$baseStyle, $fontWeightStyles.bold] as StyleProp<TextStyle>,
 
-  heading: [$baseStyle, $sizeStyles.xxl] as StyleProp<TextStyle>,
+  heading: [$baseStyle, $sizeStyles.xxl, $fontWeightStyles.bold] as StyleProp<TextStyle>,
 
   subheading: [$baseStyle, $sizeStyles.lg] as StyleProp<TextStyle>,
 
