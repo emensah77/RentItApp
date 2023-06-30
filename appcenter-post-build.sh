@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-if [[ $PLATFORM = "ios" ]] echo "Exiting because, it's iOS"; exit 0;
+if [[ $PLATFORM = "ios" ]]
+then 
+  echo "Exiting because, it's iOS";
+  exit 0;
+fi
 
 [[ $APPCENTER_BRANCH = "staging" || $APPCENTER_BRANCH = "main" ]] && DEVICE_SET="release" || DEVICE_SET="development"
 
