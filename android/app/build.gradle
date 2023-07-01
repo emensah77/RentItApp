@@ -160,7 +160,7 @@ android {
 
     splits {
         abi {
-            reset()
+            // reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk true  // If true, also generate a universal APK
             include (*reactNativeArchitectures())
@@ -213,6 +213,13 @@ android {
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+            } else {
+                if (output.outputFile.name == "app-universal-release.apk") {
+                  output.outputFileName = "app-release.apk"
+                }
+                if (output.outputFile.name == "app-universal-debug.apk") {
+                  output.outputFileName = "app-debug.apk"
+                }
             }
 
         }
