@@ -7,7 +7,7 @@ import wd from 'wd';
 const PORT = 4723;
 const CONFIG = {
   platformName: 'Android',
-  app: './android/app/build/outputs/apk/debug/app-universal-debug.apk',
+  app: './android/app/build/outputs/apk/debug/app-debug.apk',
   newCommandTimeout: 0,
   'appium:deviceName': 'Android Emulator',
   'appium:automationName': 'UiAutomator2',

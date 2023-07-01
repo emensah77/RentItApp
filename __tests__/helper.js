@@ -5,7 +5,7 @@ export const isDebug = process.env.DEBUG === 'true';
 
 export const CONFIG = {
   platformName: 'Android',
-  app: './android/app/build/outputs/apk/release/app-universal-release.apk',
+  app: './android/app/build/outputs/apk/release/app-release.apk',
   newCommandTimeout: 0,
   'appium:deviceName': 'Android Emulator',
   'appium:automationName': 'UiAutomator2',
