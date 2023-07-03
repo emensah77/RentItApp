@@ -3,7 +3,7 @@ import {View, ActivityIndicator, StyleSheet} from 'react-native';
 
 const PageSpinner = () => {
   return (
-    <View style={styles.pageSpinner}>
+    <View accessible accessibilityLabel="loading" style={styles.pageSpinner}>
       <ActivityIndicator size="large" color="#194CC3" />
     </View>
   );

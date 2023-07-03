@@ -17,9 +17,14 @@ const Button = props => {
     width,
     fitWidth,
     color,
+    accessibilityLabel,
   } = props;
   return (
-    <Pressable onPress={disabled ? null : onPress} hitSlop={20}>
+    <Pressable
+      accessible
+      accessibilityLabel={accessibilityLabel}
+      onPress={disabled ? null : onPress}
+      hitSlop={20}>
       <View
         style={[
           button[type] || button.primary,

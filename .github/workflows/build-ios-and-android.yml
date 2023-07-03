@@ -71,14 +71,17 @@ jobs:
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+      - name: Check existence
+        run: ls android/app/build/outputs/apk/release
+
+      - name: Upload Artifact (APK)
+        uses: actions/upload-artifact@v3
         with:
           name: Apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: android/app/build/outputs/apk/release/*.apk
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+      - name: Upload Artifact (AAB)
+        uses: actions/upload-artifact@v3
         with:
           name: Aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          path: android/app/build/outputs/bundle/release/*.aab

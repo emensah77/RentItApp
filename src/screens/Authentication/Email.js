@@ -62,7 +62,11 @@ const Email = () => {
         onChange={onEmailChange}
       />
 
-      <Button type="standard" disabled={disabled} onPress={submit}>
+      <Button
+        accessibilityLabel="Sign in or sign up"
+        type="standard"
+        disabled={disabled}
+        onPress={submit}>
         Continue
       </Button>
 
