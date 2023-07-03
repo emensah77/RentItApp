@@ -1,6 +1,6 @@
 {
   "name": "airbnbclone",
-  "version": "0.0.1",
+  "version": "5.14.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -10,12 +10,15 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testMatch **/*-test.js",
     "lint": "prettier --write . && eslint --fix .",
     "clean": "react-native-clean-project",
-    "postinstall": "npx patch-package && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "postinstall": "npx patch-package",
+    "bundle": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
     "appium:start": "appium",
     "appium:test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testMatch **/*.appium.js",
     "appium:clean": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test",
     "appium:doctor:android": "appium-doctor --android",
-    "appium:doctor:ios": "appium-doctor --ios"
+    "appium:doctor:ios": "appium-doctor --ios",
+    "bump:version": "git stash && npm version patch -m \"Bump version to %s\" && git stash pop && npm run bump:reactnative",
+    "bump:reactnative": "npx --yes react-native-version"
   },
   "dependencies": {
     "@appium/doctor": "^2.0.19",
@@ -48,7 +51,7 @@
     "@react-navigation/material-top-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
-    "@sentry/react-native": "^4.15.0",
+    "@sentry/react-native": "^5.6.0",
     "@ui-kitten/components": "^5.1.2",
     "amazon-cognito-identity-js": "^5.0.2",
     "appcenter": "^4.4.5",
