@@ -19,9 +19,3 @@ EOF
 cat << EOF > $APPCENTER_SOURCE_DIRECTORY/.env
   REACT_NATIVE_APP_ENV=$REACT_NATIVE_APP_ENV
 EOF
-
-if [[ $PLATFORM = "android" ]]
-then
-  cd $APPCENTER_SOURCE_DIRECTORY
-  npm run bump:version
-fi
