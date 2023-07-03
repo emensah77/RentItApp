@@ -33,8 +33,8 @@ jobs:
         working-directory: ios
 
       - run:
-          xcodebuild clean archive -workspace testCiCdReactNative.xcworkspace -scheme
-          testCiCdReactNative -archivePath testCiCdReactNative.xcarchive CODE_SIGNING_ALLOWED=NO |
+          xcodebuild clean archive -workspace AirbnbClone.xcworkspace -scheme
+          AirbnbClone -archivePath AirbnbClone.xcarchive CODE_SIGNING_ALLOWED=NO |
           xcpretty
         working-directory: ios
 
