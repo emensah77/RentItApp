@@ -22,6 +22,6 @@ EOF
 
 if [[ $PLATFORM = "android" ]]
 then
-  cd $APPCENTER_SOURCE_DIRECTORY;
+  cd $APPCENTER_SOURCE_DIRECTORY
   npm run bump:version
 fi
