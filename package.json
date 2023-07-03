@@ -17,7 +17,7 @@
     "appium:doctor:android": "appium-doctor --android",
     "appium:doctor:ios": "appium-doctor --ios",
     "bump:version": "git stash && npm version patch -m \"Bump version to %s\" && git stash pop && npm run bump:reactnative",
-    "bump:reactnative": "npx --yes react-native-version && git add -A && git commit -m \"Version bumped\""
+    "bump:reactnative": "npx --yes react-native-version"
   },
   "dependencies": {
     "@appium/doctor": "^2.0.19",
