@@ -27,6 +27,7 @@ const global = StyleSheet.create({
   },
   columnReverse: {flexDirection: 'column-reverse'},
   row: {...sizing, flexDirection: 'row'},
+  wrap: {...sizing, flexWrap: 'wrap'},
   rowReverse: {flexDirection: 'row-reverse'},
   zeroElevation: {
     elevation: 0,

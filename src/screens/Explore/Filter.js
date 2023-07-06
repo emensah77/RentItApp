@@ -25,36 +25,32 @@ import switchOn from '../../assets/images/switch-on.png';
 import switchOff from '../../assets/images/switch-off.png';
 import arrowUp from '../../assets/images/arrow-up.png';
 import arrowDown from '../../assets/images/arrow-down.png';
-import house from '../../assets/images/property-types/house.png';
-import guesthouse from '../../assets/images/property-types/guesthouse.png';
+import entireFlat from '../../assets/images/property-types/entire-flat.png';
 import apartment from '../../assets/images/property-types/apartment.png';
-import hotel from '../../assets/images/property-types/hotel.png';
-import houseBlue from '../../assets/images/property-types/house-blue.png';
-import guesthouseBlue from '../../assets/images/property-types/guesthouse-blue.png';
-import apartmentBlue from '../../assets/images/property-types/apartment-blue.png';
-import hotelBlue from '../../assets/images/property-types/hotel-blue.png';
+import singleRoom from '../../assets/images/property-types/single-room.png';
+import chamberAndHall from '../../assets/images/property-types/chamber-and-hall.png';
+import mansion from '../../assets/images/property-types/mansion.png';
+import mansion2 from '../../assets/images/property-types/mansion2.png';
+import fullHome from '../../assets/images/property-types/full-home.png';
 // import temp3 from '../../assets/images/temp/temp3.png';
 
 const originalSelection = {
-  placeType: '',
+  type: '',
   bedrooms: 0,
   beds: 0,
   bathrooms: 0,
-  propertyTypes: '',
   amenities: [],
   mode: '',
   bookingOptions: [],
   all: {
-    placeTypes: [
-      {title: 'Entire place', description: 'A place all to yourself'},
-      {
-        title: 'Private room',
-        description: 'Your own room in a home or a hotel, plus some shared common spaces',
-      },
-      {
-        title: 'Shared room',
-        description: 'A sleeping space and common areas that may be shared with others',
-      },
+    types: [
+      {title: 'Entire Flat', image: entireFlat},
+      {title: 'Apartment', image: apartment},
+      {title: 'Single Room', image: singleRoom},
+      {title: 'Chamber and Hall', image: chamberAndHall},
+      {title: 'Mansion', image: mansion},
+      {title: 'Self-Contained', image: mansion2},
+      {title: 'Full Home', image: fullHome},
     ],
     roomsAndBeds: [{title: 'Bedrooms'}, {title: 'Beds'}, {title: 'Bathrooms'}],
     amenities: [
@@ -170,7 +166,7 @@ const Explore = () => {
               }),
               {},
             ),
-            type: selection.placeType,
+            type: selection.type,
             mode: selection.mode,
             bedroom: selection.bedrooms,
             bed: selection.beds,
@@ -242,28 +238,28 @@ const Explore = () => {
       <Divider top={25} />
 
       <Typography type="heading" left width="100%">
-        Type of place
+        Property type
       </Typography>
 
-      {selection.all.placeTypes.map(({title, description}) => (
+      {selection.all.types.map(({title}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={25} />
 
           <CardDisplay
             rightImageWidth={24}
             rightImageHeight={24}
-            rightImageSrc={isSelected('placeType', title) ? checked : unchecked}
-            onPress={onToggleSelection('placeType', title)}
+            rightImageSrc={isSelected('type', title) ? checked : unchecked}
+            onPress={onToggleSelection('type', title)}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
               </Typography>
             }
-            description={
-              <Typography size={14} weight="500" color="#717171" left width="100%">
-                {description}
-              </Typography>
-            }
+            // description={
+            //   <Typography size={14} weight="500" color="#717171" left width="100%">
+            //     {description}
+            //   </Typography>
+            // }
           />
         </React.Fragment>
       ))}
@@ -323,94 +319,35 @@ const Explore = () => {
 
       <Whitespace marginTop={25} />
 
-      <Container width="100%" height={121} row type="spaceAround">
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'house')}
-          type={isSelected('propertyTypes', 'house') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'house') ? houseBlue : house}
-            width={30}
-            height={30}
-          />
+      <Container width="100%" center row type="wrap">
+        {selection.all.types.map(({title, image}, i) => (
+          <React.Fragment key={title}>
+            <Container
+              width="45%"
+              height={121}
+              onPress={onToggleSelection('types', title)}
+              type={isSelected('types', title) ? 'selected' : 'deselected'}>
+              <Image src={image} width={30} height={30} />
 
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'house') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            House
-          </Typography>
-        </Container>
+              <Typography
+                type="left"
+                color={isSelected('types', title) ? '#0047B3' : '#252525'}
+                weight="800"
+                numberOfLines={1}
+                size={16}>
+                {title}
+              </Typography>
+            </Container>
 
-        <Whitespace marginLeft={16} width={2} />
+            {(i + 1) % 2 === 1 && (
+              <Whitespace marginLeft={20} marginTop={25} width={1} height={25} />
+            )}
 
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'apartment')}
-          type={isSelected('propertyTypes', 'apartment') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'apartment') ? apartmentBlue : apartment}
-            width={30}
-            height={30}
-          />
-
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'apartment') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            Apartment
-          </Typography>
-        </Container>
-      </Container>
-
-      <Whitespace marginTop={25} />
-
-      <Container width="100%" height={121} row type="spaceAround">
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'guesthouse')}
-          type={isSelected('propertyTypes', 'guesthouse') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'guesthouse') ? guesthouseBlue : guesthouse}
-            width={30}
-            height={30}
-          />
-
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'guesthouse') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            Guesthouse
-          </Typography>
-        </Container>
-
-        <Whitespace marginLeft={16} width={2} />
-
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'hotel')}
-          type={isSelected('propertyTypes', 'hotel') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'hotel') ? hotelBlue : hotel}
-            width={30}
-            height={30}
-          />
-
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'hotel') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            Hotel
-          </Typography>
-        </Container>
+            {(i + 1) % 2 === 0 && (
+              <Whitespace marginLeft={10} marginTop={25} width="100%" height={25} />
+            )}
+          </React.Fragment>
+        ))}
       </Container>
 
       <Divider top={25} />
