@@ -74,11 +74,9 @@ const originalSelection = {
     modes: [
       {
         title: 'For Rent',
-        description: 'Easy access to the property once you arrive',
       },
       {
         title: 'For Sale',
-        description: 'Book without waiting for the host to respond',
       },
     ],
     bookingOptions: [
@@ -165,7 +163,7 @@ const Explore = () => {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
-            ...selection.all.amenities.concat(selection.all.modes).reduce(
+            ...selection.all.amenities.reduce(
               (prev, {title}) => ({
                 ...prev,
                 [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
@@ -173,6 +171,7 @@ const Explore = () => {
               {},
             ),
             type: selection.placeType,
+            mode: selection.mode,
             bedroom: selection.bedrooms,
             bed: selection.beds,
             bathroom: selection.bathrooms,
@@ -466,8 +465,8 @@ const Explore = () => {
           <CardDisplay
             rightImageWidth={48}
             rightImageHeight={32}
-            rightImageSrc={isSelected('mode') ? switchOn : switchOff}
-            onPress={onToggleSelection('mode')}
+            rightImageSrc={isSelected('mode', title) ? switchOn : switchOff}
+            onPress={onToggleSelection('mode', title)}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
