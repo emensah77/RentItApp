@@ -35,6 +35,7 @@ import fullHome from '../../assets/images/property-types/full-home.png';
 // import temp3 from '../../assets/images/temp/temp3.png';
 
 const originalSelection = {
+  typeOfPlace: [],
   type: '',
   bedrooms: 0,
   beds: 0,
@@ -43,6 +44,7 @@ const originalSelection = {
   mode: '',
   bookingOptions: [],
   all: {
+    typesOfPlace: [{title: 'Furnished'}, {title: 'Negotiable'}],
     types: [
       {title: 'Entire Flat', image: entireFlat},
       {title: 'Apartment', image: apartment},
@@ -166,6 +168,13 @@ const Explore = () => {
               }),
               {},
             ),
+            ...selection.all.typesOfPlace.reduce(
+              (prev, {title}) => ({
+                ...prev,
+                [title.toLowerCase()]: isSelected('typeOfPlace', title) ? 'Yes' : 'No',
+              }),
+              {},
+            ),
             type: selection.type,
             mode: selection.mode,
             bedroom: selection.bedrooms,
@@ -241,15 +250,15 @@ const Explore = () => {
         Type of place
       </Typography>
 
-      {selection.all.types.map(({title}) => (
+      {selection.all.typesOfPlace.map(({title}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={25} />
 
           <CardDisplay
             rightImageWidth={24}
             rightImageHeight={24}
-            rightImageSrc={isSelected('type', title) ? checked : unchecked}
-            onPress={onToggleSelection('type', title)}
+            rightImageSrc={isSelected('typeOfPlace', title) ? checked : unchecked}
+            onPress={onToggleSelection('typeOfPlace', title)}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
