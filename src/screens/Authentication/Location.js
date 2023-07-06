@@ -82,7 +82,9 @@ const Location = props => {
             await BackgroundGeolocation.watchPosition(
               position => {
                 AsyncStorage.setItem('position', JSON.stringify(position.coords));
-                console.debug('[watchPosition] -', position);
+                if (__DEV__) {
+                  console.debug('[watchPosition] -', position);
+                }
               },
               e => console.error('[watchPosition] ERROR -', e),
               {

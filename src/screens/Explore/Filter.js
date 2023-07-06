@@ -40,8 +40,9 @@ const originalSelection = {
   bedrooms: 0,
   beds: 0,
   bathrooms: 0,
-  propertyTypes: [],
+  propertyTypes: '',
   amenities: [],
+  mode: '',
   bookingOptions: [],
   all: {
     placeTypes: [
@@ -69,6 +70,16 @@ const originalSelection = {
       {title: 'Heating'},
       {title: 'Water'},
       {title: 'Dedicated Workspace'},
+    ],
+    modes: [
+      {
+        title: 'For Rent',
+        description: 'Easy access to the property once you arrive',
+      },
+      {
+        title: 'For Sale',
+        description: 'Book without waiting for the host to respond',
+      },
     ],
     bookingOptions: [
       {
@@ -154,7 +165,7 @@ const Explore = () => {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
-            ...selection.all.amenities.concat(selection.all.bookingOptions).reduce(
+            ...selection.all.amenities.concat(selection.all.modes).reduce(
               (prev, {title}) => ({
                 ...prev,
                 [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
@@ -174,7 +185,7 @@ const Explore = () => {
       ).catch(e => console.error('Filter Request Failure:', e));
       const response = await request.json();
 
-      setCount(oldCount => oldCount + parseInt(response.length, 10));
+      setCount(oldCount => oldCount + (parseInt(response.length, 10) || 0));
     })().catch(console.error);
   }, [isSelected, selection]);
 
@@ -275,7 +286,7 @@ const Explore = () => {
           <Whitespace marginTop={24} />
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <Container row>
+            <>
               <Container
                 type={`chip${isSelected(title.toLowerCase(), 0) ? 'Selected' : 'DeSelected'}`}
                 onPress={onToggleSelection(title.toLowerCase(), 0)}>
@@ -300,7 +311,7 @@ const Explore = () => {
                   </Typography>
                 </Container>
               ))}
-            </Container>
+            </>
           </ScrollView>
         </React.Fragment>
       ))}
@@ -445,6 +456,30 @@ const Explore = () => {
       <Divider top={25} />
 
       <Typography type="heading" left width="100%">
+        Mode
+      </Typography>
+
+      {selection.all.modes.map(({title}) => (
+        <React.Fragment key={title}>
+          <Whitespace marginTop={25} />
+
+          <CardDisplay
+            rightImageWidth={48}
+            rightImageHeight={32}
+            rightImageSrc={isSelected('mode') ? switchOn : switchOff}
+            onPress={onToggleSelection('mode')}
+            name={
+              <Typography size={16} weight="500" left width="100%">
+                {title}
+              </Typography>
+            }
+          />
+        </React.Fragment>
+      ))}
+
+      {/* <Divider top={25} />
+
+      <Typography type="heading" left width="100%">
         Booking options
       </Typography>
 
@@ -469,7 +504,7 @@ const Explore = () => {
             }
           />
         </React.Fragment>
-      ))}
+      ))} */}
     </Page>
   );
 };
