@@ -238,7 +238,7 @@ const Explore = () => {
       <Divider top={25} />
 
       <Typography type="heading" left width="100%">
-        Property type
+        Type of place
       </Typography>
 
       {selection.all.types.map(({title}) => (
@@ -325,13 +325,13 @@ const Explore = () => {
             <Container
               width="45%"
               height={121}
-              onPress={onToggleSelection('types', title)}
-              type={isSelected('types', title) ? 'selected' : 'deselected'}>
+              onPress={onToggleSelection('type', title)}
+              type={isSelected('type', title) ? 'selected' : 'deselected'}>
               <Image src={image} width={30} height={30} />
 
               <Typography
                 type="left"
-                color={isSelected('types', title) ? '#0047B3' : '#252525'}
+                color={isSelected('type', title) ? '#0047B3' : '#252525'}
                 weight="800"
                 numberOfLines={1}
                 size={16}>
