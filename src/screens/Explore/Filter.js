@@ -1,9 +1,10 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {ScrollView} from 'react-native';
-import {API, graphqlOperation} from 'aws-amplify';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
-import {listPosts} from '../../graphql/queries';
+import Location from '../Authentication/Location';
 
 import {
   Page,
@@ -35,20 +36,69 @@ import hotelBlue from '../../assets/images/property-types/hotel-blue.png';
 // import temp3 from '../../assets/images/temp/temp3.png';
 
 const originalSelection = {
-  placeTypes: [],
+  placeType: '',
   bedrooms: 0,
   beds: 0,
   bathrooms: 0,
   propertyTypes: [],
   amenities: [],
   bookingOptions: [],
+  all: {
+    placeTypes: [
+      {title: 'Entire place', description: 'A place all to yourself'},
+      {
+        title: 'Private room',
+        description: 'Your own room in a home or a hotel, plus some shared common spaces',
+      },
+      {
+        title: 'Shared room',
+        description: 'A sleeping space and common areas that may be shared with others',
+      },
+    ],
+    roomsAndBeds: [{title: 'Bedrooms'}, {title: 'Beds'}, {title: 'Bathrooms'}],
+    amenities: [
+      {title: 'Wifi'},
+      {title: 'Free Parking'},
+      {title: 'Kitchen'},
+      {title: 'Hot tub'},
+      {title: 'Washing machine'},
+      {title: 'Pool'},
+      {title: 'Essentials'},
+      {title: 'Dryer'},
+      {title: 'Air conditioning'},
+      {title: 'Heating'},
+      {title: 'Water'},
+      {title: 'Dedicated Workspace'},
+    ],
+    bookingOptions: [
+      {
+        title: 'Instant Book',
+        description: 'Easy access to the property once you arrive',
+      },
+      {
+        title: 'Self check-in',
+        description: 'Book without waiting for the host to respond',
+      },
+      {
+        title: 'Free cancellation',
+        description: 'Only show stays that offer free cancellation',
+      },
+    ],
+  },
 };
+
 const Explore = () => {
   const [more, setMore] = useState(false);
   const [priceRange, setPriceRange] = useState([1, 50000]);
-  const [nextToken, setNextToken] = useState(null);
   const [count, setCount] = useState(0);
   const [selection, setSelection] = useState(JSON.parse(JSON.stringify(originalSelection)));
+
+  const navigation = useNavigation();
+
+  const goToSearch = useCallback(
+    () => navigation.navigate('Search', {params: selection}),
+    [navigation, selection],
+  );
 
   const reset = useCallback(() => {
     setSelection(JSON.parse(JSON.stringify(originalSelection)));
@@ -97,49 +147,36 @@ const Explore = () => {
 
   useEffect(() => {
     (async () => {
-      const limit = 1000000;
-      const filter = {
-        and: {
-          bedroom: {
-            ge: selection.bedrooms,
-          },
-          bed: {
-            ge: selection.beds,
-          },
-          bathroomNumber: {
-            ge: selection.bathrooms,
-          },
-          wifi: {
-            attributeExists: isSelected('amenities', 'wifi'),
-          },
-          kitchen: {
-            attributeExists: isSelected('amenities', 'kitchen'),
-          },
-          water: {
-            attributeExists: isSelected('amenities', 'water'),
-          },
-          toilet: {
-            attributeExists: isSelected('amenities', 'essentials'),
-          },
-          aircondition: {
-            attributeExists: isSelected('amenities', 'air-conditioning'),
-          },
-          status: {eq: 'APPROVED'},
+      const userLocation = JSON.parse((await AsyncStorage.getItem('position')) || '{}');
+      const request = await fetch(
+        'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            ...selection.all.amenities.concat(selection.all.bookingOptions).reduce(
+              (prev, {title}) => ({
+                ...prev,
+                [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
+              }),
+              {},
+            ),
+            type: selection.placeType,
+            bedroom: selection.bedrooms,
+            bed: selection.beds,
+            bathroom: selection.bathrooms,
+            userLocation: {
+              latitude: userLocation.latitude,
+              longitud: userLocation.longitude,
+            },
+          }),
         },
-      };
-      const filterResults = await API.graphql(
-        graphqlOperation(listPosts, {filter, nextToken, limit}),
-      );
-      const {listPosts: listPostsResult} = filterResults?.data;
+      ).catch(e => console.error('Filter Request Failure:', e));
+      const response = await request.json();
 
-      const _count = listPostsResult?.items?.length;
-      if (_count >= limit) {
-        setNextToken(listPostsResult?.nextToken);
-        return setCount(oldCount => oldCount + _count);
-      }
-      return setCount(_count);
+      setCount(oldCount => oldCount + parseInt(response.length, 10));
     })().catch(console.error);
-  }, [isSelected, nextToken, selection]);
+  }, [isSelected, selection]);
 
   // console.log('selection', selection, priceRange);
 
@@ -154,11 +191,13 @@ const Explore = () => {
             </Typography>
           </Container>
 
-          <Button type="standard" left width="100%">
+          <Button type="standard" left width="100%" onPress={goToSearch}>
             Show {count} homes
           </Button>
         </Container>
       }>
+      <Location noRender />
+
       <Typography type="heading" left width="100%">
         Price range
       </Typography>
@@ -196,27 +235,15 @@ const Explore = () => {
         Type of place
       </Typography>
 
-      {[
-        {title: 'Entire place', description: 'A place all to yourself', slug: 'entire-place'},
-        {
-          title: 'Private room',
-          description: 'Your own room in a home or a hotel, plus some shared common spaces',
-          slug: 'private-room',
-        },
-        {
-          title: 'Shared room',
-          description: 'A sleeping space and common areas that may be shared with others',
-          slug: 'shared-room',
-        },
-      ].map(({title, description, slug}) => (
+      {selection.all.placeTypes.map(({title, description}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={25} />
 
           <CardDisplay
             rightImageWidth={24}
             rightImageHeight={24}
-            rightImageSrc={isSelected('placeTypes', slug) ? checked : unchecked}
-            onPress={onToggleSelection('placeTypes', slug)}
+            rightImageSrc={isSelected('placeType', title) ? checked : unchecked}
+            onPress={onToggleSelection('placeType', title)}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
@@ -237,7 +264,7 @@ const Explore = () => {
         Rooms and beds
       </Typography>
 
-      {[{title: 'Bedrooms'}, {title: 'Beds'}, {title: 'Bathrooms'}].map(({title}) => (
+      {selection.all.roomsAndBeds.map(({title}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={23} />
 
@@ -384,28 +411,15 @@ const Explore = () => {
 
       <Whitespace marginTop={25} />
 
-      {[
-        {title: 'Wifi', slug: 'wifi'},
-        {title: 'Free Parking', slug: 'free-parking'},
-        {title: 'Kitchen', slug: 'kitchen'},
-        {title: 'Hot tub', slug: 'hot-tub'},
-        {title: 'Washing machine', slug: 'washing-machine'},
-        {title: 'Pool', slug: 'pool'},
-        {title: 'Essentials', slug: 'essentials'},
-        {title: 'Dryer', slug: 'dryer'},
-        {title: 'Air conditioning', slug: 'air-conditioning'},
-        {title: 'Heating', slug: 'heating'},
-        {title: 'Water', slug: 'water'},
-        {title: 'Dedicated Workspace', slug: 'dedicated-workspace'},
-      ].map(
-        ({title, slug}, i) =>
+      {selection.all.amenities.map(
+        ({title}, i) =>
           ((!more && i < 3) || more) && (
             <React.Fragment key={title}>
               <CardDisplay
                 rightImageWidth={24}
                 rightImageHeight={24}
-                rightImageSrc={isSelected('amenities', slug) ? checked : unchecked}
-                onPress={onToggleSelection('amenities', slug)}
+                rightImageSrc={isSelected('amenities', title) ? checked : unchecked}
+                onPress={onToggleSelection('amenities', title)}
                 name={
                   <Typography size={16} weight="500" left width="100%">
                     {title}
@@ -434,31 +448,15 @@ const Explore = () => {
         Booking options
       </Typography>
 
-      {[
-        {
-          title: 'Instant Book',
-          description: 'Easy access to the property once you arrive',
-          slug: 'instant-book',
-        },
-        {
-          title: 'Self check-in',
-          description: 'Book without waiting for the host to respond',
-          slug: 'self-check-in',
-        },
-        {
-          title: 'Free cancellation',
-          description: 'Only show stays that offer free cancellation',
-          slug: 'free-cancellation',
-        },
-      ].map(({title, description, slug}) => (
+      {selection.all.bookingOptions.map(({title, description}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={25} />
 
           <CardDisplay
             rightImageWidth={48}
             rightImageHeight={32}
-            rightImageSrc={isSelected('bookingOptions', slug) ? switchOn : switchOff}
-            onPress={onToggleSelection('bookingOptions', slug)}
+            rightImageSrc={isSelected('bookingOptions') ? switchOn : switchOff}
+            onPress={onToggleSelection('bookingOptions')}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
