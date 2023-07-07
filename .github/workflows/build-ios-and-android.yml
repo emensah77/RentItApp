@@ -30,8 +30,8 @@ jobs:
       - name: Inject environment variables
         run: |
           cat << EOF > .env
-            REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
-            CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           EOF
 
       - run: yarn install --frozen-lockfile
@@ -75,8 +75,8 @@ jobs:
       - name: Inject environment variables
         run: |
           cat << EOF > .env
-            REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
-            CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           EOF
           ls -lSA
           cat .env
