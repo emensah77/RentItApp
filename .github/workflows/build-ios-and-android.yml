@@ -27,6 +27,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-
 
+      - name: Inject environment variables
+        run: |
+          cat << EOF > .env
+            REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
+            CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          EOF
+
       - run: yarn install --frozen-lockfile
 
       - run: pod install --repo-update
@@ -64,6 +71,13 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - name: Inject environment variables
+        run: |
+          cat << EOF > .env
+            REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
+            CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          EOF
 
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
