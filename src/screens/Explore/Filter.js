@@ -98,13 +98,15 @@ const Explore = () => {
   const [more, setMore] = useState(false);
   const [priceRange, setPriceRange] = useState([1, 50000]);
   const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState();
   const [selection, setSelection] = useState(JSON.parse(JSON.stringify(originalSelection)));
 
   const navigation = useNavigation();
 
   const goToSearch = useCallback(
-    () => navigation.navigate('Search', {params: selection}),
-    [navigation, selection],
+    () => navigation.navigate('Search', {params: {selection, data}}),
+    [navigation, data, selection],
   );
 
   const reset = useCallback(() => {
@@ -143,6 +145,7 @@ const Explore = () => {
         ...selection,
         [item]: newItems,
       });
+      setLoading(true);
     },
     [selection, isSelected],
   );
@@ -153,44 +156,54 @@ const Explore = () => {
   );
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
       const userLocation = JSON.parse((await AsyncStorage.getItem('position')) || '{}');
+      const body = JSON.stringify({
+        ...selection.all.amenities.reduce(
+          (prev, {title}) => ({
+            ...prev,
+            [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
+          }),
+          {},
+        ),
+        ...selection.all.typesOfPlace.reduce(
+          (prev, {title}) => ({
+            ...prev,
+            [title.toLowerCase()]: isSelected('typeOfPlace', title) ? 'Yes' : 'No',
+          }),
+          {},
+        ),
+        type: selection.type,
+        mode: selection.mode,
+        bedroom: selection.bedrooms,
+        bed: selection.beds,
+        bathroom: selection.bathrooms,
+        userLocation: {
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+        },
+      });
       const request = await fetch(
         'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
         {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            ...selection.all.amenities.reduce(
-              (prev, {title}) => ({
-                ...prev,
-                [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
-              }),
-              {},
-            ),
-            ...selection.all.typesOfPlace.reduce(
-              (prev, {title}) => ({
-                ...prev,
-                [title.toLowerCase()]: isSelected('typeOfPlace', title) ? 'Yes' : 'No',
-              }),
-              {},
-            ),
-            type: selection.type,
-            mode: selection.mode,
-            bedroom: selection.bedrooms,
-            bed: selection.beds,
-            bathroom: selection.bathrooms,
-            userLocation: {
-              latitude: userLocation.latitude,
-              longitud: userLocation.longitude,
-            },
-          }),
+          body,
         },
       ).catch(e => console.error('Filter Request Failure:', e));
       const response = await request.json();
 
-      setCount(oldCount => oldCount + (parseInt(response.length, 10) || 0));
-    })().catch(console.error);
+      if (__DEV__) {
+        console.debug('Response:', response, body);
+      }
+      setData(response);
+      setCount(parseInt(response.length, 10) || 0);
+      setLoading(false);
+    })().catch(e => {
+      setLoading(false);
+      console.error('Request Error', e);
+    });
   }, [isSelected, selection]);
 
   // console.log('selection', selection, priceRange);
@@ -206,7 +219,7 @@ const Explore = () => {
             </Typography>
           </Container>
 
-          <Button type="standard" left width="100%" onPress={goToSearch}>
+          <Button loading={loading} type="standard" left width="100%" onPress={goToSearch}>
             Show {count} homes
           </Button>
         </Container>
