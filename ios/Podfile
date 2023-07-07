@@ -39,6 +39,8 @@ target 'AirbnbClone' do
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'AirbnbCloneTests' do
     inherit! :complete
     # Pods for testing
