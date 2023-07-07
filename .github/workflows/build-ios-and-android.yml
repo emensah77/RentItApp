@@ -78,8 +78,6 @@ jobs:
           REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
           CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           EOF
-          ls -lSA
-          cat .env
 
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
