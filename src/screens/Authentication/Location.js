@@ -88,7 +88,7 @@ const Location = props => {
               },
               e => console.error('[watchPosition] ERROR -', e),
               {
-                interval: 15000,
+                interval: 30000,
                 desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
                 persist: true,
               },
