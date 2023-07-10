@@ -1,14 +1,7 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faFacebook} from '@fortawesome/free-brands-svg-icons';
 import {
-  faCoffee,
   faSearch,
   faHeart,
   faChartLine,
@@ -18,12 +11,9 @@ import {
   faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {Text, View} from 'react-native';
-import HomeScreen from '../screens/Home';
+import {View} from 'react-native';
 import ExploreNavigator from './ExploreNavigator';
-import SearchResultsMaps from '../screens/SearchResultsMap';
-import PostScreen from '../screens/PostScreen';
-import ProfileScreen from '../screens/Profile';
+import ProfileScreen from '../screens/Profile/Menu';
 import LowPriceScreen from '../screens/LowPriceScreen';
 import Wishlists from '../screens/Wishlists';
 import Trending from '../screens/TrendingScreen';
@@ -32,23 +22,76 @@ import AppNotifications from '../screens/AppNotifications/AppNotifications';
 
 const Tab = createBottomTabNavigator();
 
-const HomeTabNavigator = props => {
-  const routes = [
-    'HouseUpload',
-    'OnboardingScreen1',
-    'OnboardingScreen2',
-    'OnboardingScreen3',
-    'OnboardingScreen4',
-    'OnboardingScreen5',
-    'OnboardingScreen6',
-    'OnboardingScreen7',
-    'OnboardingScreen8',
-    'OnboardingScreen9',
-    'OnboardingScreen10',
-    'OnboardingScreen11',
-    'OnboardingScreen12',
-    'OnboardingScreen13',
-  ];
+const HomeTabNavigator = () => {
+  const routes = useMemo(
+    () => [
+      'HouseUpload',
+      'OnboardingScreen1',
+      'OnboardingScreen2',
+      'OnboardingScreen3',
+      'OnboardingScreen4',
+      'OnboardingScreen5',
+      'OnboardingScreen6',
+      'OnboardingScreen7',
+      'OnboardingScreen8',
+      'OnboardingScreen9',
+      'OnboardingScreen10',
+      'OnboardingScreen11',
+      'OnboardingScreen12',
+      'OnboardingScreen13',
+    ],
+    [],
+  );
+
+  const exploreOptions = useCallback(
+    ({route}) => ({
+      tabBarIcon: ({color}) => <FontAwesomeIcon icon={faSearch} size={25} color={color} />,
+      tabBarVisible: (r => {
+        const routeName = getFocusedRouteNameFromRoute(r) ?? '';
+
+        if (routes.includes(routeName)) {
+          return false;
+        }
+
+        return true;
+      })(route),
+    }),
+    [routes],
+  );
+
+  const alertStyle = useMemo(
+    () => ({
+      borderWidth: 1,
+      borderColor: 'white',
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      width: 15,
+      height: 15,
+      backgroundColor: 'deeppink',
+      top: -3,
+      right: -3,
+      borderRadius: 10,
+    }),
+    [],
+  );
+
+  const alertOptions = useMemo(
+    () => ({
+      tabBarIcon: ({color}) => (
+        <View>
+          <FontAwesomeIcon icon={faBell} size={25} color={color} />
+          <View style={alertStyle}>
+            {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
+                          3
+                      </Text> */}
+          </View>
+        </View>
+      ),
+    }),
+    [alertStyle],
+  );
+
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -63,22 +106,8 @@ const HomeTabNavigator = props => {
           fontWeight: 'bold',
         },
       }}>
-      <Tab.Screen
-        name="Explore"
-        component={ExploreNavigator}
-        options={({route}) => ({
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faSearch} size={25} color={color} />,
-          tabBarVisible: (route => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+      <Tab.Screen name="Explore" component={ExploreNavigator} options={exploreOptions} />
 
-            if (routes.includes(routeName)) {
-              return false;
-            }
-
-            return true;
-          })(route),
-        })}
-      />
       <Tab.Screen
         name="House"
         component={House}
@@ -105,6 +134,7 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHeart} size={25} color={color} />,
         }}
       />
+
       <Tab.Screen
         name="Trending"
         component={Trending}
@@ -112,35 +142,9 @@ const HomeTabNavigator = props => {
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faChartLine} size={25} color={color} />,
         }}
       />
-      <Tab.Screen
-        name="Alerts"
-        component={AppNotifications}
-        options={{
-          tabBarIcon: ({color}) => (
-            <View>
-              <FontAwesomeIcon icon={faBell} size={25} color={color} />
-              <View
-                style={{
-                  borderWidth: 1,
-                  borderColor: 'white',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  width: 15,
-                  height: 15,
-                  backgroundColor: 'deeppink',
-                  top: -3,
-                  right: -3,
-                  borderRadius: 10,
-                }}>
-                {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
-                                3
-                            </Text> */}
-              </View>
-            </View>
-          ),
-        }}
-      />
+
+      <Tab.Screen name="Alerts" component={AppNotifications} options={alertOptions} />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
@@ -150,17 +154,14 @@ const HomeTabNavigator = props => {
       />
 
       {/*
-            <Tab.Screen
-                        name={"Messages"}
-                        component={HomeScreen}
-                        options={{
-                            tabBarIcon: ({color}) => (
-                                <Feather name="message-square" size={25} color={color} />
-                            )
-                        }}
-                        />
-
-                    */}
+      <Tab.Screen
+        name="Messages"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({color}) => <Feather name="message-square" size={25} color={color} />,
+        }}
+      />
+      */}
     </Tab.Navigator>
   );
 };
