@@ -23,7 +23,6 @@ import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screens/PostScreen';
 import HouseTypeScreen from '../screens/HouseTypeScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
 import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
 import HomeTabNavigator from './HomeTabNavigator';
@@ -91,8 +90,6 @@ const AppStack = () => {
       <Stack.Screen name="Filter" component={Filter} options={noHeader} />
 
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
-
-      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={noHeader} />
 
       <Stack.Screen
         name="Destination Search"

@@ -184,6 +184,7 @@ const Explore = () => {
           longitude: userLocation.longitude,
         },
       });
+
       const request = await fetch(
         'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
         {
@@ -192,11 +193,12 @@ const Explore = () => {
           body,
         },
       ).catch(e => console.error('Filter Request Failure:', e));
-      const response = await request.json();
 
+      const response = await request.json();
       if (__DEV__) {
         console.debug('Response:', response, body);
       }
+
       setData(response);
       setCount(parseInt(response.length, 10) || 0);
       setLoading(false);
