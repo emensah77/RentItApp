@@ -3,6 +3,7 @@ module.exports = {
   extends: [
     'airbnb',
     'plugin:react/recommended',
+    'plugin:react-perf/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     '@react-native-community',
@@ -16,6 +17,7 @@ module.exports = {
     '@babel',
     'react-hooks',
     '@typescript-eslint',
+    'react-perf',
   ],
   rules: {
     indent: [
