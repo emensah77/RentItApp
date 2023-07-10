@@ -37,7 +37,7 @@ export function useSafeAreaInsetsStyle(
   | 'paddingTop'
 > {
   const insets = useSafeAreaInsets();
-
+  // @ts-ignore
   return safeAreaEdges.reduce((acc, e) => {
     return {...acc, [`${property}${propertySuffixMap[e]}`]: insets[edgeInsetMap[e] ?? e]};
   }, {});

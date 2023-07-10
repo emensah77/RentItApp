@@ -87,14 +87,15 @@ export const Icon = (props: IconProps) => {
 
 export const iconRegistry = {
   arrDown: require('@assets/images/arrow-down.png'),
-  search: require('@assets/icons/Union.png'),
-  heart: require('@assets/icons/Vector.png'),
-  home: require('@assets/icons/Group.png'),
-  inbox: require('@assets/icons/Vector19.png'),
-  user: require('@assets/icons/Union1.png'),
-  starFilled: require('@assets/icons/star-fill.png'),
-  filterMini: require('@assets/icons/filter-mini.png'),
-  filter: require('@assets/icons/filter.png'),
+  search: require('@assets/images/icons/Union.png'),
+  searchMini: require('@assets/images/icons/search-mini.png'),
+  heart: require('@assets/images/icons/Vector.png'),
+  home: require('@assets/images/icons/Group.png'),
+  inbox: require('@assets/images/icons/Vector19.png'),
+  user: require('@assets/images/icons/Union1.png'),
+  starFilled: require('@assets/images/icons/star-fill.png'),
+  filterMini: require('@assets/images/icons/filter-mini.png'),
+  filter: require('@assets/images/icons/filter.png'),
 };
 
 const $imageStyle: ImageStyle = {

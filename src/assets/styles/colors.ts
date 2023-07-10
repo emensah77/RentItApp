@@ -1,5 +1,9 @@
 // TODO: write documentation for colors and palette in own markdown file and add links from here
 
+export const fontFamily = {
+  manrope: 'Manrope',
+};
+
 export const palette = {
   // Background
   primary: '#0047B3',
@@ -10,8 +14,8 @@ export const palette = {
   textInverse: '#FFFFFF',
   textInverse100: '#FFFFFF96',
   textInverse200: '#B5B5B5',
+  textInverse300: '#717171',
 
-  // Neutral
   neutral100: '#FFFFFF',
   neutral200: '#F4F2F1',
   neutral300: '#D7CEC9',

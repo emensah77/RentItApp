@@ -8,7 +8,7 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import {colors, spacing, typography} from '../theme';
+import {colors, spacing, fontFamily} from '@theme';
 import {Text, TextProps} from './Text';
 
 type Presets = keyof typeof $viewPresets;
@@ -100,6 +100,7 @@ export function Button(props: ButtonProps) {
   }
 
   return (
+    // eslint-disable-next-line react/jsx-no-bind
     <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
       {state => (
         <>
@@ -137,7 +138,7 @@ const $baseViewStyle: ViewStyle = {
 const $baseTextStyle: TextStyle = {
   fontSize: 16,
   lineHeight: 20,
-  fontFamily: typography.primary,
+  fontFamily: fontFamily.manrope,
   color: colors.palette.textInverse,
   fontWeight: '500',
   textAlign: 'center',
@@ -190,7 +191,7 @@ const $textPresets: Record<Presets, StyleProp<TextStyle>> = {
   textOnly: [
     $baseTextStyle,
     {
-      fontFamily: typography.primary,
+      fontFamily: fontFamily.manrope,
       color: colors.palette.textInverse,
     },
   ],

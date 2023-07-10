@@ -1,14 +1,36 @@
 import React, {useState, useCallback, useMemo} from 'react';
-import {SafeAreaView, ScrollView, View} from 'react-native';
+import {ScrollView, View, ViewStyle, StatusBar, StatusBarProps} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
+import {ExtendedEdge, useSafeAreaInsetsStyle} from '@utils/useSafeAreaInsetsStyle';
 import Header from './Header';
 import Whitespace from './Whitespace';
 import Typography from './Typography';
 
 import {global} from '../assets/styles';
 
-const Page = props => {
+interface PageProps {
+  /**
+   * Override the default edges for the safe area.
+   */
+  safeAreaEdges?: ExtendedEdge[];
+  /**
+   * Background color
+   */
+  backgroundColor?: string;
+  /**
+   * Status bar setting. Defaults to dark.
+   */
+  statusBarStyle?: 'light' | 'dark';
+  /**
+   * Pass any additional props directly to the StatusBar component.
+   */
+  StatusBarProps?: StatusBarProps;
+  // wildcard
+  [x: string]: any;
+}
+
+const Page = (props: PageProps) => {
   const {
     header,
     children,
@@ -20,6 +42,11 @@ const Page = props => {
     rightIcon,
     onLeftIconPress,
     accessibilityLabel,
+    backgroundColor,
+    safeAreaEdges,
+    statusBarStyle,
+    // eslint-disable-next-line no-shadow
+    StatusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
@@ -34,8 +61,12 @@ const Page = props => {
     setFooterTop(height);
   }, []);
 
+  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
+
   return (
-    <SafeAreaView style={global.flex}>
+    <View style={[$containerStyle, {backgroundColor}, $containerInsets]}>
+      {/* @ts-ignore */}
+      <StatusBar style={statusBarStyle} {...StatusBarProps} />
       {type === 'small' && header && !inline ? (
         <Header
           center
@@ -51,7 +82,8 @@ const Page = props => {
         accessibilityLabel={accessibilityLabel}
         style={global.page}
         contentContainerStyle={[global.pageContent, reverse ? global.columnReverse : {}]}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+        bounces={false}>
         {type === 'large' && header && !inline ? (
           <>
             <Whitespace marginTop={30} />
@@ -71,8 +103,14 @@ const Page = props => {
           </View>
         </>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
+};
+
+const $containerStyle: ViewStyle = {
+  flex: 1,
+  height: '100%',
+  width: '100%',
 };
 
 export default Page;

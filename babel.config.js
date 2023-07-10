@@ -30,7 +30,7 @@ module.exports = {
           '@navigation': './src/navigation',
           '@images': './src/assets/images',
           '@assets': './src/assets',
-          '@theme': './src/theme',
+          '@theme': './src/assets/styles',
           '@utils': './src/utils',
           '@redux': './src/redux',
         },

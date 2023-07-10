@@ -44,9 +44,9 @@ module.exports = {
       {
         ignoreDOMComponents: false,
         ignoreRefs: false,
-        allowArrowFunctions: true,
-        allowFunctions: true,
-        allowBind: true,
+        allowArrowFunctions: false,
+        allowFunctions: false,
+        allowBind: false,
       },
     ],
     'react/jsx-props-no-spreading': [0],

@@ -1,9 +1,9 @@
 import React from 'react';
 import {StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle} from 'react-native';
-import {colors, typography} from '@theme';
+import {colors, fontFamily} from '@theme';
 
 type Sizes = keyof typeof $sizeStyles;
-type Weights = keyof typeof typography.primary;
+type Weights = keyof typeof fontFamily.manrope;
 type Presets = keyof typeof $presets;
 
 export interface TextProps extends RNTextProps {
@@ -57,7 +57,7 @@ export function Text(props: TextProps) {
   const preset: Presets = $presets[props.preset] ? props.preset : 'default';
   // @ts-ignore
   const $styles = [
-    {fontFamily: typography.primary, fontWeight: weight},
+    {fontFamily: fontFamily.manrope, fontWeight: weight},
     $presets[preset],
     // @ts-ignore
     $sizeStyles[size],
@@ -81,7 +81,7 @@ const $sizeStyles = {
   xxs: {fontSize: 12, lineHeight: 18} as TextStyle,
 };
 
-const $fontWeightStyles = Object.entries(typography.primary).reduce((acc, [weight, fontFamily]) => {
+const $fontWeightStyles = Object.entries(fontFamily.manrope).reduce((acc, [weight, fontFamily]) => {
   return {...acc, [weight]: {fontFamily}};
 }, {}) as Record<Weights, TextStyle>;
 
