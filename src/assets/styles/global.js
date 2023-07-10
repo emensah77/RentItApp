@@ -45,8 +45,6 @@ const global = StyleSheet.create({
     width: '100%',
   },
   pageContent: {
-    paddingHorizontal: pageInnerHorizontalPadding,
-
     flexGrow: 1,
   },
   footer: {

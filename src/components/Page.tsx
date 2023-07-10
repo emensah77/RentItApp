@@ -8,6 +8,7 @@ import Whitespace from './Whitespace';
 import Typography from './Typography';
 
 import {colors, global} from '../assets/styles';
+import {pageInnerHorizontalPadding} from '../assets/styles/global';
 
 interface PageProps {
   /**
@@ -26,6 +27,8 @@ interface PageProps {
    * Pass any additional props directly to the StatusBar component.
    */
   StatusBarProps?: StatusBarProps;
+
+  hasPadding?: boolean;
   // wildcard
   [x: string]: any;
 }
@@ -45,6 +48,7 @@ const Page = (props: PageProps) => {
     backgroundColor = colors.palette.textInverse,
     safeAreaEdges = ['top'],
     statusBarStyle,
+    hasPadding = true,
     // eslint-disable-next-line no-shadow
     StatusBarProps,
   } = props;
@@ -81,7 +85,11 @@ const Page = (props: PageProps) => {
         accessible
         accessibilityLabel={accessibilityLabel}
         style={global.page}
-        contentContainerStyle={[global.pageContent, reverse ? global.columnReverse : {}]}
+        contentContainerStyle={[
+          global.pageContent,
+          reverse ? global.columnReverse : {},
+          hasPadding && {paddingHorizontal: pageInnerHorizontalPadding},
+        ]}
         keyboardShouldPersistTaps="handled"
         bounces={false}>
         {type === 'large' && header && !inline ? (

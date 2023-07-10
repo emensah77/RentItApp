@@ -1,37 +1,112 @@
-import React, {FC} from 'react';
-import {ViewStyle} from 'react-native';
+import React, {FC, useCallback, useState} from 'react';
+import {ViewStyle, View} from 'react-native';
+import {API, graphqlOperation} from 'aws-amplify';
 import {Page} from '@components';
 import {AppStackScreenProps} from '@navigation/AppStack';
 import {Icon} from '@components/Icon';
 import {SizedBox} from '@components/SizedBox';
 import {Card} from '@components/Card';
-import {palette} from '@theme';
+import {colors, palette} from '@theme';
+
+import {CategoryNavigator} from '@components/Explore';
+import {pageInnerHorizontalPadding} from '@assets/styles/global';
+import {listPosts} from '../../graphql/queries';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
 const HomeScreen: FC<HomeScreenProps> = () => {
+  const [status, setStatus] = useState('Entire Flat');
+  const [nextToken, setNextToken] = useState(null);
+  const [modalvisible, setmodalvisible] = useState(false);
+
+  const memoizedCategoryNav = useCallback(() => {
+    return <CategoryNavigator {...{status, open, setStatusFilter}} />;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
+  const fetchPostsType = useCallback(async newStatus => {
+    try {
+      const query = {
+        limit: 100000,
+        filter: {
+          and: {
+            type: {
+              eq: newStatus,
+            },
+            latitude: {
+              between: [4.633900069140816, 11.17503079077031],
+            },
+            longitude: {
+              between: [-3.26078589558366, 1.199972025476763],
+            },
+          },
+        },
+      };
+
+      const postsResult: any = await API.graphql(graphqlOperation(listPosts, query));
+
+      if (postsResult?.data?.listPosts?.nextToken !== null) {
+        setNextToken(postsResult.data.listPosts.nextToken);
+      } else {
+      }
+    } catch (error) {
+      // console.log('error1', error);
+    }
+  }, []);
+
+  const setStatusFilter = useCallback(
+    _status => () => {
+      setStatus(_status);
+      // @ts-ignore
+      fetchPostsType();
+    },
+    [fetchPostsType],
+  );
+
+  const open = useCallback(() => {
+    setmodalvisible(true);
+  }, []);
+
   return (
-    <Page safeAreaEdges={['top']} type="" backgroundColor={palette.textInverse}>
-      <Card
-        style={$cardStyle}
-        HeadingTextProps={{size: 'xs'}}
-        heading="Where to?"
-        footer="Anywhere ⦁ Any week ⦁ Add guests"
-        FooterTextProps={{style: {color: palette.textInverse300}, size: 'xxs'}}
-        LeftComponent={<Icon icon="searchMini" size={25} />}
-        RightComponent={<Icon icon="filterMini" size={35} />}
-      />
-      <SizedBox height={10} />
+    <Page safeAreaEdges={['top']} type="" backgroundColor={palette.textInverse} hasPadding={false}>
+      <View style={$headerStyle}>
+        <Card
+          style={$cardStyle}
+          HeadingTextProps={{size: 'xs'}}
+          heading="Where to?"
+          footer="Anywhere ⦁ Any week ⦁ Add guests"
+          FooterTextProps={{style: {color: palette.textInverse300}, size: 'xxs'}}
+          LeftComponent={<Icon icon="searchMini" size={25} />}
+          RightComponent={<Icon icon="filterMini" size={35} />}
+        />
+        <SizedBox height={20} />
+        {memoizedCategoryNav()}
+      </View>
     </Page>
   );
 };
 
 const $cardStyle: ViewStyle = {
-  borderWidth: 1,
+  borderWidth: 0.7,
+  borderColor: colors.palette.neutral,
   alignItems: 'center',
   borderRadius: 40,
-  paddingVertical: 12,
+  paddingVertical: 8,
   paddingLeft: 20,
   paddingRight: 12,
+  shadowOffset: {width: 0, height: 1},
+  shadowOpacity: 0.1,
+  shadowRadius: 2,
+  backgroundColor: colors.palette.textInverse,
+};
+
+const $headerStyle: ViewStyle = {
+  paddingHorizontal: pageInnerHorizontalPadding,
+  shadowColor: colors.palette.neutral800,
+  shadowOffset: {width: 0, height: 2},
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  backgroundColor: colors.palette.textInverse,
+  elevation: 4,
 };
 
 export default HomeScreen;
@@ -371,67 +446,67 @@ export default HomeScreen;
 //     [],
 //   );
 
-//   const categories = useMemo(
-//     () => [
-//       {
-//         //   status: 'All',
-//         //   id: 1,
-//         //   icon: faDoorClosed
-//         // },
+// const categories = useMemo(
+//   () => [
+//     {
+//       //   status: 'All',
+//       //   id: 1,
+//       //   icon: faDoorClosed
+//       // },
 
-//         status: 'Entire Flat',
-//         id: 2,
-//         icon: faIgloo,
-//       },
-//       {
-//         status: 'Apartment',
-//         id: 3,
-//         icon: faCity,
-//       },
-//       {
-//         status: 'Chamber and Hall',
-//         id: 4,
-//         icon: faCampground,
-//       },
-//       {
-//         status: 'Mansion',
-//         id: 5,
-//         icon: faHotel,
-//       },
-//       {
-//         status: 'Self-Contained',
-//         id: 6,
-//         icon: faArchway,
-//       },
-//       {
-//         status: 'Single Room',
-//         id: 7,
-//         icon: faDoorClosed,
-//       },
-//       {
-//         status: 'Full Home',
-//         id: 8,
-//         icon: faLandmark,
-//       },
-//     ],
-//     [],
-//   );
-
-//   const setStatusFilter = useCallback(
-//     _status => () => {
-//       // setObserving(true);
-//       // setIsLoadingType(true);
-//       setStatus(_status);
-//       // setNextToken(null);
-//       // setPosts([]);
-//       fetchPostsType();
-//       // console.log('status',status)
-//       // console.log('isreset', observing)
-//       // setObserving(false);
-//       // setIsLoadingType(false);
+//       status: 'Entire Flat',
+//       id: 2,
+//       icon: faIgloo,
 //     },
-//     [fetchPostsType],
-//   );
+//     {
+//       status: 'Apartment',
+//       id: 3,
+//       icon: faCity,
+//     },
+//     {
+//       status: 'Chamber and Hall',
+//       id: 4,
+//       icon: faCampground,
+//     },
+//     {
+//       status: 'Mansion',
+//       id: 5,
+//       icon: faHotel,
+//     },
+//     {
+//       status: 'Self-Contained',
+//       id: 6,
+//       icon: faArchway,
+//     },
+//     {
+//       status: 'Single Room',
+//       id: 7,
+//       icon: faDoorClosed,
+//     },
+//     {
+//       status: 'Full Home',
+//       id: 8,
+//       icon: faLandmark,
+//     },
+//   ],
+//   [],
+// );
+
+// const setStatusFilter = useCallback(
+//   _status => () => {
+//     // setObserving(true);
+//     // setIsLoadingType(true);
+//     setStatus(_status);
+//     // setNextToken(null);
+//     // setPosts([]);
+//     fetchPostsType();
+//     // console.log('status',status)
+//     // console.log('isreset', observing)
+//     // setObserving(false);
+//     // setIsLoadingType(false);
+//   },
+//   [fetchPostsType],
+// );
 
 //   const onSelectedItemsChange = useCallback(
 //     newSelectedItems => {
@@ -558,37 +633,37 @@ export default HomeScreen;
 //     );
 //   }, [forceLocation, hasLocationPermission, highAccuracy, locationDialog, useLocationManager]);
 
-//   const fetchPostsType = useCallback(async newStatus => {
-//     try {
-//       const query = {
-//         limit: 100000,
-//         filter: {
-//           and: {
-//             type: {
-//               eq: newStatus,
-//             },
-//             latitude: {
-//               between: [4.633900069140816, 11.17503079077031],
-//             },
-//             longitude: {
-//               between: [-3.26078589558366, 1.199972025476763],
-//             },
+// const fetchPostsType = useCallback(async newStatus => {
+//   try {
+//     const query = {
+//       limit: 100000,
+//       filter: {
+//         and: {
+//           type: {
+//             eq: newStatus,
+//           },
+//           latitude: {
+//             between: [4.633900069140816, 11.17503079077031],
+//           },
+//           longitude: {
+//             between: [-3.26078589558366, 1.199972025476763],
 //           },
 //         },
-//       };
+//       },
+//     };
 
-//       const postsResult = await API.graphql(graphqlOperation(listPosts, query));
-//       // console.log('previouslist',previousList.length)
-//       // setPosts(shuffle(postsResult.data.listPosts.items));
-//       // setPosts(shuffle(posts));
-//       if (postsResult?.data?.listPosts?.nextToken !== null) {
-//         setNextToken(postsResult.data.listPosts.nextToken);
-//       } else {
-//       }
-//     } catch (error) {
-//       // console.log('error1', error);
+//     const postsResult = await API.graphql(graphqlOperation(listPosts, query));
+//     // console.log('previouslist',previousList.length)
+//     // setPosts(shuffle(postsResult.data.listPosts.items));
+//     // setPosts(shuffle(posts));
+//     if (postsResult?.data?.listPosts?.nextToken !== null) {
+//       setNextToken(postsResult.data.listPosts.nextToken);
+//     } else {
 //     }
-//   }, []);
+//   } catch (error) {
+//     // console.log('error1', error);
+//   }
+// }, []);
 
 //   const userDetails = useCallback(async () => {
 //     const selectedUser = await firestore().collection('users').doc(auth().currentUser.uid);
@@ -818,9 +893,9 @@ export default HomeScreen;
 //     setmodalvisible(false);
 //   }, []);
 
-//   const open = useCallback(() => {
-//     setmodalvisible(true);
-//   }, []);
+// const open = useCallback(() => {
+//   setmodalvisible(true);
+// }, []);
 
 //   const onValuesChange = useCallback(
 //     value => {
@@ -934,67 +1009,67 @@ export default HomeScreen;
 //     };
 //   }, [initBackgroundFetch, initBackgroundGeolocation, navigation, unsubscribe]);
 
-//   useEffect(() => {
-//     const fetchInitialData = async () => {
-//       setIsLoadingType(true);
-//       if (!cachedData[status]) {
-//         const data = await personalizedHomes(latitude, longitude, status, null);
-//         if (data && data.homes) {
-//           setPosts(data.homes);
-//           setCachedData(prevData => ({...prevData, [status]: data.homes}));
-//           setNextToken(data.nextToken);
-//         } else {
-//           setPosts([]);
-//         }
+// useEffect(() => {
+//   const fetchInitialData = async () => {
+//     setIsLoadingType(true);
+//     if (!cachedData[status]) {
+//       const data = await personalizedHomes(latitude, longitude, status, null);
+//       if (data && data.homes) {
+//         setPosts(data.homes);
+//         setCachedData(prevData => ({...prevData, [status]: data.homes}));
+//         setNextToken(data.nextToken);
 //       } else {
-//         setPosts(cachedData[status]);
+//         setPosts([]);
 //       }
-//       setIsLoadingType(false);
-//     };
-
-//     // Reset posts and nextToken when status changes
-//     if (status !== prevStatus.current) {
-//       setPosts([]);
-//       setNextToken(null);
-//       prevStatus.current = status;
+//     } else {
+//       setPosts(cachedData[status]);
 //     }
+//     setIsLoadingType(false);
+//   };
 
-//     fetchInitialData();
+//   // Reset posts and nextToken when status changes
+//   if (status !== prevStatus.current) {
+//     setPosts([]);
+//     setNextToken(null);
+//     prevStatus.current = status;
+//   }
 
-//     // setIsLoadingType(true);
-//     // console.log('latitude', latitude);
-//     // console.log('longitude', longitude);
-//     // personalizedHomes(latitude, longitude, status);
-//     // setIsLoadingType(false);
+//   fetchInitialData();
 
-//     _getUserData(auth().currentUser.uid);
+//   // setIsLoadingType(true);
+//   // console.log('latitude', latitude);
+//   // console.log('longitude', longitude);
+//   // personalizedHomes(latitude, longitude, status);
+//   // setIsLoadingType(false);
 
-//     userDetails();
-//     // setStatus(status);
-//     // setPosts([]);
-//     // setNextToken(null);
-//     // console.log('status', status);
-//     // console.log('nextToken', nextToken);
-//     // setInterval(selectColor, 2000);
-//     // VersionCheck.needUpdate().then(async res => {
-//     //   //console.log(res.isNeeded);    // true
-//     //   if (res.isNeeded) {
-//     //     setUpdateNeeded(true);
-//     //     setUpdateUrl(res.storeUrl);
-//     //     //console.log(res.storeUrl === updateUrl);
-//     //     //Linking.openURL(res.storeUrl);  // open store if update is needed.
-//     //   }
-//     // });
+//   _getUserData(auth().currentUser.uid);
 
-//     // setIsLoadingType(true);
-//     // fetchPostsType(status);
-//     // setIsLoadingType(false);
-//     // console.log('posts', posts);
-//     // getLatestPost();
+//   userDetails();
+//   // setStatus(status);
+//   // setPosts([]);
+//   // setNextToken(null);
+//   // console.log('status', status);
+//   // console.log('nextToken', nextToken);
+//   // setInterval(selectColor, 2000);
+//   // VersionCheck.needUpdate().then(async res => {
+//   //   //console.log(res.isNeeded);    // true
+//   //   if (res.isNeeded) {
+//   //     setUpdateNeeded(true);
+//   //     setUpdateUrl(res.storeUrl);
+//   //     //console.log(res.storeUrl === updateUrl);
+//   //     //Linking.openURL(res.storeUrl);  // open store if update is needed.
+//   //   }
+//   // });
 
-//     // console.log('This is latest',postLatest.map(item => (item.createdAt)));
-//     // clearInterval(selectColor);
-//   }, [status, latitude, longitude, userDetails, cachedData, personalizedHomes, _getUserData]);
+//   // setIsLoadingType(true);
+//   // fetchPostsType(status);
+//   // setIsLoadingType(false);
+//   // console.log('posts', posts);
+//   // getLatestPost();
+
+//   // console.log('This is latest',postLatest.map(item => (item.createdAt)));
+//   // clearInterval(selectColor);
+// }, [status, latitude, longitude, userDetails, cachedData, personalizedHomes, _getUserData]);
 
 //   return (
 //     <View style={styles.container}>

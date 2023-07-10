@@ -98,7 +98,13 @@ const HomeTabNavigator = () => {
           fontWeight: 'bold',
         },
       }}>
-      <Tab.Screen name="Explore" component={ExploreNavigator} options={exploreOptions} />
+      <Tab.Screen
+        name="Explore"
+        component={ExploreNavigator}
+        options={({route}) => ({
+          tabBarIcon: ({color}) => <Icon icon="search" size={22} color={color} />,
+          tabBarVisible: (route => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
       <Tab.Screen
         name="Wishlists"

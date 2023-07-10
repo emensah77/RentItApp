@@ -1,22 +1,6 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
 
 const styles = StyleSheet.create({
-  searchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 40,
-    paddingVertical: 12,
-    paddingLeft: 20,
-    paddingRight: 12,
-    borderColor: '#DEDEDE',
-  },
-  row: {
-    flexDirection: 'row',
-    flex: 1,
-    alignItems: 'center',
-  },
   container: {backgroundColor: 'white', flex: 1},
   loader: {marginVertical: 100, alignItems: 'center'},
   modal: {
@@ -98,18 +82,9 @@ const styles = StyleSheet.create({
   },
   showHomesText: {alignSelf: 'center', color: 'white'},
   filterPressable: {
-    flexDirection: 'column',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 8,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    height: 40,
-    shadowColor: 'white',
-    shadowOffset: {width: 10, height: 10},
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 30,
+
     alignItems: 'center',
     borderWidth: 0.8,
     borderColor: 'black',
@@ -265,27 +240,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
   },
   button1: {
-    flexDirection: 'column',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 8,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    height: 40,
-    shadowColor: 'white',
-    shadowOffset: {width: 10, height: 10},
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 30,
+    marginRight: 20,
     alignItems: 'center',
+    height: 70,
     borderWidth: 0.1,
-    borderColor: 'white',
-    justifyContent: 'space-evenly',
   },
 
-  btnTabActive: {
-    backgroundColor: 'black',
-  },
   textTab: {
     fontSize: 11,
     color: 'black',

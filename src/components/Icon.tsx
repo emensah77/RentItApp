@@ -96,6 +96,12 @@ export const iconRegistry = {
   starFilled: require('@assets/images/icons/star-fill.png'),
   filterMini: require('@assets/images/icons/filter-mini.png'),
   filter: require('@assets/images/icons/filter.png'),
+  entireFlat: require('@assets/images/icons/entire-flat.png'),
+  apartment: require('@assets/images/icons/apartments.png'),
+  mansion: require('@assets/images/icons/mansion.png'),
+  house: require('@assets/images/icons/house.png'),
+  singleRoom: require('@assets/images/icons/checkin.png'),
+  fullHome: require('@assets/images/icons/home.png'),
 };
 
 const $imageStyle: ImageStyle = {

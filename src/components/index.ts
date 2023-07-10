@@ -14,3 +14,11 @@ export {default as PageSpinner} from './PageSpinner';
 export {default as Tabs} from './Tabs';
 export {default as Typography} from './Typography';
 export {default as Whitespace} from './Whitespace';
+
+// components without default exports
+export * from './Icon';
+export * from './AutoImage';
+export * from './Card';
+export * from './ScrollArea';
+export * from './SizedBox';
+export * from './Text';

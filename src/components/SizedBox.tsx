@@ -14,7 +14,6 @@ export const SizedBox = ({width, height, flex, backgroundColor, style}: SizedBox
       style={[
         {
           width,
-
           height,
           flex,
           backgroundColor,
