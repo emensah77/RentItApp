@@ -3,11 +3,22 @@ module.exports = {
   extends: [
     'airbnb',
     'plugin:react/recommended',
+    'plugin:react-perf/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     '@react-native-community',
   ],
-  plugins: ['react', 'prettier', 'sort-keys-fix', 'jsx-a11y', '@babel', 'react-hooks'],
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    'react',
+    'prettier',
+    'sort-keys-fix',
+    'jsx-a11y',
+    '@babel',
+    'react-hooks',
+    '@typescript-eslint',
+    'react-perf',
+  ],
   rules: {
     indent: [
       'error',
