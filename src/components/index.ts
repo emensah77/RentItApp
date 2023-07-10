@@ -1,3 +1,4 @@
+// @ts-ignore
 export {default as Button} from './Button';
 export {default as CardDisplay} from './CardDisplay';
 export {default as Container} from './Container';

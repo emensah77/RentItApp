@@ -20,6 +20,23 @@ module.exports = {
   plugins: [
     'react-native-reanimated/plugin',
     [
+      'module-resolver',
+      {
+        root: ['./src'],
+        extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+        alias: {
+          '@components': './src/components',
+          '@screens': './src/screens',
+          '@navigation': './src/navigation',
+          '@images': './src/assets/images',
+          '@assets': './src/assets',
+          '@theme': './src/assets/styles',
+          '@utils': './src/utils',
+          '@redux': './src/redux',
+        },
+      },
+    ],
+    [
       'module:react-native-dotenv',
       {
         envName: 'REACT_NATIVE_APP_ENV',

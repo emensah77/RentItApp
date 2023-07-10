@@ -1,6 +1,22 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 40,
+    paddingVertical: 12,
+    paddingLeft: 20,
+    paddingRight: 12,
+    borderColor: '#DEDEDE',
+  },
+  row: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+  },
   container: {backgroundColor: 'white', flex: 1},
   loader: {marginVertical: 100, alignItems: 'center'},
   modal: {
