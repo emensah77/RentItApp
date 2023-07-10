@@ -18,12 +18,9 @@ import {
   faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {Text, View} from 'react-native';
-import HomeScreen from '../screens/Home';
+import {View} from 'react-native';
 import ExploreNavigator from './ExploreNavigator';
-import SearchResultsMaps from '../screens/SearchResultsMap';
-import PostScreen from '../screens/PostScreen';
-import ProfileScreen from '../screens/Profile';
+import ProfileScreen from '../screens/Profile/Menu';
 import LowPriceScreen from '../screens/LowPriceScreen';
 import Wishlists from '../screens/Wishlists';
 import Trending from '../screens/TrendingScreen';

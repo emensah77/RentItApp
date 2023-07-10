@@ -4,7 +4,6 @@ import HomeScreen from '../screens/Home';
 // import SearchResultsScreen from '../screens/SearchResults';
 import SearchResultsTabNavigator from './SearchResultsTabNavigator';
 import AboutScreen from '../screens/AboutScreen';
-import LoginScreen from '../screens/LoginScreen';
 import AddressScreen from '../screens/AddressScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import House from '../screens/House';
@@ -252,14 +251,6 @@ const Router = () => (
     <Stack.Screen
       name="EditHome"
       component={EditHome}
-      options={{
-        headerShown: false,
-      }}
-    />
-
-    <Stack.Screen
-      name="Login"
-      component={LoginScreen}
       options={{
         headerShown: false,
       }}
