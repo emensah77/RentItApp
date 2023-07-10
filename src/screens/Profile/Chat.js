@@ -169,6 +169,8 @@ const Chat = props => {
     return () => client.disconnectUser(1);
   }, [home_id]);
 
+  const makeUri = useCallback(uri => ({uri}), []);
+
   let currentDay, nextDay;
 
   if (!receiver.displayName) {
@@ -226,7 +228,7 @@ const Chat = props => {
             <CardDisplay
               leftImageWidth={38}
               leftImageHeight={38}
-              leftImageSrc={{uri: home?.image}}
+              leftImageSrc={makeUri(home?.image)}
               numberOfLines={2}
               description={
                 <Typography
@@ -318,7 +320,7 @@ const Chat = props => {
 
               <CardDisplay
                 leftImageCircle={38}
-                leftImageSrc={user.image ? {uri: user?.image} : moon}
+                leftImageSrc={user.image ? makeUri(user?.image) : moon}
                 name={user.name}
                 location={`${
                   date.getHours() > 12 ? date.getHours() - 12 : date.getHours()

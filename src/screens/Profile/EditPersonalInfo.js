@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 
 import {
   Page,
@@ -17,6 +17,8 @@ const EditPersonalInfo = () => {
   const [lastname, setLastname] = useState('');
   const [gender, setGender] = useState({value: ''});
 
+  const genders = useMemo(() => [{value: 'Male'}, {value: 'Female'}], []);
+
   return (
     <Page type="large" header="Edit personal info">
       <Whitespace marginTop={36} />
@@ -34,7 +36,7 @@ const EditPersonalInfo = () => {
 
       <Dropdown
         value={gender.value}
-        data={[{value: 'Male'}, {value: 'Female'}]}
+        data={genders}
         displayKey="value"
         label="Gender"
         suffix={arrowDown}
