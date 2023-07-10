@@ -1,24 +1,16 @@
 import React, {useCallback, useMemo} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faSearch,
-  faHeart,
-  faChartLine,
-  faHouseUser,
-  faUser,
-  faCoins,
-  faBell,
-} from '@fortawesome/free-solid-svg-icons';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {View} from 'react-native';
 import ExploreNavigator from './ExploreNavigator';
-import ProfileScreen from '../screens/Profile/Menu';
-import LowPriceScreen from '../screens/LowPriceScreen';
+import ProfileScreen from '../screens/Profile';
 import Wishlists from '../screens/Wishlists';
-import Trending from '../screens/TrendingScreen';
 import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
+import {Icon} from '@components/Icon';
+import {colors} from '@theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -109,29 +101,47 @@ const HomeTabNavigator = () => {
       <Tab.Screen name="Explore" component={ExploreNavigator} options={exploreOptions} />
 
       <Tab.Screen
-        name="House"
-        component={House}
-        options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHouseUser} size={25} color={color} />,
-        }}
-      />
-
-      <Tab.Screen
-        name="Discount"
-        component={LowPriceScreen}
-        options={{
-          tabBarIcon: ({color}) => (
-            <FontAwesomeIcon icon={faCoins} size={25} color={color} />
-            // <Fontisto name="user" size={25} color={color} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
         name="Wishlists"
         component={Wishlists}
         options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faHeart} size={25} color={color} />,
+          tabBarIcon: ({color}) => (
+            <View>
+              <Icon icon="heart" size={22} color={color} />
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'absolute',
+                  width: 10,
+                  height: 10,
+                  backgroundColor: colors.palette.pink,
+                  top: -3,
+                  right: -10,
+                  borderRadius: 10,
+                }}>
+                {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
+                        3
+                    </Text> */}
+              </View>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Homes"
+        component={House}
+        options={{
+          tabBarIcon: ({color}) => <Icon icon="home" size={22} color={color} />,
+        }}
+      />
+
+      {/* <Tab.Screen
+        name="Discount"
+        component={LowPriceScreen}
+        options={{
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faCoins} size={25} color={color} />,
         }}
       />
 
@@ -141,27 +151,21 @@ const HomeTabNavigator = () => {
         options={{
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faChartLine} size={25} color={color} />,
         }}
+      /> */}
+      <Tab.Screen
+        name="Inbox"
+        component={AppNotifications}
+        options={{
+          tabBarIcon: ({color}) => <Icon icon="inbox" size={22} color={color} />,
+        }}
       />
-
-      <Tab.Screen name="Alerts" component={AppNotifications} options={alertOptions} />
-
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faUser} size={25} color={color} />,
+          tabBarIcon: ({color}) => <Icon icon="user" size={22} color={color} />,
         }}
       />
-
-      {/*
-      <Tab.Screen
-        name="Messages"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({color}) => <Feather name="message-square" size={25} color={color} />,
-        }}
-      />
-      */}
     </Tab.Navigator>
   );
 };

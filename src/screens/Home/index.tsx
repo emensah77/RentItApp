@@ -10,7 +10,7 @@ import {palette} from '@theme';
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
 const HomeScreen: FC<HomeScreenProps> = () => {
   return (
-    <Page safeAreaEdges={['top']} backgroundColor={palette.textInverse}>
+    <Page safeAreaEdges={['top']} type="" backgroundColor={palette.textInverse}>
       <Card
         style={$cardStyle}
         HeadingTextProps={{size: 'xs'}}
