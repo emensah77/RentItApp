@@ -8,11 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* AirbnbCloneTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* AirbnbCloneTests.m */; };
+		0521E016C8D04786B0577314 /* Manrope-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 655655B46E95453493990606 /* Manrope-Bold.ttf */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2676926F3CF118EC1B4EB1B5 /* libPods-AirbnbClone-AirbnbCloneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8BA00A81B986087011CF150 /* libPods-AirbnbClone-AirbnbCloneTests.a */; };
+		2B6CF60DC80841D3A475954E /* Manrope-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C67819DB364F46C3BC3E77E4 /* Manrope-VariableFont_wght.ttf */; };
 		3200DD03144B1CFB6F461C06 /* libPods-AirbnbClone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74E88BFEBA899210D3B40659 /* libPods-AirbnbClone.a */; };
+		4A5199F62ED0444FB726CD81 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 72B5D41EB51345C187C715B2 /* README.txt */; };
+		4D1DCED3B2C6403BB58784F5 /* Manrope-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 501CF8BA17824F33B551686C /* Manrope-Light.ttf */; };
+		4D97322A35B94739816EFE11 /* Manrope-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 124F2BBFC9974A0F9FADF55E /* Manrope-Medium.ttf */; };
 		54325B002A384F330058BFB8 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54325AFF2A384F320058BFB8 /* AppCenter-Config.plist */; };
+		67EFEC838D624329817705ED /* Manrope-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 41FF2BE3602946AE9E3543FC /* Manrope-Regular.ttf */; };
 		7209B02128D191E400017A37 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		8115202D31CF49E9B4974FC2 /* Manrope-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0593CC479E4847718EFF7856 /* Manrope-ExtraLight.ttf */; };
+		AE9F6B3BFDA04CF197A2F89B /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = AD4B67D60BAC424B8E4DE47D /* OFL.txt */; };
+		CBF210641803492688771205 /* Manrope-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E906A0E031C4C5F9A8C63A1 /* Manrope-ExtraBold.ttf */; };
 		D22106D1294C98BE002441EA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D22106D0294C98BE002441EA /* GoogleService-Info.plist */; };
 		D23F394927D8C8EE00A0B2F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D23F394827D8C8EE00A0B2F5 /* LaunchScreen.storyboard */; };
 		D2828A5C26920AAA0021A943 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -34,6 +43,7 @@
 		D2828A8F26920B750021A943 /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57069CF364F744EBABAE5856 /* Montserrat-SemiBoldItalic.ttf */; };
 		D2828A9026920B750021A943 /* Montserrat-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D1FBA4A31ECE477D8CF904E2 /* Montserrat-Thin.ttf */; };
 		D2828A9126920B750021A943 /* Montserrat-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EA9C7BCBFBB428CA9D203D9 /* Montserrat-ThinItalic.ttf */; };
+		FC7E568C4E8E400485D20663 /* Manrope-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D97B6171E8274FBC936A5EA5 /* Manrope-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,41 +60,67 @@
 		00E356EE1AD99517003FC87E /* AirbnbCloneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirbnbCloneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* AirbnbCloneTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AirbnbCloneTests.m; sourceTree = "<group>"; };
+		0593CC479E4847718EFF7856 /* Manrope-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-ExtraLight.ttf"; path = "../assets/fonts/Manrope/Manrope-ExtraLight.ttf"; sourceTree = "<group>"; };
+		124F2BBFC9974A0F9FADF55E /* Manrope-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-Medium.ttf"; path = "../assets/fonts/Manrope/Manrope-Medium.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* AirbnbClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirbnbClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = AirbnbClone/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = AirbnbClone/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AirbnbClone/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AirbnbClone/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = AirbnbClone/main.m; sourceTree = "<group>"; };
+		19B78B5FDD8C466D9FFFC11E /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = ../assets/fonts/Entypo.ttf; sourceTree = "<group>"; };
+		1C9CBB593DE14628B3B76B04 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = ../assets/fonts/Fontisto.ttf; sourceTree = "<group>"; };
 		2165E673EEB11612E0E58287 /* Pods-AirbnbClone-AirbnbCloneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirbnbClone-AirbnbCloneTests.debug.xcconfig"; path = "Target Support Files/Pods-AirbnbClone-AirbnbCloneTests/Pods-AirbnbClone-AirbnbCloneTests.debug.xcconfig"; sourceTree = "<group>"; };
 		22E72BBAF84B4954BA7659F8 /* Montserrat-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Black.ttf"; path = "../assets/fonts/Montserrat-Black.ttf"; sourceTree = "<group>"; };
+		2CB0547E43F04D0FBC5F2A37 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = ../assets/fonts/Zocial.ttf; sourceTree = "<group>"; };
 		2EA9C7BCBFBB428CA9D203D9 /* Montserrat-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ThinItalic.ttf"; path = "../assets/fonts/Montserrat-ThinItalic.ttf"; sourceTree = "<group>"; };
 		3758FC06029D4D118B94FAFE /* Montserrat-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Italic.ttf"; path = "../assets/fonts/Montserrat-Italic.ttf"; sourceTree = "<group>"; };
+		3C647E715ECB447B880F1FCA /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = ../assets/fonts/Foundation.ttf; sourceTree = "<group>"; };
+		41FF2BE3602946AE9E3543FC /* Manrope-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-Regular.ttf"; path = "../assets/fonts/Manrope/Manrope-Regular.ttf"; sourceTree = "<group>"; };
+		458EDBA514204F5DBDB36F3C /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = ../assets/fonts/EvilIcons.ttf; sourceTree = "<group>"; };
+		501CF8BA17824F33B551686C /* Manrope-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-Light.ttf"; path = "../assets/fonts/Manrope/Manrope-Light.ttf"; sourceTree = "<group>"; };
+		5387F5B6536C43698F53C8C1 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = ../assets/fonts/FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
 		54325AFF2A384F320058BFB8 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "AppCenter-Config.plist"; sourceTree = "<group>"; };
 		54C08FEBC2947864F2DC40EB /* Pods-AirbnbClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirbnbClone.debug.xcconfig"; path = "Target Support Files/Pods-AirbnbClone/Pods-AirbnbClone.debug.xcconfig"; sourceTree = "<group>"; };
 		57069CF364F744EBABAE5856 /* Montserrat-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBoldItalic.ttf"; path = "../assets/fonts/Montserrat-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		574723F187AE4EE5A54EB60A /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = ../assets/fonts/AntDesign.ttf; sourceTree = "<group>"; };
 		5B89F5198F5A47CBB1CE4792 /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-SemiBold.ttf"; path = "../assets/fonts/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
+		60ABEDCA15C64EFA811E974F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = ../assets/fonts/SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		61839909D85F437BA9150C24 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = ../assets/fonts/MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
 		6512A23AE4F1439197D73355 /* Montserrat-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-BoldItalic.ttf"; path = "../assets/fonts/Montserrat-BoldItalic.ttf"; sourceTree = "<group>"; };
+		655655B46E95453493990606 /* Manrope-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-Bold.ttf"; path = "../assets/fonts/Manrope/Manrope-Bold.ttf"; sourceTree = "<group>"; };
 		6D4CEBD41CC14D92897EDD49 /* Montserrat-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-BlackItalic.ttf"; path = "../assets/fonts/Montserrat-BlackItalic.ttf"; sourceTree = "<group>"; };
+		7132DD59BE634F4DA345219A /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = ../assets/fonts/Feather.ttf; sourceTree = "<group>"; };
+		72B5D41EB51345C187C715B2 /* README.txt */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = README.txt; path = ../assets/fonts/Manrope/README.txt; sourceTree = "<group>"; };
 		74E88BFEBA899210D3B40659 /* libPods-AirbnbClone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AirbnbClone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E906A0E031C4C5F9A8C63A1 /* Manrope-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-ExtraBold.ttf"; path = "../assets/fonts/Manrope/Manrope-ExtraBold.ttf"; sourceTree = "<group>"; };
 		84ABDAC1939045139C210B77 /* Montserrat-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-MediumItalic.ttf"; path = "../assets/fonts/Montserrat-MediumItalic.ttf"; sourceTree = "<group>"; };
+		8A579BDF505944EFBC9F6B68 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = ../assets/fonts/FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		976B05A8A0E6455BB2F3CE3D /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = ../assets/fonts/FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
 		A517AC74C3934FD189ED6F29 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Bold.ttf"; path = "../assets/fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		A686C09C55AC40DBB2C719F8 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = ../assets/fonts/Ionicons.ttf; sourceTree = "<group>"; };
 		ABB1798BA0D849CD9E71BC1A /* Montserrat-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBold.ttf"; path = "../assets/fonts/Montserrat-ExtraBold.ttf"; sourceTree = "<group>"; };
+		AD4B67D60BAC424B8E4DE47D /* OFL.txt */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = OFL.txt; path = ../assets/fonts/Manrope/OFL.txt; sourceTree = "<group>"; };
 		B0E53DBE6249DEFE614F3637 /* Pods-AirbnbClone-AirbnbCloneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirbnbClone-AirbnbCloneTests.release.xcconfig"; path = "Target Support Files/Pods-AirbnbClone-AirbnbCloneTests/Pods-AirbnbClone-AirbnbCloneTests.release.xcconfig"; sourceTree = "<group>"; };
 		BF156B29DF216DE37FABC0F8 /* Pods-AirbnbClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirbnbClone.release.xcconfig"; path = "Target Support Files/Pods-AirbnbClone/Pods-AirbnbClone.release.xcconfig"; sourceTree = "<group>"; };
 		C296360DDF9C483DB93F512C /* Montserrat-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraBoldItalic.ttf"; path = "../assets/fonts/Montserrat-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		C67819DB364F46C3BC3E77E4 /* Manrope-VariableFont_wght.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-VariableFont_wght.ttf"; path = "../assets/fonts/Manrope/Manrope-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		C7033F1840E743F38133554E /* Montserrat-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraLight.ttf"; path = "../assets/fonts/Montserrat-ExtraLight.ttf"; sourceTree = "<group>"; };
 		D1FBA4A31ECE477D8CF904E2 /* Montserrat-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Thin.ttf"; path = "../assets/fonts/Montserrat-Thin.ttf"; sourceTree = "<group>"; };
 		D22106D0294C98BE002441EA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D23F394827D8C8EE00A0B2F5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D2939CBB2692369E00DA40A9 /* AirbnbClone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = AirbnbClone.entitlements; path = AirbnbClone/AirbnbClone.entitlements; sourceTree = "<group>"; };
 		D8BA00A81B986087011CF150 /* libPods-AirbnbClone-AirbnbCloneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AirbnbClone-AirbnbCloneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D97B6171E8274FBC936A5EA5 /* Manrope-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-SemiBold.ttf"; path = "../assets/fonts/Manrope/Manrope-SemiBold.ttf"; sourceTree = "<group>"; };
 		DD96ED6398C940B78C705F13 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Regular.ttf"; path = "../assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		DFCD5E6FA2AB46FA9144DB73 /* Montserrat-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-ExtraLightItalic.ttf"; path = "../assets/fonts/Montserrat-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		E19DA09D3A5544F5A4448538 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = ../assets/fonts/MaterialIcons.ttf; sourceTree = "<group>"; };
 		E5B260F565AB4A9EB6B4BE5C /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../assets/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F36C3DB201A9466F88736D3A /* Montserrat-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Light.ttf"; path = "../assets/fonts/Montserrat-Light.ttf"; sourceTree = "<group>"; };
 		F61E355916A84B02B73825EE /* Montserrat-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-LightItalic.ttf"; path = "../assets/fonts/Montserrat-LightItalic.ttf"; sourceTree = "<group>"; };
+		F740BBF70A7D44CE85B3E1AC /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = ../assets/fonts/Octicons.ttf; sourceTree = "<group>"; };
+		FBABE48861D5446283EF4003 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = ../assets/fonts/FontAwesome.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +240,32 @@
 				57069CF364F744EBABAE5856 /* Montserrat-SemiBoldItalic.ttf */,
 				D1FBA4A31ECE477D8CF904E2 /* Montserrat-Thin.ttf */,
 				2EA9C7BCBFBB428CA9D203D9 /* Montserrat-ThinItalic.ttf */,
+				574723F187AE4EE5A54EB60A /* AntDesign.ttf */,
+				19B78B5FDD8C466D9FFFC11E /* Entypo.ttf */,
+				458EDBA514204F5DBDB36F3C /* EvilIcons.ttf */,
+				7132DD59BE634F4DA345219A /* Feather.ttf */,
+				FBABE48861D5446283EF4003 /* FontAwesome.ttf */,
+				976B05A8A0E6455BB2F3CE3D /* FontAwesome5_Brands.ttf */,
+				8A579BDF505944EFBC9F6B68 /* FontAwesome5_Regular.ttf */,
+				5387F5B6536C43698F53C8C1 /* FontAwesome5_Solid.ttf */,
+				1C9CBB593DE14628B3B76B04 /* Fontisto.ttf */,
+				3C647E715ECB447B880F1FCA /* Foundation.ttf */,
+				A686C09C55AC40DBB2C719F8 /* Ionicons.ttf */,
+				655655B46E95453493990606 /* Manrope-Bold.ttf */,
+				7E906A0E031C4C5F9A8C63A1 /* Manrope-ExtraBold.ttf */,
+				0593CC479E4847718EFF7856 /* Manrope-ExtraLight.ttf */,
+				501CF8BA17824F33B551686C /* Manrope-Light.ttf */,
+				124F2BBFC9974A0F9FADF55E /* Manrope-Medium.ttf */,
+				41FF2BE3602946AE9E3543FC /* Manrope-Regular.ttf */,
+				D97B6171E8274FBC936A5EA5 /* Manrope-SemiBold.ttf */,
+				C67819DB364F46C3BC3E77E4 /* Manrope-VariableFont_wght.ttf */,
+				61839909D85F437BA9150C24 /* MaterialCommunityIcons.ttf */,
+				E19DA09D3A5544F5A4448538 /* MaterialIcons.ttf */,
+				F740BBF70A7D44CE85B3E1AC /* Octicons.ttf */,
+				60ABEDCA15C64EFA811E974F /* SimpleLineIcons.ttf */,
+				2CB0547E43F04D0FBC5F2A37 /* Zocial.ttf */,
+				AD4B67D60BAC424B8E4DE47D /* OFL.txt */,
+				72B5D41EB51345C187C715B2 /* README.txt */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -345,6 +407,16 @@
 				D2828A9126920B750021A943 /* Montserrat-ThinItalic.ttf in Resources */,
 				D2828A5C26920AAA0021A943 /* Images.xcassets in Resources */,
 				D22106D1294C98BE002441EA /* GoogleService-Info.plist in Resources */,
+				0521E016C8D04786B0577314 /* Manrope-Bold.ttf in Resources */,
+				CBF210641803492688771205 /* Manrope-ExtraBold.ttf in Resources */,
+				8115202D31CF49E9B4974FC2 /* Manrope-ExtraLight.ttf in Resources */,
+				4D1DCED3B2C6403BB58784F5 /* Manrope-Light.ttf in Resources */,
+				4D97322A35B94739816EFE11 /* Manrope-Medium.ttf in Resources */,
+				67EFEC838D624329817705ED /* Manrope-Regular.ttf in Resources */,
+				FC7E568C4E8E400485D20663 /* Manrope-SemiBold.ttf in Resources */,
+				2B6CF60DC80841D3A475954E /* Manrope-VariableFont_wght.ttf in Resources */,
+				AE9F6B3BFDA04CF197A2F89B /* OFL.txt in Resources */,
+				4A5199F62ED0444FB726CD81 /* README.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

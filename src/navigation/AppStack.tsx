@@ -1,5 +1,5 @@
 import React, {useMemo, useCallback} from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import {StackScreenProps, createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 
 import mixpanel from '../MixpanelConfig';
@@ -28,7 +28,37 @@ import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
 import HomeTabNavigator from './HomeTabNavigator';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<AppStackParamList>();
+
+export type AppStackParamList = {
+  WelcomeScreen: undefined;
+  Home: undefined;
+  Inbox: undefined;
+  Chat: undefined;
+  Menu: undefined;
+  PaymentsAndPayouts: undefined;
+  PaymentMethods: undefined;
+  YourPayments: undefined;
+  CreditAndCoupons: undefined;
+  RentItPay: undefined;
+  BecomeAMarketer: undefined;
+  MarketerDashboard: undefined;
+  AccountDetails: undefined;
+  Edit: undefined;
+  EditPersonalInfo: undefined;
+  PhoneNumber: undefined;
+  [x: string]: undefined;
+};
+
+/**
+ * This is a list of all the route names that will exit the app if the back button
+ * is pressed while in that screen. Only affects Android.
+ */
+
+export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreenProps<
+  AppStackParamList,
+  T
+>;
 
 const AppStack = () => {
   const noHeader = useMemo(
@@ -59,6 +89,7 @@ const AppStack = () => {
   }, []);
 
   return (
+    // @ts-ignore
     <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
