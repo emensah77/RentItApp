@@ -32,6 +32,8 @@ const Inbox = () => {
     [navigation],
   );
 
+  const makeUri = useCallback(uri => ({uri}), []);
+
   const content = useMemo(
     () => [
       {
@@ -41,7 +43,7 @@ const Inbox = () => {
             <CardDisplay
               onPress={goToChat(id)}
               leftImageCircle={30}
-              leftImageSrc={{uri}}
+              leftImageSrc={makeUri(uri)}
               name={name}
               location={location}
               description={description}
@@ -59,7 +61,7 @@ const Inbox = () => {
           <React.Fragment key={name}>
             <CardDisplay
               leftImageCircle={60}
-              leftImageSrc={{uri}}
+              leftImageSrc={makeUri(uri)}
               name={name}
               location={location}
               description={description}
@@ -72,7 +74,7 @@ const Inbox = () => {
         )),
       },
     ],
-    [goToChat, messages, notifications],
+    [goToChat, messages, notifications, makeUri],
   );
 
   useEffect(() => {

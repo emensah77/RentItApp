@@ -93,6 +93,7 @@ const originalSelection = {
     ],
   },
 };
+const selectedStyle = {backgroundColor: global.colors.primary};
 
 const Explore = () => {
   const [more, setMore] = useState(false);
@@ -253,7 +254,7 @@ const Explore = () => {
           step={100}
           values={priceRange}
           onValuesChange={setPriceRange}
-          selectedStyle={{backgroundColor: global.colors.primary}}
+          selectedStyle={selectedStyle}
           customMarker={customMarker}
           // imageBackgroundSource={temp3}
         />
