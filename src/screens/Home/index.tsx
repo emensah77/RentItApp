@@ -8,8 +8,7 @@ import {Card} from '@components/Card';
 import {palette} from '@theme';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-const HomeScreen: FC<HomeScreenProps> = props => {
+const HomeScreen: FC<HomeScreenProps> = () => {
   return (
     <Page safeAreaEdges={['top']} backgroundColor={palette.textInverse}>
       <Card

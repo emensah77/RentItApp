@@ -7,7 +7,7 @@ import Header from './Header';
 import Whitespace from './Whitespace';
 import Typography from './Typography';
 
-import {global} from '../assets/styles';
+import {colors, global} from '../assets/styles';
 
 interface PageProps {
   /**
@@ -42,8 +42,8 @@ const Page = (props: PageProps) => {
     rightIcon,
     onLeftIconPress,
     accessibilityLabel,
-    backgroundColor,
-    safeAreaEdges,
+    backgroundColor = colors.palette.textInverse,
+    safeAreaEdges = ['top'],
     statusBarStyle,
     // eslint-disable-next-line no-shadow
     StatusBarProps,
@@ -65,8 +65,8 @@ const Page = (props: PageProps) => {
 
   return (
     <View style={[$containerStyle, {backgroundColor}, $containerInsets]}>
-      {/* @ts-ignore */}
       <StatusBar style={statusBarStyle} {...StatusBarProps} />
+
       {type === 'small' && header && !inline ? (
         <Header
           center
@@ -91,6 +91,7 @@ const Page = (props: PageProps) => {
             <Typography type="largeHeading">{header}</Typography>
           </>
         ) : null}
+        {type === 'small' && <Whitespace paddingTop={32} />}
         {children}
       </Display>
 
