@@ -1,6 +1,6 @@
 {
   "name": "airbnbclone",
-  "version": "5.14.8",
+  "version": "6.6.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
