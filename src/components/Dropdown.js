@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, {useEffect, useCallback, useState, useMemo} from 'react';
 import {Text, VirtualizedList, Image, Modal, ActivityIndicator} from 'react-native';
 import _ from 'lodash';
 
@@ -118,6 +118,7 @@ const Dropdown = props => {
   );
 };
 
+const defaultRipple = {color: '#d5d5d5', radius: 130};
 const Item = ({
   item,
   index,
@@ -125,32 +126,40 @@ const Item = ({
   imageKey,
   onSelect,
   getRowLabel,
-  ripple = {color: '#d5d5d5', radius: 130},
-}) => (
-  <Container
-    type="dropdownItem"
-    key={item[index][displayKey]}
-    onPress={onSelect(item[index])}
-    ripple={ripple}>
-    <Image
-      source={{uri: _.get(item[index], imageKey)}}
-      loadingIndicatorSource={<ActivityIndicator size="large" color="blue" />}
-      style={[global.icon, global.ovalIcon]}
-    />
+  ripple = defaultRipple,
+}) => {
+  const source = useMemo(() => ({uri: _.get(item[index], imageKey)}), [imageKey, index, item]);
 
-    <Text style={[typography.primaryButton, typography.left]}>
-      {(getRowLabel && getRowLabel(item[index])) || item[index][displayKey]}
-      {__DEV__ &&
-        !index &&
-        console.debug(
-          'Perf. View For:',
-          item[index][displayKey],
-          displayKey,
-          _.get(item[index], imageKey),
-        )}
-    </Text>
-  </Container>
-);
+  const imageStyle = useMemo(() => [global.icon, global.ovalIcon], []);
+
+  const textStyle = useMemo(() => [typography.primaryButton, typography.left], []);
+
+  return (
+    <Container
+      type="dropdownItem"
+      key={item[index][displayKey]}
+      onPress={onSelect(item[index])}
+      ripple={ripple}>
+      <Image
+        source={source}
+        loadingIndicatorSource={<ActivityIndicator size="large" color="blue" />}
+        style={imageStyle}
+      />
+
+      <Text style={textStyle}>
+        {(getRowLabel && getRowLabel(item[index])) || item[index][displayKey]}
+        {__DEV__ &&
+          !index &&
+          console.debug(
+            'Perf. View For:',
+            item[index][displayKey],
+            displayKey,
+            _.get(item[index], imageKey),
+          )}
+      </Text>
+    </Container>
+  );
+};
 
 Dropdown.Item = React.memo(
   Item,

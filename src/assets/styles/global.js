@@ -3,7 +3,7 @@ import {StyleSheet, Dimensions} from 'react-native';
 export const size = () => Dimensions.get('screen');
 export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
-export const pageInnerHorizontalPadding = 30;
+export const pageInnerHorizontalPadding = 20;
 export const standardWidth = isPortrait && size().width > 450 ? 800 : 450;
 export const colors = {primary: '#194CC3'};
 export const sizing = {
@@ -27,6 +27,7 @@ const global = StyleSheet.create({
   },
   columnReverse: {flexDirection: 'column-reverse'},
   row: {...sizing, flexDirection: 'row'},
+  wrap: {...sizing, flexWrap: 'wrap'},
   rowReverse: {flexDirection: 'row-reverse'},
   zeroElevation: {
     elevation: 0,
@@ -45,8 +46,7 @@ const global = StyleSheet.create({
   },
   pageContent: {
     paddingHorizontal: pageInnerHorizontalPadding,
-    paddingTop: 32,
-    paddingBottom: 32,
+
     flexGrow: 1,
   },
   footer: {

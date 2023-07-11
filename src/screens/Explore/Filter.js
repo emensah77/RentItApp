@@ -1,9 +1,10 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {ScrollView} from 'react-native';
-import {API, graphqlOperation} from 'aws-amplify';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
-import {listPosts} from '../../graphql/queries';
+import Location from '../Authentication/Location';
 
 import {
   Page,
@@ -24,31 +25,90 @@ import switchOn from '../../assets/images/switch-on.png';
 import switchOff from '../../assets/images/switch-off.png';
 import arrowUp from '../../assets/images/arrow-up.png';
 import arrowDown from '../../assets/images/arrow-down.png';
-import house from '../../assets/images/property-types/house.png';
-import guesthouse from '../../assets/images/property-types/guesthouse.png';
+import entireFlat from '../../assets/images/property-types/entire-flat.png';
 import apartment from '../../assets/images/property-types/apartment.png';
-import hotel from '../../assets/images/property-types/hotel.png';
-import houseBlue from '../../assets/images/property-types/house-blue.png';
-import guesthouseBlue from '../../assets/images/property-types/guesthouse-blue.png';
-import apartmentBlue from '../../assets/images/property-types/apartment-blue.png';
-import hotelBlue from '../../assets/images/property-types/hotel-blue.png';
+import singleRoom from '../../assets/images/property-types/single-room.png';
+import chamberAndHall from '../../assets/images/property-types/chamber-and-hall.png';
+import mansion from '../../assets/images/property-types/mansion.png';
+import mansion2 from '../../assets/images/property-types/mansion2.png';
+import fullHome from '../../assets/images/property-types/full-home.png';
 // import temp3 from '../../assets/images/temp/temp3.png';
 
 const originalSelection = {
-  placeTypes: [],
+  typeOfPlace: [],
+  type: '',
   bedrooms: 0,
   beds: 0,
   bathrooms: 0,
-  propertyTypes: [],
   amenities: [],
+  mode: '',
   bookingOptions: [],
+  all: {
+    typesOfPlace: [{title: 'Furnished'}, {title: 'Negotiable'}],
+    types: [
+      {title: 'Entire Flat', image: entireFlat},
+      {title: 'Apartment', image: apartment},
+      {title: 'Single Room', image: singleRoom},
+      {title: 'Chamber and Hall', image: chamberAndHall},
+      {title: 'Mansion', image: mansion},
+      {title: 'Self-Contained', image: mansion2},
+      {title: 'Full Home', image: fullHome},
+    ],
+    roomsAndBeds: [{title: 'Bedrooms'}, {title: 'Beds'}, {title: 'Bathrooms'}],
+    amenities: [
+      {title: 'Wifi'},
+      {title: 'Free Parking'},
+      {title: 'Kitchen'},
+      {title: 'Hot tub'},
+      {title: 'Washing machine'},
+      {title: 'Pool'},
+      {title: 'Essentials'},
+      {title: 'Dryer'},
+      {title: 'Air conditioning'},
+      {title: 'Heating'},
+      {title: 'Water'},
+      {title: 'Dedicated Workspace'},
+    ],
+    modes: [
+      {
+        title: 'For Rent',
+      },
+      {
+        title: 'For Sale',
+      },
+    ],
+    bookingOptions: [
+      {
+        title: 'Instant Book',
+        description: 'Easy access to the property once you arrive',
+      },
+      {
+        title: 'Self check-in',
+        description: 'Book without waiting for the host to respond',
+      },
+      {
+        title: 'Free cancellation',
+        description: 'Only show stays that offer free cancellation',
+      },
+    ],
+  },
 };
+const selectedStyle = {backgroundColor: global.colors.primary};
+
 const Explore = () => {
   const [more, setMore] = useState(false);
   const [priceRange, setPriceRange] = useState([1, 50000]);
-  const [nextToken, setNextToken] = useState(null);
   const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState();
   const [selection, setSelection] = useState(JSON.parse(JSON.stringify(originalSelection)));
+
+  const navigation = useNavigation();
+
+  const goToSearch = useCallback(
+    () => navigation.navigate('Search', {params: {selection, data}}),
+    [navigation, data, selection],
+  );
 
   const reset = useCallback(() => {
     setSelection(JSON.parse(JSON.stringify(originalSelection)));
@@ -86,6 +146,7 @@ const Explore = () => {
         ...selection,
         [item]: newItems,
       });
+      setLoading(true);
     },
     [selection, isSelected],
   );
@@ -96,50 +157,57 @@ const Explore = () => {
   );
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
-      const limit = 1000000;
-      const filter = {
-        and: {
-          bedroom: {
-            ge: selection.bedrooms,
-          },
-          bed: {
-            ge: selection.beds,
-          },
-          bathroomNumber: {
-            ge: selection.bathrooms,
-          },
-          wifi: {
-            attributeExists: isSelected('amenities', 'wifi'),
-          },
-          kitchen: {
-            attributeExists: isSelected('amenities', 'kitchen'),
-          },
-          water: {
-            attributeExists: isSelected('amenities', 'water'),
-          },
-          toilet: {
-            attributeExists: isSelected('amenities', 'essentials'),
-          },
-          aircondition: {
-            attributeExists: isSelected('amenities', 'air-conditioning'),
-          },
-          status: {eq: 'APPROVED'},
+      const userLocation = JSON.parse((await AsyncStorage.getItem('position')) || '{}');
+      const body = JSON.stringify({
+        ...selection.all.amenities.reduce(
+          (prev, {title}) => ({
+            ...prev,
+            [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
+          }),
+          {},
+        ),
+        ...selection.all.typesOfPlace.reduce(
+          (prev, {title}) => ({
+            ...prev,
+            [title.toLowerCase()]: isSelected('typeOfPlace', title) ? 'Yes' : 'No',
+          }),
+          {},
+        ),
+        type: selection.type,
+        mode: selection.mode,
+        bedroom: selection.bedrooms,
+        bed: selection.beds,
+        bathroom: selection.bathrooms,
+        userLocation: {
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
         },
-      };
-      const filterResults = await API.graphql(
-        graphqlOperation(listPosts, {filter, nextToken, limit}),
-      );
-      const {listPosts: listPostsResult} = filterResults?.data;
+      });
 
-      const _count = listPostsResult?.items?.length;
-      if (_count >= limit) {
-        setNextToken(listPostsResult?.nextToken);
-        return setCount(oldCount => oldCount + _count);
+      const request = await fetch(
+        'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body,
+        },
+      ).catch(e => console.error('Filter Request Failure:', e));
+
+      const response = await request.json();
+      if (__DEV__) {
+        console.debug('Response:', response, body);
       }
-      return setCount(_count);
-    })().catch(console.error);
-  }, [isSelected, nextToken, selection]);
+
+      setData(response);
+      setCount(parseInt(response.length, 10) || 0);
+      setLoading(false);
+    })().catch(e => {
+      setLoading(false);
+      console.error('Request Error', e);
+    });
+  }, [isSelected, selection]);
 
   // console.log('selection', selection, priceRange);
 
@@ -154,11 +222,13 @@ const Explore = () => {
             </Typography>
           </Container>
 
-          <Button type="standard" left width="100%">
+          <Button loading={loading} type="standard" left width="100%" onPress={goToSearch}>
             Show {count} homes
           </Button>
         </Container>
       }>
+      <Location noRender />
+
       <Typography type="heading" left width="100%">
         Price range
       </Typography>
@@ -184,7 +254,7 @@ const Explore = () => {
           step={100}
           values={priceRange}
           onValuesChange={setPriceRange}
-          selectedStyle={{backgroundColor: global.colors.primary}}
+          selectedStyle={selectedStyle}
           customMarker={customMarker}
           // imageBackgroundSource={temp3}
         />
@@ -196,37 +266,25 @@ const Explore = () => {
         Type of place
       </Typography>
 
-      {[
-        {title: 'Entire place', description: 'A place all to yourself', slug: 'entire-place'},
-        {
-          title: 'Private room',
-          description: 'Your own room in a home or a hotel, plus some shared common spaces',
-          slug: 'private-room',
-        },
-        {
-          title: 'Shared room',
-          description: 'A sleeping space and common areas that may be shared with others',
-          slug: 'shared-room',
-        },
-      ].map(({title, description, slug}) => (
+      {selection.all.typesOfPlace.map(({title}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={25} />
 
           <CardDisplay
             rightImageWidth={24}
             rightImageHeight={24}
-            rightImageSrc={isSelected('placeTypes', slug) ? checked : unchecked}
-            onPress={onToggleSelection('placeTypes', slug)}
+            rightImageSrc={isSelected('typeOfPlace', title) ? checked : unchecked}
+            onPress={onToggleSelection('typeOfPlace', title)}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
               </Typography>
             }
-            description={
-              <Typography size={14} weight="500" color="#717171" left width="100%">
-                {description}
-              </Typography>
-            }
+            // description={
+            //   <Typography size={14} weight="500" color="#717171" left width="100%">
+            //     {description}
+            //   </Typography>
+            // }
           />
         </React.Fragment>
       ))}
@@ -237,7 +295,7 @@ const Explore = () => {
         Rooms and beds
       </Typography>
 
-      {[{title: 'Bedrooms'}, {title: 'Beds'}, {title: 'Bathrooms'}].map(({title}) => (
+      {selection.all.roomsAndBeds.map(({title}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={23} />
 
@@ -248,7 +306,7 @@ const Explore = () => {
           <Whitespace marginTop={24} />
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <Container row>
+            <>
               <Container
                 type={`chip${isSelected(title.toLowerCase(), 0) ? 'Selected' : 'DeSelected'}`}
                 onPress={onToggleSelection(title.toLowerCase(), 0)}>
@@ -273,7 +331,7 @@ const Explore = () => {
                   </Typography>
                 </Container>
               ))}
-            </Container>
+            </>
           </ScrollView>
         </React.Fragment>
       ))}
@@ -286,94 +344,35 @@ const Explore = () => {
 
       <Whitespace marginTop={25} />
 
-      <Container width="100%" height={121} row type="spaceAround">
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'house')}
-          type={isSelected('propertyTypes', 'house') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'house') ? houseBlue : house}
-            width={30}
-            height={30}
-          />
+      <Container width="100%" center row type="wrap">
+        {selection.all.types.map(({title, image}, i) => (
+          <React.Fragment key={title}>
+            <Container
+              width="45%"
+              height={121}
+              onPress={onToggleSelection('type', title)}
+              type={isSelected('type', title) ? 'selected' : 'deselected'}>
+              <Image src={image} width={30} height={30} />
 
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'house') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            House
-          </Typography>
-        </Container>
+              <Typography
+                type="left"
+                color={isSelected('type', title) ? '#0047B3' : '#252525'}
+                weight="800"
+                numberOfLines={1}
+                size={16}>
+                {title}
+              </Typography>
+            </Container>
 
-        <Whitespace marginLeft={16} width={2} />
+            {(i + 1) % 2 === 1 && (
+              <Whitespace marginLeft={20} marginTop={25} width={1} height={25} />
+            )}
 
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'apartment')}
-          type={isSelected('propertyTypes', 'apartment') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'apartment') ? apartmentBlue : apartment}
-            width={30}
-            height={30}
-          />
-
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'apartment') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            Apartment
-          </Typography>
-        </Container>
-      </Container>
-
-      <Whitespace marginTop={25} />
-
-      <Container width="100%" height={121} row type="spaceAround">
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'guesthouse')}
-          type={isSelected('propertyTypes', 'guesthouse') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'guesthouse') ? guesthouseBlue : guesthouse}
-            width={30}
-            height={30}
-          />
-
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'guesthouse') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            Guesthouse
-          </Typography>
-        </Container>
-
-        <Whitespace marginLeft={16} width={2} />
-
-        <Container
-          width="45%"
-          height={121}
-          onPress={onToggleSelection('propertyTypes', 'hotel')}
-          type={isSelected('propertyTypes', 'hotel') ? 'selected' : 'deselected'}>
-          <Image
-            src={isSelected('propertyTypes', 'hotel') ? hotelBlue : hotel}
-            width={30}
-            height={30}
-          />
-
-          <Typography
-            type="left"
-            color={isSelected('propertyTypes', 'hotel') ? '#0047B3' : '#252525'}
-            weight="800"
-            size={16}>
-            Hotel
-          </Typography>
-        </Container>
+            {(i + 1) % 2 === 0 && (
+              <Whitespace marginLeft={10} marginTop={25} width="100%" height={25} />
+            )}
+          </React.Fragment>
+        ))}
       </Container>
 
       <Divider top={25} />
@@ -384,28 +383,15 @@ const Explore = () => {
 
       <Whitespace marginTop={25} />
 
-      {[
-        {title: 'Wifi', slug: 'wifi'},
-        {title: 'Free Parking', slug: 'free-parking'},
-        {title: 'Kitchen', slug: 'kitchen'},
-        {title: 'Hot tub', slug: 'hot-tub'},
-        {title: 'Washing machine', slug: 'washing-machine'},
-        {title: 'Pool', slug: 'pool'},
-        {title: 'Essentials', slug: 'essentials'},
-        {title: 'Dryer', slug: 'dryer'},
-        {title: 'Air conditioning', slug: 'air-conditioning'},
-        {title: 'Heating', slug: 'heating'},
-        {title: 'Water', slug: 'water'},
-        {title: 'Dedicated Workspace', slug: 'dedicated-workspace'},
-      ].map(
-        ({title, slug}, i) =>
+      {selection.all.amenities.map(
+        ({title}, i) =>
           ((!more && i < 3) || more) && (
             <React.Fragment key={title}>
               <CardDisplay
                 rightImageWidth={24}
                 rightImageHeight={24}
-                rightImageSrc={isSelected('amenities', slug) ? checked : unchecked}
-                onPress={onToggleSelection('amenities', slug)}
+                rightImageSrc={isSelected('amenities', title) ? checked : unchecked}
+                onPress={onToggleSelection('amenities', title)}
                 name={
                   <Typography size={16} weight="500" left width="100%">
                     {title}
@@ -431,34 +417,42 @@ const Explore = () => {
       <Divider top={25} />
 
       <Typography type="heading" left width="100%">
-        Booking options
+        Mode
       </Typography>
 
-      {[
-        {
-          title: 'Instant Book',
-          description: 'Easy access to the property once you arrive',
-          slug: 'instant-book',
-        },
-        {
-          title: 'Self check-in',
-          description: 'Book without waiting for the host to respond',
-          slug: 'self-check-in',
-        },
-        {
-          title: 'Free cancellation',
-          description: 'Only show stays that offer free cancellation',
-          slug: 'free-cancellation',
-        },
-      ].map(({title, description, slug}) => (
+      {selection.all.modes.map(({title}) => (
         <React.Fragment key={title}>
           <Whitespace marginTop={25} />
 
           <CardDisplay
             rightImageWidth={48}
             rightImageHeight={32}
-            rightImageSrc={isSelected('bookingOptions', slug) ? switchOn : switchOff}
-            onPress={onToggleSelection('bookingOptions', slug)}
+            rightImageSrc={isSelected('mode', title) ? switchOn : switchOff}
+            onPress={onToggleSelection('mode', title)}
+            name={
+              <Typography size={16} weight="500" left width="100%">
+                {title}
+              </Typography>
+            }
+          />
+        </React.Fragment>
+      ))}
+
+      {/* <Divider top={25} />
+
+      <Typography type="heading" left width="100%">
+        Booking options
+      </Typography>
+
+      {selection.all.bookingOptions.map(({title, description}) => (
+        <React.Fragment key={title}>
+          <Whitespace marginTop={25} />
+
+          <CardDisplay
+            rightImageWidth={48}
+            rightImageHeight={32}
+            rightImageSrc={isSelected('bookingOptions') ? switchOn : switchOff}
+            onPress={onToggleSelection('bookingOptions')}
             name={
               <Typography size={16} weight="500" left width="100%">
                 {title}
@@ -471,7 +465,7 @@ const Explore = () => {
             }
           />
         </React.Fragment>
-      ))}
+      ))} */}
     </Page>
   );
 };

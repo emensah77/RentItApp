@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Pressable} from 'react-native';
 
 import {global} from '../assets/styles';
@@ -20,6 +20,20 @@ const Container = props => {
     accessibilityLabel,
   } = props;
 
+  const style = useMemo(
+    () => [
+      row ? global.row : {},
+      global[type],
+      left ? global.left : {},
+      center ? global.center : {},
+      width ? {width} : {},
+      height ? {maxHeight: height, height} : {},
+      color ? {backgroundColor: color} : {},
+      position ? {alignSelf: position} : {},
+    ],
+    [center, color, height, left, position, row, type, width],
+  );
+
   return (
     <Pressable
       onPress={onPress}
@@ -27,16 +41,7 @@ const Container = props => {
       hitSlop={hitSlop}
       accessible
       accessibilityLabel={accessibilityLabel}
-      style={[
-        row ? global.row : {},
-        global[type],
-        left ? global.left : {},
-        center ? global.center : {},
-        width ? {width} : {},
-        height ? {maxHeight: height, height} : {},
-        color ? {backgroundColor: color} : {},
-        position ? {alignSelf: position} : {},
-      ]}>
+      style={style}>
       {children}
     </Pressable>
   );
