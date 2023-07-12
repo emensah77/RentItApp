@@ -86,11 +86,11 @@ jobs:
           CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           EOF
 
-      - name: Bundle App
-        run: yarn bundle
-
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Bundle App
+        run: yarn bundle
 
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
