@@ -20,7 +20,7 @@
     "appium:clean": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test",
     "appium:doctor:android": "appium-doctor --android",
     "appium:doctor:ios": "appium-doctor --ios",
-    "bump:version": "git stash && npm version patch -m \"Bump version to %s\" && git stash pop && npm run bump:reactnative",
+    "bump:version": "git stash && npm version patch -f -m \"Bump version to %s\" && git stash pop && npm run bump:reactnative",
     "bump:reactnative": "npx --yes react-native-version"
   },
   "dependencies": {

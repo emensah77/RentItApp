@@ -3,6 +3,7 @@ import {StatusBar, useColorScheme, AppState} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
+import Crashes, {ErrorAttachmentLog} from 'appcenter-crashes';
 
 import Providers from './src/navigation/Providers';
 import requestUserPermission, {notificationListener} from './src/utils/notificationService';
@@ -19,6 +20,31 @@ const App = () => {
     SplashScreen.hide();
     requestUserPermission();
     notificationListener();
+    (async () => {
+      await Crashes.setEnabled(true);
+      Crashes.setListener({
+        shouldProcess: () => true,
+        shouldAwaitUserConfirmation: () => false,
+        getErrorAttachments: async () => {
+          return (async () => {
+            return [
+              ErrorAttachmentLog.attachmentWithText(
+                await Crashes.hasCrashedInLastSession(),
+                'did-crash.txt',
+              ),
+              ErrorAttachmentLog.attachmentWithText(
+                await Crashes.hasReceivedMemoryWarningInLastSession(),
+                'memory-warning.txt',
+              ),
+              ErrorAttachmentLog.attachmentWithText(
+                await Crashes.lastSessionCrashReport(),
+                'last-crash-report.txt',
+              ),
+            ];
+          })();
+        },
+      });
+    })();
 
     const subscription = AppState.addEventListener('memoryWarning', state => {
       console.debug('Your memory is currently waning.', state);
