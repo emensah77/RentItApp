@@ -11,6 +11,7 @@
 #import <React/RCTAppSetupUtils.h>
 #import <Firebase.h>
 #import <TSBackgroundFetch/TSBackgroundFetch.h>
+#import <CodePush/CodePush.h>
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -19,7 +20,6 @@
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 #import <react/config/ReactNativeConfig.h>
-#import <CodePush/CodePush.h>
 @interface AppDelegate () <RCTCxxBridgeDelegate, RCTTurboModuleManagerDelegate> {
   RCTTurboModuleManager *_turboModuleManager;
   RCTSurfacePresenterBridgeAdapter *_bridgeAdapter;
