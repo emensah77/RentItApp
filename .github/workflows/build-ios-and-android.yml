@@ -44,7 +44,7 @@ jobs:
         working-directory: ios
 
       - name: Bundle App
-        run: npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios
+        run: yarn bundle
 
       - run:
           xcodebuild clean archive -workspace testCiCdReactNative.xcworkspace -scheme
@@ -85,6 +85,9 @@ jobs:
           REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
           CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           EOF
+
+      - name: Bundle App
+        run: yarn bundle
 
       - name: Install node dependencies
         run: yarn install --frozen-lockfile
