@@ -25,7 +25,7 @@ const App = () => {
       Crashes.setListener({
         shouldProcess: () => true,
         shouldAwaitUserConfirmation: () => false,
-        getErrorAttachments: async () => {
+        getErrorAttachments: () => {
           return (async () => {
             return [
               ErrorAttachmentLog.attachmentWithText(
