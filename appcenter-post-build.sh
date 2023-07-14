@@ -1,15 +1,27 @@
 #!/usr/bin/env bash
+cd $APPCENTER_SOURCE_DIRECTORY
 
-echo "$NODE_BINARY" $NODE_ARGS "$CLI_PATH" $BUNDLE_COMMAND \
-  $CONFIG_ARG \
-  --entry-file "$ENTRY_FILE" \
-  --platform "$BUNDLE_PLATFORM" \
-  --dev $DEV \
-  --reset-cache \
-  --bundle-output "$BUNDLE_FILE" \
-  --assets-dest "$DEST" \
-  $EXTRA_ARGS \
-  $EXTRA_PACKAGER_ARGS
+cat /Users/runner/work/1/s/node_modules/@sentry/cli/sentry-cli
+echo "\n--------------------------------------------\n"
+
+cat /Users/runner/work/1/s/node_modules/react-native/cli.js
+echo "\n--------------------------------------------\n"
+
+cat index.js
+echo "\n--------------------------------------------\n"
+
+cat /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/BuildProductsPath/Release-iphoneos/main.jsbundle
+echo "\n--------------------------------------------\n"
+
+cat /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/BuildProductsPath/Release-iphoneos/AirbnbClone.app
+echo "\n--------------------------------------------\n"
+
+cat Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/IntermediateBuildFilesPath/AirbnbClone.build/Release-iphoneos/AirbnbClone.build/DerivedSources/main.jsbundle.map
+echo "\n--------------------------------------------\n"
+
+cat /Users/runner/work/1/s/node_modules/react-native/scripts/react-native-xcode.sh
+echo "\n--------------------------------------------\n"
+
 
 if [[ $PLATFORM = "ios" ]]
 then 
