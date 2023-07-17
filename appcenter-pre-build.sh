@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 
-ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/BuildProductsPath/Release-iphoneos
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/BuildProductsPath
+
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone
+
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates
+
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex
+
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build
+
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy
+
+ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData
 
 ls -lSAR /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/IntermediateBuildFilesPath/AirbnbClone.build/Release-iphoneos/AirbnbClone.build/DerivedSources
 
