@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-cd $APPCENTER_SOURCE_DIRECTORY
 
-tree $CONFIGURATION_BUILD_DIR
-ls -lSAR $CONFIGURATION_BUILD_DIR
+echo $CONFIGURATION_BUILD_DIR
+
+cd $APPCENTER_SOURCE_DIRECTORY
 
 echo "\n--------------------------------------------\nMain JSBundle"
 cat /Users/runner/Library/Developer/Xcode/DerivedData/AirbnbClone-gbbroiutnhvueyfpqbsbqhpycdzy/Build/Intermediates.noindex/ArchiveIntermediates/AirbnbClone/BuildProductsPath/Release-iphoneos/main.jsbundle
