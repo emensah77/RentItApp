@@ -6,7 +6,7 @@ import {View} from 'react-native';
 import {Icon} from '@components/Icon';
 import {colors} from '@theme';
 import ExploreNavigator from './ExploreNavigator';
-import ProfileScreen from '../screens/Profile';
+import ProfileScreen from '../screens/Profile/Menu';
 import Wishlists from '../screens/Wishlists';
 import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
@@ -53,6 +53,14 @@ const HomeTabNavigator = () => {
           tabBarVisible: (route => {
             const routeName = getFocusedRouteNameFromRoute(route) ?? '';
 
+            if (routes.includes(routeName)) {
+              return false;
+            }
+
+            return true;
+          })(route),
+        })}
+      />
       <Tab.Screen
         name="Wishlists"
         component={Wishlists}
