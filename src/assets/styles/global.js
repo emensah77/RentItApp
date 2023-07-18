@@ -40,9 +40,9 @@ const global = StyleSheet.create({
     height: '100%',
   },
   page: {
-    backgroundColor: '#FFF',
-    height: '100%',
-    width: '100%',
+    // backgroundColor: '#FFF',
+    flex: 1,
+    // borderWidth: 1,
   },
   pageContent: {
     flexGrow: 1,

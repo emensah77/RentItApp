@@ -45,6 +45,10 @@ export interface TextProps extends RNTextProps {
    * Text color.
    */
   color?: string;
+  /**
+   * Wildcard.
+   */
+  [x: string]: any;
 }
 
 /**

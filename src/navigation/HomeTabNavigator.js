@@ -1,89 +1,35 @@
-import React, {useCallback, useMemo} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {View} from 'react-native';
+import {Icon} from '@components/Icon';
+import {colors} from '@theme';
 import ExploreNavigator from './ExploreNavigator';
 import ProfileScreen from '../screens/Profile';
 import Wishlists from '../screens/Wishlists';
 import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
-import {Icon} from '@components/Icon';
-import {colors} from '@theme';
 
 const Tab = createBottomTabNavigator();
 
 const HomeTabNavigator = () => {
-  const routes = useMemo(
-    () => [
-      'HouseUpload',
-      'OnboardingScreen1',
-      'OnboardingScreen2',
-      'OnboardingScreen3',
-      'OnboardingScreen4',
-      'OnboardingScreen5',
-      'OnboardingScreen6',
-      'OnboardingScreen7',
-      'OnboardingScreen8',
-      'OnboardingScreen9',
-      'OnboardingScreen10',
-      'OnboardingScreen11',
-      'OnboardingScreen12',
-      'OnboardingScreen13',
-    ],
-    [],
-  );
-
-  const exploreOptions = useCallback(
-    ({route}) => ({
-      tabBarIcon: ({color}) => <FontAwesomeIcon icon={faSearch} size={25} color={color} />,
-      tabBarVisible: (r => {
-        const routeName = getFocusedRouteNameFromRoute(r) ?? '';
-
-        if (routes.includes(routeName)) {
-          return false;
-        }
-
-        return true;
-      })(route),
-    }),
-    [routes],
-  );
-
-  const alertStyle = useMemo(
-    () => ({
-      borderWidth: 1,
-      borderColor: 'white',
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
-      width: 15,
-      height: 15,
-      backgroundColor: 'deeppink',
-      top: -3,
-      right: -3,
-      borderRadius: 10,
-    }),
-    [],
-  );
-
-  const alertOptions = useMemo(
-    () => ({
-      tabBarIcon: ({color}) => (
-        <View>
-          <FontAwesomeIcon icon={faBell} size={25} color={color} />
-          <View style={alertStyle}>
-            {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
-                          3
-                      </Text> */}
-          </View>
-        </View>
-      ),
-    }),
-    [alertStyle],
-  );
-
+  const routes = [
+    'HouseUpload',
+    'OnboardingScreen1',
+    'OnboardingScreen2',
+    'OnboardingScreen3',
+    'OnboardingScreen4',
+    'OnboardingScreen5',
+    'OnboardingScreen6',
+    'OnboardingScreen7',
+    'OnboardingScreen8',
+    'OnboardingScreen9',
+    'OnboardingScreen10',
+    'OnboardingScreen11',
+    'OnboardingScreen12',
+    'OnboardingScreen13',
+  ];
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -101,6 +47,7 @@ const HomeTabNavigator = () => {
       <Tab.Screen
         name="Explore"
         component={ExploreNavigator}
+        // eslint-disable-next-line react/jsx-no-bind
         options={({route}) => ({
           tabBarIcon: ({color}) => <Icon icon="search" size={22} color={color} />,
           tabBarVisible: (route => {

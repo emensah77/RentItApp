@@ -1,5 +1,5 @@
-import React, {FC, useCallback, useState} from 'react';
-import {ViewStyle, View} from 'react-native';
+import React, {FC, useCallback, useState, useEffect, useRef} from 'react';
+import {ViewStyle, View, FlatList} from 'react-native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {Page} from '@components';
 import {AppStackScreenProps} from '@navigation/AppStack';
@@ -10,13 +10,21 @@ import {colors, palette} from '@theme';
 
 import {CategoryNavigator} from '@components/Explore';
 import {pageInnerHorizontalPadding} from '@assets/styles/global';
+import Post from '@components/Post';
 import {listPosts} from '../../graphql/queries';
+import styles from './styles';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
 const HomeScreen: FC<HomeScreenProps> = () => {
   const [status, setStatus] = useState('Entire Flat');
   const [nextToken, setNextToken] = useState(null);
   const [modalvisible, setmodalvisible] = useState(false);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [loadingType, setIsLoadingType] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [cachedData, setCachedData] = useState({});
+  const prevStatus = useRef(null);
 
   const memoizedCategoryNav = useCallback(() => {
     return <CategoryNavigator {...{status, open, setStatusFilter}} />;
@@ -66,8 +74,92 @@ const HomeScreen: FC<HomeScreenProps> = () => {
     setmodalvisible(true);
   }, []);
 
+  const personalizedHomes = useCallback(
+    async (userLatitude, userLongitude, homeType, newNextToken) => {
+      try {
+        // setIsLoadingType(true);
+        const response = await fetch(
+          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userLocation: {
+                latitude: userLatitude,
+                longitude: userLongitude,
+              },
+              homeType,
+              nextToken: newNextToken,
+            }),
+          },
+        );
+
+        const data = await response.json();
+
+        return data;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        // setIsLoadingType(false); // Set loading state to false
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      setIsLoadingType(true);
+      if (!cachedData[status]) {
+        const data = await personalizedHomes(latitude, longitude, status, null);
+
+        if (data && data.homes) {
+          setPosts(data.homes);
+          setCachedData(prevData => ({...prevData, [status]: data.homes}));
+          setNextToken(data.nextToken);
+        } else {
+          setPosts([]);
+        }
+      } else {
+        setPosts(cachedData[status]);
+      }
+      setIsLoadingType(false);
+    };
+
+    // Reset posts and nextToken when status changes
+    if (status !== prevStatus.current) {
+      setPosts([]);
+      setNextToken(null);
+      // @ts-ignore
+      prevStatus.current = status;
+    }
+
+    fetchInitialData();
+
+    // _getUserData(auth().currentUser.uid);
+
+    // userDetails();
+  }, [status, latitude, longitude, cachedData, personalizedHomes]);
+
+  const renderItem = useCallback(
+    ({item}) => (
+      <View key={item}>
+        <Post post={item} />
+      </View>
+    ),
+    [],
+  );
+
+  const keyExtractor = useCallback(item => item.id.toString(), []);
+
   return (
-    <Page safeAreaEdges={['top']} type="" backgroundColor={palette.textInverse} hasPadding={false}>
+    <Page
+      safeAreaEdges={['top']}
+      type=""
+      backgroundColor={palette.textInverse}
+      hasPadding={false}
+      inline>
       <View style={$headerStyle}>
         <Card
           style={$cardStyle}
@@ -81,6 +173,20 @@ const HomeScreen: FC<HomeScreenProps> = () => {
         <SizedBox height={20} />
         {memoizedCategoryNav()}
       </View>
+
+      <FlatList
+        data={posts}
+        initialNumToRender={10}
+        contentContainerStyle={styles.padding40}
+        keyExtractor={keyExtractor}
+        // getItemLayout={getItemLayout}
+        // ListEmptyComponent={renderNoHome()}
+        extraData={posts}
+        renderItem={renderItem}
+        onEndReachedThreshold={0.5}
+        // onEndReached={onEndReached}
+        // ListFooterComponent={fetchingMore ? renderLoader : null}
+      />
     </Page>
   );
 };
@@ -102,9 +208,9 @@ const $cardStyle: ViewStyle = {
 const $headerStyle: ViewStyle = {
   paddingHorizontal: pageInnerHorizontalPadding,
   shadowColor: colors.palette.neutral800,
-  shadowOffset: {width: 0, height: 2},
-  shadowOpacity: 0.1,
-  shadowRadius: 3,
+  shadowOffset: {width: 0, height: 5},
+  shadowOpacity: 0.09,
+  shadowRadius: 5,
   backgroundColor: colors.palette.textInverse,
   elevation: 4,
 };
@@ -880,14 +986,14 @@ export default HomeScreen;
 //     [maximumvalue, selectedButton, selectedItems],
 //   );
 
-//   const renderItem = useCallback(
-//     ({item}) => (
-//       <View key={item}>
-//         <Post post={item} />
-//       </View>
-//     ),
-//     [],
-//   );
+// const renderItem = useCallback(
+//   ({item}) => (
+//     <View key={item}>
+//       <Post post={item} />
+//     </View>
+//   ),
+//   [],
+// );
 
 //   const close = useCallback(() => {
 //     setmodalvisible(false);

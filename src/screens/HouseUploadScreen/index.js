@@ -1,25 +1,16 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-  StatusBar,
-  TextInput,
-  FlatList,
-  Pressable,
-} from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
+import {Text, ImageBackground, TouchableOpacity, Pressable, Platform} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import auth from '@react-native-firebase/auth';
 import styles from './styles.js';
 
-const HouseUploadScreen = props => {
+const HouseUploadScreen = () => {
   const navigation = useNavigation();
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [lastScreen, setLastScreen] = useState(null);
@@ -45,7 +36,6 @@ const HouseUploadScreen = props => {
       const data = await response.json();
 
       if (data) {
-        console.log('Home upload progress:', data);
         setLastScreen(data.screenName);
         setUploadInProgress(true);
       }
@@ -100,7 +90,8 @@ const HouseUploadScreen = props => {
         <Text style={styles.text_header}> Upload your home in {'\n'} 10 easy steps </Text>
         <TouchableOpacity
           onPress={() => {
-            if (uploadInProgress && lastScreen) {
+            if (!uploadInProgress && lastScreen) {
+              console.log('navigating yto last screen');
               navigation.navigate(lastScreen);
             } else {
               navigation.navigate('OnboardingScreen1');

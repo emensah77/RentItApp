@@ -84,7 +84,10 @@ const Page = (props: PageProps) => {
       <Display
         accessible
         accessibilityLabel={accessibilityLabel}
-        style={global.page}
+        style={[
+          global.page,
+          hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding},
+        ]}
         contentContainerStyle={[
           global.pageContent,
           reverse ? global.columnReverse : {},
@@ -118,8 +121,6 @@ const Page = (props: PageProps) => {
 
 const $containerStyle: ViewStyle = {
   flex: 1,
-  height: '100%',
-  width: '100%',
 };
 
 export default Page;

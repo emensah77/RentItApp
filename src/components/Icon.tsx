@@ -102,6 +102,7 @@ export const iconRegistry = {
   house: require('@assets/images/icons/house.png'),
   singleRoom: require('@assets/images/icons/checkin.png'),
   fullHome: require('@assets/images/icons/home.png'),
+  arrLeft: require('@assets/images/icons/arr-left.png'),
 };
 
 const $imageStyle: ImageStyle = {

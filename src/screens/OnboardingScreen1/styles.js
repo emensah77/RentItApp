@@ -1,156 +1,55 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-const styles = StyleSheet.create({
-  textInput: {
-    fontSize: 20,
-    marginBottom: 2,
-    fontFamily: 'Montserrat-Bold',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-  },
-  image: {
-    height: Dimensions.get('window').height / 2.5,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-
-  linearGradient: {
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    height: 200,
-    width: '100%',
-    borderBottomEndRadius: -30,
-  },
-
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderColor: 'lightgray',
-  },
-
-  iconContainer: {
-    backgroundColor: 'lightgray',
-    padding: 10,
-    borderRadius: 10,
-    marginRight: 15,
-  },
-
-  locationText: {
-    fontWeight: '800',
-  },
-
-  containerFlat: {
+export const styles = StyleSheet.create({
+  mainContent: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
   },
-
-  text: {
-    fontFamily: 'Mo',
-    fontSize: 28,
-    marginBottom: 10,
-    color: '#051d5f',
+  scrollContent: {
+    marginTop: wp(20),
   },
-  navButton: {
-    marginTop: 15,
-  },
-  forgotButton: {
-    marginVertical: 35,
-  },
-  navButtonText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#2e64e5',
-    fontFamily: 'Montserrat-Bold',
-  },
-
-  header: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 10,
-    paddingBottom: 20,
-  },
-  footer: {
-    flex: 2,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  text_header: {
-    color: '#fff',
-    fontFamily: 'Montserrat-Bold',
-    paddingBottom: 10,
-    marginBottom: 10,
-    fontSize: 30,
-  },
-  text_footer: {
-    color: '#05375a',
-    fontSize: 18,
-  },
-  action: {
-    flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
-    paddingBottom: 5,
-  },
-  row: {
+  topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderColor: 'darkgray',
-    marginHorizontal: 20,
-    flex: 1,
+    alignItems: 'center',
   },
-  actionError: {
+  topButtons: {
     flexDirection: 'row',
-    marginTop: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
-    paddingBottom: 5,
-  },
-  errorMsg: {
-    color: '#FF0000',
-    fontSize: 14,
-  },
-  button: {
     alignItems: 'center',
-    marginTop: 50,
   },
-  signIn: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
+  topButton: {
+    borderWidth: 1,
+    borderColor: '#BFBFBF',
+    borderRadius: 147,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginLeft: 8,
   },
-  textSign: {
+  topButtonText: {
+    fontWeight: '700',
+    fontSize: 11,
+    lineHeight: 14,
+    color: '#252525',
+  },
+  stepText: {
+    fontWeight: '700',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'blue',
+    lineHeight: 24,
+    color: '#4D4D4D',
+    marginBottom: 8,
   },
   title: {
-    color: 'blue',
-    fontSize: 25,
-
-    fontFamily: 'Montserrat-Bold',
+    fontWeight: '700',
+    fontSize: 26,
+    lineHeight: 32,
+    color: '#1F2D3D',
+    marginBottom: 24,
   },
   text: {
-    color: 'blue',
-    marginTop: 5,
-    fontSize: 20,
-    fontFamily: 'Montserrat-Bold',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 19,
+    color: '#4D4D4D',
   },
 });
-
-export default styles;
