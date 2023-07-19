@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle} from 'react-native';
 import {colors, fontFamily} from '@theme';
 
@@ -64,14 +64,16 @@ export function Text(props: TextProps) {
   // @ts-ignore
   const preset: Presets = $presets[props.preset] ? props.preset : 'default';
   // @ts-ignore
-  const $styles = [
-    {fontFamily: fontFamily.manrope, fontWeight: weight},
-    $presets[preset],
-    // @ts-ignore
-    $sizeStyles[size],
-    {color},
-    $styleOverride,
-  ];
+  const $styles = useMemo(() => {
+    return [
+      {fontFamily: fontFamily.manrope, fontWeight: weight},
+      $presets[preset],
+      // @ts-ignore
+      $sizeStyles[size],
+      {color},
+      $styleOverride,
+    ];
+  }, [$styleOverride, color, preset, size, weight]);
   return (
     // @ts-ignore
     <RNText {...rest} style={$styles}>
@@ -90,6 +92,7 @@ const $sizeStyles = {
   xxs: {fontSize: 12, lineHeight: 18} as TextStyle,
 };
 
+// eslint-disable-next-line no-shadow
 const $fontWeightStyles = Object.entries(fontFamily.manrope).reduce((acc, [weight, fontFamily]) => {
   return {...acc, [weight]: {fontFamily}};
 }, {}) as Record<Weights, TextStyle>;

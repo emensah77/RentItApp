@@ -29,6 +29,7 @@ const HomeTabNavigator = () => {
     'OnboardingScreen11',
     'OnboardingScreen12',
     'OnboardingScreen13',
+    'SearchHome',
   ];
   return (
     <Tab.Navigator

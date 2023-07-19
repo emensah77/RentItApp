@@ -89,6 +89,7 @@
     "react-native-background-fetch": "^4.1.7",
     "react-native-background-geolocation": "^4.9.4",
     "react-native-bouncy-checkbox": "^3.0.6",
+    "react-native-calendar-range-picker": "^1.5.3",
     "react-native-calendars": "^1.1294.0",
     "react-native-code-push": "^7.1.0",
     "react-native-config": "^1.5.1",

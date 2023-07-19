@@ -17,6 +17,7 @@ export const palette = {
   textInverse300: '#717171',
   textInverse400: '#252525',
   textInverse500: '#4D4D4D',
+  textInverse600: '#B0B0B0',
 
   neutral100: '#FFFFFF',
   neutral200: '#F4F2F1',

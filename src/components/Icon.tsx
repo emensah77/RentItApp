@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import * as React from 'react';
 import {ComponentType} from 'react';
 import {
@@ -66,21 +67,23 @@ export const Icon = (props: IconProps) => {
     ? TouchableOpacity
     : View;
 
+  const $imageContainerStyle = React.useMemo(
+    () => [
+      $imageStyle,
+      color && {tintColor: color},
+      size && {width: size, height: size},
+      $imageStyleOverride,
+    ],
+    [$imageStyleOverride, color, size],
+  );
+
   return (
     <Wrapper
       accessibilityRole={isPressable ? 'imagebutton' : undefined}
       {...WrapperProps}
       style={$containerStyleOverride}>
       {/* @ts-ignore */}
-      <Image
-        style={[
-          $imageStyle,
-          color && {tintColor: color},
-          size && {width: size, height: size},
-          $imageStyleOverride,
-        ]}
-        source={iconRegistry[icon]}
-      />
+      <Image style={$imageContainerStyle} source={iconRegistry[icon]} />
     </Wrapper>
   );
 };
@@ -103,6 +106,8 @@ export const iconRegistry = {
   singleRoom: require('@assets/images/icons/checkin.png'),
   fullHome: require('@assets/images/icons/home.png'),
   arrLeft: require('@assets/images/icons/arr-left.png'),
+  closeCircle: require('@assets/images/icons/circle.png'),
+  location: require('@assets/images/icons/location.png'),
 };
 
 const $imageStyle: ImageStyle = {

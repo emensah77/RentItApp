@@ -32,6 +32,7 @@ import OnboardingScreen13 from '../screens/OnboardingScreen13';
 import HeatMapScreen from '../screens/HeatMapScreen';
 import MarketerDashboard from '../screens/MarketerDashboard';
 import DashboardScreen from '../screens/DashboardScreen';
+import {SearchHome, SearchResultsScreen} from '@screens/search';
 
 const Stack = createStackNavigator();
 
@@ -257,8 +258,16 @@ const Router = () => (
     />
 
     <Stack.Screen
+      name="SearchHome"
+      component={SearchHome}
+      options={{
+        headerShown: false,
+      }}
+    />
+
+    <Stack.Screen
       name="SearchResults"
-      component={SearchResultsTabNavigator}
+      component={SearchResultsScreen}
       options={{
         headerShown: false,
         title: '',

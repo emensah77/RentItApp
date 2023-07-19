@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useMemo} from 'react';
 import {ScrollView, ViewStyle} from 'react-native';
 
 type Props = {
@@ -15,10 +15,13 @@ type Props = {
 };
 
 export const ScrollArea: FunctionComponent<Props> = ({children, contentStyle, ...otherProps}) => {
+  const $containerStyle = useMemo(() => {
+    return [$contentStyle, contentStyle];
+  }, [contentStyle]);
   return (
     <ScrollView
       nestedScrollEnabled={true}
-      contentContainerStyle={[$contentStyle, contentStyle]}
+      contentContainerStyle={$containerStyle}
       keyboardShouldPersistTaps="always"
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}

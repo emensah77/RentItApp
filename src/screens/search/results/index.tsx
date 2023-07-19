@@ -1,178 +1,80 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {FC, useCallback, useState, useEffect, useRef, useMemo} from 'react';
-import {ViewStyle, View, FlatList, Linking, Alert} from 'react-native';
-import {API, graphqlOperation} from 'aws-amplify';
+import React, {useCallback, useState, useEffect, useMemo} from 'react';
+import {ViewStyle, View, FlatList, Alert, Linking} from 'react-native';
 import {Page} from '@components';
-import {AppStackScreenProps} from '@navigation/AppStack';
 import {Icon} from '@components/Icon';
-import {SizedBox} from '@components/SizedBox';
 import {Card} from '@components/Card';
-import {colors, palette} from '@theme';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import Geolocation from 'react-native-geolocation-service';
+import {colors, palette} from '@theme';
 
-import {CategoryNavigator} from '@components/Explore';
 import {pageInnerHorizontalPadding} from '@assets/styles/global';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
-import {listPosts} from '../../graphql/queries';
+import moment from 'moment';
+import {useRoute} from '@react-navigation/native';
 import styles from './styles';
 
-interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
-const HomeScreen: FC<HomeScreenProps> = _props => {
+export const SearchResultsScreen = _props => {
   const {navigation} = _props;
-  const [status, setStatus] = useState('Entire Flat');
-  const [modalvisible, setmodalvisible] = useState(false);
+  const route: any = useRoute();
+  const {guests, location, dates} = route.params;
+  const [posts] = useState([]);
   const [latitude, setLatitude] = useState<any>(null);
   const [longitude, setLongitude] = useState<any>(null);
-  const [loadingType, setIsLoadingType] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [cachedData, setCachedData] = useState({});
-  const prevStatus = useRef(null);
 
-  const memoizedCategoryNav = useCallback(() => {
-    return <CategoryNavigator {...{status, open, setStatusFilter}} />;
-  }, [status]);
+  const totalGuests = useMemo(() => {
+    return Object.keys(guests)
+      .map(el => guests[el])
+      .reduce((partialSum, a) => partialSum + a, 0);
+  }, [guests]);
 
-  const fetchPostsType = useCallback(async newStatus => {
+  const personalizedHomes = useCallback(async () => {
+    const viewPort = Object.keys(location?.viewPort)
+      .map(loc => {
+        const theLoc = location?.viewPort[loc];
+        return {[loc]: {lat: theLoc.lat, lon: theLoc.lng}};
+      })
+      .reduce((a, b) => Object.assign(a, b), {});
+
     try {
-      const query = {
-        limit: 100000,
-        filter: {
-          and: {
-            type: {
-              eq: newStatus,
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
-            },
+      const response = await fetch(
+        'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/search',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            region: viewPort,
+            userLocation: {latitude, longitude},
+            searchQuery: 'nice apartment',
+            searchAfter: null,
+          }),
         },
-      };
+      );
 
-      const postsResult: any = await API.graphql(graphqlOperation(listPosts, query));
+      const data = await response.json();
 
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        // setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-      }
+      return data;
     } catch (error) {
-      // console.log('error1', error);
+      console.error(error);
+    } finally {
+      // setIsLoadingType(false); // Set loading state to false
     }
   }, []);
-
-  const setStatusFilter = useCallback(
-    _status => () => {
-      setStatus(_status);
-      // @ts-ignore
-      fetchPostsType();
-    },
-    [fetchPostsType],
-  );
-
-  const open = useCallback(() => {
-    setmodalvisible(true);
-  }, []);
-
-  const personalizedHomes = useCallback(
-    async (userLatitude, userLongitude, homeType, newNextToken) => {
-      try {
-        // setIsLoadingType(true);
-        const response = await fetch(
-          'https://v4b6dicdx2igrg4nd6slpf35ru0tmwhe.lambda-url.us-east-2.on.aws/',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userLocation: {
-                latitude: userLatitude,
-                longitude: userLongitude,
-              },
-              homeType,
-              nextToken: newNextToken,
-            }),
-          },
-        );
-
-        // const response = await fetch(
-        //   'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
-        //   {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //       userLocation: {
-        //         latitude: userLatitude,
-        //         longitude: userLongitude,
-        //       },
-        //       typeParameter: homeType,
-        //       searchAfter: newNextToken,
-        //     }),
-        //   },
-        // );
-
-        const data = await response.json();
-
-        return data;
-      } catch (error) {
-        console.error(error);
-      } finally {
-        // setIsLoadingType(false); // Set loading state to false
-      }
-    },
-    [],
-  );
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      setIsLoadingType(true);
-      if (!cachedData[status]) {
-        const data = await personalizedHomes(latitude, longitude, status, null);
-
-        if (data && data.homes) {
-          setPosts(data.homes);
-          setCachedData(prevData => ({...prevData, [status]: data.homes}));
-          // setNextToken(data.nextToken);
-        } else {
-          setPosts([]);
-        }
-      } else {
-        setPosts(cachedData[status]);
-      }
-      setIsLoadingType(false);
+      await personalizedHomes();
     };
 
-    // Reset posts and nextToken when status changes
-    if (status !== prevStatus.current) {
-      setPosts([]);
-      // setNextToken(null);
-      // @ts-ignore
-      prevStatus.current = status;
-    }
-
     fetchInitialData();
-
     // _getUserData(auth().currentUser.uid);
-
     // userDetails();
-  }, [status, latitude, longitude, cachedData, personalizedHomes]);
-
-  const renderItem = useCallback(
-    ({item}) => (
-      <View key={item}>
-        <Post post={item} />
-      </View>
-    ),
-    [],
-  );
+  }, [latitude, longitude]);
 
   useEffect(() => {
     getLocation();
@@ -254,6 +156,15 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     return false;
   }, []);
 
+  const renderItem = useCallback(
+    ({item}) => (
+      <View key={item}>
+        <Post post={item} />
+      </View>
+    ),
+    [],
+  );
+
   const handleSearch = useCallback(() => {
     navigation.navigate('SearchHome');
   }, []);
@@ -283,15 +194,15 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
         <Card
           style={$cardStyle}
           HeadingTextProps={memoizedHeaderProps}
-          heading="Where to?"
-          footer="Anywhere ⦁ Any week ⦁ Add guests"
+          heading={location?.address}
+          footer={`${moment(dates?.startDate).format('DD MMM')} - ${moment(dates?.endDate).format(
+            'DD MMM',
+          )}  ⦁  ${totalGuests} guests`}
           FooterTextProps={memoizedFooterProps}
           LeftComponent={<Icon icon="searchMini" size={25} />}
           RightComponent={<Icon icon="filterMini" size={35} />}
           onPress={handleSearch}
         />
-        <SizedBox height={20} />
-        {memoizedCategoryNav()}
       </View>
 
       <FlatList
@@ -327,12 +238,5 @@ const $cardStyle: ViewStyle = {
 
 const $headerStyle: ViewStyle = {
   paddingHorizontal: pageInnerHorizontalPadding,
-  shadowColor: colors.palette.neutral800,
-  shadowOffset: {width: 0, height: 5},
-  shadowOpacity: 0.09,
-  shadowRadius: 5,
   backgroundColor: colors.palette.textInverse,
-  elevation: 4,
 };
-
-export default HomeScreen;

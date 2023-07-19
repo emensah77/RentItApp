@@ -1,3 +1,4 @@
+/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {useCallback, useMemo} from 'react';
 import {View, Platform, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -100,7 +101,7 @@ const Post = props => {
           </Text>
         </View>
         <SizedBox width={20} />
-        <View style={[styles.starContainer]}>
+        <View style={styles.starContainer}>
           <Icon icon="starFilled" size={15} />
           <SizedBox width={4} />
           <Text text="4.6" size="sm" />

@@ -67,8 +67,24 @@ const Page = (props: PageProps) => {
 
   const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
 
+  const $wrapperStyle = useMemo(() => {
+    return [$containerStyle, {backgroundColor}, $containerInsets];
+  }, [$containerInsets, backgroundColor]);
+
+  const $displayStyles = useMemo(() => {
+    return [global.page, hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding}];
+  }, [hasPadding, inline]);
+
+  const $displayContentStyles = useMemo(() => {
+    return [
+      global.pageContent,
+      reverse ? global.columnReverse : {},
+      hasPadding && {paddingHorizontal: pageInnerHorizontalPadding},
+    ];
+  }, [hasPadding, reverse]);
+
   return (
-    <View style={[$containerStyle, {backgroundColor}, $containerInsets]}>
+    <View style={$wrapperStyle}>
       <StatusBar style={statusBarStyle} {...StatusBarProps} />
 
       {type === 'small' && header && !inline ? (
@@ -84,15 +100,8 @@ const Page = (props: PageProps) => {
       <Display
         accessible
         accessibilityLabel={accessibilityLabel}
-        style={[
-          global.page,
-          hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding},
-        ]}
-        contentContainerStyle={[
-          global.pageContent,
-          reverse ? global.columnReverse : {},
-          hasPadding && {paddingHorizontal: pageInnerHorizontalPadding},
-        ]}
+        style={$displayStyles}
+        contentContainerStyle={$displayContentStyles}
         keyboardShouldPersistTaps="handled"
         bounces={false}>
         {type === 'large' && header && !inline ? (

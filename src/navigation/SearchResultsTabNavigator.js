@@ -1,21 +1,20 @@
+/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React from 'react';
-import {View, Text} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useRoute} from '@react-navigation/native';
-import SearchResults from '../screens/SearchResults';
-import SearchResultsMaps from '../screens/SearchResultsMap';
+import {SearchResultsScreen} from '@screens/search';
 
 const Tab = createMaterialTopTabNavigator();
 
-const SearchResultsTabNavigator = props => {
+const SearchResultsTabNavigator = () => {
   const route = useRoute();
-  const {guests, viewport} = route.params;
+  const {guests, location, dates} = route.params;
 
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          borderTopWidth: 0, // Add this line to remove the border
+          borderTopWidth: 0,
         },
       }}
       tabBarOptions={{
@@ -27,20 +26,11 @@ const SearchResultsTabNavigator = props => {
       <Tab.Screen
         name="list"
         options={{
-          headerTitle: '', // Set this to an empty string or null
+          headerTitle: '',
           tabBarLabel: () => null,
         }}>
-        {() => <SearchResults guests={guests} viewport={viewport} />}
+        {() => <SearchResultsScreen guests={guests} viewport={location} dates={dates} />}
       </Tab.Screen>
-
-      {/* <Tab.Screen
-                name={"map"}
-                >
-                    {() => (
-                        <SearchResultsMaps guests={guests} viewport={viewport} />
-                    )}
-
-                    </Tab.Screen> */}
     </Tab.Navigator>
   );
 };
