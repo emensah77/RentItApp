@@ -20,6 +20,7 @@ import MarketerDashboard from '../screens/MarketerDashboard';
 import DashboardScreen from '../screens/DashboardScreen';
 
 const Stack = createStackNavigator();
+
 const screenOptions = {
   headerStyle: {
     backgroundColor: '#fff',
@@ -29,9 +30,11 @@ const screenOptions = {
     fontWeight: 'bold',
   },
 };
+
 const noHeaderShown = {
   headerShown: false,
 };
+
 const headerShown = title => ({
   headerShown: false,
   title,
