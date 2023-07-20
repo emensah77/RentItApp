@@ -22,6 +22,9 @@ const global = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  right: {
+    justifyContent: 'flex-end',
+  },
   column: {
     flexDirection: 'column',
   },
@@ -32,6 +35,16 @@ const global = StyleSheet.create({
   zeroElevation: {
     elevation: 0,
     zIndex: 0,
+  },
+  elevation: {
+    elevation: 3,
+    padding: 30,
+    borderRadius: 5,
+    borderTopWidth: 0,
+    shadowColor: '#000',
+    // shadowOffset: {width: 1000, height: 2000},
+    // shadowOpacity: 1,
+    // shadowRadius: 20,
   },
   fullWidth: {
     width: '100%',
@@ -46,7 +59,6 @@ const global = StyleSheet.create({
   },
   pageContent: {
     paddingHorizontal: pageInnerHorizontalPadding,
-
     flexGrow: 1,
   },
   footer: {
@@ -136,6 +148,13 @@ const global = StyleSheet.create({
     height: 40,
     borderRadius: 31,
     flex: 0,
+  },
+  multiLine: {
+    flexDirection: 'column',
+    minWidth: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start',
   },
   plain: {
     width: 'auto',
@@ -277,6 +296,9 @@ const global = StyleSheet.create({
   buttonLike: {
     padding: 7,
     borderRadius: 13,
+  },
+  smallBorderRadius: {
+    borderRadius: 12,
   },
   ...Array.from(new Array(101)).reduce(
     (p, _, i) => ({
