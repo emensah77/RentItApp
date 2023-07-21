@@ -89,7 +89,7 @@ const AppStack = () => {
 
   return (
     // @ts-ignore
-    <Stack.Navigator initialRouteName="MarketerDashboard" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
