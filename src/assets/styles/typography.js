@@ -129,6 +129,17 @@ const typography = StyleSheet.create({
     lineHeight: 16,
     color: '#252525',
   },
+  smallCircle: {
+    ...fontType,
+    fontWeight: '500',
+    fontSize: 25,
+    color: '#000000',
+    width: 32,
+    height: 32,
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+  },
 });
 
 export default typography;
