@@ -172,10 +172,11 @@ const MarketerDashboard = () => {
           },
           body: JSON.stringify({
             userLocation: {
-              // latitude: `${position.coords.latitude}`,
-              // longitude: `${position.coords.longitude}`,
-              latitude: 5.60589164450265,
-              longitude: -0.1883120435406709,
+              latitude: `${position.coords.latitude}`,
+              longitude: `${position.coords.longitude}`,
+              // Use for testing ONLY!
+              // latitude: 5.60589164450265,
+              // longitude: -0.1883120435406709,
             },
             searchAfter: null,
           }),
