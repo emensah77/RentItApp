@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState} from 'react';
 
 import {
   Page,
@@ -11,13 +11,12 @@ import {
   Button,
 } from '../../components';
 import arrowDown from '../../assets/images/arrow-down.png';
+import {TYPES} from '../../utils';
 
 const EditPersonalInfo = () => {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [gender, setGender] = useState({value: ''});
-
-  const genders = useMemo(() => [{value: 'Male'}, {value: 'Female'}], []);
 
   return (
     <Page type="large" header="Edit personal info">
@@ -36,7 +35,7 @@ const EditPersonalInfo = () => {
 
       <Dropdown
         value={gender.value}
-        data={genders}
+        data={TYPES.GENDERS}
         displayKey="value"
         label="Gender"
         suffix={arrowDown}

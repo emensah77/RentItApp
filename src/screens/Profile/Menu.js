@@ -1,10 +1,12 @@
 import React, {useMemo, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import {Page, Whitespace, Divider, CardDisplay, Typography} from '../../components';
 
 // import logo from '../../assets/images/logo.png';
-import user from '../../assets/images/menu/user.png';
+import userImage from '../../assets/images/menu/user.png';
 import earnMoney from '../../assets/images/menu/earn-money.png';
 import profile from '../../assets/images/menu/profile.png';
 import payments from '../../assets/images/menu/payments.png';
@@ -20,11 +22,29 @@ import giftCard from '../../assets/images/menu/gift-card.png';
 // import contact from '../../assets/images/menu/contact.png';
 // import safetyCenter from '../../assets/images/menu/safety-center.png';
 import becomeMarketer from '../../assets/images/menu/become-marketer.png';
-// import dashboardMarketer from '../../assets/images/menu/dashboard-marketer.png';
+import dashboardMarketer from '../../assets/images/menu/dashboard-marketer.png';
 import arrowRight from '../../assets/images/arrow-right.png';
 
 const Menu = () => {
+  const {
+    currentUser,
+    currentUser: {uid},
+  } = auth();
   const navigation = useNavigation();
+
+  const isMarketer = useMemo(async () => {
+    const doc = firestore().collection('users').doc(uid);
+    const u = await doc.get().catch(console.error);
+    if (!u.type || (u && u.type === 'pending-marketer')) {
+      return false;
+    }
+    return true;
+  }, [uid]);
+
+  const leftIcon = useMemo(
+    () => (currentUser.photoURL ? {uri: currentUser.photoURL} : userImage),
+    [currentUser],
+  );
 
   const goTo = useCallback(
     route => () => {
@@ -32,6 +52,19 @@ const Menu = () => {
     },
     [navigation],
   );
+
+  const markerterDashboard = useMemo(() => {
+    if (isMarketer) {
+      return {
+        description: 'Marketer Dashboard',
+        image: dashboardMarketer,
+        width: 27,
+        height: 18.78,
+        onPress: goTo('MarketerDashboard'),
+      };
+    }
+    return undefined;
+  }, [goTo, isMarketer]);
 
   const sections = useMemo(
     () => [
@@ -112,13 +145,8 @@ const Menu = () => {
             height: 30,
             onPress: goTo('BecomeAMarketer'),
           },
-          // {
-          //   description: 'Marketer Dashboard',
-          //   image: dashboardMarketer,
-          //   width: 27,
-          //   height: 18.78,
-          // },
-        ],
+          markerterDashboard,
+        ].filter(item => !!item),
       },
       // {
       //   heading: 'Support',
@@ -176,17 +204,18 @@ const Menu = () => {
       //   ],
       // },
     ],
-    [goTo],
+    [goTo, markerterDashboard],
   );
 
   return (
     <Page
-      leftIcon={user}
+      leftIcon={leftIcon}
       rightIcon={arrowRight}
       onLeftIconPress={goTo('AccountDetails')}
       header={
         <Typography onPress={goTo('AccountDetails')} type="heading" left width="45%">
-          Matt{'\n'}
+          {currentUser.displayName}
+          {'\n'}
           <Typography type="regular" size={11} left color="#717171">
             Show Profile
           </Typography>

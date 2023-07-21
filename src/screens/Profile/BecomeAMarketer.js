@@ -19,7 +19,7 @@ const BecomeAMarketer = () => {
     const {uid} = auth().currentUser;
     const doc = firestore().collection('users').doc(uid);
     const user = await doc.get().catch(console.error);
-    if (user.type === 'pending-marketer') {
+    if (user && user.type === 'pending-marketer') {
       return;
     }
 
