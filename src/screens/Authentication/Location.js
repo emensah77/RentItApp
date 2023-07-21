@@ -9,7 +9,7 @@ import {global} from '../../assets/styles';
 import locationPermission from '../../assets/images/location-permission.png';
 
 const Location = props => {
-  const {noRender} = props;
+  const {noRender, getPosition} = props;
 
   const [enabled, setEnabled] = useState(null);
   const [count, setCount] = useState(1);
@@ -82,8 +82,12 @@ const Location = props => {
             await BackgroundGeolocation.watchPosition(
               position => {
                 AsyncStorage.setItem('position', JSON.stringify(position.coords));
-                if (__DEV__) {
+                if (__DEV__ && !getPosition) {
                   console.debug('[watchPosition] -', position);
+                }
+
+                if (getPosition && typeof getPosition === 'function') {
+                  getPosition(position);
                 }
               },
               e => console.error('[watchPosition] ERROR -', e),
@@ -99,7 +103,7 @@ const Location = props => {
         },
       );
     });
-  }, []);
+  }, [getPosition]);
 
   const request = useCallback(async () => {
     const location = await init();
