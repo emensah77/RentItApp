@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useCallback} from 'react';
 
-import PhoneNumber from '../Authentication/PhoneNumber';
+import PhoneNumber from '../../Authentication/PhoneNumber';
 
-import {Input, Typography, Button, Whitespace, Error, Dropdown} from '../../components';
+import {Input, Typography, Button, Whitespace, Error, Dropdown} from '../../../components';
 import arrowDown from '../../assets/images/arrow-down.png';
-import {localities, getSubLocalities, TYPES} from '../../utils';
+import {localities, getSubLocalities, TYPES} from '../../../utils';
 
 const DemandForm = props => {
   const {onSuccess} = props;
@@ -45,7 +45,7 @@ const DemandForm = props => {
           Name: data.name,
           Type: data.mode.value,
           Price: `${data.currency.value}${data.price}`,
-          // Tags: ['Balcony', 'Near Beach'],
+          Tags: ['Balcony', 'Near Beach'],
           Locality: data.locality.value,
           Sublocality: data.subLocality.value,
           HomeType: data.homeType.value,
