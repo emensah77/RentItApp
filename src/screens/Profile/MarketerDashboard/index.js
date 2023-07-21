@@ -3,16 +3,16 @@ import {Dimensions, Animated, Alert} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import auth from '@react-native-firebase/auth';
 
-import MarkerForm from './MarkerForm';
+import HomeForm from './HomeForm';
 import DemandForm from './DemandForm';
 import RequestForm from './RequestForm';
 
-import Location from '../Authentication/Location';
+import Location from '../../Authentication/Location';
 
-import {PageSpinner, Container, Button, Typography, Whitespace, Divider} from '../../components';
+import {PageSpinner, Container, Button, Typography, Whitespace, Divider} from '../../../components';
 
-import homeMarker from '../../assets/images/home-marker.png';
-import {global} from '../../assets/styles';
+import homeMarker from '../../../assets/images/home-marker.png';
+import {global} from '../../../assets/styles';
 
 const style = {width: '100%', height: '100%', backgroundColor: 'white'};
 
@@ -251,7 +251,7 @@ const MarketerDashboard = () => {
             <Whitespace marginTop={10} />
 
             <Typography height={30} size={20} width="50%" color="#000" center>
-              Click a home to update it
+              Select a home to update it
             </Typography>
 
             <Divider top={25} bottom={25}>
@@ -274,7 +274,7 @@ const MarketerDashboard = () => {
             </Container>
           </>
         ) : mode === 'home' ? (
-          <MarkerForm data={markerData} onSuccess={changeMode('default')} />
+          <HomeForm data={markerData} onSuccess={changeMode('default')} />
         ) : mode === 'demand' ? (
           <DemandForm data={markerData} onSuccess={changeMode('default')} />
         ) : mode === 'request' ? (

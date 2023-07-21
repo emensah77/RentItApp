@@ -3,7 +3,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import PhoneNumber from '../../Authentication/PhoneNumber';
 
 import {Input, Typography, Button, Whitespace, Error, Dropdown} from '../../../components';
-import arrowDown from '../../assets/images/arrow-down.png';
+import arrowDown from '../../../assets/images/arrow-down.png';
 import {localities, getSubLocalities, TYPES} from '../../../utils';
 
 const DemandForm = props => {
@@ -18,6 +18,7 @@ const DemandForm = props => {
     homeType: {value: ''},
     locality: {value: ''},
     subLocality: {value: ''},
+    tags: '',
     description: '',
   });
   const [error, setError] = useState('');
@@ -45,7 +46,7 @@ const DemandForm = props => {
           Name: data.name,
           Type: data.mode.value,
           Price: `${data.currency.value}${data.price}`,
-          Tags: ['Balcony', 'Near Beach'],
+          Tags: data.tags.split(','),
           Locality: data.locality.value,
           Sublocality: data.subLocality.value,
           HomeType: data.homeType.value,
@@ -137,6 +138,17 @@ const DemandForm = props => {
       <Whitespace marginTop={30} />
 
       <Input
+        placeholder="Tags (Comma Seperated)"
+        type="text"
+        name="tags"
+        label="Tags (Comma Seperated)"
+        value={data.tags}
+        onChange={onChangeData('tags')}
+      />
+
+      <Whitespace marginTop={30} />
+
+      <Input
         placeholder="Description"
         type="text"
         name="description"
@@ -165,7 +177,7 @@ const DemandForm = props => {
       <Whitespace marginTop={30} />
 
       <Typography size={12} left width="100%">
-        Home Types
+        Home Type
       </Typography>
 
       <Whitespace marginTop={-20} />

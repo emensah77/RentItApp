@@ -1,19 +1,11 @@
-import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
 
-import PhoneNumber from '../Authentication/PhoneNumber';
+import PhoneNumber from '../../Authentication/PhoneNumber';
 
-import {Input, Typography, Button, Whitespace, Error, Dropdown} from '../../components';
-import arrowDown from '../../assets/images/arrow-down.png';
-
-const amenities = [
-  {value: 'aircondition'},
-  {value: 'kitchen'},
-  {value: 'bathroom'},
-  {value: 'toilet'},
-  {value: 'water'},
-  {value: 'wifi'},
-];
+import {Input, Typography, Button, Whitespace, Error, Dropdown} from '../../../components';
+import arrowDown from '../../../assets/images/arrow-down.png';
+import {TYPES} from '../../../utils';
 
 const oldData = {
   id: '',
@@ -35,23 +27,20 @@ const oldData = {
   negotiable: {value: 'No'},
   available: {value: 'No'},
   furnished: {value: 'No'},
-  homeType: '',
-  ...amenities.map(item => ({[item.value]: {value: 'No'}})).reduce((a, b) => ({...a, ...b}), {}),
+  homeType: {value: ''},
+  ...TYPES.AMENITIES.map(item => ({[item.value]: {value: 'No'}})).reduce(
+    (a, b) => ({...a, ...b}),
+    {},
+  ),
 };
 
 const MarkerForm = props => {
-  const {data: preFillData} = props;
+  const {data: preFillData, onSuccess} = props;
 
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  const modes = useMemo(() => [{value: 'For Rent'}, {value: 'For Sale'}], []);
-
-  const currencies = useMemo(() => [{value: 'GHS'}, {value: 'USD'}], []);
-
-  const availabilities = useMemo(() => [{value: 'Yes'}, {value: 'No'}], []);
 
   const onChangeData = useCallback(
     which => async value => {
@@ -63,13 +52,17 @@ const MarkerForm = props => {
 
   const submit = useCallback(async () => {
     setLoading(true);
+
+    const itemId = data.id;
+    delete data.id;
+
     const response = await fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        itemId: data.id,
+        itemId,
         userId: auth().currentUser.uid,
         updateValues: Object.keys(data)
           .map(item => ({
@@ -78,12 +71,16 @@ const MarkerForm = props => {
           .reduce((a, b) => ({...a, ...b}), {}),
       }),
     }).catch(setError);
+    const _data = await response.json();
+    // console.log('RES', _data);
 
-    if (!response || !response.ok) {
+    if (!data || !response || !response.ok) {
       setError('An error occurred, while trying to save the form.');
+    } else {
+      onSuccess(_data);
     }
     setLoading(false);
-  }, [data]);
+  }, [data, onSuccess]);
 
   useEffect(() => {
     const newData = {};
@@ -91,36 +88,36 @@ const MarkerForm = props => {
       if (!preFillData[dataKey]) {
         return;
       }
+
       newData[dataKey] =
         oldData[dataKey] && typeof oldData[dataKey].value !== 'undefined'
           ? {value: preFillData[dataKey]}
           : preFillData[dataKey];
     });
     setData({...oldData, ...newData});
+    // setData({homeType: {value: 'Mansion'},"aircondition": {"value": "Yes"}, "availabilityDate": "04/30/2023", "available": {"value": "Yes"}, "bathroom": {"value": "Yes"}, "bathroomNumber": "2", "bed": "2", "bedroom": "2", "currency": {"value": "USD"}, "description": "OPPOSITE ROMAN RIDGE SHOPPING CENTER NORTEI ABABIO STREET AIRPORT AIRPORT RESIDENTIAL defined", "furnished": {"value": "Yes"}, "homeType": "", "id": "ef0327b9-f2b0-4779-bcd6-749b9563694f", "kitchen": {"value": "Yes"}, "loyaltyProgram": {"value": "Yes"}, "marketerNumber": "+2348179222327", "maxGuests": "20", "mode": {"value": "For Sale"}, "negotiable": {"value": "Yes"}, "neighbourhood": "23rfg", "ownerName": "own", "phoneNumber": "+2348179222327", "price": "10", "title": "title", "toilet": {"value": "Yes"}, "water": {"value": "Yes"}, "wifi": {"value": "Yes"}});
   }, [preFillData]);
 
   useEffect(() => {
-    // Confirm from Eben if some options can be saved even if incomplete
+    const isInComplete = Object.keys(data).some(item => {
+      if (!data[item] || data[item] === '0') {
+        return true;
+      }
 
-    // const isInComplete = Object.keys(data).some(item => {
-    //   if (!data[item] || data[item] === '0') {
-    //     return true;
-    //   }
+      if (typeof data[item] === 'object' && !data[item].value) {
+        return true;
+      }
 
-    //   if (typeof data[item] === 'object' && !data[item].value) {
-    //     return true;
-    //   }
+      if (Array.isArray(data[item]) && data[item].length === 0) {
+        return true;
+      }
 
-    //   if (Array.isArray(data[item]) && data[item].length === 0) {
-    //     return true;
-    //   }
+      return false;
+    });
 
-    //   return false;
-    // });
-
-    // if (isInComplete) {
-    //   return setDisabled(true);
-    // }
+    if (isInComplete) {
+      return setDisabled(true);
+    }
     setDisabled(false);
   }, [data]);
 
@@ -137,9 +134,26 @@ const MarkerForm = props => {
       <Dropdown
         onChange={onChangeData('mode')}
         value={data.mode.value}
-        data={modes}
+        data={TYPES.MODES}
         displayKey="value"
         label="Mode"
+        suffix={arrowDown}
+      />
+
+      <Whitespace marginTop={30} />
+
+      <Typography size={12} left width="100%">
+        Home Type
+      </Typography>
+
+      <Whitespace marginTop={-20} />
+
+      <Dropdown
+        onChange={onChangeData('homeType')}
+        value={data.homeType.value}
+        data={TYPES.HOME_TYPES}
+        displayKey="value"
+        label="Home Type"
         suffix={arrowDown}
       />
 
@@ -201,7 +215,7 @@ const MarkerForm = props => {
       <Dropdown
         onChange={onChangeData('currency')}
         value={data.currency.value}
-        data={currencies}
+        data={TYPES.CURRENCIES}
         displayKey="value"
         label="Currency"
         suffix={arrowDown}
@@ -220,13 +234,20 @@ const MarkerForm = props => {
 
       <Whitespace marginTop={30} />
 
+      <Typography size={12} left width="100%">
+        Availability Date (mm/dd/yyyy)
+      </Typography>
+
+      <Whitespace marginTop={-20} />
+
       <Input
-        placeholder="Availability Date"
-        type="text"
+        placeholder="Availability Date (mm/dd/yyyy)"
+        type="date"
         name="availabilityDate"
-        label="Availability Date"
+        label="Availability Date (mm/dd/yyyy)"
         value={data.availabilityDate}
         onChange={onChangeData('availabilityDate')}
+        suffix={arrowDown}
       />
 
       <Whitespace marginTop={30} />
@@ -295,7 +316,7 @@ const MarkerForm = props => {
       <Dropdown
         onChange={onChangeData('loyaltyProgram')}
         value={data.loyaltyProgram.value}
-        data={availabilities}
+        data={TYPES.YES_OR_NO}
         displayKey="value"
         label="Loyalty Program"
         suffix={arrowDown}
@@ -312,7 +333,7 @@ const MarkerForm = props => {
       <Dropdown
         onChange={onChangeData('negotiable')}
         value={data.negotiable.value}
-        data={availabilities}
+        data={TYPES.YES_OR_NO}
         displayKey="value"
         label="Negotiable"
         suffix={arrowDown}
@@ -329,7 +350,7 @@ const MarkerForm = props => {
       <Dropdown
         onChange={onChangeData('available')}
         value={data.available.value}
-        data={availabilities}
+        data={TYPES.YES_OR_NO}
         displayKey="value"
         label="Available"
         suffix={arrowDown}
@@ -346,7 +367,7 @@ const MarkerForm = props => {
       <Dropdown
         onChange={onChangeData('furnished')}
         value={data.furnished.value}
-        data={availabilities}
+        data={TYPES.YES_OR_NO}
         displayKey="value"
         label="Furnished"
         suffix={arrowDown}
@@ -360,7 +381,7 @@ const MarkerForm = props => {
 
       <Whitespace marginTop={15} />
 
-      {amenities.map(({value}) => (
+      {TYPES.AMENITIES.map(({value}) => (
         <React.Fragment key={value}>
           <Typography size={12} left width="100%">
             {`${value.substring(0, 1).toUpperCase()}${value.substring(1)}`}
@@ -371,7 +392,7 @@ const MarkerForm = props => {
           <Dropdown
             onChange={onChangeData(value)}
             value={data[value].value}
-            data={availabilities}
+            data={TYPES.YES_OR_NO}
             displayKey="value"
             label={`${value.substring(0, 1).toUpperCase()}${value.substring(1)}`}
             suffix={arrowDown}

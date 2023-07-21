@@ -1,4 +1,4 @@
-export const HOME_TYPES = [
+const HOME_TYPES = [
   {
     value: 'Full Home',
   },
@@ -31,12 +31,28 @@ export const HOME_TYPES = [
   },
 ];
 
-export const CURRENCIES = [{value: 'GHS'}, {value: 'USD'}];
+const CURRENCIES = [{value: 'GHS'}, {value: 'USD'}];
 
-export const MODES = [{value: 'For Rent'}, {value: 'For Sale'}];
+const MODES = [{value: 'For Rent'}, {value: 'For Sale'}];
+
+const AMENITIES = [
+  {value: 'aircondition'},
+  {value: 'kitchen'},
+  {value: 'bathroom'},
+  {value: 'toilet'},
+  {value: 'water'},
+  {value: 'wifi'},
+];
+
+const GENDERS = [{value: 'Male'}, {value: 'Female'}];
+
+const YES_OR_NO = [{value: 'Yes'}, {value: 'No'}];
 
 export default {
   HOME_TYPES,
   CURRENCIES,
   MODES,
+  AMENITIES,
+  GENDERS,
+  YES_OR_NO,
 };
