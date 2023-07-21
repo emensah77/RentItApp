@@ -80,7 +80,7 @@ const Menu = () => {
             image: listHome,
             width: 24.04,
             height: 22.62,
-            onPress: goTo('Onboarding'),
+            onPress: goTo('OnboardingScreen1'),
           },
           {
             description: 'Your Homes',

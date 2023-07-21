@@ -13,7 +13,7 @@ const button = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 13,
+    marginTop: 8,
     marginBottom: 20,
   },
   primary: {
