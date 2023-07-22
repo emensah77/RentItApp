@@ -1,4 +1,4 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import {StackScreenProps, createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 
@@ -25,6 +25,7 @@ import PostScreen from '../screens/PostScreen';
 import HouseTypeScreen from '../screens/HouseTypeScreen';
 import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
+import listAHome from '../screens/ListAHome';
 import HomeTabNavigator from './HomeTabNavigator';
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -53,30 +54,23 @@ export type AppStackParamList = {
  * This is a list of all the route names that will exit the app if the back button
  * is pressed while in that screen. Only affects Android.
  */
-
 export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreenProps<
   AppStackParamList,
   T
 >;
 
+const noHeader = {
+  headerShown: false,
+  lazy: true,
+};
+
+const noHeaderWithATitle = {
+  title: 'Search your destination',
+  headerShown: false,
+  lazy: true,
+};
+
 const AppStack = () => {
-  const noHeader = useMemo(
-    () => ({
-      headerShown: false,
-      lazy: true,
-    }),
-    [],
-  );
-
-  const noHeaderWithATitle = useMemo(
-    () => ({
-      title: 'Search your destination',
-      headerShown: false,
-      lazy: true,
-    }),
-    [],
-  );
-
   const onNavigationStateChange = useCallback(state => {
     const currentRoute = state.routes[state.index];
     const screenName = currentRoute.name;
@@ -90,6 +84,10 @@ const AppStack = () => {
   return (
     // @ts-ignore
     <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
+      {listAHome.map(({Component, title}) => (
+        <Stack.Screen key={title} name={title} component={Component} options={noHeader} />
+      ))}
+
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />

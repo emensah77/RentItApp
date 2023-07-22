@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from 'react';
-import {ScrollView, View, ViewStyle, StatusBar, StatusBarProps} from 'react-native';
+import {ScrollView, View, StatusBar, StatusBarProps} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import {ExtendedEdge, useSafeAreaInsetsStyle} from '@utils/useSafeAreaInsetsStyle';
@@ -45,14 +45,25 @@ const Page = (props: PageProps) => {
     backgroundColor = colors.palette.textInverse,
     safeAreaEdges = ['top'],
     statusBarStyle,
-    // eslint-disable-next-line no-shadow
-    StatusBarProps,
+    statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
+  const navigation = useNavigation();
+
   const Display = useMemo(() => (inline ? View : ScrollView), [inline]);
 
-  const navigation = useNavigation();
+  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
+
+  const pageStyle = useMemo(
+    () => [global.flex, {backgroundColor}, inline ? {} : $containerInsets],
+    [$containerInsets, backgroundColor, inline],
+  );
+
+  const contentContainerStyle = useMemo(
+    () => [inline ? {} : global.pageContent, reverse ? global.columnReverse : {}],
+    [reverse, inline],
+  );
 
   const onFooterLayout = useCallback(e => {
     const {
@@ -61,11 +72,11 @@ const Page = (props: PageProps) => {
     setFooterTop(height);
   }, []);
 
-  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
-
   return (
-    <View style={[$containerStyle, {backgroundColor}, $containerInsets]}>
-      <StatusBar style={statusBarStyle} {...StatusBarProps} />
+    <View style={pageStyle}>
+      {!inline && (
+        <StatusBar backgroundColor={backgroundColor} style={statusBarStyle} {...statusBarProps} />
+      )}
 
       {type === 'small' && header && !inline ? (
         <Header
@@ -81,7 +92,7 @@ const Page = (props: PageProps) => {
         accessible
         accessibilityLabel={accessibilityLabel}
         style={global.page}
-        contentContainerStyle={[global.pageContent, reverse ? global.columnReverse : {}]}
+        contentContainerStyle={contentContainerStyle}
         keyboardShouldPersistTaps="handled"
         bounces={false}>
         {type === 'large' && header && !inline ? (
@@ -106,12 +117,6 @@ const Page = (props: PageProps) => {
       ) : null}
     </View>
   );
-};
-
-const $containerStyle: ViewStyle = {
-  flex: 1,
-  height: '100%',
-  width: '100%',
 };
 
 export default Page;
