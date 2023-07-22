@@ -72,6 +72,8 @@ const OnboardingScreen11 = () => {
 
   return (
     <Base index={12} total={12} isComplete={!!data.latitude} data={data} inline>
+      <Whitespace marginTop={30} />
+
       <View style={containerStyle}>
         <Typography height={30} type="heading" size={26} color="#1F2D3D" width="100%">
           Where&apos;s your home located?

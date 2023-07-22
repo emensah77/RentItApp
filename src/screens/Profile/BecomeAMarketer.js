@@ -19,14 +19,14 @@ const BecomeAMarketer = () => {
     const {uid} = auth().currentUser;
     const doc = firestore().collection('users').doc(uid);
     const user = await doc.get().catch(console.error);
-    if (user.type === 'pending-marketer') {
+    if (user && user.marketer_status === 'REVIEW') {
       return;
     }
 
     const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
     await AsyncStorage.setItem(
       'authentication::data',
-      JSON.stringify({...authData, type: 'pending-marketer'}),
+      JSON.stringify({...authData, marketer_status: 'REVIEW'}),
     );
 
     setStatus({
@@ -36,7 +36,7 @@ const BecomeAMarketer = () => {
         'Your request has been submitted, once the admin approves your request, enjoy the experience of being a marketer at Rentit.',
     });
 
-    await doc.set({...user.data(), type: 'pending-marketer'}).catch(e => {
+    await doc.set({...user.data(), marketer_status: 'REVIEW'}).catch(e => {
       console.error('An error occured with your request to become a marketer', e);
 
       setStatus({
@@ -55,7 +55,7 @@ const BecomeAMarketer = () => {
       const {uid} = auth().currentUser;
       let user = await firestore().collection('users').doc(uid).get();
       user = user.data();
-      if (user.type === 'pending-marketer') {
+      if (user.marketer_status === 'REVIEW') {
         setLoading(false);
         return setStatus({
           color: '#F29F23',
@@ -65,12 +65,7 @@ const BecomeAMarketer = () => {
         });
       }
 
-      const marketers = await firestore()
-        .collection('marketers')
-        .doc(user.uid)
-        .get()
-        .catch(console.error);
-      if (marketers && marketers.docs) {
+      if (user.marketer_status === 'ACCEPTED') {
         setStatus({
           color: '#3C8826',
           state: 'successful',
