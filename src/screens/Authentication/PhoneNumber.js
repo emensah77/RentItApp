@@ -164,6 +164,7 @@ const PhoneNumber = props => {
         value={phoneNumber}
         onChange={onPhoneNumberChange}
         error={error}
+        trim
         groupBefore
       />
 

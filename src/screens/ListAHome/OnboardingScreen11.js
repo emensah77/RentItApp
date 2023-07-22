@@ -6,7 +6,7 @@ import {Container, Whitespace, Typography} from '../../components';
 
 const OnboardingScreen11 = () => {
   const [data, setData] = useState({});
-  const [price, setPrice] = useState(600);
+  const [price, setPrice] = useState(0);
   const [currency, setCurrency] = useState('');
 
   const items = useMemo(
