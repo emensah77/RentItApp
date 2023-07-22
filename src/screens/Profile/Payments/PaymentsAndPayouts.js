@@ -110,7 +110,7 @@ const PaymentsAndPayouts = () => {
                 rightImageHeight={12.5}
                 rightImageSrc={arrowRight}
                 onPress={onPress}
-                spaceBetween
+                center
               />
 
               <Divider top={13} bottom={13} />

@@ -35,11 +35,11 @@ jobs:
 
       - name: Lintable Files
         run: |
-          git diff --diff-filter=RM --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs)
+          git diff --diff-filter=RMA --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs)
 
       - name: Lint
         run: |
-          npx eslint --no-inline-config --fix-dry-run $(git diff --diff-filter=RM --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs) '**/*.js')
+          npx eslint --no-inline-config --fix-dry-run $(git diff --diff-filter=RMA --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs) "*.jsx" "*.tsx" "*.js" "*.ts")
 
       - name: Inject environment variables
         run: |
@@ -47,5 +47,5 @@ jobs:
           REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
           EOF
 
-      # - name: Run tests
-      #   run: npm run test
+      - name: Run tests
+        run: yarn test

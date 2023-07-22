@@ -63,7 +63,6 @@ const Menu = () => {
             image: notifications,
             width: 19.7,
             height: 22.7,
-            onPress: goTo('PaymentsAndPayouts'),
           },
           {
             description: 'Privacy and sharing',
@@ -81,6 +80,7 @@ const Menu = () => {
             image: listHome,
             width: 24.04,
             height: 22.62,
+            onPress: goTo('OnboardingScreen1'),
           },
           {
             description: 'Your Homes',
@@ -234,7 +234,7 @@ const Menu = () => {
                 rightImageHeight={12.5}
                 rightImageSrc={arrowRight}
                 onPress={onPress}
-                spaceBetween
+                center
               />
 
               <Divider top={13} bottom={13} />

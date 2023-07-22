@@ -1,3 +1,6 @@
+#import <AppCenterReactNative.h>
+#import <AppCenterReactNativeAnalytics.h>
+#import <AppCenterReactNativeCrashes.h>
 #import <React/RCTLinkingManager.h>
 #import <Firebase.h>
 #import "AppDelegate.h"
@@ -8,6 +11,7 @@
 #import <React/RCTAppSetupUtils.h>
 #import <Firebase.h>
 #import <TSBackgroundFetch/TSBackgroundFetch.h>
+#import <CodePush/CodePush.h>
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -27,6 +31,9 @@
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [AppCenterReactNative register];
+  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+  [AppCenterReactNativeCrashes registerWithAutomaticProcessing];
   [GMSServices provideAPIKey:@"AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys"]; // add this line using the api key obtained from Google Console
    // [REQUIRED] Register BackgroundFetch
   [[TSBackgroundFetch sharedInstance] didFinishLaunching];
@@ -58,7 +65,8 @@
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  // return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  return [CodePush bundleURL];
 #endif
 }
 #if RCT_NEW_ARCH_ENABLED

@@ -8,7 +8,9 @@ import {Page, Button, Typography, Whitespace, PageSpinner} from '../../component
 import {global} from '../../assets/styles';
 import locationPermission from '../../assets/images/location-permission.png';
 
-const Location = () => {
+const Location = props => {
+  const {noRender, getPosition} = props;
+
   const [enabled, setEnabled] = useState(null);
   const [count, setCount] = useState(1);
 
@@ -78,10 +80,19 @@ const Location = () => {
 
           if (state.enabled) {
             await BackgroundGeolocation.watchPosition(
-              position => console.debug('[watchPosition] -', position),
+              position => {
+                AsyncStorage.setItem('position', JSON.stringify(position.coords));
+                if (__DEV__ && !getPosition) {
+                  console.debug('[watchPosition] -', position);
+                }
+
+                if (getPosition && typeof getPosition === 'function') {
+                  getPosition(position);
+                }
+              },
               e => console.error('[watchPosition] ERROR -', e),
               {
-                interval: 1000,
+                interval: 30000,
                 desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
                 persist: true,
               },
@@ -92,7 +103,7 @@ const Location = () => {
         },
       );
     });
-  }, []);
+  }, [getPosition]);
 
   const request = useCallback(async () => {
     const location = await init();
@@ -118,12 +129,16 @@ const Location = () => {
     (async () => {
       const location = await init();
 
-      if (location) {
+      if (location && !noRender) {
         return goToNotifications(location);
       }
       setEnabled(!!location);
     })();
-  }, [goToNotifications, init]);
+  }, [goToNotifications, init, noRender]);
+
+  if (noRender) {
+    return null;
+  }
 
   if (enabled === null) {
     return <PageSpinner />;

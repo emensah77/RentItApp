@@ -3,8 +3,9 @@ import {StyleSheet, Dimensions} from 'react-native';
 export const size = () => Dimensions.get('screen');
 export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
-export const pageInnerHorizontalPadding = 30;
+export const pageInnerHorizontalPadding = 20;
 export const standardWidth = isPortrait && size().width > 450 ? 800 : 450;
+export const colors = {primary: '#194CC3'};
 export const sizing = {
   maxWidth: standardWidth,
   width: '100%',
@@ -21,15 +22,29 @@ const global = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  right: {
+    justifyContent: 'flex-end',
+  },
   column: {
     flexDirection: 'column',
   },
   columnReverse: {flexDirection: 'column-reverse'},
   row: {...sizing, flexDirection: 'row'},
+  wrap: {...sizing, flexWrap: 'wrap'},
   rowReverse: {flexDirection: 'row-reverse'},
   zeroElevation: {
     elevation: 0,
     zIndex: 0,
+  },
+  elevation: {
+    elevation: 3,
+    padding: 30,
+    borderRadius: 5,
+    borderTopWidth: 0,
+    shadowColor: '#000',
+    // shadowOffset: {width: 1000, height: 2000},
+    // shadowOpacity: 1,
+    // shadowRadius: 20,
   },
   fullWidth: {
     width: '100%',
@@ -44,8 +59,6 @@ const global = StyleSheet.create({
   },
   pageContent: {
     paddingHorizontal: pageInnerHorizontalPadding,
-    paddingTop: 32,
-    paddingBottom: 32,
     flexGrow: 1,
   },
   footer: {
@@ -60,7 +73,7 @@ const global = StyleSheet.create({
   header: {
     backgroundColor: '#FFF',
     width: '100%',
-    height: 59,
+    height: 65,
     borderBottomColor: '#DFDFDF',
     borderBottomWidth: 1,
     justifyContent: 'center',
@@ -136,6 +149,13 @@ const global = StyleSheet.create({
     borderRadius: 31,
     flex: 0,
   },
+  multiLine: {
+    flexDirection: 'column',
+    minWidth: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start',
+  },
   plain: {
     width: 'auto',
     minWidth: 225,
@@ -188,8 +208,11 @@ const global = StyleSheet.create({
   },
   noTextDivider: {marginTop: 0},
   dropdownItem: {
+    ...sizing,
+    flexDirection: 'row',
     paddingHorizontal: pageInnerHorizontalPadding - 5,
     paddingVertical: pageInnerHorizontalPadding / 2,
+    marginVertical: 5,
   },
   error: {
     color: 'red',
@@ -220,11 +243,51 @@ const global = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 8,
   },
+  chipSelected: {
+    backgroundColor: '#0047B3',
+    height: 36,
+    borderWidth: 1,
+    borderColor: '#0047B3',
+    paddingVertical: 5,
+    paddingHorizontal: 27,
+    borderRadius: 20,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chipDeSelected: {
+    backgroundColor: 'transparent',
+    height: 36,
+    borderWidth: 1,
+    borderColor: '#DEDEDE',
+    paddingVertical: 5,
+    paddingHorizontal: 27,
+    borderRadius: 20,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selected: {
+    backgroundColor: '#E6F0FF',
+    justifyContent: 'space-between',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#0047B3',
+  },
+  deselected: {
+    backgroundColor: 'transparent',
+    justifyContent: 'space-between',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+  },
   contentBox: {
     maxWidth: 350,
     width: '80%',
-    marginLeft: 11,
-    marginRight: 11,
+    marginLeft: 3,
+    marginRight: 3,
   },
   tab: {borderBottomWidth: 2, borderBottomColor: '#000000', height: 36},
   tabContent: {
@@ -234,6 +297,37 @@ const global = StyleSheet.create({
     padding: 7,
     borderRadius: 13,
   },
+  smallBorderRadius: {
+    borderRadius: 12,
+  },
+  ...Array.from(new Array(101)).reduce(
+    (p, _, i) => ({
+      ...p,
+      [`top-${i}`]: {
+        position: 'absolute',
+        top: i,
+        zIndex: 10000,
+      },
+      [`top-${i}-center`]: {
+        position: 'absolute',
+        top: i,
+        zIndex: 10000,
+        alignSelf: 'center',
+      },
+      [`bottom-${i}`]: {
+        position: 'absolute',
+        bottom: i,
+        zIndex: 10000,
+      },
+      [`bottom-${i}-center`]: {
+        position: 'absolute',
+        bottom: i,
+        zIndex: 10000,
+        alignSelf: 'center',
+      },
+    }),
+    {},
+  ),
 });
 
 export default global;

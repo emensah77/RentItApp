@@ -1,5 +1,5 @@
-import React, {useEffect, useCallback, useState} from 'react';
-import {Text, VirtualizedList, Image, Modal, ActivityIndicator, Pressable} from 'react-native';
+import React, {useEffect, useCallback, useState, useMemo} from 'react';
+import {Text, VirtualizedList, Image, Modal, ActivityIndicator} from 'react-native';
 import _ from 'lodash';
 
 import Header from './Header';
@@ -118,6 +118,7 @@ const Dropdown = props => {
   );
 };
 
+const defaultRipple = {color: '#d5d5d5', radius: 130};
 const Item = ({
   item,
   index,
@@ -125,21 +126,27 @@ const Item = ({
   imageKey,
   onSelect,
   getRowLabel,
-  ripple = {color: '#d5d5d5', radius: 130},
-}) => (
-  <Pressable
-    key={item[index][displayKey]}
-    style={global.dropdownItem}
-    onPress={onSelect(item[index])}
-    hitSlop={15}
-    android_ripple={ripple}>
-    <Container type="row">
+  ripple = defaultRipple,
+}) => {
+  const source = useMemo(() => ({uri: _.get(item[index], imageKey)}), [imageKey, index, item]);
+
+  const imageStyle = useMemo(() => [global.icon, global.ovalIcon], []);
+
+  const textStyle = useMemo(() => [typography.primaryButton, typography.left], []);
+
+  return (
+    <Container
+      type="dropdownItem"
+      key={item[index][displayKey]}
+      onPress={onSelect(item[index])}
+      ripple={ripple}>
       <Image
-        source={{uri: _.get(item[index], imageKey)}}
+        source={source}
         loadingIndicatorSource={<ActivityIndicator size="large" color="blue" />}
-        style={[global.icon, global.ovalIcon]}
+        style={imageStyle}
       />
-      <Text style={[typography.primaryButton, typography.left]}>
+
+      <Text style={textStyle}>
         {(getRowLabel && getRowLabel(item[index])) || item[index][displayKey]}
         {__DEV__ &&
           !index &&
@@ -151,8 +158,8 @@ const Item = ({
           )}
       </Text>
     </Container>
-  </Pressable>
-);
+  );
+};
 
 Dropdown.Item = React.memo(
   Item,

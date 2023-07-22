@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
-apply plugin: "com.facebook.react"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -80,13 +81,13 @@ import org.apache.tools.ant.taskdefs.condition.Os
  */
 
 project.ext.react = [
-    enableHermes: false,  // clean and rebuild if changing
+    enableHermes: true,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
 Project background_geolocation = project(':react-native-background-geolocation')
 apply from: "${background_geolocation.projectDir}/app.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 
 /**
@@ -97,12 +98,12 @@ apply from: "${background_geolocation.projectDir}/app.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = true
+def enableProguardInReleaseBuilds = false
 
 /**
  * The preferred build flavor of JavaScriptCore.
@@ -142,8 +143,8 @@ android {
         applicationId "com.rentitghana"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 116
-        versionName "5.13.1"
+        versionCode 132
+        versionName "6.6.5"
         vectorDrawables.useSupportLibrary = true
         configurations.all {
             resolutionStrategy { force 'androidx.sqlite:sqlite-framework:2.1.0' }
@@ -160,14 +161,14 @@ android {
 
     splits {
         abi {
-            reset()
+            // reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
+            universalApk true  // If true, also generate a universal APK
             include (*reactNativeArchitectures())
         }
     }
     dexOptions {
-      javaMaxHeapSize "4g"
+      javaMaxHeapSize "8g"
     }
      packagingOptions {
         pickFirst '**/libc++_shared.so'
@@ -196,9 +197,11 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            if (System.env["APPCENTER_BUILD_ID"] == null) {
+              signingConfig signingConfigs.release
+              minifyEnabled enableProguardInReleaseBuilds
+              proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            }
         }
     }
 
@@ -213,6 +216,13 @@ android {
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+            } else {
+                if (output.outputFile.name == "app-universal-release.apk") {
+                  output.outputFileName = "app-release.apk"
+                }
+                if (output.outputFile.name == "app-universal-debug.apk") {
+                  output.outputFileName = "app-debug.apk"
+                }
             }
 
         }
@@ -224,6 +234,7 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation project(':react-native-config')
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation 'com.facebook.android:facebook-login:latest.release'
