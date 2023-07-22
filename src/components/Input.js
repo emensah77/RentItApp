@@ -26,7 +26,7 @@ const Input = props => {
     plain,
     disabled,
     inline,
-    trim = true,
+    trim = false,
     ...rest
   } = props;
 

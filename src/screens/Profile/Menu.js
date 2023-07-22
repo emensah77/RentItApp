@@ -35,23 +35,11 @@ const Menu = () => {
   const isMarketer = useMemo(async () => {
     const doc = firestore().collection('users').doc(uid);
     const u = await doc.get().catch(console.error);
-    if (!u.type || (u && u.type === 'pending-marketer')) {
-      return false;
+    if (u && u.marketer_status === 'ACCEPTED') {
+      return true;
     }
-    return true;
+    return false;
   }, [uid]);
-
-  const leftIcon = useMemo(
-    () => (currentUser.photoURL ? {uri: currentUser.photoURL} : userImage),
-    [currentUser],
-  );
-
-  const goTo = useCallback(
-    route => () => {
-      navigation.push(route);
-    },
-    [navigation],
-  );
 
   const markerterDashboard = useMemo(() => {
     if (isMarketer) {
@@ -65,6 +53,18 @@ const Menu = () => {
     }
     return undefined;
   }, [goTo, isMarketer]);
+
+  const leftIcon = useMemo(
+    () => (currentUser.photoURL ? {uri: currentUser.photoURL} : userImage),
+    [currentUser],
+  );
+
+  const goTo = useCallback(
+    route => () => {
+      navigation.push(route);
+    },
+    [navigation],
+  );
 
   const sections = useMemo(
     () => [

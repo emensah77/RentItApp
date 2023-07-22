@@ -60,6 +60,7 @@ const Email = () => {
         value={email}
         error={error}
         onChange={onEmailChange}
+        trim
       />
 
       <Button
