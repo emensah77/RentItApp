@@ -4,6 +4,7 @@ import {Modal, View, TouchableOpacity} from 'react-native';
 import {Icon, SizedBox, Text} from '@components';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Calendar from 'react-native-calendar-range-picker';
+import Video from 'react-native-video';
 import {colors} from '@assets/styles';
 import styles from './styles';
 
@@ -12,7 +13,9 @@ interface ModalProps {
   onClose: any;
   onComplete?: any;
   onChange?: any;
-  type: 'location' | 'calender';
+  type: 'location' | 'calender' | 'video';
+  handleVideoPlaybackComplete?: any;
+  videoUrl?: string;
 }
 
 const CUSTOM_LOCALE = {
@@ -36,7 +39,7 @@ const CUSTOM_LOCALE = {
 };
 
 export const SearchModal = (props: ModalProps) => {
-  const {show, onClose, onComplete, type, onChange} = props;
+  const {show, onClose, onComplete, type, onChange, handleVideoPlaybackComplete, videoUrl} = props;
   const renderRow = useCallback(
     item => (
       <View style={styles.headerContainer}>
@@ -72,7 +75,7 @@ export const SearchModal = (props: ModalProps) => {
               // suppressDefaultStyles
               renderRow={renderRow}
             />
-          ) : (
+          ) : type === 'calender' ? (
             <View>
               <Text text="When's your trip?" weight="bold" size="xl" />
               <Calendar
@@ -84,6 +87,13 @@ export const SearchModal = (props: ModalProps) => {
                 onChange={onChange}
               />
             </View>
+          ) : (
+            <Video
+              source={{uri: videoUrl}}
+              resizeMode="cover"
+              style={styles.video}
+              onEnd={handleVideoPlaybackComplete}
+            />
           )}
         </View>
         {type === 'calender' && (

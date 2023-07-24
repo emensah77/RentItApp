@@ -46,7 +46,7 @@ export type AppStackParamList = {
   Edit: undefined;
   EditPersonalInfo: undefined;
   PhoneNumber: undefined;
-  [x: string]: undefined;
+  [x: string]: any;
 };
 
 /**

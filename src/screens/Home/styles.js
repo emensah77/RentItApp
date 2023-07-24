@@ -1,4 +1,5 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   container: {backgroundColor: 'white', flex: 1},
@@ -255,5 +256,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
   },
+
+  mapContent: {
+    alignItems: 'center',
+    backgroundColor: '#0047B3',
+    width: wp(22),
+    left: wp(39),
+    borderRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    padding: 12,
+    position: 'absolute',
+    bottom: wp(10),
+  },
+
+  map: {width: '100%', height: '100%', backgroundColor: 'white'},
+  loaderContainer: {paddingBottom: 0, marginHorizontal: 20},
 });
 export default styles;

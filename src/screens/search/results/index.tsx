@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useState, useEffect, useMemo} from 'react';
+import React, {useCallback, useState, useEffect, useMemo, useRef} from 'react';
 import {ViewStyle, View, FlatList, Alert, Linking} from 'react-native';
 import {Page} from '@components';
 import {Icon} from '@components/Icon';
@@ -11,19 +10,25 @@ import Geolocation from 'react-native-geolocation-service';
 import {colors, palette} from '@theme';
 
 import {pageInnerHorizontalPadding} from '@assets/styles/global';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
+import CustomMarker from '@components/CustomMarker';
 import moment from 'moment';
 import {useRoute} from '@react-navigation/native';
+import {mapStyle} from '@theme/global';
 import styles from './styles';
 
 export const SearchResultsScreen = _props => {
   const {navigation} = _props;
   const route: any = useRoute();
   const {guests, location, dates} = route.params;
-  const [posts] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [latitude, setLatitude] = useState<any>(null);
   const [longitude, setLongitude] = useState<any>(null);
+  const [selectedPlacedId, setSelectedPlacedId] = useState(null);
+
+  const mapRef = useRef();
 
   const totalGuests = useMemo(() => {
     return Object.keys(guests)
@@ -64,20 +69,47 @@ export const SearchResultsScreen = _props => {
     } finally {
       // setIsLoadingType(false); // Set loading state to false
     }
-  }, []);
+  }, [latitude, location?.viewPort, longitude]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      await personalizedHomes();
+      const data = await personalizedHomes();
+
+      if (data && data.homes) {
+        setPosts(data.homes);
+        // setNextToken(data.nextToken);
+      } else {
+        setPosts([]);
+      }
     };
 
-    fetchInitialData();
-    // _getUserData(auth().currentUser.uid);
-    // userDetails();
-  }, [latitude, longitude]);
+    longitude && latitude && fetchInitialData();
+  }, [latitude, longitude, personalizedHomes]);
 
-  useEffect(() => {
-    getLocation();
+  const hasPermissionIOS = useCallback(async () => {
+    const openSetting = () => {
+      Linking.openSettings().catch(() => {
+        Alert.alert('Unable to open settings');
+      });
+    };
+    const newStatus = await Geolocation.requestAuthorization('whenInUse');
+
+    if (newStatus === 'granted') {
+      return true;
+    }
+
+    if (newStatus === 'denied') {
+      Alert.alert('Location permission denied');
+    }
+
+    if (newStatus === 'disabled') {
+      Alert.alert('Turn on Location Services to allow "RentIt" to determine your location.', '', [
+        {text: 'Go to Settings', onPress: openSetting},
+        {text: "Don't Use Location", onPress: () => {}},
+      ]);
+    }
+
+    return false;
   }, []);
 
   const getLocation = useCallback(async () => {
@@ -128,33 +160,11 @@ export const SearchResultsScreen = _props => {
         showLocationDialog: true,
       },
     );
-  }, []);
+  }, [hasPermissionIOS]);
 
-  const hasPermissionIOS = useCallback(async () => {
-    const openSetting = () => {
-      Linking.openSettings().catch(() => {
-        Alert.alert('Unable to open settings');
-      });
-    };
-    const newStatus = await Geolocation.requestAuthorization('whenInUse');
-
-    if (newStatus === 'granted') {
-      return true;
-    }
-
-    if (newStatus === 'denied') {
-      Alert.alert('Location permission denied');
-    }
-
-    if (newStatus === 'disabled') {
-      Alert.alert('Turn on Location Services to allow "RentIt" to determine your location.', '', [
-        {text: 'Go to Settings', onPress: openSetting},
-        {text: "Don't Use Location", onPress: () => {}},
-      ]);
-    }
-
-    return false;
-  }, []);
+  useEffect(() => {
+    getLocation();
+  }, [getLocation]);
 
   const renderItem = useCallback(
     ({item}) => (
@@ -167,7 +177,7 @@ export const SearchResultsScreen = _props => {
 
   const handleSearch = useCallback(() => {
     navigation.navigate('SearchHome');
-  }, []);
+  }, [navigation]);
 
   const keyExtractor = useCallback(item => item.id.toString(), []);
 
@@ -182,6 +192,29 @@ export const SearchResultsScreen = _props => {
   const memoizedFooterProps: any = useMemo(() => {
     return {style: {color: palette.textInverse300}, size: 'xxs'};
   }, []);
+
+  const initialRegion = useMemo(() => {
+    return {
+      latitude: 5.602028159656166,
+      longitude: -0.183158678544458,
+      latitudeDelta: 0.8,
+      longitudeDelta: 0.8,
+    };
+  }, []);
+
+  const coords = useCallback(
+    place => () => {
+      return {latitude: place.latitude, longitude: place.longitude};
+    },
+    [],
+  );
+
+  const handleSelect = useCallback(
+    placeId => () => {
+      setSelectedPlacedId(placeId);
+    },
+    [],
+  );
 
   return (
     <Page
@@ -204,6 +237,27 @@ export const SearchResultsScreen = _props => {
           onPress={handleSearch}
         />
       </View>
+      {/* @ts-ignore */}
+      <MapView.Animated
+        ref={mapRef}
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        customMapStyle={mapStyle}
+        zoomEnabled
+        minZoomLevel={12}
+        // onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
+        initialRegion={initialRegion}>
+        {posts.map((place: any) => (
+          <CustomMarker
+            key={place?.id}
+            isSelected={place?.id === selectedPlacedId}
+            onPress={handleSelect(place?.id)}
+            coordinate={coords(place)}
+            price={place.newPrice}
+          />
+        ))}
+        {/* @ts-ignore */}
+      </MapView.Animated>
 
       <FlatList
         data={posts}

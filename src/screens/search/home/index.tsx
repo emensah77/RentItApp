@@ -1,8 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react-perf/jsx-no-new-array-as-prop */
 import {colors} from '@assets/styles';
 import {Card, Icon, Page, PlusMinus, ScrollArea, SizedBox, Text} from '@components';
 import React, {useCallback, useMemo, useState} from 'react';
@@ -10,6 +5,7 @@ import {View, ViewStyle, Image, TouchableOpacity} from 'react-native';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import {flexMap} from '@assets/images';
 import {SearchModal} from '@components/Modals';
+
 import moment from 'moment';
 import styles from './styles';
 
@@ -65,7 +61,7 @@ export const SearchHome = props => {
     [dates],
   );
 
-  const completeSearch = () => {
+  const completeSearch = useCallback(() => {
     navigation.navigate('SearchResults', {
       guests: {
         adultsCount,
@@ -81,23 +77,89 @@ export const SearchHome = props => {
         address,
       },
     });
-  };
+  }, [
+    address,
+    adultsCount,
+    childrenCount,
+    dates,
+    infantsCount,
+    locality,
+    navigation,
+    petsCount,
+    sublocality,
+    viewPort,
+  ]);
+
+  const onChange = useCallback(({startDate, endDate}) => {
+    setDates({startDate, endDate});
+
+    if (startDate && endDate) {
+      // setModalVisible(false);
+      setShowAddGuest(true);
+    }
+  }, []);
+
+  const $mapViewStyles = useCallback(
+    isSelected => [styles.mapView, !isSelected && {borderColor: colors.palette.textInverse200}],
+    [],
+  );
+
+  const handleModal = useCallback(
+    calenderType => () => {
+      setModalType(calenderType);
+      setModalVisible(true);
+    },
+    [],
+  );
+
+  const onClose = useCallback(() => {
+    setModalVisible(false);
+  }, []);
+
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const handleMapSelect = useCallback(item => () => setSelectedMap(item.title.toLowerCase()), []);
+
+  const headerTextProps: any = useMemo(() => {
+    return headerTextProps;
+  }, []);
+
+  const searchDate = useMemo(
+    () =>
+      dates.startDate
+        ? `${moment(dates.startDate).format('DD MMM')} - ${moment(dates.endDate).format('DD MMM')}`
+        : '-',
+    [dates.endDate, dates.startDate],
+  );
+
+  const handleOnchange = useCallback(
+    type => (val: any) => {
+      if (type === 'adult') return setAdultsCount(val);
+      if (type === 'children') return setChildrenCount(val);
+      if (type === 'infant') return setInfantsCount(val);
+      if (type === 'pets') return setPetsCount(val);
+    },
+    [],
+  );
+
+  const handleShow = useCallback(
+    type => () => {
+      if (type === 'address') return setShowAddress(false);
+      if (type === 'guest') return setShowAddGuest(true);
+    },
+    [],
+  );
 
   return (
     <View style={styles.wrapper}>
       <SearchModal
         show={modalVisible}
-        onClose={() => setModalVisible(false)}
+        onClose={onClose}
         type={modalType}
         onComplete={autoComplete}
-        onChange={({startDate, endDate}) => {
-          setDates({startDate, endDate});
-
-          if (startDate && endDate) {
-            // setModalVisible(false);
-            setShowAddGuest(true);
-          }
-        }}
+        onChange={onChange}
       />
 
       <Page
@@ -107,7 +169,7 @@ export const SearchHome = props => {
         hasPadding={true}>
         <SizedBox height={10} />
         <View style={styles.headerContainer}>
-          <Icon icon="closeCircle" onPress={() => navigation.goBack()} />
+          <Icon icon="closeCircle" onPress={goBack} size={30} />
           <View style={styles.headerContent}>
             <View style={styles.content}>
               <Text text="Stays" weight="bold" />
@@ -117,6 +179,7 @@ export const SearchHome = props => {
               )}
             </View>
           </View>
+          <SizedBox width={30} />
         </View>
 
         <SizedBox height={30} />
@@ -124,16 +187,11 @@ export const SearchHome = props => {
           <Card
             style={$cardStyle}
             heading="Where to?"
-            HeadingTextProps={{size: 'xl'}}
+            HeadingTextProps={headerTextProps}
             ContentComponent={
               <>
                 <SizedBox height={13} />
-                <TouchableOpacity
-                  style={styles.search}
-                  onPress={() => {
-                    setModalType('location');
-                    setModalVisible(true);
-                  }}>
+                <TouchableOpacity style={styles.search} onPress={handleModal('location')}>
                   <Icon icon="searchMini" size={20} />
                   <SizedBox width={10} />
                   <Text text="Search destination" size="xs" color={colors.palette.textInverse300} />
@@ -146,12 +204,8 @@ export const SearchHome = props => {
                       <TouchableOpacity
                         // eslint-disable-next-line react/no-array-index-key
                         key={index}
-                        onPress={() => setSelectedMap(item.title.toLowerCase())}>
-                        <View
-                          style={[
-                            styles.mapView,
-                            !isSelected && {borderColor: colors.palette.textInverse200},
-                          ]}>
+                        onPress={handleMapSelect(item)}>
+                        <View style={$mapViewStyles(isSelected)}>
                           <Image source={item.map} />
                         </View>
                         <SizedBox height={5} />
@@ -171,49 +225,34 @@ export const SearchHome = props => {
           />
         ) : (
           <Card
-            style={[$cardStyle, {borderRadius: 16}]}
+            style={$cardStyke}
             LeftComponent={<Text text="Where" size="xs" color={colors.palette.textInverse300} />}
             RightComponent={<Text text={address} size="xs" weight="bold" />}
-            onPress={() => setShowAddress(false)}
+            onPress={handleShow('address')}
           />
         )}
 
         <SizedBox height={15} />
         <Card
-          style={[$cardStyle, {borderRadius: 16}]}
+          style={$cardStyke}
           LeftComponent={<Text text="When" size="xs" color={colors.palette.textInverse300} />}
-          RightComponent={
-            <Text
-              text={
-                dates.startDate
-                  ? `${moment(dates.startDate).format('DD MMM')} - ${moment(dates.endDate).format(
-                      'DD MMM',
-                    )}`
-                  : '-'
-              }
-              size="xs"
-              weight="bold"
-            />
-          }
-          onPress={() => {
-            setModalType('calender');
-            setModalVisible(true);
-          }}
+          RightComponent={<Text text={searchDate} size="xs" weight="bold" />}
+          onPress={handleModal('calender')}
         />
 
         <SizedBox height={15} />
         {!showAddGuest ? (
           <Card
-            style={[$cardStyle, {borderRadius: 16}]}
+            style={$cardStyke}
             LeftComponent={<Text text="Who" size="xs" color={colors.palette.textInverse300} />}
             RightComponent={<Text text="Add guest" size="xs" weight="bold" />}
-            onPress={() => setShowAddGuest(true)}
+            onPress={handleShow('guest')}
           />
         ) : (
           <Card
             style={$cardStyle}
             heading="Who's coming?"
-            HeadingTextProps={{size: 'xl'}}
+            HeadingTextProps={headerTextProps}
             ContentComponent={
               <>
                 <View style={styles.countContainer}>
@@ -227,11 +266,7 @@ export const SearchHome = props => {
                       color={colors.palette.textInverse300}
                     />
                   </View>
-                  <PlusMinus
-                    value={adultsCount}
-                    min={1}
-                    onChange={value => setAdultsCount(value)}
-                  />
+                  <PlusMinus value={adultsCount} min={1} onChange={handleOnchange('adult')} />
                 </View>
 
                 <View style={styles.countContainer}>
@@ -245,11 +280,7 @@ export const SearchHome = props => {
                       color={colors.palette.textInverse300}
                     />
                   </View>
-                  <PlusMinus
-                    value={childrenCount}
-                    min={0}
-                    onChange={value => setChildrenCount(value)}
-                  />
+                  <PlusMinus value={childrenCount} min={0} onChange={handleOnchange('children')} />
                 </View>
 
                 <View style={styles.countContainer}>
@@ -263,11 +294,7 @@ export const SearchHome = props => {
                       color={colors.palette.textInverse300}
                     />
                   </View>
-                  <PlusMinus
-                    value={infantsCount}
-                    min={0}
-                    onChange={value => setInfantsCount(value)}
-                  />
+                  <PlusMinus value={infantsCount} min={0} onChange={handleOnchange('infant')} />
                 </View>
 
                 <View style={styles.countContainer}>
@@ -281,7 +308,7 @@ export const SearchHome = props => {
                       color={colors.palette.textInverse300}
                     />
                   </View>
-                  <PlusMinus value={petsCount} min={0} onChange={value => setPetsCount(value)} />
+                  <PlusMinus value={petsCount} min={0} onChange={handleOnchange('pets')} />
                 </View>
 
                 <SizedBox height={20} />
@@ -324,4 +351,9 @@ const $cardStyle: ViewStyle = {
 
 const $textStyle = {
   textDecorationLine: 'underline',
+};
+
+const $cardStyke = {
+  ...$cardStyle,
+  borderRadius: 16,
 };

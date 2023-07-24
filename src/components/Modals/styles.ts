@@ -72,6 +72,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 6,
   },
+
+  videoLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+  },
 });
 
 export default styles;
