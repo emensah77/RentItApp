@@ -29,8 +29,83 @@ const Base = props => {
 
   const route = useRoute();
 
+  const skip = useCallback(
+    async (screenName, progressData) => {
+      if (!isComplete) {
+        return;
+      }
+
+      let params;
+      if (progressData) {
+        params = {...progressData};
+      }
+      navigation.navigate(isFinal ? 'Home' : screenName || `OnboardingScreen${index + 1}`, params);
+    },
+    [isComplete, navigation, isFinal, index],
+  );
+
+  const load = useCallback(async () => {
+    const response = await fetch(
+      `https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    ).catch(e => console.error('Error loading progress', e));
+
+    const _data = await response.json();
+    console.debug('Onboarding Progress Data Loaded:', _data);
+
+    if (_data.progressData) {
+      oldData = {..._data.progressData};
+    }
+
+    if (_data.screenName) {
+      skip(_data.screenName, _data.progressData);
+    }
+  }, [userId, skip]);
+
+  const save = useCallback(async () => {
+    if (!data || !isComplete) {
+      return;
+    }
+
+    __DEV__ &&
+      console.debug(
+        'Updating Progress',
+        JSON.stringify({
+          userId,
+          progress: {
+            screenName: route.name,
+            progressData: {...oldData, ...data},
+          },
+        }),
+      );
+
+    const response = await fetch(
+      'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          progress: {
+            screenName: route.name,
+            progressData: {...oldData, ...data},
+          },
+        }),
+      },
+    ).catch(console.error);
+
+    __DEV__ && console.debug('Response for Progress Update', await response.json());
+  }, [data, isComplete, route.name, userId]);
+
   const finish = useCallback(async () => {
-    if (!isFinal) {
+    if (!isFinal || !isComplete) {
       return;
     }
 
@@ -48,8 +123,10 @@ const Base = props => {
 
     // Sync with past searched
     const {address: a, title: t, description: d} = oldData;
+    const h = uploadedHome.data.createPost.id;
+    const i = oldData.imageUrls[0];
     await fetch(
-      `https://rentit.herokuapp.com/api/v1/emojis?search=${a}&homeId=${uploadedHome.data.createPost.id}&title=${t}&description=${d}&image=${oldData.imageUrls[0]}`,
+      `https://rentit.herokuapp.com/api/v1/emojis?search=${a}&homeId=${h}&title=${t}&description=${d}&image=${i}`,
       {
         method: 'GET',
         headers: {
@@ -69,76 +146,32 @@ const Base = props => {
         action: 'clear',
       }),
     }).catch(e => console.error('An error occurred while trying to clear progress data', e));
-  }, [data, isFinal, userId]);
+  }, [data, isFinal, isComplete, userId]);
 
-  const load = useCallback(async () => {
-    const response = await fetch(
-      `https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    ).catch(e => console.error('Error loading progress', e));
-
-    const progressData = await response.json();
-    console.debug('Onboarding Progress:', progressData);
-  }, [userId]);
-
-  const save = useCallback(async () => {
-    if (!data) {
-      return;
+  const back = useCallback(async () => {
+    if (index - 1 <= 0) {
+      navigation.goBack();
     }
-
-    __DEV__ &&
-      console.debug(
-        'Updating Progress',
-        JSON.stringify({
-          userId,
-          progress: {
-            screenName: route.name,
-            progressData: {...oldData, ...data},
-          },
-        }),
-      );
-
-    await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        progress: {
-          screenName: route.name,
-          progressData: {...oldData, ...data},
-        },
-      }),
-    }).catch(console.error);
-  }, [data, route.name, userId]);
+    navigation.navigate(`OnboardingScreen${index - 1}`);
+  }, [index, navigation]);
 
   const next = useCallback(async () => {
+    await skip();
     await save();
-
-    if (!isComplete) {
-      return;
-    }
-
-    navigation.navigate(isFinal ? 'Home' : `OnboardingScreen${index + 1}`);
-  }, [save, isComplete, navigation, isFinal, index]);
+  }, [skip, save]);
 
   useEffect(() => {
+    if (index !== 1) {
+      return;
+    }
     load();
-  }, [load]);
+  }, [index, load]);
 
   useEffect(() => {
     oldData = {...oldData, ...data};
     save();
     finish();
   }, [save, finish, data]);
-
-  // console.log('Data:', index, data, oldData, userId);
 
   return (
     <Page
@@ -176,7 +209,7 @@ const Base = props => {
               <Divider top={25} bottom={15} />
 
               <Container row type="spaceBetween">
-                <Button accessibilityLabel="Back" type="plain" onPress={navigation.goBack}>
+                <Button accessibilityLabel="Back" type="plain" onPress={back}>
                   Back
                 </Button>
 

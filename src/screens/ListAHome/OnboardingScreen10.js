@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
-import {Storage} from 'aws-amplify';
+import Amplify, {Storage} from 'aws-amplify';
 
 import Base from './Base';
 
@@ -9,9 +9,15 @@ import add from '../../assets/images/add.png';
 import camera from '../../assets/images/camera.png';
 import {randomInt} from '../../utils';
 
-const OnboardingScreen10 = () => {
-  const [imageUrls, setImageUrls] = useState([]);
-  const [data, setData] = useState({});
+import awsConfig from '../../aws-exports';
+
+const OnboardingScreen10 = props => {
+  const {
+    route: {params: {imageUrls: iU} = {imageUrls: []}},
+  } = props;
+
+  const [imageUrls, setImageUrls] = useState(iU);
+  const [data, setData] = useState({imageUrls: iU});
   const [progressText, setProgressText] = useState('');
 
   const upload = useCallback(
@@ -22,6 +28,10 @@ const OnboardingScreen10 = () => {
       const rawFile = await response.blob();
 
       const name = `home-${randomInt(999999999999)}`;
+
+      Amplify.configure(awsConfig);
+      Storage.configure({level: 'public', region: 'us-east-2'});
+
       return Storage.put(name, rawFile, {
         level: 'public',
         contentType: 'image/jpeg',
@@ -36,7 +46,9 @@ const OnboardingScreen10 = () => {
             level: 'public',
             contentType: 'image/jpeg',
           })
-            .then(() => {
+            .then(uploadRes => {
+              console.debug('Uploaded Successfully', uploadRes);
+
               setImageUrls(prevImages =>
                 prevImages.concat(`https://d1mgzi0ytcdaf9.cloudfront.net/public/${name}`),
               );
@@ -106,7 +118,7 @@ const OnboardingScreen10 = () => {
     <Base
       index={10}
       total={12}
-      // isComplete={data.imageUrls && data.imageUrls.length !== 0}
+      // isComplete={data.imageUrls.length !== 0}
       isComplete
       data={data}
       title="Let's add pictures of your home.">

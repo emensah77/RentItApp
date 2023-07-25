@@ -4,21 +4,29 @@ import Base from './Base';
 
 import {Input} from '../../components';
 
-const OnboardingScreen6 = () => {
-  const [title, setTitle] = useState('');
-  const [data, setData] = useState({});
+const OnboardingScreen6 = props => {
+  const {
+    route: {params: {title} = {title: ''}},
+  } = props;
+
+  const [value, setValue] = useState(title);
+  const [data, setData] = useState({title});
 
   useEffect(() => {
-    setData({title});
-  }, [title]);
+    setData({title: value});
+  }, [value]);
 
   return (
-    <Base index={6} isComplete={!!data.title} data={data} title="Let's give your place a title.">
+    <Base
+      index={6}
+      isComplete={data.title.length > 3}
+      data={data}
+      title="Let's give your place a title.">
       <Input
         placeholder="Eg. Beautiful 3 bedroom flat"
         type="text"
-        value={title}
-        onChange={setTitle}
+        value={value}
+        onChange={setValue}
       />
     </Base>
   );

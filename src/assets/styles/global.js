@@ -300,6 +300,13 @@ const global = StyleSheet.create({
   smallBorderRadius: {
     borderRadius: 12,
   },
+  smallCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+  },
   ...Array.from(new Array(101)).reduce(
     (p, _, i) => ({
       ...p,

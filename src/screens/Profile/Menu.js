@@ -1,4 +1,4 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useMemo, useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -30,15 +30,32 @@ const Menu = () => {
     currentUser,
     currentUser: {uid},
   } = auth();
+  const [isMarketer, setIsMarketer] = useState(false);
+
   const navigation = useNavigation();
 
-  const isMarketer = useMemo(async () => {
-    const doc = firestore().collection('users').doc(uid);
-    const u = await doc.get().catch(console.error);
-    if (u && u.marketer_status === 'ACCEPTED') {
-      return true;
-    }
-    return false;
+  const goTo = useCallback(
+    route => () => {
+      navigation.push(route);
+    },
+    [navigation],
+  );
+
+  useEffect(() => {
+    const checkMarketer = async () => {
+      const doc = firestore().collection('users').doc(uid);
+      const docSnapshot = await doc.get().catch(console.error);
+      if (docSnapshot) {
+        const u = docSnapshot.data();
+        if (u && u.marketer_status === 'ACCEPTED') {
+          setIsMarketer(true);
+        } else {
+          setIsMarketer(false);
+        }
+      }
+    };
+
+    checkMarketer();
   }, [uid]);
 
   const markerterDashboard = useMemo(() => {
@@ -57,13 +74,6 @@ const Menu = () => {
   const leftIcon = useMemo(
     () => (currentUser.photoURL ? {uri: currentUser.photoURL} : userImage),
     [currentUser],
-  );
-
-  const goTo = useCallback(
-    route => () => {
-      navigation.push(route);
-    },
-    [navigation],
   );
 
   const sections = useMemo(

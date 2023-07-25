@@ -36,7 +36,7 @@ const Container = props => {
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={onPress && onPress}
       android_ripple={ripple}
       hitSlop={hitSlop}
       accessible

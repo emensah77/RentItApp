@@ -1,25 +1,19 @@
-import React, {useState, useCallback, useMemo, useEffect} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 
 import Base from './Base';
 
-import {Container, Whitespace, Typography} from '../../components';
+import {Container, Whitespace, Typography, Input} from '../../components';
 
-const OnboardingScreen11 = () => {
+import {TYPES} from '../../utils';
+
+const OnboardingScreen11 = props => {
+  const {
+    route: {params: {price: p, currency: c} = {price: 0, currency: ''}},
+  } = props;
+
   const [data, setData] = useState({});
-  const [price, setPrice] = useState(0);
-  const [currency, setCurrency] = useState('');
-
-  const items = useMemo(
-    () => [
-      {
-        cur: 'US Dollar',
-      },
-      {
-        cur: 'Ghana Cedis',
-      },
-    ],
-    [],
-  );
+  const [price, setPrice] = useState(p);
+  const [currency, setCurrency] = useState(c);
 
   const select = useCallback(
     _currency => () => {
@@ -29,11 +23,11 @@ const OnboardingScreen11 = () => {
   );
 
   const decrement = useCallback(() => {
-    setPrice(_price => _price - 50);
+    setPrice(_price => (parseInt(_price, 10) - 50 <= 0 ? 0 : parseInt(_price, 10) - 50));
   }, []);
 
   const increment = useCallback(() => {
-    setPrice(_price => _price + 50);
+    setPrice(_price => (parseInt(_price, 10) + 50 <= 0 ? 0 : parseInt(_price, 10) + 50));
   }, []);
 
   useEffect(() => {
@@ -44,53 +38,52 @@ const OnboardingScreen11 = () => {
     <Base
       index={11}
       total={12}
-      isComplete={data.price && data.currency}
+      isComplete={data.price > 0 && !!data.currency}
       data={data}
       title="Let's set the price of your home"
       label="You can change it anytime.">
-      {items.map(({cur}) => (
-        <React.Fragment key={cur}>
+      {TYPES.CURRENCIES.map(({value}) => (
+        <React.Fragment key={value}>
           <Container
-            type={`chip${currency === cur ? '' : 'De'}Selected`}
+            type={`chip${currency === value ? '' : 'De'}Selected`}
             color="#FFF"
             height={50}
             width="100%"
-            onPress={select(cur)}>
+            onPress={select(value)}>
             <Typography
               type="notice"
               left
               width="100%"
               size={18}
               weight="700"
-              onPress={select(cur)}>
-              {cur}
+              onPress={select(value)}>
+              {value}
             </Typography>
           </Container>
 
           <Whitespace marginTop={33} />
         </React.Fragment>
       ))}
+
       <Container center width="100%">
         <Container type="elevation" width="90%">
           <Container center row type="spaceBetween">
-            <Container onPress={decrement}>
-              <Typography center type="smallCircle" onPress={decrement}>
+            <Container type="smallCircle" center onPress={decrement}>
+              <Typography center onPress={decrement}>
                 -
               </Typography>
             </Container>
 
             <Whitespace marginLeft={20} />
 
-            <Container type="input" width={100}>
-              <Typography size={26} height={34} weight="800" type="notice" color="#1F2D3D">
-                {price}
-              </Typography>
+            <Container width={100}>
+              <Input placeholder="0" type="text" value={`${price}`} onChange={setPrice} />
             </Container>
 
             <Whitespace marginLeft={20} />
 
-            <Container center onPress={increment}>
-              <Typography center type="smallCircle" onPress={increment}>
+            <Container type="smallCircle" center onPress={increment}>
+              <Typography center onPress={increment}>
                 +
               </Typography>
             </Container>

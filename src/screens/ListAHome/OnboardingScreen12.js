@@ -36,6 +36,7 @@ const OnboardingScreen11 = () => {
   });
 
   const onPress = useCallback(async (_, details = null) => {
+    // console.log('onPress', details);
     if (!details) {
       return;
     }
