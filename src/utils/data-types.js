@@ -41,6 +41,21 @@ const HOME_TYPES = [
   },
 ];
 
+const PAYMENT_TYPES = [
+  {
+    value: 'Loyalty Home',
+    description: 'You have given a loyalty package to this homeowner',
+  },
+  {
+    value: 'Negotiable',
+    description: 'Price can be negotiated with the home owner',
+  },
+  {
+    value: 'Furnished',
+    description: 'Property comes with furniture and amenities',
+  },
+];
+
 const CURRENCIES = [{value: 'GHS'}, {value: 'USD'}];
 
 const MODES = [
@@ -84,6 +99,7 @@ const FACILITIES = [
 
 export default {
   HOME_TYPES,
+  PAYMENT_TYPES,
   CURRENCIES,
   MODES,
   AMENITIES,

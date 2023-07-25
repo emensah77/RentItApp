@@ -230,6 +230,7 @@ const Base = props => {
           <Typography height={30} type="heading" size={26} color="#1F2D3D" width="100%">
             {title}
           </Typography>
+
           <Typography type="notice" weight="400" size={14} color="#4D4D4D" width="100%">
             {label}
           </Typography>

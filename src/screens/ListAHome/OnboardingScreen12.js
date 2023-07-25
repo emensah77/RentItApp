@@ -9,6 +9,8 @@ import {Typography, Whitespace, Container, Image} from '../../components';
 import {global} from '../../assets/styles';
 import locationPin from '../../assets/images/location-pin.png';
 
+navigator.geolocation = require('react-native-geolocation-service');
+
 const query = {
   key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
   language: 'en',
@@ -26,17 +28,28 @@ const containerStyle = [
   global.pageContent,
 ];
 
-const OnboardingScreen11 = () => {
+const OnboardingScreen11 = props => {
+  const {
+    route: {
+      params: {latitude, longitude, locality, address, sublocality} = {
+        latitude: '',
+        longitude: '',
+        locality: '',
+        address: '',
+        sublocality: '',
+      },
+    },
+  } = props;
+
   const [data, setData] = useState({
-    latitude: '',
-    longitude: '',
-    locality: '',
-    address: '',
-    sublocality: '',
+    latitude,
+    longitude,
+    locality,
+    address,
+    sublocality,
   });
 
   const onPress = useCallback(async (_, details = null) => {
-    // console.log('onPress', details);
     if (!details) {
       return;
     }
@@ -52,21 +65,39 @@ const OnboardingScreen11 = () => {
 
   const renderRow = useCallback(
     item => (
-      <>
-        <Whitespace marginTop={15} />
+      <Container width="100%">
+        {item.isCurrentLocation || item.isPredefinedPlace ? (
+          <>
+            <Whitespace marginTop={10} />
 
-        <Container row type="spaceBetween" height={50}>
-          <Container center type="smallBorderRadius" color="#F2F2F2" left height={50} width={50}>
-            <Image src={locationPin} width={20} height={25} />
-          </Container>
+            <Typography weight="800" width="100%" color="#252525" left size={14}>
+              {item.description}
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Whitespace marginTop={15} />
 
-          <Typography weight="800" width="80%" color="#252525" left size={14}>
-            {item.description}
-          </Typography>
-        </Container>
+            <Container row type="spaceBetween">
+              <Container
+                center
+                type="smallBorderRadius"
+                color="#F2F2F2"
+                left
+                height={50}
+                width={50}>
+                <Image src={locationPin} width={20} height={25} />
+              </Container>
 
-        <Whitespace marginTop={10} />
-      </>
+              <Typography weight="800" width="80%" color="#252525" left size={14}>
+                {item.description || `${item.name}, ${item.vicinity}`}
+              </Typography>
+            </Container>
+
+            <Whitespace marginTop={10} />
+          </>
+        )}
+      </Container>
     ),
     [],
   );
@@ -85,10 +116,15 @@ const OnboardingScreen11 = () => {
         <GooglePlacesAutocomplete
           fetchDetails
           suppressDefaultStyles
+          currentLocation
+          currentLocationLabel="Use my current location"
+          isRowScrollable={false}
+          listViewDisplayed={false}
+          keyboardShouldPersistTaps="handled"
+          keepResultsAfterBlur={false}
           returnKeyType="search"
           disableScroll={false}
           enablePoweredByContainer={false}
-          isRowScrollable={false}
           placeholder="Type where your home is located"
           onPress={onPress}
           styles={styles}

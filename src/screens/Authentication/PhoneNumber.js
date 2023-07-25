@@ -9,10 +9,10 @@ import {Page, Input, Typography, Button, Divider, Dropdown} from '../../componen
 import arrowDown from '../../assets/images/arrow-down.png';
 
 const PhoneNumber = props => {
-  const {inline, onChangeData} = props;
+  const {inline, onChangeData, initialCountryCode = '', initialPhoneNumber = ''} = props;
 
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [country, setCountry] = useState({});
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
+  const [country, setCountry] = useState({code: initialCountryCode});
   const [countries, setCountries] = useState([]);
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(true);
