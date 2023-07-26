@@ -269,6 +269,56 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: wp(10),
   },
+  cardContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '90%', // Adjust the width to account for the margin
+    flexDirection: 'row',
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    margin: 20, // Add equal margin on all sides
+    elevation: 5, // Add elevation for Android
+    shadowColor: '#000', // shadow properties for iOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+
+  cardImage: {
+    width: '30%',
+    aspectRatio: 1,
+    borderTopLeftRadius: 20,
+  },
+  cardDetails: {
+    width: '70%',
+    padding: 10,
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  locality: {
+    alignSelf: 'flex-start',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  detailsContainer: {
+    flexDirection: 'row', // To place bedrooms and bathrooms text side by side
+    justifyContent: 'space-between', // To put space between them
+    marginVertical: 10, // To provide vertical spacing
+  },
+
+  detailsText: {
+    color: '#555', // Or any other color of your choice
+    fontSize: 16, // Or any other size of your choice
+  },
+
+  price: {
+    alignSelf: 'flex-start', // Aligns price to the bottom-right
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
 
   map: {width: '100%', height: '100%', backgroundColor: 'white'},
   loaderContainer: {paddingBottom: 0, marginHorizontal: 20},

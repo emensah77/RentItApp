@@ -53,10 +53,10 @@ export const SearchHome = props => {
         setSubLocality(details.address_components[1].short_name);
       }
       setShowAddress(true);
-      setModalVisible(false);
-      if (!dates.startDate || !dates.endDate) {
-        // setShowCalendar(true);
-      }
+
+      // Update here
+      setModalType('calender'); // set modalType to 'calender'
+      setModalVisible(true); // make modal visible
     },
     [dates],
   );

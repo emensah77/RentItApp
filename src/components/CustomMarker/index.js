@@ -17,7 +17,7 @@ const CustomMarker = props => {
     };
   }, [isSelected]);
   return (
-    <Marker coordinate={coordinate} onPress={onPress}>
+    <Marker coordinate={coordinate} onPress={onPress} zIndex={isSelected ? 1000 : 0}>
       <View style={$style}>
         <Text
           text={`GH₵ ${Math.round(price * 1.07)}`}

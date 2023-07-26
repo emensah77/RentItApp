@@ -1,5 +1,16 @@
 import React, {FC, useCallback, useState, useEffect, useRef, useMemo} from 'react';
-import {ViewStyle, View, FlatList, Linking, Alert, Pressable, Image} from 'react-native';
+import {
+  ViewStyle,
+  View,
+  FlatList,
+  Linking,
+  Alert,
+  Pressable,
+  Image,
+  PermissionsAndroid,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {Page, Text} from '@components';
 import {AppStackScreenProps} from '@navigation/AppStack';
@@ -35,124 +46,73 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const [latitude, setLatitude] = useState<any>(null);
   const [longitude, setLongitude] = useState<any>(null);
   const [posts, setPosts] = useState([]);
-  const [cachedData, setCachedData] = useState({});
   const [showMap, setShowMap] = useState(false);
   const [loadingType, setIsLoadingType] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const prevStatus = useRef(null);
   const mapRef = useRef();
+  const initialFetchDone = useRef(false);
+  const searchAfter = useRef<string | null>(null);
+  const [selectedHome, setSelectedHome] = useState(null);
 
-  const fetchPostsType = useCallback(async newStatus => {
-    try {
-      const query = {
-        limit: 100000,
-        filter: {
-          and: {
-            type: {
-              eq: newStatus,
-            },
-            latitude: {
-              between: [4.633900069140816, 11.17503079077031],
-            },
-            longitude: {
-              between: [-3.26078589558366, 1.199972025476763],
-            },
-          },
+  const fetchPosts = useCallback(async () => {
+    setIsLoadingType(true);
+
+    const response = await fetch(
+      'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      };
+        body: JSON.stringify({
+          userLocation: {
+            latitude,
+            longitude,
+          },
+          typeParameter: status,
+          searchAfter: searchAfter.current,
+        }),
+      },
+    );
 
-      const postsResult: any = await API.graphql(graphqlOperation(listPosts, query));
+    const data = await response.json();
+    console.log('data count', data.count);
+    console.log('searchAfter', data.searchAfter);
 
-      if (postsResult?.data?.listPosts?.nextToken !== null) {
-        // setNextToken(postsResult.data.listPosts.nextToken);
-      } else {
-      }
-    } catch (error) {
-      // console.log('error1', error);
-    }
-  }, []);
+    setPosts(oldPosts => [...oldPosts, ...data.homes]);
+
+    searchAfter.current = data.searchAfter;
+    setIsLoadingType(false);
+  }, [latitude, longitude, status]);
 
   const setStatusFilter = useCallback(
     _status => () => {
       setStatus(_status);
-      // @ts-ignore
-      fetchPostsType();
+      setPosts([]);
+      searchAfter.current = null;
     },
-    [fetchPostsType],
+    [],
   );
 
   const open = useCallback(() => {
     // setmodalvisible(true);
   }, []);
 
-  const personalizedHomes = useCallback(
-    async (userLatitude, userLongitude, homeType, newNextToken) => {
-      try {
-        setIsLoadingType(true);
-
-        const response = await fetch(
-          'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userLocation: {
-                latitude: userLatitude,
-                longitude: userLongitude,
-              },
-              typeParameter: homeType,
-              searchAfter: newNextToken,
-            }),
-          },
-        );
-
-        const data = await response.json();
-
-        return data;
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoadingType(false); // Set loading state to false
-      }
-    },
-    [],
-  );
-
   useEffect(() => {
-    const fetchInitialData = async () => {
-      setIsLoadingType(true);
-      if (!cachedData[status]) {
-        const data = await personalizedHomes(latitude, longitude, status, null);
-
-        if (data && data.homes) {
-          setPosts(data.homes);
-          setCachedData(prevData => ({...prevData, [status]: data.homes}));
-          // setNextToken(data.nextToken);
-        } else {
-          setPosts([]);
-        }
-      } else {
-        setPosts(cachedData[status]);
+    if (latitude && longitude) {
+      if (!initialFetchDone.current) {
+        fetchPosts();
+        initialFetchDone.current = true;
+      } else if (prevStatus.current !== status) {
+        setPosts([]);
+        searchAfter.current = null;
+        fetchPosts();
       }
-      setIsLoadingType(false);
-    };
-
-    // Reset posts and nextToken when status changes
-    if (status !== prevStatus.current) {
-      setPosts([]);
-      // setNextToken(null);
-      // @ts-ignore
       prevStatus.current = status;
     }
-
-    longitude && latitude && fetchInitialData();
-
-    // _getUserData(auth().currentUser.uid);
-
-    // userDetails();
-  }, [status, latitude, longitude, cachedData, personalizedHomes]);
+    console.log('no lat and long', [latitude, longitude]);
+  }, [fetchPosts, latitude, longitude, status]);
 
   const renderItem = useCallback(
     ({item}) => (
@@ -162,6 +122,12 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     ),
     [],
   );
+  const onEndReached = useCallback(() => {
+    if (searchAfter.current) {
+      fetchPosts();
+    }
+  }, [fetchPosts]);
+
   const hasPermissionIOS = useCallback(async () => {
     const openSetting = () => {
       Linking.openSettings().catch(() => {
@@ -188,7 +154,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     return false;
   }, []);
   const getLocation = useCallback(async () => {
-    const hasPermission = await hasPermissionIOS();
+    const hasPermission = await hasLocationPermission();
 
     if (!hasPermission) {
       return;
@@ -235,7 +201,44 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
         showLocationDialog: true,
       },
     );
-  }, [hasPermissionIOS]);
+  }, []);
+
+  const hasLocationPermissionAndroid = async () => {
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const requestStatus = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (requestStatus === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (requestStatus === PermissionsAndroid.RESULTS.DENIED) {
+      Alert.alert('Location permission denied');
+    } else if (requestStatus === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      Alert.alert('Location permission revoked');
+    }
+
+    return false;
+  };
+
+  const hasLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      const hasPermission = await hasPermissionIOS();
+      return hasPermission;
+    } else {
+      const hasPermission = await hasLocationPermissionAndroid();
+      return hasPermission;
+    }
+  };
+
   useEffect(() => {
     getLocation();
   }, [getLocation]);
@@ -278,19 +281,21 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     };
   }, []);
 
-  const coords = useCallback(
-    place => () => {
-      return {latitude: place.latitude, longitude: place.longitude};
-    },
-    [],
-  );
+  const coords = useCallback(place => {
+    return {latitude: place.location.lat, longitude: place.location.lon};
+  }, []);
 
   const handleSelect = useCallback(
     place => () => {
-      navigation.navigate('Post', {post: place});
+      setSelectedHome(place);
+      // navigation.navigate('Post', {post: place});
     },
     [navigation],
   );
+
+  const goToPostPage = useCallback(() => {
+    navigation.navigate('Post', {postId: selectedHome?.id});
+  }, [navigation, selectedHome?.id]);
 
   const handleModalClose = useCallback(() => {
     setShowVideo(false);
@@ -359,7 +364,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
               {posts.map((place: any) => (
                 <CustomMarker
                   key={place.id}
-                  // isSelected={place.id === selectedPlacedId}
+                  isSelected={place.id === selectedHome?.id}
                   onPress={handleSelect(place)}
                   coordinate={coords(place)}
                   price={place.newPrice}
@@ -369,6 +374,21 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
             </MapView.Animated>
           )}
 
+          {selectedHome && (
+            <TouchableOpacity style={styles.cardContainer} onPress={goToPostPage}>
+              <Image source={{uri: selectedHome.image}} style={styles.cardImage} />
+              <View style={styles.cardDetails}>
+                <Text style={styles.locality}>
+                  {selectedHome.locality}, {selectedHome.sublocality}
+                </Text>
+                <View style={styles.detailsContainer}>
+                  <Text style={styles.detailsText}>{selectedHome.bedroom} bedroom</Text>
+                </View>
+                <Text style={styles.price}>{selectedHome.type}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+
           <FlatList
             data={posts}
             initialNumToRender={10}
@@ -376,9 +396,11 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
             keyExtractor={keyExtractor}
             // getItemLayout={getItemLayout}
             // ListEmptyComponent={renderNoHome()}
-            extraData={posts}
+            // extraData={posts}
             renderItem={renderItem}
             onEndReachedThreshold={0.5}
+            onEndReached={onEndReached}
+
             // onEndReached={onEndReached}
             // ListFooterComponent={fetchingMore ? renderLoader : null}
           />
