@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {API, graphqlOperation} from 'aws-amplify';
@@ -23,26 +23,31 @@ let oldData = {};
 const Base = props => {
   const {inline, isComplete, isFinal, data, index, total = 7, title, children, label} = props;
 
+  const [progressData, setProgressData] = useState();
+
   const userId = auth().currentUser.uid;
 
   const navigation = useNavigation();
 
   const route = useRoute();
 
-  const skip = useCallback(
-    async (screenName, progressData) => {
-      if (!isComplete) {
-        return;
-      }
+  const skip = useCallback(async () => {
+    if (!isComplete) {
+      return;
+    }
 
-      let params;
-      if (progressData) {
-        params = {...progressData};
-      }
-      navigation.navigate(isFinal ? 'Home' : screenName || `OnboardingScreen${index + 1}`, params);
-    },
-    [isComplete, navigation, isFinal, index],
-  );
+    let params;
+    if (progressData) {
+      params = {...progressData.progressData};
+    }
+
+    navigation.navigate(
+      isFinal
+        ? 'Home'
+        : (progressData && progressData.screenName) || `OnboardingScreen${index + 1}`,
+      params,
+    );
+  }, [isComplete, progressData, navigation, isFinal, index]);
 
   const load = useCallback(async () => {
     const response = await fetch(
@@ -63,9 +68,9 @@ const Base = props => {
     }
 
     if (_data.screenName) {
-      skip(_data.screenName, _data.progressData);
+      setProgressData(_data);
     }
-  }, [userId, skip]);
+  }, [userId]);
 
   const save = useCallback(async () => {
     if (!data || !isComplete) {
@@ -99,10 +104,36 @@ const Base = props => {
           },
         }),
       },
-    ).catch(console.error);
+    ).catch(e => console.error('An error occurred while trying to save progress data', e));
 
     __DEV__ && console.debug('Response for Progress Update', await response.json());
   }, [data, isComplete, route.name, userId]);
+
+  const clear = useCallback(async () => {
+    // Clear progress data
+    const response = await fetch(
+      'https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          action: 'clear',
+        }),
+      },
+    ).catch(e => console.error('An error occurred while trying to clear progress data', e));
+
+    if (response.ok) {
+      oldData = {};
+      setProgressData(undefined);
+      setTimeout(() => next());
+    }
+
+    const _data = await response.json();
+    __DEV__ && console.debug('Response for Progress Update', _data);
+  }, [next, userId]);
 
   const finish = useCallback(async () => {
     if (!isFinal || !isComplete) {
@@ -135,18 +166,8 @@ const Base = props => {
       },
     ).catch(e => console.error('An error occurred while trying to sync with past searches', e));
 
-    // Clear progress data
-    await fetch('https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId,
-        action: 'clear',
-      }),
-    }).catch(e => console.error('An error occurred while trying to clear progress data', e));
-  }, [data, isFinal, isComplete, userId]);
+    clear();
+  }, [data, isFinal, isComplete, clear]);
 
   const back = useCallback(async () => {
     if (index - 1 <= 0) {
@@ -198,9 +219,21 @@ const Base = props => {
             <>
               <Divider top={25} bottom={15} />
 
-              <Button accessibilityLabel="Get Started" type="standard" onPress={next}>
-                Get Started
-              </Button>
+              {progressData ? (
+                <Container row type="spaceBetween">
+                  <Button accessibilityLabel="Continue" type="plain" onPress={skip}>
+                    Continue
+                  </Button>
+
+                  <Button accessibilityLabel="Start New Listing" type="standard" onPress={clear}>
+                    Start New Listing
+                  </Button>
+                </Container>
+              ) : (
+                <Button accessibilityLabel="Get Started" type="standard" onPress={next}>
+                  Get Started
+                </Button>
+              )}
             </>
           ) : (
             <>

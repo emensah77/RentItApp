@@ -66,6 +66,14 @@ const typography = StyleSheet.create({
     lineHeight: 20,
     color: '#000000',
   },
+  plainButton: {
+    ...fontType,
+    fontWeight: '700',
+    fontSize: 18,
+    lineHeight: 20,
+    color: '#000000',
+    textAlign: 'center',
+  },
   standardButton: {
     ...fontType,
     fontWeight: '700',

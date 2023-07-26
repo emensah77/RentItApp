@@ -12,7 +12,14 @@ Object.defineProperty(window, 'navigator', {
     vendor: 'firefox',
     userAgent: 'chrome',
     language: 'es',
+    geolocation: '',
   },
+  configurable: true,
+});
+
+navigator = {}
+Object.defineProperty(navigator, 'geolocation', {
+  value: '',
   configurable: true,
 });
 console.warn = () => null;

@@ -20,7 +20,7 @@ const OnboardingScreen14 = props => {
       const phoneUtil = PhoneNumberUtil.getInstance();
       const parsed = phoneUtil.parse(phoneNumber);
 
-      return {code: `${parsed.getCountryCode()}`, phoneNumber: parsed.getNationalNumber()};
+      return {code: `${parsed.getCountryCode()}`, phoneNumber: `${parsed.getNationalNumber()}`};
     }
     return {code: '', phoneNumber: ''};
   }, [phoneNumber]);
