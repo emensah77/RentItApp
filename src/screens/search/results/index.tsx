@@ -35,6 +35,8 @@ export const SearchResultsScreen = _props => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [visibleHomes, setVisibleHomes] = useState([]);
+  const [isMapReady, setMapReady] = useState(false);
+  const [postsLoaded, setPostsLoaded] = useState(false);
 
   const mapRef = useRef();
 
@@ -144,37 +146,43 @@ export const SearchResultsScreen = _props => {
       if (data && data.homes) {
         setPosts(data.homes);
         setHomesCount(data.count);
-        setSearchAfter(data.searchAfter); // Add this line
-
-        // Find min and max latitudes and longitudes
-        const minLat = Math.min(...data.homes.map(home => home.location.lat));
-        const maxLat = Math.max(...data.homes.map(home => home.location.lat));
-        const minLon = Math.min(...data.homes.map(home => home.location.lon));
-        const maxLon = Math.max(...data.homes.map(home => home.location.lon));
-
-        // Calculate center lat and lon
-        const centerLat = (minLat + maxLat) / 2;
-        const centerLon = (minLon + maxLon) / 2;
-
-        // Calculate delta values
-        const latitudeDelta = Math.abs(maxLat - minLat) * 1.5; // Multiplying by 1.5 to leave some padding around edges
-        const longitudeDelta = Math.abs(maxLon - minLon) * 1.5;
-
-        // animate map to new region
-        mapRef.current?.animateToRegion({
-          latitude: centerLat,
-          longitude: centerLon,
-          latitudeDelta,
-          longitudeDelta,
-        });
+        setSearchAfter(data.searchAfter);
+        setPostsLoaded(true);
       } else {
         setPosts([]);
       }
-      setLoading(false);
     };
+    setLoading(false);
 
-    longitude && latitude && fetchInitialData();
+    if (latitude && longitude) {
+      fetchInitialData();
+    }
   }, [latitude, longitude, personalizedHomes]);
+
+  useEffect(() => {
+    if (postsLoaded && isMapReady) {
+      // extract latitudes and longitudes from viewPort
+      const northLat = location.viewPort.northeast.lat;
+      const eastLon = location.viewPort.northeast.lng;
+      const southLat = location.viewPort.southwest.lat;
+      const westLon = location.viewPort.southwest.lng;
+
+      // calculate center lat and lon
+      const centerLat = (northLat + southLat) / 2;
+      const centerLon = (westLon + eastLon) / 2;
+
+      // calculate latitude and longitude deltas
+      const latitudeDelta = 100;
+      const longitudeDelta = 100;
+
+      mapRef.current?.animateToRegion({
+        latitude: centerLat,
+        longitude: centerLon,
+        latitudeDelta,
+        longitudeDelta,
+      });
+    }
+  }, [postsLoaded, isMapReady]);
 
   const renderLoader = useMemo(
     () => (
@@ -263,6 +271,7 @@ export const SearchResultsScreen = _props => {
         zoomEnabled
         minZoomLevel={12}
         onRegionChangeComplete={onRegionChangeComplete}
+        onMapReady={() => setMapReady(true)}
         initialRegion={initialRegion}>
         {visibleHomes.map((place: any) => (
           <CustomMarker
