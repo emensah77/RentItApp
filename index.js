@@ -3,10 +3,11 @@
  */
 
 import {AppRegistry} from 'react-native';
-import Amplify from '@aws-amplify/core';
+import Amplify from 'aws-amplify';
 import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import {GoogleSignin} from '@react-native-community/google-signin';
 
 import config from './src/aws-exports';
 import {name as appName} from './app.json';
@@ -15,6 +16,9 @@ import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
 
 Amplify.configure(config);
+GoogleSignin.configure({
+  webClientId: '953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com',
+});
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.debug('Message handled in the background!', remoteMessage);

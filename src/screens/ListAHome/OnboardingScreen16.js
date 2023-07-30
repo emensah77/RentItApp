@@ -10,9 +10,13 @@ import camera from '../../assets/images/camera.png';
 import confetti from '../../assets/images/confetti.png';
 import {randomInt} from '../../utils';
 
-const OnboardingScreen16 = () => {
-  const [imageUrls, setImageUrls] = useState([]);
-  const [data, setData] = useState({});
+const OnboardingScreen16 = props => {
+  const {
+    route: {params: {iDUrls: iU} = {iDUrls: []}},
+  } = props;
+
+  const [iDUrls, setIDUrls] = useState(iU);
+  const [data, setData] = useState({iDUrls});
   const [progressText, setProgressText] = useState('aaa');
 
   const upload = useCallback(
@@ -38,7 +42,7 @@ const OnboardingScreen16 = () => {
             contentType: 'image/jpeg',
           })
             .then(() => {
-              setImageUrls(prevImages =>
+              setIDUrls(prevImages =>
                 prevImages.concat(`https://d1mgzi0ytcdaf9.cloudfront.net/public/${name}`),
               );
             })
@@ -73,15 +77,15 @@ const OnboardingScreen16 = () => {
       mediaType: 'photo',
     })
       .then(async image => {
-        setImageUrls([]);
+        setIDUrls([]);
         image.forEach(upload);
       })
       .catch(console.error);
   }, [upload]);
 
   useEffect(() => {
-    setData({imageUrls});
-  }, [imageUrls]);
+    setData({iDUrls});
+  }, [iDUrls]);
 
   if (progressText) {
     return (
@@ -109,7 +113,7 @@ const OnboardingScreen16 = () => {
     <Base
       index={16}
       total={17}
-      isComplete={data.imageUrls && data.imageUrls.length !== 0}
+      isComplete={data.iDUrls && data.iDUrls.length !== 0}
       isFinal
       data={data}
       title="We need to verify your home"

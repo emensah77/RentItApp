@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {GoogleSignin} from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
 
 import mixpanel from '../MixpanelConfig';
@@ -45,9 +44,21 @@ const AuthStack = () => {
   }, []);
 
   useEffect(() => {
+    let loaded = false;
+
+    const id = setInterval(() => {
+      console.debug('Waiting for AsyncStorage', loaded);
+
+      if (loaded) {
+        clearInterval(id);
+      }
+    }, 2000);
+
     (async () => {
       const data = await AsyncStorage.getItem('authentication::data');
       console.debug('Auth Data', data);
+
+      loaded = true;
 
       let _initialRouteName;
 
@@ -82,10 +93,6 @@ const AuthStack = () => {
 
       setInitialRouteName(_initialRouteName);
     })();
-
-    GoogleSignin.configure({
-      webClientId: '953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com',
-    });
   }, []);
 
   if (initialRouteName === '') {

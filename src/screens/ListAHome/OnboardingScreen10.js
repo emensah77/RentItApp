@@ -1,15 +1,17 @@
 import React, {useState, useCallback, useEffect} from 'react';
+import {Platform /* FlatList, TouchableOpacity, Image */} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import Amplify, {Storage} from 'aws-amplify';
+import {Storage} from 'aws-amplify';
+import uuid from 'react-native-uuid';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 import Base from './Base';
 
 import {Typography, CardDisplay, Whitespace, Container, Page} from '../../components';
 import add from '../../assets/images/add.png';
 import camera from '../../assets/images/camera.png';
-import {randomInt} from '../../utils';
-
-import awsConfig from '../../aws-exports';
+// import deleteIcon from '../../assets/images/deleteIcon.png';
+// import deleteIcon from '../../assets/images/available.png';
 
 const OnboardingScreen10 = props => {
   const {
@@ -20,81 +22,134 @@ const OnboardingScreen10 = props => {
   const [data, setData] = useState({imageUrls: iU});
   const [progressText, setProgressText] = useState('');
 
-  const upload = useCallback(
-    async image => {
-      if (progressText) return;
+  // const deleteImage = useCallback(
+  //   url => () => {
+  //     const key = url.split('/').pop();
 
-      const response = await fetch(image.path);
-      const rawFile = await response.blob();
+  //     Storage.remove(key, {level: 'public'})
+  //       .then(() => setImageUrls(prevUrls => prevUrls.filter(itemUrl => itemUrl !== url)))
+  //       .catch(err => console.error('An error occurred while deleting the image', err));
+  //   },
+  //   [],
+  // );
 
-      const name = `home-${randomInt(999999999999)}`;
+  // const getURL = useCallback(uri => ({uri}), []);
 
-      Amplify.configure(awsConfig);
-      Storage.configure({level: 'public', region: 'us-east-2'});
+  // const renderItem = useCallback(
+  //   ({item: uri}) => {
+  //     return (
+  //       <Container row width="50%">
+  //         <Container style={{position: 'relative'}}>
+  //           <Image src={getURL(uri)} width="100%" style={{aspectRatio: 1, borderRadius: 10}} />
+  //           <TouchableOpacity
+  //             onPress={deleteImage(uri)}
+  //             style={{position: 'absolute', right: 10, top: 10, width: 20, height: 20, zIndex: 1}}>
+  //             <Image src={deleteIcon} width="100%" height="100%" />
+  //           </TouchableOpacity>
+  //         </Container>
+  //       </Container>
+  //     );
+  //   },
+  //   [],
+  // );
 
-      return Storage.put(name, rawFile, {
-        level: 'public',
-        contentType: 'image/jpeg',
-        progressCallback(uploadProgress) {
-          setProgressText((uploadProgress.loaded / uploadProgress.total) * 100);
-        },
-      })
-        .then(res => {
-          setProgressText('');
+  // const keyExtractor = useCallback((_, index) => index.toString(), []);
 
-          Storage.get(res.key, {
-            level: 'public',
-            contentType: 'image/jpeg',
-          })
-            .then(uploadRes => {
-              console.debug('Uploaded Successfully', uploadRes);
+  const upload = useCallback(async images => {
+    setImageUrls([]);
 
-              setImageUrls(prevImages =>
-                prevImages.concat(`https://d1mgzi0ytcdaf9.cloudfront.net/public/${name}`),
-              );
-            })
-            .catch(err => {
-              setProgressText('Upload Error');
-              console.error(err);
-            });
-        })
-        .catch(e => {
-          console.error('An error occurred with the upload.', e);
+    const newUrls = await Promise.all(
+      images.map(async image => {
+        let {path} = image;
+        if (Platform.OS === 'ios') {
+          path = `file://${path}`;
+        }
+
+        const resizeImage = await ImageResizer.createResizedImage(
+          path,
+          1024,
+          683,
+          'JPEG',
+          80,
+        ).catch(e => {
+          console.error('An error occurred with the resize operation.', e);
         });
-    },
-    [progressText],
-  );
+        if (resizeImage && resizeImage.uri) {
+          path = resizeImage.uri;
+        }
+        const response = await fetch(path);
+        const rawFile = await response.blob();
+
+        const name = `home-${uuid.v4()}`;
+        return Storage.put(name, rawFile, {
+          level: 'public',
+          contentType: 'image/jpeg',
+          progressCallback(uploadProgress) {
+            setProgressText((uploadProgress.loaded / uploadProgress.total) * 100);
+          },
+        })
+          .then(res => {
+            setProgressText('');
+
+            return Storage.get(res.key, {
+              level: 'public',
+              contentType: 'image/jpeg',
+            });
+          })
+          .catch(e => {
+            console.error('An error occurred with the upload.', e);
+          });
+      }),
+    );
+
+    setImageUrls(
+      newUrls
+        .filter(url => !!url)
+        .map(url => `https://d1mgzi0ytcdaf9.cloudfront.net/public/${url}`),
+    );
+  }, []);
 
   const openCamera = useCallback(() => {
+    setProgressText('');
+
     ImagePicker.openCamera({
       width: 1024,
       height: 683,
       mediaType: 'photo',
     })
-      .then(upload)
-      .catch(console.error);
+      .then(image => upload([image]))
+      .catch(e =>
+        console.error(
+          'An error occurred within the open camera function while attempting to upload',
+          e,
+        ),
+      );
   }, [upload]);
 
   const openPicker = useCallback(() => {
+    setProgressText('');
+
     ImagePicker.openPicker({
       width: 1024,
       height: 683,
       multiple: true,
-      maxFiles: 10,
+      maxFiles: 5,
       mediaType: 'photo',
     })
-      .then(async image => {
-        setImageUrls([]);
-        image.forEach(upload);
-      })
-      .catch(console.error);
+      .then(upload)
+      .catch(e =>
+        console.error(
+          'An error occurred within the open picker function while attempting to upload',
+          e,
+        ),
+      );
   }, [upload]);
 
   useEffect(() => {
     setData({imageUrls});
   }, [imageUrls]);
 
-  // console.log('progressText', progressText);
+  // console.log('progressText', progressText, imageUrls, uploadedImages, data.imageUrls);
 
   if (progressText) {
     return (
@@ -118,8 +173,7 @@ const OnboardingScreen10 = props => {
     <Base
       index={10}
       total={12}
-      // isComplete={data.imageUrls.length !== 0}
-      isComplete
+      isComplete={data.imageUrls && data.imageUrls.length > 0}
       data={data}
       title="Let's add pictures of your home.">
       <Container center type="chipSmall" color="#FFF" height={50} onPress={openPicker}>
@@ -155,6 +209,15 @@ const OnboardingScreen10 = props => {
           onPress={openCamera}
         />
       </Container>
+
+      <Whitespace marginTop={22} />
+
+      {/* <FlatList
+        data={imageUrls}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        numColumns={2}
+      /> */}
     </Base>
   );
 };

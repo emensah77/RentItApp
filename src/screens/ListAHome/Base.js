@@ -50,6 +50,10 @@ const Base = props => {
   }, [isComplete, progressData, navigation, isFinal, index]);
 
   const load = useCallback(async () => {
+    if (index !== 1) {
+      return;
+    }
+
     const response = await fetch(
       `https://a27ujyjjaf7mak3yl2n3xhddwu0dydsb.lambda-url.us-east-2.on.aws/?userId=${userId}`,
       {
@@ -70,7 +74,7 @@ const Base = props => {
     if (_data.screenName) {
       setProgressData(_data);
     }
-  }, [userId]);
+  }, [userId, index]);
 
   const save = useCallback(async () => {
     if (!data || !isComplete) {
@@ -182,17 +186,14 @@ const Base = props => {
   }, [skip, save]);
 
   useEffect(() => {
-    if (index !== 1) {
-      return;
-    }
-    load();
-  }, [index, load]);
-
-  useEffect(() => {
     oldData = {...oldData, ...data};
-    save();
-    finish();
-  }, [save, finish, data]);
+
+    (async () => {
+      await load();
+      await save();
+      await finish();
+    })();
+  }, [load, save, finish, data]);
 
   return (
     <Page

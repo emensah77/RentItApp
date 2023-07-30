@@ -17,7 +17,7 @@ Object.defineProperty(window, 'navigator', {
   configurable: true,
 });
 
-navigator = {}
+navigator = {};
 Object.defineProperty(navigator, 'geolocation', {
   value: '',
   configurable: true,

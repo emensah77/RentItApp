@@ -1,10 +1,13 @@
-import React, {useState, useCallback} from 'react';
-import {View} from 'react-native';
+import React, {useState, useCallback, useRef} from 'react';
+import {View, Modal} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Geocoder from 'react-native-geocoding';
 
 import Base from './Base';
 
-import {Typography, Whitespace, Container, Image} from '../../components';
+import Location from '../Authentication/Location';
+
+import {Typography, Whitespace, Container, Image, Loader, Input} from '../../components';
 
 import {global} from '../../assets/styles';
 import locationPin from '../../assets/images/location-pin.png';
@@ -22,11 +25,15 @@ const styles = {
   textInput: global.input,
 };
 
+const textInputProps = defaultValue => ({autoFocus: true, defaultValue});
+
 const containerStyle = [
   global.flex,
   {backgroundColor: '#FFF', minHeight: '100%'},
   global.pageContent,
 ];
+
+Geocoder.init(query.key);
 
 const OnboardingScreen11 = props => {
   const {
@@ -48,20 +55,62 @@ const OnboardingScreen11 = props => {
     address,
     sublocality,
   });
+  const [location, setLocation] = useState({
+    latitude,
+    longitude,
+  });
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const onPress = useCallback(async (_, details = null) => {
-    if (!details) {
-      return;
-    }
+  const ref = useRef();
 
-    setData({
-      latitude: details.geometry.location.lat,
-      longitude: details.geometry.location.lng,
-      locality: details.address_components[0].short_name,
-      address: details.address_components[0].long_name,
-      sublocality: details.address_components[1].short_name,
-    });
+  const toggleModal = useCallback(() => {
+    setOpen(!open);
+  }, [open]);
+
+  const getPosition = useCallback(({coords}) => {
+    setLocation({latitude: coords.latitude, longitude: coords.longitude});
   }, []);
+
+  const onPress = useCallback(
+    async (_, details = null) => {
+      if (!details) {
+        return;
+      }
+
+      const _locality = details?.address_components?.find?.(component =>
+        component.types.includes('locality'),
+      )?.short_name;
+      const _subLocality = details?.address_components?.find?.(
+        component =>
+          component.types.includes('sublocality') || component.types.includes('neighborhood'),
+      )?.short_name;
+      const _address = ref.current.getAddressText() || details.formatted_address;
+
+      setData({
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+        locality: _locality,
+        sublocality: _subLocality,
+        address: _address,
+      });
+      ref.current?.setAddressText(_address);
+      toggleModal();
+    },
+    [toggleModal],
+  );
+
+  const reverseGeolocate = useCallback(() => {
+    setLoading(true);
+
+    // Reverse geocoding to get the address details
+    Geocoder.from(location.latitude, location.longitude)
+      .then(json => {
+        setLoading(false);
+        onPress(undefined, json.results[0], true);
+      })
+      .catch(console.error);
+  }, [location, onPress]);
 
   const renderRow = useCallback(
     item => (
@@ -102,8 +151,29 @@ const OnboardingScreen11 = props => {
     [],
   );
 
+  const renderUseMyCurrentLocation = useCallback(
+    (callback, marginLeft) => (
+      <Container onPress={callback}>
+        <Whitespace marginTop={10} />
+
+        <Container row>
+          <Whitespace marginLeft={marginLeft} />
+
+          <Typography weight="800" width={155} color="#252525" left size={14}>
+            Use my current location
+          </Typography>
+
+          {loading ? <Loader /> : null}
+        </Container>
+      </Container>
+    ),
+    [loading],
+  );
+
   return (
     <Base index={12} total={12} isComplete={!!data.latitude} data={data} inline>
+      <Location noRender getPosition={getPosition} />
+
       <Whitespace marginTop={30} />
 
       <View style={containerStyle}>
@@ -113,27 +183,44 @@ const OnboardingScreen11 = props => {
 
         <Whitespace marginTop={69} />
 
-        <GooglePlacesAutocomplete
-          fetchDetails
-          suppressDefaultStyles
-          currentLocation
-          currentLocationLabel="Use my current location"
-          isRowScrollable={false}
-          listViewDisplayed={false}
-          keyboardShouldPersistTaps="handled"
-          keepResultsAfterBlur={false}
-          returnKeyType="search"
-          disableScroll={false}
-          enablePoweredByContainer={false}
+        <Input
           placeholder="Type where your home is located"
-          onPress={onPress}
-          styles={styles}
-          query={query}
-          renderRow={renderRow}
-          onFail={console.error}
-          onNotFound={console.error}
-          onTimeout={console.error}
+          value={data.address || ''}
+          type="text"
+          onFocus={toggleModal}
+          onChange={toggleModal}
         />
+
+        {open ? (
+          <Modal animationType="slide" visible>
+            <GooglePlacesAutocomplete
+              ref={ref}
+              fetchDetails
+              suppressDefaultStyles
+              minLength={2}
+              textInputProps={textInputProps(data.address || '')}
+              isRowScrollable={false}
+              listViewDisplayed={false}
+              keyboardShouldPersistTaps="handled"
+              keepResultsAfterBlur={false}
+              returnKeyType="search"
+              disableScroll={false}
+              enablePoweredByContainer={false}
+              placeholder="Type where your home is located"
+              onPress={onPress}
+              styles={styles}
+              query={query}
+              renderRow={renderRow}
+              onFail={console.error}
+              onNotFound={console.error}
+              onTimeout={console.error}
+            />
+
+            {renderUseMyCurrentLocation(reverseGeolocate, 15)}
+          </Modal>
+        ) : null}
+
+        {renderUseMyCurrentLocation(toggleModal, 0)}
       </View>
     </Base>
   );
