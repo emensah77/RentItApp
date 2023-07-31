@@ -9,9 +9,7 @@ import Social from './Social';
 import {Page, Input, Button, Divider} from '../../components';
 
 const Email = props => {
-  const {
-    route: {params: {returnTo} = {returnTo: ''}},
-  } = props;
+  const {route: {params: {returnTo}} = {params: {returnTo: ''}}} = props;
 
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');

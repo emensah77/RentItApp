@@ -41,6 +41,7 @@ const Page = (props: PageProps) => {
     leftIcon,
     rightIcon,
     onLeftIconPress,
+    onRightIconPress,
     accessibilityLabel,
     backgroundColor = '#FFFFFF',
     safeAreaEdges = ['top'],
@@ -87,7 +88,8 @@ const Page = (props: PageProps) => {
           center
           leftIcon={leftIcon}
           rightIcon={rightIcon}
-          onClose={onLeftIconPress || navigation.goBack}>
+          onClose={onLeftIconPress || navigation.goBack}
+          onMenuToggle={onRightIconPress}>
           {header}
         </Header>
       ) : null}

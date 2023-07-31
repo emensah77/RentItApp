@@ -125,19 +125,19 @@ const OnboardingScreen15 = props => {
 
   return (
     <Base index={15} total={17} isComplete={!!data} data={data} title="Your home is?">
-      {TYPES.PAYMENT_TYPES.map(({title, description}) => (
-        <React.Fragment key={title}>
-          {title !== 'Loyalty Home' || (title === 'Loyalty Home' && isAdmin) ? (
+      {TYPES.PAYMENT_TYPES.map(({value, description}) => (
+        <React.Fragment key={value}>
+          {value !== 'Loyalty Home' || (value === 'Loyalty Home' && isAdmin) ? (
             <Container
-              type={`chip${selected.includes(title) ? '' : 'De'}Selected`}
+              type={`chip${selected.includes(value) ? '' : 'De'}Selected`}
               color="#FFF"
               height={100}
               width="100%"
-              onPress={onToggleSelection(title)}>
+              onPress={onToggleSelection(value)}>
               <CardDisplay
                 name={
                   <Typography left size={18} weight="700" width="100%">
-                    {title}
+                    {value}
                   </Typography>
                 }
                 status={
@@ -147,7 +147,7 @@ const OnboardingScreen15 = props => {
                 }
                 center
                 bold
-                onPress={onToggleSelection(title)}
+                onPress={onToggleSelection(value)}
               />
             </Container>
           ) : null}

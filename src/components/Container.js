@@ -17,6 +17,7 @@ const Container = props => {
     onPress,
     ripple,
     hitSlop,
+    zIndex,
     accessibilityLabel,
   } = props;
 
@@ -30,8 +31,9 @@ const Container = props => {
       height ? {maxHeight: height, height} : {},
       color ? {backgroundColor: color} : {},
       position ? {alignSelf: position} : {},
+      {zIndex},
     ],
-    [center, color, height, left, position, row, type, width],
+    [center, color, height, left, position, row, type, width, zIndex],
   );
 
   const Display = useMemo(() => (onPress ? Pressable : View), [onPress]);

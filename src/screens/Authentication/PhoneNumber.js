@@ -11,9 +11,7 @@ import arrowDown from '../../assets/images/arrow-down.png';
 
 const PhoneNumber = props => {
   const {
-    route: {
-      params: {returnTo},
-    },
+    route: {params: {returnTo}} = {params: {returnTo: ''}},
     inline,
     onChangeData,
     initialCountryCode = '',

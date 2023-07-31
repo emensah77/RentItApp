@@ -8,14 +8,22 @@ import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import {GoogleSignin} from '@react-native-community/google-signin';
+import AWS from 'aws-sdk';
 
 import config from './src/aws-exports';
 import {name as appName} from './app.json';
 import App from './App';
 import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
+import {Config} from './src/utils';
 
 Amplify.configure(config);
+AWS.config.update({
+  region: 'us-east-2',
+  accessKeyId: Config.AWS.accessKeyID,
+  secretAccessKey: Config.AWS.secretAccessKey,
+});
+
 GoogleSignin.configure({
   webClientId: '953170635360-od4bkrcumj7vevf695hh0sa2ecpossbp.apps.googleusercontent.com',
 });
