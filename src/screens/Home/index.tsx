@@ -10,8 +10,8 @@ import {
   PermissionsAndroid,
   Platform,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
-import {API, graphqlOperation} from 'aws-amplify';
 import {Page, Text} from '@components';
 import {AppStackScreenProps} from '@navigation/AppStack';
 import {Icon} from '@components/Icon';
@@ -22,7 +22,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import CustomMarker from '@components/CustomMarker';
-import {SearchModal as VideoModal} from '@components/Modals';
+import {SearchModal as VideoModal, SearchModal} from '@components/Modals';
 import {mapStyle} from '@theme/global';
 
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
@@ -36,7 +36,6 @@ import {pageInnerHorizontalPadding} from '@assets/styles/global';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import {mapIcon} from '@assets/images';
-import {listPosts} from '../../graphql/queries';
 import styles from './styles';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
@@ -54,10 +53,92 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const initialFetchDone = useRef(false);
   const searchAfter = useRef<string | null>(null);
   const [selectedHome, setSelectedHome] = useState(null);
+  const [visibleHomes, setVisibleHomes] = useState([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoVersion, setVideoVersion] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    price: '',
+    clientNumber: '',
+    type: '',
+    homeType: '',
+    neighborhood: '',
+    description: '',
+    locality: '',
+    sublocality: '',
+  });
+  const [showForm, setShowForm] = useState(true);
+
+  const handleInputChange = useCallback((value, name) => {
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }, []);
+
+  const fetchVideoWatchStatus = useCallback(async () => {
+    const userId = auth().currentUser.uid;
+
+    try {
+      const response = await fetch(
+        'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'fetchVideoUrl',
+            userId,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.videoUrl) {
+        setVideoUrl(data.videoUrl);
+        setVideoVersion(data.videoVersion);
+        setShowVideo(true);
+      }
+    } catch (error) {
+      console.error('Error fetching video watch status:', error);
+    }
+  }, []);
+
+  const updateWatchVideoStatus = useCallback(async version => {
+    const userId = auth().currentUser.uid;
+
+    try {
+      const response = await fetch(
+        'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'updateWatchStatus',
+            userId,
+            videoVersion: version,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        handleModalClose();
+      } else {
+        console.error('Error updating watch status:', data.message);
+      }
+    } catch (error) {
+      console.error('Error updating watch status:', error);
+    }
+  }, []);
 
   const fetchPosts = useCallback(async () => {
-    setIsLoadingType(true);
-
     const response = await fetch(
       'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
       {
@@ -77,13 +158,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     );
 
     const data = await response.json();
-    console.log('data count', data.count);
-    console.log('searchAfter', data.searchAfter);
-
-    setPosts(oldPosts => [...oldPosts, ...data.homes]);
-
-    searchAfter.current = data.searchAfter;
-    setIsLoadingType(false);
+    return data;
   }, [latitude, longitude, status]);
 
   const setStatusFilter = useCallback(
@@ -98,20 +173,72 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const open = useCallback(() => {
     // setmodalvisible(true);
   }, []);
+  const handleVideoPlaybackComplete = useCallback(() => {
+    updateWatchVideoStatus(videoVersion);
+  }, [videoVersion]);
+
+  const onRegionChangeComplete = useCallback(
+    region => {
+      const {latitude, longitude, latitudeDelta, longitudeDelta} = region;
+
+      // calculate the corners of the map
+      const northLat = latitude + latitudeDelta / 2;
+      const southLat = latitude - latitudeDelta / 2;
+      const westLon = longitude - longitudeDelta / 2;
+      const eastLon = longitude + longitudeDelta / 2;
+
+      // filter the posts to include only those within the map bounds
+      const visibleHomes = posts.filter(post => {
+        const {
+          location: {lat, lon},
+        } = post;
+        return lat <= northLat && lat >= southLat && lon <= eastLon && lon >= westLon;
+      });
+
+      setVisibleHomes(visibleHomes);
+    },
+    [posts],
+  );
+
+  useEffect(() => {
+    console.log('formData', formData);
+  }, [formData]);
+
+  useEffect(() => {
+    fetchVideoWatchStatus();
+  }, [fetchVideoWatchStatus]);
 
   useEffect(() => {
     if (latitude && longitude) {
       if (!initialFetchDone.current) {
-        fetchPosts();
+        setIsLoadingType(true);
+        const fetchInitialData = async () => {
+          const data = await fetchPosts();
+          if (data && data.homes) {
+            setPosts(data.homes);
+            searchAfter.current = data.searchAfter;
+          }
+          setIsLoadingType(false);
+        };
+
+        fetchInitialData(); // Call the function
         initialFetchDone.current = true;
       } else if (prevStatus.current !== status) {
         setPosts([]);
         searchAfter.current = null;
-        fetchPosts();
+        setIsLoadingType(true);
+        const fetchInitialData = async () => {
+          const data = await fetchPosts();
+          if (data && data.homes) {
+            setPosts(data.homes);
+            searchAfter.current = data.searchAfter;
+          }
+          setIsLoadingType(false);
+        };
+        fetchInitialData(); // Call the function
       }
       prevStatus.current = status;
     }
-    console.log('no lat and long', [latitude, longitude]);
   }, [fetchPosts, latitude, longitude, status]);
 
   const renderItem = useCallback(
@@ -122,11 +249,24 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     ),
     [],
   );
-  const onEndReached = useCallback(() => {
-    if (searchAfter.current) {
-      fetchPosts();
+  const renderLoader = useMemo(
+    () => (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    ),
+    [],
+  );
+
+  const fetchMoreData = async () => {
+    setLoadingMore(true); // Start loading
+    const data = await fetchPosts();
+    if (data && data.homes) {
+      setPosts(prevPosts => [...prevPosts, ...data.homes]); // Append the new homes to the existing homes
+      searchAfter.current = data.searchAfter; // Update the searchAfter value for the next fetch
     }
-  }, [fetchPosts]);
+    setLoadingMore(false);
+  };
 
   const hasPermissionIOS = useCallback(async () => {
     const openSetting = () => {
@@ -292,6 +432,51 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     },
     [navigation],
   );
+  const handleSubmit = useCallback(() => {
+    // Copy formData
+    const formattedFormData = {...formData};
+
+    // Remove the undefined key
+    delete formattedFormData.undefined;
+    Object.keys(formattedFormData).forEach(key => {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      formattedFormData[capitalizedKey] = formattedFormData[key];
+      delete formattedFormData[key];
+    });
+
+    formattedFormData.MarketerID = auth().currentUser.uid;
+    console.log('formattedFormData', formattedFormData);
+
+    // Validate formattedFormData
+    if (
+      !formattedFormData.Name ||
+      !formattedFormData.Price ||
+      !formattedFormData.ClientNumber ||
+      !formattedFormData.HomeType ||
+      !formattedFormData.Neighborhood ||
+      !formattedFormData.Locality ||
+      !formattedFormData.Sublocality ||
+      !formattedFormData.Type
+    ) {
+      alert('Please fill out all required fields.');
+      return;
+    }
+
+    fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formattedFormData),
+    })
+      .then(response => response.json())
+      .then(data => {
+        handleFormClose();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, [formData]);
 
   const goToPostPage = useCallback(() => {
     navigation.navigate('Post', {postId: selectedHome?.id});
@@ -300,7 +485,9 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const handleModalClose = useCallback(() => {
     setShowVideo(false);
   }, []);
-
+  const handleFormClose = useCallback(() => {
+    setShowForm(false);
+  }, []);
   const layout: any = useMemo(
     () => [
       // long line
@@ -359,9 +546,9 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
               zoomEnabled
               minZoomLevel={10}
               maxZoomLevel={500}
-              // onRegionChangeComplete={(region) => fetchPostsOnChange(region)}
+              onRegionChangeComplete={onRegionChangeComplete}
               initialRegion={initialRegion}>
-              {posts.map((place: any) => (
+              {visibleHomes.map((place: any) => (
                 <CustomMarker
                   key={place.id}
                   isSelected={place.id === selectedHome?.id}
@@ -394,15 +581,10 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
             initialNumToRender={10}
             contentContainerStyle={styles.padding40}
             keyExtractor={keyExtractor}
-            // getItemLayout={getItemLayout}
-            // ListEmptyComponent={renderNoHome()}
-            // extraData={posts}
             renderItem={renderItem}
             onEndReachedThreshold={0.5}
-            onEndReached={onEndReached}
-
-            // onEndReached={onEndReached}
-            // ListFooterComponent={fetchingMore ? renderLoader : null}
+            onEndReached={fetchMoreData}
+            ListFooterComponent={loadingMore ? renderLoader : null}
           />
         </>
       )}
@@ -414,12 +596,21 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
           <Image source={mapIcon} />
         </Pressable>
       )}
-
-      <VideoModal
-        show={showVideo}
-        type="video"
-        onClose={handleModalClose}
-        videoUrl="https://www.youtube.com/watch?v=goEAcdqLnAE"
+      {showVideo && (
+        <VideoModal
+          show={showVideo}
+          type="video"
+          onClose={handleModalClose}
+          videoUrl={videoUrl}
+          handleVideoPlaybackComplete={handleVideoPlaybackComplete}
+        />
+      )}
+      <SearchModal
+        show={showForm}
+        onClose={handleFormClose}
+        onChange={handleInputChange}
+        type="form"
+        handleSubmit={handleSubmit}
       />
     </Page>
   );

@@ -172,8 +172,8 @@ export const SearchResultsScreen = _props => {
       const centerLon = (westLon + eastLon) / 2;
 
       // calculate latitude and longitude deltas
-      const latitudeDelta = 100;
-      const longitudeDelta = 100;
+      const latitudeDelta = 8;
+      const longitudeDelta = 8;
 
       mapRef.current?.animateToRegion({
         latitude: centerLat,
@@ -269,7 +269,7 @@ export const SearchResultsScreen = _props => {
         provider={PROVIDER_GOOGLE}
         customMapStyle={mapStyle}
         zoomEnabled
-        minZoomLevel={12}
+        minZoomLevel={1}
         onRegionChangeComplete={onRegionChangeComplete}
         onMapReady={() => setMapReady(true)}
         initialRegion={initialRegion}>

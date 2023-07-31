@@ -1,5 +1,5 @@
 import {colors} from '@assets/styles';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
@@ -78,6 +78,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
+  },
+  video: {
+    width: Dimensions.get('window').width - 10,
+    height: Dimensions.get('window').height,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: 'white',
+    backgroundColor: 'white',
+    alignSelf: 'center',
+  },
+  form: {
+    flex: 1,
+  },
+  headerTitle: {
+    textAlign: 'left',
+    padding: 10,
+    color: colors.palette.primary,
   },
 });
 

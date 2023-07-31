@@ -165,31 +165,7 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
         </Text>
       </View>
 
-      {/* <View style={styles.dots}> */}
-      {/* {images.map((image, index) => (
-          // <View
-          //   style={[
-          //     styles.dot,
-          //     {
-          //       backgroundColor: index === activeIndex ? 'blue' : 'white',
-          //       borderRadius: index === activeIndex ? 5 : 3,
-          //       width: index === activeIndex ? 10 : 6,
-          //       height: index === activeIndex ? 10 : 6,
-          //       aspectRatio: index === activeIndex ? 1.2 : 1,
-
-          //     },
-          //   ]}
-          // />
-
-        ))} */}
-
-      {/* <PaginationDot
-          activeDotColor={'#FF007F'}
-          curPage={activeIndex}
-          maxPage={images.length}
-          sizeRatio={1}
-        /> */}
-      {/* </View> */}
+     
     </View>
   );
 };

@@ -127,7 +127,7 @@ async function createUserRecord(userId) {
 
 function getCurrentVideoVersion() {
   // Replace this with your logic to get the current video version
-  return '1.5';
+  return '1.6';
 }
 
 function getVideoUrl() {
