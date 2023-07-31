@@ -59,6 +59,7 @@ const OnboardingScreen11 = props => {
     latitude,
     longitude,
   });
+  const [permissionRequest, setPermissionRequest] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -67,10 +68,6 @@ const OnboardingScreen11 = props => {
   const toggleModal = useCallback(() => {
     setOpen(!open);
   }, [open]);
-
-  const getPosition = useCallback(({coords}) => {
-    setLocation({latitude: coords.latitude, longitude: coords.longitude});
-  }, []);
 
   const onPress = useCallback(
     async (_, details = null) => {
@@ -101,6 +98,10 @@ const OnboardingScreen11 = props => {
   );
 
   const reverseGeolocate = useCallback(() => {
+    if (!location.latitude || !location.longitude) {
+      return;
+    }
+
     setLoading(true);
 
     // Reverse geocoding to get the address details
@@ -111,6 +112,27 @@ const OnboardingScreen11 = props => {
       })
       .catch(console.error);
   }, [location, onPress]);
+
+  const requestLocation = useCallback(() => {
+    // When requesting times other than the first time, then permission
+    // was already granted, so geolocate the user immediately
+    if (permissionRequest) {
+      reverseGeolocate();
+    } else {
+      setPermissionRequest(true);
+    }
+  }, [permissionRequest, reverseGeolocate]);
+
+  const getPosition = useCallback(
+    ({coords}) => {
+      setLocation({latitude: coords.latitude, longitude: coords.longitude});
+
+      if (loading) {
+        reverseGeolocate();
+      }
+    },
+    [loading, reverseGeolocate],
+  );
 
   const renderRow = useCallback(
     item => (
@@ -172,7 +194,7 @@ const OnboardingScreen11 = props => {
 
   return (
     <Base index={12} total={12} isComplete={!!data.latitude} data={data} inline>
-      <Location noRender getPosition={getPosition} />
+      {permissionRequest && <Location interval={1000} noRender getPosition={getPosition} />}
 
       <Whitespace marginTop={30} />
 
@@ -216,7 +238,7 @@ const OnboardingScreen11 = props => {
               onTimeout={console.error}
             />
 
-            {renderUseMyCurrentLocation(reverseGeolocate, 15)}
+            {renderUseMyCurrentLocation(requestLocation, 15)}
           </Modal>
         ) : null}
 

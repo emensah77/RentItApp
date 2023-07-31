@@ -7,7 +7,7 @@ import Header from './Header';
 import Whitespace from './Whitespace';
 import Typography from './Typography';
 
-import {colors, global} from '../assets/styles';
+import {global} from '../assets/styles';
 
 interface PageProps {
   /**
@@ -42,9 +42,9 @@ const Page = (props: PageProps) => {
     rightIcon,
     onLeftIconPress,
     accessibilityLabel,
-    backgroundColor = colors.palette.textInverse,
+    backgroundColor = '#FFFFFF',
     safeAreaEdges = ['top'],
-    statusBarStyle,
+    statusBarStyle = 'dark-content',
     statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
@@ -75,7 +75,11 @@ const Page = (props: PageProps) => {
   return (
     <View style={pageStyle}>
       {!inline && (
-        <StatusBar backgroundColor={backgroundColor} style={statusBarStyle} {...statusBarProps} />
+        <StatusBar
+          backgroundColor={backgroundColor}
+          barStyle={statusBarStyle}
+          {...statusBarProps}
+        />
       )}
 
       {type === 'small' && header && !inline ? (
