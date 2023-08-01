@@ -34,6 +34,7 @@ jobs:
         run: |
           cat << EOF > .env
           REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
           STREAM_CHAT_APP_KEY=${{ secrets.STREAM_CHAT_APP_KEY }}
           AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
@@ -88,6 +89,7 @@ jobs:
         run: |
           cat << EOF > .env
           REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
           STREAM_CHAT_APP_KEY=${{ secrets.STREAM_CHAT_APP_KEY }}
           AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
