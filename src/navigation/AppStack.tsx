@@ -7,6 +7,7 @@ import mixpanel from '../MixpanelConfig';
 import Inbox from '../screens/Profile/Inbox';
 import Chat from '../screens/Profile/Chat';
 import Menu from '../screens/Profile/Menu';
+import Notification from '../screens/Authentication/Notification';
 import PaymentsAndPayouts from '../screens/Profile/Payments/PaymentsAndPayouts';
 import PaymentMethods from '../screens/Profile/Payments/PaymentMethods';
 import YourPayments from '../screens/Profile/Payments/YourPayments';
@@ -121,6 +122,8 @@ const AppStack = () => {
       <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
 
       <Stack.Screen name="OTP" component={OTP} options={noHeader} />
+
+      <Stack.Screen name="Notification" component={Notification} options={noHeader} />
 
       <Stack.Screen name="Filter" component={Filter} options={noHeader} />
 
