@@ -9,32 +9,23 @@ import unchecked from '../../assets/images/unchecked.png';
 import arrowUp from '../../assets/images/arrow-up.png';
 import arrowDown from '../../assets/images/arrow-down.png';
 
-const amenities = [
-  {title: 'Wifi'},
-  {title: 'Free Parking'},
-  {title: 'Kitchen'},
-  {title: 'Hot tub'},
-  {title: 'Washing machine'},
-  {title: 'Pool'},
-  {title: 'Essentials'},
-  {title: 'Dryer'},
-  {title: 'Air conditioning'},
-  {title: 'Heating'},
-  {title: 'Water'},
-  {title: 'Dedicated Workspace'},
-];
+import {TYPES} from '../../utils';
 
-const maxInitialShow = 3;
+const MAX_INITIAL_SHOW = 3;
 
-const OnboardingScreen9 = () => {
+const OnboardingScreen9 = props => {
+  const {
+    route: {params: {amenities} = {amenities: []}},
+  } = props;
+
+  const [selected, setSelected] = useState(amenities);
+  const [data, setData] = useState({amenities});
   const [search, setSearch] = useState('');
-  const [data, setData] = useState({});
   const [more, setMore] = useState(false);
-  const [selected, setSelected] = useState([]);
 
   const filteredAmenities = useMemo(
     () =>
-      amenities.filter(({title}) => {
+      TYPES.AMENITIES.filter(({title}) => {
         if (!search) {
           return true;
         }
@@ -66,7 +57,7 @@ const OnboardingScreen9 = () => {
     <Base
       index={9}
       total={12}
-      isComplete={!!data.amenities}
+      isComplete={data.amenities.length > 0}
       data={data}
       title="Tell your guest what your place has to offer.">
       <Input placeholder="Search categories" type="text" value={search} onChange={setSearch} />
@@ -87,7 +78,7 @@ const OnboardingScreen9 = () => {
 
       {filteredAmenities.map(
         ({title}, i) =>
-          ((!more && i < maxInitialShow) || more) && (
+          ((!more && i < MAX_INITIAL_SHOW) || more) && (
             <React.Fragment key={title}>
               <CardDisplay
                 rightImageWidth={24}
@@ -106,7 +97,7 @@ const OnboardingScreen9 = () => {
           ),
       )}
 
-      {filteredAmenities.length > maxInitialShow ? (
+      {filteredAmenities.length > MAX_INITIAL_SHOW ? (
         <Container row type="flexStart" onPress={toggleMore}>
           <Typography type="heading" left width={95}>
             Show {more ? 'less' : 'more'}

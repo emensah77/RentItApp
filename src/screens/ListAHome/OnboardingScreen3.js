@@ -1,65 +1,24 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import Base from './Base';
 
 import {Container, Whitespace, Typography, Image} from '../../components';
+import {TYPES} from '../../utils';
 
-const OnboardingScreen3 = () => {
-  const [selected, setSelected] = useState('');
-  const [data, setData] = useState();
+const OnboardingScreen3 = props => {
+  const {
+    route: {params: {homeType} = {homeType: ''}},
+  } = props;
 
-  const items = useMemo(
-    () => [
-      {
-        image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/fullhome.jpeg',
-        title: 'Full Home',
-      },
-      {
-        image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/apartment.jpeg',
-        title: 'Apartment',
-      },
-      {
-        image: 'https://d5w4alzj7ppu4.cloudfront.net/cities/1bedroom.jpeg',
-        title: 'Entire Flat',
-      },
-      {
-        image: 'https://i.insider.com/5ed812183ad861312272b2f5?width=700',
-        title: 'Self-Contained',
-      },
-      {
-        image: 'https://pbs.twimg.com/media/CTbpP-AVEAARjVx.jpg',
-        title: 'Mansion',
-      },
-      {
-        image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
-        title: 'Single Room',
-      },
-      {
-        image: 'https://media-cdn.tripadvisor.com/media/photo-s/11/d7/82/0c/single-room.jpg',
-        title: 'Chamber and Hall',
-      },
-      {
-        image: 'https://photos.zillowstatic.com/fp/fe45b984d1aca2ff57d2455ebcd8b95f-p_e.jpg',
-        title: 'Condos',
-      },
-      {
-        image: 'https://photos.zillowstatic.com/fp/f1d119d24d4c011b9e3b7b177b1a6907-p_e.jpg',
-        title: 'Villas',
-      },
-      {
-        image: 'https://photos.zillowstatic.com/fp/72a6b2bf4667a1ffa15ddccacd1ba124-p_e.jpg',
-        title: 'Townhouse',
-      },
-    ],
-    [],
-  );
+  const [selected, setSelected] = useState(homeType);
+  const [data, setData] = useState({homeType});
 
   const getUri = useCallback(uri => ({uri}), []);
 
   const select = useCallback(
-    homeType => () => {
-      setSelected(homeType);
-      setData({homeType});
+    _homeType => () => {
+      setSelected(_homeType);
+      setData({homeType: _homeType});
     },
     [],
   );
@@ -67,18 +26,18 @@ const OnboardingScreen3 = () => {
   return (
     <Base
       index={3}
-      isComplete={!!data}
+      isComplete={!!data.homeType}
       data={data}
       title="Which of these best describe your place?">
-      {items.map(({title, image}) => (
-        <React.Fragment key={title}>
-          <Container row type="spaceBetween" onPress={select(title)}>
+      {TYPES.HOME_TYPES.map(({value, image}) => (
+        <React.Fragment key={value}>
+          <Container row type="spaceBetween" onPress={select(value)}>
             <Typography
               type="notice"
               size={16}
               weight="800"
-              color={selected === title ? '#0047B3' : '#1F2D3D'}>
-              {title}
+              color={selected === value ? '#0047B3' : '#1F2D3D'}>
+              {value}
             </Typography>
 
             <Image src={getUri(image)} width={147} height={87} borderRadius={14} />

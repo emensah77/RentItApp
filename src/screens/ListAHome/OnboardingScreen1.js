@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 
 import Base from './Base';
 
@@ -8,31 +8,28 @@ import iconWoman from '../../assets/images/icon-woman.png';
 import iconMan from '../../assets/images/icon-man.png';
 import iconManReading from '../../assets/images/icon-man-reading.png';
 
-const OnboardingScreen1 = () => {
-  const items = useMemo(
-    () => [
-      {
-        title: '1 Tell us about your place',
-        description: 'Share some basic info like how \nmany guests can stay.',
-        image: iconWoman,
-      },
-      {
-        title: '2 Make it stand out',
-        description: "Upload 5 or more photos plus a title\n and description, we'll help you out.",
-        image: iconMan,
-      },
-      {
-        title: '3 Finish up and publish',
-        description: 'Set a starting price, and publish \nyour listing.',
-        image: iconManReading,
-      },
-    ],
-    [],
-  );
+const STEPS = [
+  {
+    title: '1 Tell us about your place',
+    description: 'Share some basic info like how \nmany guests can stay.',
+    image: iconWoman,
+  },
+  {
+    title: '2 Make it stand out',
+    description: "Upload 5 or more photos plus a title\n and description, we'll help you out.",
+    image: iconMan,
+  },
+  {
+    title: '3 Finish up and publish',
+    description: 'Set a starting price, and publish \nyour listing.',
+    image: iconManReading,
+  },
+];
 
+const OnboardingScreen1 = () => {
   return (
     <Base index={1} isComplete title="It's easy to get started on Rentit">
-      {items.map(({title, description, image}) => (
+      {STEPS.map(({title, description, image}) => (
         <React.Fragment key={title}>
           <CardDisplay
             numberOfLines={2}

@@ -1,7 +1,9 @@
 import React, {useMemo, useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 
-const Progress = ({total, progress}) => {
+const Progress = props => {
+  const {total, progress} = props;
+
   const percents = useMemo(() => {
     let fullPercent = (progress / total) * 100 * 3;
     const percentArr = [];
@@ -45,7 +47,7 @@ const Progress = ({total, progress}) => {
 
 const styles = StyleSheet.create({
   main: {
-    width: '100%', // marginBottom: 4.1
+    width: '100%',
     height: 3,
     flexDirection: 'row',
     justifyContent: 'space-around',

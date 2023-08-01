@@ -74,7 +74,7 @@ const AccountDetails = () => {
       {currentUser.phoneNumber ? (
         <>
           <Typography type="largeHeading" weight="700" left color="#252525" width="100%">
-            {firstname} Confirmed
+            {firstname} confirmed
           </Typography>
 
           <Whitespace marginTop={15} />
