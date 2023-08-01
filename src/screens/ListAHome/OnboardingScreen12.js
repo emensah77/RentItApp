@@ -2,6 +2,7 @@ import React, {useState, useCallback, useRef} from 'react';
 import {View, Modal} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Geocoder from 'react-native-geocoding';
+import {GOOGLE_MAPS_API_KEY} from 'react-native-dotenv';
 
 import Base from './Base';
 
@@ -15,7 +16,7 @@ import locationPin from '../../assets/images/location-pin.png';
 navigator.geolocation = require('react-native-geolocation-service');
 
 const query = {
-  key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
+  key: GOOGLE_MAPS_API_KEY,
   language: 'en',
   components: 'country:gh',
 };
