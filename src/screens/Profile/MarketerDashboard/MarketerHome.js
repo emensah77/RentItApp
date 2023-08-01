@@ -220,7 +220,7 @@ const MarketerHome = props => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0922 * (screen.width / screen.height),
         });
-        setMarkers(_markers.homes);
+        setMarkers(__markers => _markers.homes.concat(__markers));
       }
       setLoading(false);
     })();
