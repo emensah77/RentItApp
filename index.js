@@ -20,8 +20,8 @@ import 'react-native-gesture-handler';
 Amplify.configure(config);
 AWS.config.update({
   region: 'us-east-2',
-  accessKeyId: AWS_ACCESS_KEY,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  accessKeyId: 'AKIA5YH6SBRU3C6HX45F',//AWS_ACCESS_KEY,
+  secretAccessKey: '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', //AWS_SECRET_ACCESS_KEY,
 });
 
 GoogleSignin.configure({

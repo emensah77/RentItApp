@@ -34,6 +34,9 @@ const AllDemands = props => {
   const keyExtractor = useCallback(item => item.DemandID, []);
 
   const load = useCallback(async () => {
+    setData([]);
+    setLoading(0);
+
     const response = await fetch(
       `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands?locality=${
         locality.value || null
@@ -121,7 +124,6 @@ const AllDemands = props => {
               ))}
               center
               bold
-              onPress={claim(item.DemandID, index)}
             />
 
             {item.Status === 'Open' && (
@@ -188,7 +190,9 @@ const AllDemands = props => {
           />
         </Page>
 
-        {data.length > 0 ? (
+        {data.length === 0 && loading === -1 ? (
+          <Typography>There are no homes to show</Typography>
+        ) : data.length > 0 ? (
           <Container type="row" width="90%" height="60%" center>
             <Whitespace width="1%" />
 
@@ -196,6 +200,7 @@ const AllDemands = props => {
               initialNumToRender={2}
               maxToRenderPerBatch={2}
               persistentScrollbar
+              showsVerticalScrollIndicator={false}
               data={data}
               renderItem={renderItem}
               keyExtractor={keyExtractor}
