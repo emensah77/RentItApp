@@ -33,6 +33,8 @@ const initialMarker = screen => ({
   longitudeDelta: 0.0922 * (screen.width / screen.height),
 });
 
+const screen = Dimensions.get('window');
+
 const MarketerHome = props => {
   const {
     route: {name},
@@ -49,7 +51,6 @@ const MarketerHome = props => {
   const [markerData, setMarkerData] = useState();
   const [mode, setMode] = useState('default');
 
-  const screen = Dimensions.get('window');
   const top = useRef(new Animated.Value(0.65 * screen.height)).current;
   const navigation = useNavigation();
 
@@ -71,7 +72,7 @@ const MarketerHome = props => {
       duration: 400,
       useNativeDriver: false,
     }).start();
-  }, [screen.height, top]);
+  }, [top]);
 
   const collapse = useCallback(() => {
     setMode('default');
@@ -81,7 +82,7 @@ const MarketerHome = props => {
       duration: 400,
       useNativeDriver: false,
     }).start();
-  }, [screen.height, top]);
+  }, [top]);
 
   const onRegionChangeComplete = useCallback(_region => {
     setRegion(_region);
@@ -216,15 +217,18 @@ const MarketerHome = props => {
 
       if (_markers && _markers.homes && _markers.homes.length > 0) {
         setRegion({
-          ..._markers.homes[0],
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0922 * (screen.width / screen.height),
+          // Use for testing ONLY!
+          // ..._markers.homes[0],
         });
         setMarkers(__markers => _markers.homes.concat(__markers));
       }
       setLoading(false);
     })();
-  }, [position, ranOnce, screen, searchAfter]);
+  }, [position, ranOnce, searchAfter]);
 
   return (
     <>
@@ -237,13 +241,15 @@ const MarketerHome = props => {
       <Location noRender getPosition={getPosition} />
 
       <MapView
+        zoomEnabledshowsUserLocation
+        followsUserLocation
+        zoomEnabled
         onPress={collapse}
         onRegionChangeComplete={onRegionChangeComplete}
         region={region || initialMarker(screen)}
         style={style}
         provider={PROVIDER_GOOGLE}
-        minZoomLevel={12}
-        zoomEnabled>
+        minZoomLevel={12}>
         {markers.map(marker => (
           <Marker
             key={marker.id}

@@ -3,6 +3,9 @@ import {StatusBar} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import MarketerHome from './MarketerHome';
+import MyRequests from './MyRequests';
+import AllDemands from './AllDemands';
+import MyClaims from './MyClaims';
 
 const noHeader = {
   headerShown: false,
@@ -16,14 +19,14 @@ const MarketerDashboard = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      <Drawer.Navigator initialRouteName="Marketer Home">
+      <Drawer.Navigator initialRouteName="My Claims">
         <Drawer.Screen name="Marketer Home" component={MarketerHome} options={noHeader} />
 
-        <Drawer.Screen name="My Requests" component={MarketerHome} options={noHeader} />
+        <Drawer.Screen name="My Requests" component={MyRequests} options={noHeader} />
 
-        <Drawer.Screen name="All Demands" component={MarketerHome} options={noHeader} />
+        <Drawer.Screen name="All Demands" component={AllDemands} options={noHeader} />
 
-        <Drawer.Screen name="My Claims" component={MarketerHome} options={noHeader} />
+        <Drawer.Screen name="My Claims" component={MyClaims} options={noHeader} />
       </Drawer.Navigator>
     </>
   );
