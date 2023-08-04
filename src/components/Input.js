@@ -13,8 +13,11 @@ const Input = props => {
     name,
     value,
     onChange: onChangeProp,
+    onFocus,
     placeholder,
     type,
+    buttonType,
+    hideValue,
     multiLine,
     groupBefore,
     groupAfter,
@@ -24,7 +27,7 @@ const Input = props => {
     plain,
     disabled,
     inline,
-    trim = true,
+    trim = false,
     ...rest
   } = props;
 
@@ -88,8 +91,9 @@ const Input = props => {
       plain ? global.plain : {},
       inline ? global.inlineInput : {},
       disabled ? button.disabled : {},
+      multiLine ? {...global.multiLine, height: 60 * multiLine} : {},
     ],
-    [activeStyle, disabled, groupAfter, groupBefore, inline, plain],
+    [activeStyle, disabled, groupAfter, groupBefore, inline, plain, multiLine],
   );
 
   const labelStyle = useMemo(() => [global.inputLabel, typography.regular], []);
@@ -111,14 +115,14 @@ const Input = props => {
     return (
       <>
         <Button
-          type="regular"
+          type={buttonType || 'regular'}
           value={value}
           onPress={open}
           suffix={suffix}
           disabled={disabled}
           groupBefore={groupBefore}
           groupAfter={groupAfter}>
-          {value || label}
+          {hideValue ? label : value || label}
         </Button>
 
         {showDatePicker && (
@@ -146,6 +150,7 @@ const Input = props => {
           keyboardType={keyboardType}
           editable={!disabled}
           selectTextOnFocus={!disabled}
+          onFocus={onFocus}
           secureTextEntry={type === 'password'}
           style={textStyle}
           multiLine={!!multiLine}

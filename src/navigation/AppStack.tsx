@@ -1,4 +1,4 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import {StackScreenProps, createStackNavigator} from '@react-navigation/stack';
 import auth from '@react-native-firebase/auth';
 
@@ -7,6 +7,7 @@ import mixpanel from '../MixpanelConfig';
 import Inbox from '../screens/Profile/Inbox';
 import Chat from '../screens/Profile/Chat';
 import Menu from '../screens/Profile/Menu';
+import Notification from '../screens/Authentication/Notification';
 import PaymentsAndPayouts from '../screens/Profile/Payments/PaymentsAndPayouts';
 import PaymentMethods from '../screens/Profile/Payments/PaymentMethods';
 import YourPayments from '../screens/Profile/Payments/YourPayments';
@@ -17,7 +18,9 @@ import MarketerDashboard from '../screens/Profile/MarketerDashboard';
 import AccountDetails from '../screens/Profile/AccountDetails';
 import Edit from '../screens/Profile/Edit';
 import EditPersonalInfo from '../screens/Profile/EditPersonalInfo';
+import Email from '../screens/Authentication/Email';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
+import OTP from '../screens/Authentication/OTP';
 import Filter from '../screens/Explore/Filter';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
@@ -25,6 +28,7 @@ import PostScreen from '../screens/PostScreen';
 import HouseTypeScreen from '../screens/HouseTypeScreen';
 import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
+import listAHome from '../screens/ListAHome';
 import HomeTabNavigator from './HomeTabNavigator';
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -53,30 +57,23 @@ export type AppStackParamList = {
  * This is a list of all the route names that will exit the app if the back button
  * is pressed while in that screen. Only affects Android.
  */
-
 export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreenProps<
   AppStackParamList,
   T
 >;
 
+const noHeader = {
+  headerShown: false,
+  lazy: true,
+};
+
+const noHeaderWithATitle = {
+  title: 'Search your destination',
+  headerShown: false,
+  lazy: true,
+};
+
 const AppStack = () => {
-  const noHeader = useMemo(
-    () => ({
-      headerShown: false,
-      lazy: true,
-    }),
-    [],
-  );
-
-  const noHeaderWithATitle = useMemo(
-    () => ({
-      title: 'Search your destination',
-      headerShown: false,
-      lazy: true,
-    }),
-    [],
-  );
-
   const onNavigationStateChange = useCallback(state => {
     const currentRoute = state.routes[state.index];
     const screenName = currentRoute.name;
@@ -90,6 +87,10 @@ const AppStack = () => {
   return (
     // @ts-ignore
     <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
+      {listAHome.map(({Component, title}) => (
+        <Stack.Screen key={title} name={title} component={Component} options={noHeader} />
+      ))}
+
       <Stack.Screen name="Inbox" component={Inbox} options={noHeader} />
 
       <Stack.Screen name="Chat" component={Chat} options={noHeader} />
@@ -116,7 +117,13 @@ const AppStack = () => {
 
       <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfo} options={noHeader} />
 
+      <Stack.Screen name="Email" component={Email} options={noHeader} />
+
       <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
+
+      <Stack.Screen name="OTP" component={OTP} options={noHeader} />
+
+      <Stack.Screen name="Notification" component={Notification} options={noHeader} />
 
       <Stack.Screen name="Filter" component={Filter} options={noHeader} />
 

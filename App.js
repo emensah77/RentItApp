@@ -21,8 +21,11 @@ const App = () => {
     requestUserPermission();
     notificationListener();
     (async () => {
-      await Crashes.setEnabled(true);
+      await Crashes.setEnabled(true).catch(console.error);
       Crashes.setListener({
+        onBeforeSending: e => console.debug('Sending error report.', e),
+        onSendingSucceeded: e => console.debug('Sent error report', e),
+        onSendingFailed: e => console.error('Sending error report failed', e),
         shouldProcess: () => true,
         shouldAwaitUserConfirmation: () => false,
         getErrorAttachments: () => {

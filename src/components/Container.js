@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {Pressable} from 'react-native';
+import {Pressable, View} from 'react-native';
 
 import {global} from '../assets/styles';
 
@@ -17,6 +17,7 @@ const Container = props => {
     onPress,
     ripple,
     hitSlop,
+    zIndex,
     accessibilityLabel,
   } = props;
 
@@ -30,20 +31,23 @@ const Container = props => {
       height ? {maxHeight: height, height} : {},
       color ? {backgroundColor: color} : {},
       position ? {alignSelf: position} : {},
+      {zIndex},
     ],
-    [center, color, height, left, position, row, type, width],
+    [center, color, height, left, position, row, type, width, zIndex],
   );
 
+  const Display = useMemo(() => (onPress ? Pressable : View), [onPress]);
+
   return (
-    <Pressable
-      onPress={onPress}
+    <Display
+      onPress={onPress && onPress}
       android_ripple={ripple}
       hitSlop={hitSlop}
       accessible
       accessibilityLabel={accessibilityLabel}
       style={style}>
       {children}
-    </Pressable>
+    </Display>
   );
 };
 

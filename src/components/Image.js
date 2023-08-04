@@ -2,18 +2,18 @@ import React, {useMemo} from 'react';
 import {View, Image} from 'react-native';
 
 const RentitImage = props => {
-  const {width, height, circle, src, mode} = props;
+  const {width, height, circle, borderRadius, src, mode} = props;
 
   const containerStyle = useMemo(
     () => ({
       width: width || circle,
       height: height || circle,
-      borderRadius: circle || 0,
+      borderRadius: borderRadius || circle || 0,
       borderColor: '#000000',
       overflow: 'hidden',
       // borderWidth: __DEV__ ? 1 : 0,
     }),
-    [circle, width, height],
+    [circle, width, height, borderRadius],
   );
 
   const imageStyle = useMemo(

@@ -1,10 +1,22 @@
-import React, {useMemo, useCallback} from 'react';
+import React, {useMemo, useCallback, useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-import {Page, Whitespace, Divider, CardDisplay, Typography} from '../../components';
+import {
+  Page,
+  Whitespace,
+  Divider,
+  CardDisplay,
+  Typography,
+  Container,
+  Image,
+} from '../../components';
+
+import {pageInnerHorizontalPadding} from '../../assets/styles/global';
 
 // import logo from '../../assets/images/logo.png';
-import user from '../../assets/images/menu/user.png';
+import userImage from '../../assets/images/menu/user.png';
 import earnMoney from '../../assets/images/menu/earn-money.png';
 import profile from '../../assets/images/menu/profile.png';
 import payments from '../../assets/images/menu/payments.png';
@@ -20,10 +32,16 @@ import giftCard from '../../assets/images/menu/gift-card.png';
 // import contact from '../../assets/images/menu/contact.png';
 // import safetyCenter from '../../assets/images/menu/safety-center.png';
 import becomeMarketer from '../../assets/images/menu/become-marketer.png';
-// import dashboardMarketer from '../../assets/images/menu/dashboard-marketer.png';
+import dashboardMarketer from '../../assets/images/menu/dashboard-marketer.png';
 import arrowRight from '../../assets/images/arrow-right.png';
 
 const Menu = () => {
+  const {
+    currentUser,
+    currentUser: {uid},
+  } = auth();
+  const [isMarketer, setIsMarketer] = useState(false);
+
   const navigation = useNavigation();
 
   const goTo = useCallback(
@@ -31,6 +49,47 @@ const Menu = () => {
       navigation.push(route);
     },
     [navigation],
+  );
+
+  useEffect(() => {
+    const checkMarketer = async () => {
+      const doc = firestore().collection('users').doc(uid);
+      const docSnapshot = await doc.get().catch(console.error);
+      if (docSnapshot) {
+        const u = docSnapshot.data();
+        if (u && u.marketer_status === 'ACCEPTED') {
+          setIsMarketer(true);
+        } else {
+          setIsMarketer(false);
+        }
+      }
+    };
+
+    checkMarketer();
+  }, [uid]);
+
+  const markerterDashboard = useMemo(() => {
+    if (isMarketer) {
+      return {
+        description: 'Marketer Dashboard',
+        image: dashboardMarketer,
+        width: 27,
+        height: 18.78,
+        onPress: goTo('MarketerDashboard'),
+      };
+    }
+    return undefined;
+  }, [goTo, isMarketer]);
+
+  const dummyLeftIcon = useMemo(
+    // Deliberately messed this up, to prevent the close Icon
+    () => ({uri: 'currentUser.photoURL'}),
+    [],
+  );
+
+  const leftIcon = useMemo(
+    () => (currentUser.photoURL ? {uri: currentUser.photoURL} : userImage),
+    [currentUser],
   );
 
   const sections = useMemo(
@@ -43,7 +102,7 @@ const Menu = () => {
             image: profile,
             width: 23.85,
             height: 23.85,
-            onPress: goTo('AccountDetails'),
+            onPress: goTo('EditPersonalInfo'),
           },
           {
             description: 'Payments and payouts',
@@ -80,7 +139,7 @@ const Menu = () => {
             image: listHome,
             width: 24.04,
             height: 22.62,
-            onPress: goTo('Onboarding'),
+            onPress: goTo('OnboardingScreen1'),
           },
           {
             description: 'Your Homes',
@@ -112,13 +171,8 @@ const Menu = () => {
             height: 30,
             onPress: goTo('BecomeAMarketer'),
           },
-          // {
-          //   description: 'Marketer Dashboard',
-          //   image: dashboardMarketer,
-          //   width: 27,
-          //   height: 18.78,
-          // },
-        ],
+          markerterDashboard,
+        ].filter(item => !!item),
       },
       // {
       //   heading: 'Support',
@@ -176,21 +230,33 @@ const Menu = () => {
       //   ],
       // },
     ],
-    [goTo],
+    [goTo, markerterDashboard],
   );
 
   return (
     <Page
-      leftIcon={user}
+      leftIcon={dummyLeftIcon}
       rightIcon={arrowRight}
       onLeftIconPress={goTo('AccountDetails')}
+      onRightIconPress={goTo('AccountDetails')}
       header={
-        <Typography onPress={goTo('AccountDetails')} type="heading" left width="45%">
-          Matt{'\n'}
-          <Typography type="regular" size={11} left color="#717171">
-            Show Profile
+        <Container type="row" onPress={goTo('AccountDetails')}>
+          <Whitespace marginLeft={pageInnerHorizontalPadding} />
+
+          <Image mode="repeat" src={leftIcon} width={50} height={50} circle={100} />
+
+          <Whitespace marginLeft={pageInnerHorizontalPadding} />
+
+          <Typography type="heading" left width="45%">
+            {currentUser.displayName}
+
+            {'\n'}
+
+            <Typography type="regular" size={11} left color="#717171">
+              Show Profile
+            </Typography>
           </Typography>
-        </Typography>
+        </Container>
       }>
       <CardDisplay
         leftImageWidth={37.37}
