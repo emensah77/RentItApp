@@ -21,7 +21,10 @@ import {
 } from '../../../components';
 
 import hamburger from '../../../assets/images/hamburger.png';
-import homeMarker from '../../../assets/images/home-marker.png';
+import neutral from '../../../assets/images/markers/neutral.png';
+import pending from '../../../assets/images/markers/pending.png';
+import rejected from '../../../assets/images/markers/rejected.png';
+import approved from '../../../assets/images/markers/approved.png';
 import {global} from '../../../assets/styles';
 
 const style = {width: '100%', height: '100%', backgroundColor: 'white'};
@@ -261,7 +264,15 @@ const MarketerHome = props => {
                 : marker.title
             }
             description={marker.description}
-            image={homeMarker}
+            image={
+              marker.status === 'PENDING'
+                ? pending
+                : marker.status === 'APPROVED'
+                ? approved
+                : marker.status === 'REJECTED'
+                ? rejected
+                : neutral
+            }
             onPress={changeMode('home')}
           />
         ))}
