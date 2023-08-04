@@ -44,12 +44,14 @@ const Upload = props => {
           if (e) {
             console.error('An error occurred with the delete operation.', e);
           } else {
-            setUrls(prevUrls => prevUrls.filter(u => u !== url));
+            const validUrls = urls.filter(u => u !== url);
+            setUrls(validUrls);
+            getImages(validUrls);
           }
         },
       );
     },
-    [],
+    [getImages, urls],
   );
 
   const getURL = useCallback(uri => ({uri}), []);
