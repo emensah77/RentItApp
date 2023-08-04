@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useCallback, useEffect, useState, useMemo, useContext} from 'react';
 import {ActivityIndicator, Alert, Dimensions, View} from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WebView} from 'react-native-webview';
 import auth from '@react-native-firebase/auth';
 import {deletePost} from '../../graphql/mutations';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const containerStyle = {
   alignItems: 'center',
@@ -17,7 +18,7 @@ const containerStyle = {
 };
 
 const PaymentScreen = () => {
-  const user = useMemo(async () => auth().currentUser, []);
+  const {user} = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -100,7 +101,7 @@ const PaymentScreen = () => {
         userId: user.uid,
         userName: user.displayName,
         merchantTransactionID,
-        orderType: homeid === null ? 'payment' : 'order',
+        orderType: homeid === null || '' ? 'payment' : 'order',
         paymentStatus: 'Processing',
         checkoutNumber,
       })
@@ -202,7 +203,7 @@ const PaymentScreen = () => {
       const words = url.split('type=');
       if (words[1] === 'success') {
         if (navigation.canGoBack()) {
-          if (homeid === null) {
+          if (homeid === null || homeid === undefined || homeid === '') {
             Alert.alert(
               'Payment Confirmation!',
               `Keep your confirmation code: ${merchantTransactionID}`,
@@ -257,7 +258,7 @@ const PaymentScreen = () => {
       return;
     }
 
-    if (homeid === null) {
+    if (homeid === null || homeid === undefined || homeid === '') {
       addPayment();
     }
 
