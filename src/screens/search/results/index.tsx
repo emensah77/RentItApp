@@ -160,23 +160,22 @@ export const SearchResultsScreen = _props => {
 
   useEffect(() => {
     if (postsLoaded && isMapReady) {
-      // extract latitudes and longitudes from viewPort
-      const northLat = location.viewPort.northeast.lat;
-      const eastLon = location.viewPort.northeast.lng;
-      const southLat = location.viewPort.southwest.lat;
-      const westLon = location.viewPort.southwest.lng;
+      // extract latitudes and longitudes from posts
+      const latitudes = posts.map(post => post.location.lat);
+      const longitudes = posts.map(post => post.location.lon);
 
-      // calculate center lat and lon
-      const centerLat = (northLat + southLat) / 2;
-      const centerLon = (westLon + eastLon) / 2;
+      // calculate average lat and lon
+      const averageLatitude = latitudes.reduce((sum, value) => sum + value, 0) / latitudes.length;
+      const averageLongitude =
+        longitudes.reduce((sum, value) => sum + value, 0) / longitudes.length;
 
       // calculate latitude and longitude deltas
-      const latitudeDelta = 8;
-      const longitudeDelta = 8;
+      const latitudeDelta = 0.8; // Adjust these values as per your needs
+      const longitudeDelta = 0.8; // Adjust these values as per your needs
 
       mapRef.current?.animateToRegion({
-        latitude: centerLat,
-        longitude: centerLon,
+        latitude: averageLatitude,
+        longitude: averageLongitude,
         latitudeDelta,
         longitudeDelta,
       });
