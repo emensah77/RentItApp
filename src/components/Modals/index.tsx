@@ -121,6 +121,12 @@ export const SearchModal = (props: ModalProps) => {
 
                 components: 'country:gh',
               }}
+              textInputProps={{
+                onSubmitEditing: (event) => { 
+                  const inputText = event.nativeEvent.text;
+                  props.onEmptySubmit(inputText);
+                }
+              }}
               // suppressDefaultStyles
               renderRow={renderRow}
             />

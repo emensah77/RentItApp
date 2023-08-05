@@ -28,6 +28,7 @@ export const SearchHome = props => {
   const [locality, setLocality] = useState('');
   const [address, setAddress] = useState('');
   const [sublocality, setSubLocality] = useState('');
+  const [searchText, setSearchText] = useState('');
 
   const [dates, setDates] = useState({startDate: null, endDate: null});
 
@@ -53,10 +54,27 @@ export const SearchHome = props => {
         setSubLocality(details.address_components[1].short_name);
       }
       setShowAddress(true);
+      setModalVisible(false);
+      if (!dates.startDate || !dates.endDate) {
+        setModalType('calender');
+        setModalVisible(true);
+      }
+    },
+    [dates],
+  );
+  const onEmptySubmit = useCallback(
+    inputText => {
+      setSearchText(inputText);
+      setLocality(inputText); // Optionally, you may use the inputText as the locality
+      setAddress(inputText); // Optionally, you may use the inputText as the address
+      setShowAddress(true);
+      setModalVisible(false); // Close the current modal
 
-      // Update here
-      setModalType('calender'); // set modalType to 'calender'
-      setModalVisible(true); // make modal visible
+      // If no dates are selected, open the calendar modal
+      if (!dates.startDate || !dates.endDate) {
+        setModalType('calender');
+        setModalVisible(true);
+      }
     },
     [dates],
   );
@@ -74,8 +92,9 @@ export const SearchHome = props => {
         viewPort,
         locality,
         sublocality,
-        address,
+        address: viewPort ? address : searchText,
       },
+      searchText,
     });
   }, [
     address,
@@ -88,6 +107,7 @@ export const SearchHome = props => {
     petsCount,
     sublocality,
     viewPort,
+    searchText,
   ]);
 
   const onChange = useCallback(({startDate, endDate}) => {
@@ -160,6 +180,7 @@ export const SearchHome = props => {
         type={modalType}
         onComplete={autoComplete}
         onChange={onChange}
+        onEmptySubmit={onEmptySubmit}
       />
 
       <Page

@@ -23,7 +23,7 @@ import styles from './styles';
 export const SearchResultsScreen = _props => {
   const {navigation} = _props;
   const route: any = useRoute();
-  const {guests, location, dates} = route.params;
+  const {guests, location, dates, searchText} = route.params;
   const [posts, setPosts] = useState([]);
   const [latitude, setLatitude] = useState<any>(null);
   const [longitude, setLongitude] = useState<any>(null);
@@ -53,7 +53,6 @@ export const SearchResultsScreen = _props => {
         setLongitude(position.coords.longitude);
       },
       error => {
-        console.log(error);
         setLatitude(null);
         setLongitude(null);
       },
@@ -89,7 +88,7 @@ export const SearchResultsScreen = _props => {
             body: JSON.stringify({
               region: viewPort,
               userLocation: {latitude, longitude},
-              searchQuery: 'nice apartment',
+              searchQuery: location?.viewport ? 'nice apartment' : searchText,
               searchAfter,
             }),
           },
@@ -102,7 +101,7 @@ export const SearchResultsScreen = _props => {
         console.error(error);
       }
     },
-    [latitude, longitude, location?.viewPort],
+    [location, latitude, longitude, searchText],
   );
 
   const fetchMoreData = async () => {
