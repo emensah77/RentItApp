@@ -160,27 +160,33 @@ export const SearchResultsScreen = _props => {
 
   useEffect(() => {
     if (postsLoaded && isMapReady) {
-      // extract latitudes and longitudes from posts
-      const latitudes = posts.map(post => post.location.lat);
-      const longitudes = posts.map(post => post.location.lon);
+      // Check if there are any posts
+      if (posts.length > 0) {
+        // extract latitudes and longitudes from posts
+        const latitudes = posts.map(post => post.location.lat);
+        const longitudes = posts.map(post => post.location.lon);
 
-      // calculate average lat and lon
-      const averageLatitude = latitudes.reduce((sum, value) => sum + value, 0) / latitudes.length;
-      const averageLongitude =
-        longitudes.reduce((sum, value) => sum + value, 0) / longitudes.length;
+        // calculate average lat and lon
+        const averageLatitude = latitudes.reduce((sum, value) => sum + value, 0) / latitudes.length;
+        const averageLongitude =
+          longitudes.reduce((sum, value) => sum + value, 0) / longitudes.length;
 
-      // calculate latitude and longitude deltas
-      const latitudeDelta = 0.8; // Adjust these values as per your needs
-      const longitudeDelta = 0.8; // Adjust these values as per your needs
+        // calculate latitude and longitude deltas
+        const latitudeDelta = 0.8; // Adjust these values as per your needs
+        const longitudeDelta = 0.8; // Adjust these values as per your needs
 
-      mapRef.current?.animateToRegion({
-        latitude: averageLatitude,
-        longitude: averageLongitude,
-        latitudeDelta,
-        longitudeDelta,
-      });
+        mapRef.current?.animateToRegion({
+          latitude: averageLatitude,
+          longitude: averageLongitude,
+          latitudeDelta,
+          longitudeDelta,
+        });
+      } else {
+        // No posts, animate to default region
+        mapRef.current?.animateToRegion(initialRegion);
+      }
     }
-  }, [postsLoaded, isMapReady]);
+  }, [postsLoaded, isMapReady, posts]);
 
   const renderLoader = useMemo(
     () => (
