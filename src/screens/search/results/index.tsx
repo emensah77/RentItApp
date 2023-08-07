@@ -105,10 +105,14 @@ export const SearchResultsScreen = _props => {
   );
 
   const fetchMoreData = async () => {
+    if (searchAfter === null) {
+      return;
+    }
     setLoadingMore(true); // Start loading
     const data = await personalizedHomes(searchAfter);
     if (data && data.homes) {
-      setPosts(prevPosts => [...prevPosts, ...data.homes]); // Append the new homes to the existing homes
+      const newHomes = filterDuplicates([...posts, ...data.homes]); // filter duplicates at this stage
+      setPosts(newHomes); // Use the filtered list of homes
       setSearchAfter(data.searchAfter); // Update the searchAfter value for the next fetch
     }
     setLoadingMore(false);
@@ -136,6 +140,17 @@ export const SearchResultsScreen = _props => {
     },
     [posts],
   );
+  const filterDuplicates = arr => {
+    const uniqueIds = new Set();
+    const filteredArray = arr.filter(post => {
+      if (!uniqueIds.has(post.id)) {
+        uniqueIds.add(post.id);
+        return true;
+      }
+      return false;
+    });
+    return filteredArray;
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -198,7 +213,7 @@ export const SearchResultsScreen = _props => {
   );
   const renderItem = useCallback(
     ({item}) => (
-      <View key={item}>
+      <View>
         <Post post={item} />
       </View>
     ),

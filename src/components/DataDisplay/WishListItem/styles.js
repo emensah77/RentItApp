@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
   },
   text: {
+    flex: 1, // This ensures it takes up only the available space after the image
     fontFamily: fonts.primary,
     fontSize: 14,
     lineHeight: 22,

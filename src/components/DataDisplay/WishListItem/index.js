@@ -9,7 +9,7 @@ const WishListItem = ({item}) => {
   const navigation = useNavigation();
 
   const goWishList = useCallback(() => {
-    navigation.navigate('WishlistItem', {item});
+    navigation.navigate('Post', {postId: item.id});
   }, [item]);
 
   return (
@@ -27,7 +27,7 @@ const WishListItem = ({item}) => {
           />
         )}
 
-        <Typography style={styles.text} bold numberOfLines={1} ellipsizeMode="tail">
+        <Typography style={styles.text} bold numberOfLines={2} ellipsizeMode="tail">
           {item.title}
         </Typography>
       </Pressable>
