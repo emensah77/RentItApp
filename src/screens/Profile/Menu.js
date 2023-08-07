@@ -40,7 +40,6 @@ const Menu = () => {
     currentUser,
     currentUser: {uid},
   } = auth();
-  const [isMarketer, setIsMarketer] = useState(false);
 
   const navigation = useNavigation();
   const [isMarketer, setIsMarketer] = useState(false);
