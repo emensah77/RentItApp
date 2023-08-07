@@ -2,6 +2,7 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {PhoneNumberUtil} from 'google-libphonenumber';
 import auth from '@react-native-firebase/auth';
+import {startCase, camelCase} from 'lodash';
 
 import Social from './Social';
 
@@ -9,10 +10,16 @@ import {Page, Input, Typography, Button, Divider, Dropdown} from '../../componen
 import arrowDown from '../../assets/images/arrow-down.png';
 
 const PhoneNumber = props => {
-  const {inline, onChangeData} = props;
+  const {
+    route: {params: {returnTo}} = {params: {returnTo: ''}},
+    inline,
+    onChangeData,
+    initialCountryCode = '',
+    initialPhoneNumber = '',
+  } = props;
 
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [country, setCountry] = useState({});
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
+  const [country, setCountry] = useState({code: initialCountryCode});
   const [countries, setCountries] = useState([]);
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(true);
@@ -22,9 +29,9 @@ const PhoneNumber = props => {
 
   const goToOTP = useCallback(
     data => {
-      navigation.navigate('OTP', data);
+      navigation.navigate('OTP', {...data, returnTo});
     },
-    [navigation],
+    [navigation, returnTo],
   );
 
   const submit = useCallback(async () => {
@@ -145,7 +152,7 @@ const PhoneNumber = props => {
   }, []);
 
   return (
-    <Page header="Sign up" inline={inline}>
+    <Page header={startCase(camelCase(returnTo)) || 'Sign up'} inline={inline}>
       <Dropdown
         onChange={onCountryChange}
         value={country.name ? `(+${country.code}) ${country.name}` : ''}
@@ -164,6 +171,7 @@ const PhoneNumber = props => {
         value={phoneNumber}
         onChange={onPhoneNumberChange}
         error={error}
+        trim
         groupBefore
       />
 
@@ -177,9 +185,13 @@ const PhoneNumber = props => {
             Continue
           </Button>
 
-          <Divider>or</Divider>
+          {!returnTo && (
+            <>
+              <Divider>or</Divider>
 
-          <Social />
+              <Social />
+            </>
+          )}
         </>
       )}
     </Page>

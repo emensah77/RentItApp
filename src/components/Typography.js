@@ -39,6 +39,8 @@ const Typography = props => {
       accessible
       accessibilityLabel={accessibilityLabel}
       numberOfLines={numberOfLines}
+      allowFontScaling
+      maxFontSizeMultiplier={2}
       style={style}>
       {children}
     </Text>

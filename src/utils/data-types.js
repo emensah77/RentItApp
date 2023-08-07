@@ -97,6 +97,12 @@ const FACILITIES = [
   {value: 'Bathrooms', id: 'bathRoomsCount'},
 ];
 
+const STATUSES = [
+  {title: '', value: 'APPROVED'},
+  {title: '', value: 'REJECTED'},
+  {title: '', value: 'PENDING'},
+];
+
 export default {
   HOME_TYPES,
   PAYMENT_TYPES,
@@ -106,4 +112,5 @@ export default {
   GENDERS,
   YES_OR_NO,
   FACILITIES,
+  STATUSES,
 };

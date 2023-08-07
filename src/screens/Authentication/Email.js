@@ -2,12 +2,15 @@ import React, {useState, useCallback} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import {startCase, camelCase} from 'lodash';
 
 import Social from './Social';
 
 import {Page, Input, Button, Divider} from '../../components';
 
-const Email = () => {
+const Email = props => {
+  const {route: {params: {returnTo}} = {params: {returnTo: ''}}} = props;
+
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(false);
@@ -16,9 +19,9 @@ const Email = () => {
 
   const goTo = useCallback(
     route => {
-      navigation.navigate(route);
+      navigation.navigate(returnTo || route);
     },
-    [navigation],
+    [navigation, returnTo],
   );
 
   const submit = useCallback(async () => {
@@ -53,13 +56,14 @@ const Email = () => {
   }, []);
 
   return (
-    <Page header="Log in or sign up">
+    <Page header={startCase(camelCase(returnTo)) || 'Log in or sign up'}>
       <Input
         placeholder="Email"
         type="email-address"
         value={email}
         error={error}
         onChange={onEmailChange}
+        trim
       />
 
       <Button
@@ -70,9 +74,13 @@ const Email = () => {
         Continue
       </Button>
 
-      <Divider>or</Divider>
+      {!returnTo && (
+        <>
+          <Divider>or</Divider>
 
-      <Social noEmail />
+          <Social noEmail />
+        </>
+      )}
     </Page>
   );
 };
