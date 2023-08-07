@@ -26,7 +26,8 @@ async function updateWatchStatus(userId, videoVersion) {
   const params = {
     TableName: 'inAppVideoMetrics',
     Key: {userId},
-    UpdateExpression: 'set hasWatchedVideo = :watched, watchedVideoVersion = :version',
+    UpdateExpression:
+      'set hasWatchedVideo = :watched, watchedVideoVersion = :version',
     ExpressionAttributeValues: {
       ':watched': true,
       ':version': videoVersion,
@@ -127,7 +128,7 @@ async function createUserRecord(userId) {
 
 function getCurrentVideoVersion() {
   // Replace this with your logic to get the current video version
-  return '1.6';
+  return '1.5';
 }
 
 function getVideoUrl() {

@@ -96,7 +96,11 @@ class TinggService {
     };
     const {accessKey} = this;
 
-    const encryption = new Encryption(this.IVKey, this.secretKey, this.algorithm);
+    const encryption = new Encryption(
+      this.IVKey,
+      this.secretKey,
+      this.algorithm,
+    );
 
     const payload = JSON.stringify(requestBody).replace(/\//g, '\\/');
 

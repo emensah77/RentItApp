@@ -78,7 +78,6 @@ const Page = (props: PageProps) => {
     setFooterTop(height);
   }, []);
 
-  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
 
   const $wrapperStyle = useMemo(() => {
     return [$containerStyle, {backgroundColor}, $containerInsets];

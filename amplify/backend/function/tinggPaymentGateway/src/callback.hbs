@@ -9,8 +9,9 @@
 
   <body>
     <script>
-      if ('ReactNativeWebView' in window) { window.ReactNativeWebView.postMessage({{message}}); }
-      else { alert('ReactNativeWebView not found') }
+      if ('ReactNativeWebView' in window) {
+      window.ReactNativeWebView.postMessage({{message}}); } else {
+      alert('ReactNativeWebView not found') }
     </script>
   </body>
 

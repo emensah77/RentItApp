@@ -292,10 +292,7 @@ const global = StyleSheet.create({
     // borderWidth: 1,
   },
   pageContent: {
-<<<<<<< HEAD
-=======
     paddingHorizontal: pageInnerHorizontalPadding,
->>>>>>> development
     flexGrow: 1,
   },
   footer: {

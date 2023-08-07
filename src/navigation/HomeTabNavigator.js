@@ -2,7 +2,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-
+import {View} from 'react-native';
 import {Icon} from '@components/Icon';
 import {colors} from '@theme';
 import ExploreNavigator from './ExploreNavigator';

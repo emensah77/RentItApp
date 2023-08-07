@@ -19,7 +19,9 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 
 async function findSimilarHomes(home, N) {
   // Get all homes from DynamoDB
-  const allHomes = await ddb.scan({TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev'}).promise();
+  const allHomes = await ddb
+    .scan({TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev'})
+    .promise();
 
   // Define weights for each feature (higher weight = more important)
   const weights = {
@@ -76,7 +78,8 @@ async function findSimilarHomes(home, N) {
     let weightedScore = 0;
     for (let j = 0; j < featureVector1.length; j++) {
       const weight = weights[Object.keys(weights)[j]];
-      weightedScore += weight * (featureVector1[j] === featureVector2[j] ? 1 : 0);
+      weightedScore +=
+        weight * (featureVector1[j] === featureVector2[j] ? 1 : 0);
     }
     const distance = haversineDistance(
       home.latitude,
@@ -84,7 +87,8 @@ async function findSimilarHomes(home, N) {
       allHomes.Items[i].latitude,
       allHomes.Items[i].longitude,
     );
-    const score = 0.7 * (1 - distance / maxDistance) + 0.3 * (weightedScore / totalWeight);
+    const score =
+      0.7 * (1 - distance / maxDistance) + 0.3 * (weightedScore / totalWeight);
 
     similarities.push({home: allHomes.Items[i], score, distance});
   }

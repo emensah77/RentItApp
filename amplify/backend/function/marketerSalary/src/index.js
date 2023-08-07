@@ -18,14 +18,14 @@ exports.handler = async event => {
 
   // Calculate daily base salary
   console.log('Days in month:', daysInMonth);
-  // User ID
-  console.log('User ID:', userId);
   const dailyBaseSalary = Math.ceil(baseSalary / daysInMonth);
   console.log('Daily base salary:', dailyBaseSalary);
 
   // Calculate days between startDate and endDate
   const daysBetween =
-    Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
+    Math.ceil(
+      (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24),
+    ) + 1;
   console.log('Days between:', daysBetween);
 
   // Calculate total base salary for the selected date range
@@ -50,7 +50,9 @@ exports.handler = async event => {
     const allHomes = result.Items;
     console.log('All homes:', allHomes);
 
-    const homes = allHomes.filter(home => home.createdAt >= startDate && home.createdAt <= endDate);
+    const homes = allHomes.filter(
+      home => home.createdAt >= startDate && home.createdAt <= endDate,
+    );
 
     console.log('Homes:', homes);
 

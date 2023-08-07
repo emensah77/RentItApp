@@ -113,7 +113,8 @@ Parameters:
 Conditions:
   ShouldNotCreateEnvResources: !Equals [!Ref env, NONE]
 
-  ShouldOutputAppClientSecrets: !Equals [!Ref userpoolClientGenerateSecret, true]
+  ShouldOutputAppClientSecrets:
+    !Equals [!Ref userpoolClientGenerateSecret, true]
 
 Resources:
   # BEGIN SNS ROLE RESOURCE
@@ -127,7 +128,13 @@ Resources:
           'airbnb52f6e38c_sns-role',
           !Join [
             '',
-            ['sns', '52f6e38c', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env],
+            [
+              'sns',
+              '52f6e38c',
+              !Select [3, !Split ['-', !Ref 'AWS::StackName']],
+              '-',
+              !Ref env,
+            ],
           ],
         ]
       AssumeRolePolicyDocument:
@@ -262,15 +269,16 @@ Resources:
             - " if (event.RequestType == 'Delete') { "
             - '   response.send(event, context, response.SUCCESS, {})'
             - ' }'
-            - " if (event.RequestType == 'Update' || event.RequestType == 'Create') {"
+            - " if (event.RequestType == 'Update' || event.RequestType ==
+              'Create') {"
             - '   const params = {'
             - '     ClientId: event.ResourceProperties.clientId,'
             - '     UserPoolId: event.ResourceProperties.userpoolId'
             - '   };'
             - '   identity.describeUserPoolClient(params).promise()'
             - '     .then((res) => {'
-            - "       response.send(event, context, response.SUCCESS, {'appSecret':
-              res.UserPoolClient.ClientSecret});"
+            - "       response.send(event, context, response.SUCCESS,
+              {'appSecret': res.UserPoolClient.ClientSecret});"
             - '     })'
             - '     .catch((err) => {'
             - '       response.send(event, context, response.FAILED, {err});'
@@ -348,7 +356,10 @@ Resources:
         !If [
           ShouldNotCreateEnvResources,
           'airbnbclone52f6e38c_identitypool_52f6e38c',
-          !Join ['', ['airbnbclone52f6e38c_identitypool_52f6e38c', '__', !Ref env]],
+          !Join [
+            '',
+            ['airbnbclone52f6e38c_identitypool_52f6e38c', '__', !Ref env],
+          ],
         ]
 
       CognitoIdentityProviders:

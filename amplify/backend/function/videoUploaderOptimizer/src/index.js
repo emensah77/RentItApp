@@ -81,7 +81,8 @@ async function getPresignedUrlForPart(event, partNumber) {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: 'An error occurred while generating the pre-signed URL for part.',
+        message:
+          'An error occurred while generating the pre-signed URL for part.',
       }),
     };
   }

@@ -184,8 +184,7 @@ class TinggService {
       const transactionsRef = db.collection('transactions').doc(merchantTransactionID);
 
       const transactionDoc = await transactionsRef.get();
-      console.log('transaction data1', transactionDoc.data());
-      console.log('verifiedInFirebase1', verifiedInFirebase);
+      
       if (transactionDoc.exists) {
         const data = transactionDoc.data();
         console.log('transaction2 data', data);
@@ -197,6 +196,11 @@ class TinggService {
           if (data.orderType === 'payment') {
             await db
               .collection('payments')
+              .doc(merchantTransactionID)
+              .update({paymentStatus: 'Success'});
+          } else if (data.orderType === 'nsspayment') {
+            await db
+              .collection('subscriptiontransactions')
               .doc(merchantTransactionID)
               .update({paymentStatus: 'Success'});
           } else {

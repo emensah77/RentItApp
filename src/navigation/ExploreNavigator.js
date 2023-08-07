@@ -59,55 +59,7 @@ const Router = () => (
       options={headerShown('Confirm and Pay')}
     />
 
-    <Stack.Screen
-      name="OnboardingScreen7"
-      component={OnboardingScreen7}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="OnboardingScreen8"
-      component={OnboardingScreen8}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="OnboardingScreen9"
-      component={OnboardingScreen9}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="OnboardingScreen10"
-      component={OnboardingScreen10}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="OnboardingScreen11"
-      component={OnboardingScreen11}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="OnboardingScreen12"
-      component={OnboardingScreen12}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="OnboardingScreen13"
-      component={OnboardingScreen13}
-      options={{
-        headerShown: false,
-      }}
-    />
+    
     <Stack.Screen
       name="HouseUpload"
       component={HouseUploadScreen}

@@ -16,7 +16,9 @@ const storeLocationData = async locationData => {
   const userDoc = await userDocRef.get();
 
   // Check if the user document exists and retrieve the phoneNumber, otherwise use the default value "not available"
-  const phoneNumber = userDoc.exists ? userDoc.data().phoneNumber : 'not available';
+  const phoneNumber = userDoc.exists
+    ? userDoc.data().phoneNumber
+    : 'not available';
 
   // Store location data in the "marketerData" collection, using the user's uid as the document ID
   const docRef = db.collection('marketerData').doc(locationData.userID);
@@ -106,7 +108,11 @@ exports.handler = async event => {
       const startDate = new Date(requestData.startDate);
       const endDate = new Date(requestData.endDate);
 
-      const locationData = await getLocationDataByDateRange(userID, startDate, endDate);
+      const locationData = await getLocationDataByDateRange(
+        userID,
+        startDate,
+        endDate,
+      );
 
       return {
         statusCode: 200,

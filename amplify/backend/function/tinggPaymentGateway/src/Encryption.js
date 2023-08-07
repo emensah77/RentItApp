@@ -8,12 +8,20 @@ class Encryption {
   }
 
   encrypt(payload) {
-    let key = crypto.createHash('sha256').update(this.secretKey).digest('hex').substring(0, 32);
+    let key = crypto
+      .createHash('sha256')
+      .update(this.secretKey)
+      .digest('hex')
+      .substring(0, 32);
 
     key = Buffer.from(key);
 
     // prepare the IV key
-    let iv = crypto.createHash('sha256').update(this.IVKey).digest('hex').substring(0, 16);
+    let iv = crypto
+      .createHash('sha256')
+      .update(this.IVKey)
+      .digest('hex')
+      .substring(0, 16);
 
     iv = Buffer.from(iv);
 
