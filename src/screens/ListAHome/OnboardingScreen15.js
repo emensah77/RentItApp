@@ -6,38 +6,55 @@ import Base from './Base';
 
 import {Container, Whitespace, CardDisplay, Typography, Button, Input} from '../../components';
 
-const OnboardingScreen15 = () => {
-  const [selected, setSelected] = useState('');
-  const [data, setData] = useState();
+import {TYPES} from '../../utils';
+
+const OnboardingScreen15 = props => {
+  const {
+    route: {
+      params: {
+        loyaltyProgram,
+        negotiable,
+        furnished,
+        available,
+        availabilityDate: aD,
+        homeownerName: hN,
+      } = {
+        loyaltyProgram: '',
+        negotiable: '',
+        furnished: '',
+        available: '',
+        availabilityDate: '',
+        homeownerName: '',
+      },
+    },
+  } = props;
+
+  const [selected, setSelected] = useState(
+    [
+      loyaltyProgram === 'Yes' ? 'Loyalty Home' : null,
+      negotiable === 'Yes' ? 'Negotiable' : null,
+      furnished === 'Yes' ? 'Furnished' : null,
+    ].filter(item => !!item),
+  );
+  const [data, setData] = useState({
+    loyaltyProgram,
+    negotiable,
+    furnished,
+    available,
+    availabilityDate: aD,
+    homeownerName: hN,
+  });
   const [user, setUser] = useState(null);
   const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [homeownerName, setHomeownerName] = useState('');
-  const [availableForRent, setAvailableForRent] = useState(false);
-  const [availabilityDate, setAvailabilityDate] = useState(null);
+  const [availableForRent, setAvailableForRent] = useState(available === 'Yes');
+  const [availabilityDate, setAvailabilityDate] = useState(aD || null);
+  const [homeownerName, setHomeownerName] = useState(hN);
 
   const isAdmin = useMemo(
     () =>
       usersWithPrivileges.includes(auth().currentUser.uid) || user?.marketer_status === 'ACCEPTED',
     [usersWithPrivileges, user],
-  );
-
-  const items = useMemo(
-    () => [
-      {
-        title: 'Loyalty Home',
-        description: 'You have given a loyalty package to this homeowner',
-      },
-      {
-        title: 'Negotiable',
-        description: 'Price can be negotiated with the home owner',
-      },
-      {
-        title: 'Furnished',
-        description: 'Property comes with furniture and amenities',
-      },
-    ],
-    [],
   );
 
   const onToggleSelection = useCallback(
@@ -51,6 +68,20 @@ const OnboardingScreen15 = () => {
       setSelected(item);
     },
     [selected],
+  );
+
+  const toggleDatePicker = useCallback(() => {
+    setDatePickerVisibility(!isDatePickerVisible);
+  }, [isDatePickerVisible]);
+
+  const setAvailability = useCallback(
+    value => () => {
+      setAvailableForRent(value);
+      if (!value) {
+        toggleDatePicker();
+      }
+    },
+    [toggleDatePicker],
   );
 
   const getUserDetails = useCallback(async () => {
@@ -76,20 +107,6 @@ const OnboardingScreen15 = () => {
     }
   }, []);
 
-  const toggleDatePicker = useCallback(() => {
-    setDatePickerVisibility(!isDatePickerVisible);
-  }, [isDatePickerVisible]);
-
-  const setAvailability = useCallback(
-    value => () => {
-      setAvailableForRent(value);
-      if (!value) {
-        toggleDatePicker();
-      }
-    },
-    [toggleDatePicker],
-  );
-
   useEffect(() => {
     getUserDetails();
     getUsersWithPrivileges();
@@ -108,19 +125,19 @@ const OnboardingScreen15 = () => {
 
   return (
     <Base index={15} total={17} isComplete={!!data} data={data} title="Your home is?">
-      {items.map(({title, description}) => (
-        <React.Fragment key={title}>
-          {title !== 'Loyalty Home' || (title === 'Loyalty Home' && isAdmin) ? (
+      {TYPES.PAYMENT_TYPES.map(({value, description}) => (
+        <React.Fragment key={value}>
+          {value !== 'Loyalty Home' || (value === 'Loyalty Home' && isAdmin) ? (
             <Container
-              type={`chip${selected.includes(title) ? '' : 'De'}Selected`}
+              type={`chip${selected.includes(value) ? '' : 'De'}Selected`}
               color="#FFF"
               height={100}
               width="100%"
-              onPress={onToggleSelection(title)}>
+              onPress={onToggleSelection(value)}>
               <CardDisplay
                 name={
                   <Typography left size={18} weight="700" width="100%">
-                    {title}
+                    {value}
                   </Typography>
                 }
                 status={
@@ -130,7 +147,7 @@ const OnboardingScreen15 = () => {
                 }
                 center
                 bold
-                onPress={onToggleSelection(title)}
+                onPress={onToggleSelection(value)}
               />
             </Container>
           ) : null}

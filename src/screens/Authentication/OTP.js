@@ -7,7 +7,9 @@ import {Page, Input, Button} from '../../components';
 
 const Email = props => {
   const {
-    route: {params},
+    route: {
+      params: {confirmation, phoneNumber, returnTo},
+    },
   } = props;
   const [otp, setOTP] = useState('');
   const [error, setError] = useState('');
@@ -17,8 +19,8 @@ const Email = props => {
   const navigation = useNavigation();
 
   const goToFinish = useCallback(() => {
-    navigation.navigate('Finish');
-  }, [navigation]);
+    navigation.navigate(returnTo || 'Finish');
+  }, [navigation, returnTo]);
 
   const submit = useCallback(async () => {
     setLoading(true);
@@ -27,19 +29,22 @@ const Email = props => {
       return;
     }
 
-    const credential = auth.PhoneAuthProvider.credential(params?.confirmation?.verificationId, otp);
-    if (credential) {
+    const verified = auth.PhoneAuthProvider.credential(confirmation?.verificationId, otp);
+    if (verified) {
+      if (auth().currentUser) {
+        auth().currentUser.updatePhoneNumber(verified);
+      }
       const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
       await AsyncStorage.setItem(
         'authentication::data',
-        JSON.stringify({...authData, phoneNumber: params?.phoneNumber}),
+        JSON.stringify({...authData, phoneNumber}),
       );
       goToFinish();
     } else {
       setError('We were unable to verify your phone number. Try again.');
     }
     setLoading(false);
-  }, [error, goToFinish, otp, params]);
+  }, [confirmation, error, goToFinish, otp, phoneNumber]);
 
   const onOTPChange = useCallback(
     async _otp => {
@@ -50,10 +55,10 @@ const Email = props => {
         setError('');
       } else {
         setDisabled(true);
-        setError(`Enter the six digit code sent to ${params?.phoneNumber}.`);
+        setError(`Enter the six digit code sent to ${phoneNumber}.`);
       }
     },
-    [params?.phoneNumber],
+    [phoneNumber],
   );
 
   return (

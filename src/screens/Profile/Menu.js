@@ -3,7 +3,17 @@ import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-import {Page, Whitespace, Divider, CardDisplay, Typography} from '../../components';
+import {
+  Page,
+  Whitespace,
+  Divider,
+  CardDisplay,
+  Typography,
+  Container,
+  Image,
+} from '../../components';
+
+import {pageInnerHorizontalPadding} from '../../assets/styles/global';
 
 // import logo from '../../assets/images/logo.png';
 import userImage from '../../assets/images/menu/user.png';
@@ -30,6 +40,8 @@ const Menu = () => {
     currentUser,
     currentUser: {uid},
   } = auth();
+  const [isMarketer, setIsMarketer] = useState(false);
+
   const navigation = useNavigation();
   const [isMarketer, setIsMarketer] = useState(false);
 
@@ -70,6 +82,12 @@ const Menu = () => {
     return undefined;
   }, [goTo, isMarketer]);
 
+  const dummyLeftIcon = useMemo(
+    // Deliberately messed this up, to prevent the close Icon
+    () => ({uri: 'currentUser.photoURL'}),
+    [],
+  );
+
   const leftIcon = useMemo(
     () => (currentUser.photoURL ? {uri: currentUser.photoURL} : userImage),
     [currentUser],
@@ -85,7 +103,7 @@ const Menu = () => {
             image: profile,
             width: 23.85,
             height: 23.85,
-            onPress: goTo('AccountDetails'),
+            onPress: goTo('EditPersonalInfo'),
           },
           {
             description: 'Payments and payouts',
@@ -218,17 +236,28 @@ const Menu = () => {
 
   return (
     <Page
-      leftIcon={leftIcon}
+      leftIcon={dummyLeftIcon}
       rightIcon={arrowRight}
       onLeftIconPress={goTo('AccountDetails')}
+      onRightIconPress={goTo('AccountDetails')}
       header={
-        <Typography onPress={goTo('AccountDetails')} type="heading" left width="45%">
-          {currentUser.displayName}
-          {'\n'}
-          <Typography type="regular" size={11} left color="#717171">
-            Show Profile
+        <Container type="row" onPress={goTo('AccountDetails')}>
+          <Whitespace marginLeft={pageInnerHorizontalPadding} />
+
+          <Image mode="repeat" src={leftIcon} width={50} height={50} circle={100} />
+
+          <Whitespace marginLeft={pageInnerHorizontalPadding} />
+
+          <Typography type="heading" left width="45%">
+            {currentUser.displayName}
+
+            {'\n'}
+
+            <Typography type="regular" size={11} left color="#717171">
+              Show Profile
+            </Typography>
           </Typography>
-        </Typography>
+        </Container>
       }>
       <CardDisplay
         leftImageWidth={37.37}

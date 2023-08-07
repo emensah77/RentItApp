@@ -1,51 +1,44 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import Base from './Base';
 
 import {Container, Whitespace, CardDisplay, Typography} from '../../components';
+import {TYPES} from '../../utils';
 
-const OnboardingScreen4 = () => {
-  const [selected, setSelected] = useState('');
-  const [data, setData] = useState();
+const OnboardingScreen4 = props => {
+  const {
+    route: {params: {mode} = {mode: ''}},
+  } = props;
 
-  const items = useMemo(
-    () => [
-      {
-        title: 'For Rent',
-        description:
-          'You are renting your home to tenants, and require monthly payments and offering a stay limited by a time agreed upon.',
-      },
-      {
-        title: 'For Sale',
-        description:
-          'You are selling your home for a stipulated amount and are not offering a stay limited by time.',
-      },
-    ],
-    [],
-  );
+  const [selected, setSelected] = useState(mode);
+  const [data, setData] = useState({mode});
 
   const select = useCallback(
-    mode => () => {
-      setSelected(mode);
-      setData({mode});
+    _mode => () => {
+      setSelected(_mode);
+      setData({mode: _mode});
     },
     [],
   );
 
   return (
-    <Base index={4} isComplete={!!data} data={data} title="Are you renting or selling your home?">
-      {items.map(({title, description}) => (
-        <React.Fragment key={title}>
+    <Base
+      index={4}
+      isComplete={!!data.mode}
+      data={data}
+      title="Are you renting or selling your home?">
+      {TYPES.MODES.map(({value, description}) => (
+        <React.Fragment key={value}>
           <Container
-            type={`chip${selected === title ? '' : 'De'}Selected`}
+            type={`chip${selected === value ? '' : 'De'}Selected`}
             color="#FFF"
             height={100}
             width="100%"
-            onPress={select(title)}>
+            onPress={select(value)}>
             <CardDisplay
               name={
                 <Typography type="notice" size={18} weight="700">
-                  {title}
+                  {value}
                 </Typography>
               }
               description={
@@ -55,7 +48,7 @@ const OnboardingScreen4 = () => {
               }
               center
               bold
-              onPress={select(title)}
+              onPress={select(value)}
             />
           </Container>
 

@@ -7,6 +7,7 @@ import mixpanel from '../MixpanelConfig';
 import Inbox from '../screens/Profile/Inbox';
 import Chat from '../screens/Profile/Chat';
 import Menu from '../screens/Profile/Menu';
+import Notification from '../screens/Authentication/Notification';
 import PaymentsAndPayouts from '../screens/Profile/Payments/PaymentsAndPayouts';
 import PaymentMethods from '../screens/Profile/Payments/PaymentMethods';
 import YourPayments from '../screens/Profile/Payments/YourPayments';
@@ -17,7 +18,9 @@ import MarketerDashboard from '../screens/Profile/MarketerDashboard';
 import AccountDetails from '../screens/Profile/AccountDetails';
 import Edit from '../screens/Profile/Edit';
 import EditPersonalInfo from '../screens/Profile/EditPersonalInfo';
+import Email from '../screens/Authentication/Email';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
+import OTP from '../screens/Authentication/OTP';
 import Filter from '../screens/Explore/Filter';
 import DestinationSearchScreen from '../screens/DestinationSearch';
 import GuestsScreen from '../screens/GuestsScreen';
@@ -114,7 +117,13 @@ const AppStack = () => {
 
       <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfo} options={noHeader} />
 
+      <Stack.Screen name="Email" component={Email} options={noHeader} />
+
       <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={noHeader} />
+
+      <Stack.Screen name="OTP" component={OTP} options={noHeader} />
+
+      <Stack.Screen name="Notification" component={Notification} options={noHeader} />
 
       <Stack.Screen name="Filter" component={Filter} options={noHeader} />
 

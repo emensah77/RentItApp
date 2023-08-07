@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, Text, Pressable, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 
 import {global, button, typography} from '../assets/styles';
 
@@ -38,10 +38,10 @@ const Button = props => {
   );
 
   return (
-    <Pressable
+    <TouchableOpacity
       accessible
       accessibilityLabel={accessibilityLabel}
-      onPress={disabled ? null : onPress}
+      onPress={loading || disabled ? null : onPress}
       hitSlop={20}>
       <View style={style}>
         {prefix && (
@@ -50,7 +50,9 @@ const Button = props => {
             style={groupAfter || groupBefore ? global.groupPrefix : global.prefix}
           />
         )}
+
         <Text style={textStyle}>{loading ? 'Loading...' : children}</Text>
+
         {suffix && (
           <Image
             source={suffix}
@@ -58,7 +60,7 @@ const Button = props => {
           />
         )}
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

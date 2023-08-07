@@ -31,6 +31,7 @@ const global = StyleSheet.create({
   columnReverse: {flexDirection: 'column-reverse'},
   row: {...sizing, flexDirection: 'row'},
   wrap: {...sizing, flexWrap: 'wrap'},
+  rowWrap: {...sizing, flexDirection: 'row', flexWrap: 'wrap'},
   rowReverse: {flexDirection: 'row-reverse'},
   zeroElevation: {
     elevation: 0,
@@ -300,6 +301,13 @@ const global = StyleSheet.create({
   smallBorderRadius: {
     borderRadius: 12,
   },
+  smallCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+  },
   ...Array.from(new Array(101)).reduce(
     (p, _, i) => ({
       ...p,
@@ -308,20 +316,42 @@ const global = StyleSheet.create({
         top: i,
         zIndex: 10000,
       },
-      [`top-${i}-center`]: {
+      [`right-${i}`]: {
         position: 'absolute',
-        top: i,
+        right: i,
         zIndex: 10000,
-        alignSelf: 'center',
       },
       [`bottom-${i}`]: {
         position: 'absolute',
         bottom: i,
         zIndex: 10000,
       },
+      [`left-${i}`]: {
+        position: 'absolute',
+        left: i,
+        zIndex: 10000,
+      },
+      [`top-${i}-center`]: {
+        position: 'absolute',
+        top: i,
+        zIndex: 10000,
+        alignSelf: 'center',
+      },
+      [`right-${i}-center`]: {
+        position: 'absolute',
+        right: i,
+        zIndex: 10000,
+        alignSelf: 'center',
+      },
       [`bottom-${i}-center`]: {
         position: 'absolute',
         bottom: i,
+        zIndex: 10000,
+        alignSelf: 'center',
+      },
+      [`left-${i}-center`]: {
+        position: 'absolute',
+        left: i,
         zIndex: 10000,
         alignSelf: 'center',
       },

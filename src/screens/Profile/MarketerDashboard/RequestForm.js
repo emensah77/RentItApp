@@ -35,7 +35,7 @@ const RequestForm = props => {
   const submit = useCallback(async () => {
     setLoading(true);
     const response = await fetch(
-      'https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/marketerrequests',
+      'https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/marketerrequest',
       {
         method: 'POST',
         headers: {
@@ -125,7 +125,7 @@ const RequestForm = props => {
         onChange={onChangeData('description')}
       />
 
-      <Whitespace marginTop={30} />
+      <Whitespace marginTop={90} />
 
       <Input
         placeholder="0"

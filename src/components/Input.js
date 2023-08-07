@@ -13,6 +13,7 @@ const Input = props => {
     name,
     value,
     onChange: onChangeProp,
+    onFocus,
     placeholder,
     type,
     buttonType,
@@ -149,6 +150,7 @@ const Input = props => {
           keyboardType={keyboardType}
           editable={!disabled}
           selectTextOnFocus={!disabled}
+          onFocus={onFocus}
           secureTextEntry={type === 'password'}
           style={textStyle}
           multiLine={!!multiLine}

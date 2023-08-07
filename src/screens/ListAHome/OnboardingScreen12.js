@@ -1,16 +1,22 @@
-import React, {useState, useCallback} from 'react';
-import {View} from 'react-native';
+import React, {useState, useCallback, useRef} from 'react';
+import {View, Modal} from 'react-native';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Geocoder from 'react-native-geocoding';
+import {GOOGLE_MAP_API_KEY} from 'react-native-dotenv';
 
 import Base from './Base';
 
-import {Typography, Whitespace, Container, Image} from '../../components';
+import Location from '../Authentication/Location';
+
+import {Typography, Whitespace, Container, Image, Loader, Input} from '../../components';
 
 import {global} from '../../assets/styles';
 import locationPin from '../../assets/images/location-pin.png';
 
+navigator.geolocation = require('react-native-geolocation-service');
+
 const query = {
-  key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
+  key: GOOGLE_MAP_API_KEY,
   language: 'en',
   components: 'country:gh',
 };
@@ -20,58 +26,177 @@ const styles = {
   textInput: global.input,
 };
 
+const textInputProps = defaultValue => ({autoFocus: true, defaultValue});
+
 const containerStyle = [
   global.flex,
   {backgroundColor: '#FFF', minHeight: '100%'},
   global.pageContent,
 ];
 
-const OnboardingScreen11 = () => {
-  const [data, setData] = useState({
-    latitude: '',
-    longitude: '',
-    locality: '',
-    address: '',
-    sublocality: '',
-  });
+Geocoder.init(query.key);
 
-  const onPress = useCallback(async (_, details = null) => {
-    if (!details) {
+const OnboardingScreen11 = props => {
+  const {
+    route: {
+      params: {latitude, longitude, locality, address, sublocality} = {
+        latitude: '',
+        longitude: '',
+        locality: '',
+        address: '',
+        sublocality: '',
+      },
+    },
+  } = props;
+
+  const [data, setData] = useState({
+    latitude,
+    longitude,
+    locality,
+    address,
+    sublocality,
+  });
+  const [location, setLocation] = useState({
+    latitude,
+    longitude,
+  });
+  const [permissionRequest, setPermissionRequest] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const ref = useRef();
+
+  const toggleModal = useCallback(() => {
+    setOpen(!open);
+  }, [open]);
+
+  const onPress = useCallback(
+    async (_, details = null) => {
+      if (!details) {
+        return;
+      }
+
+      const _locality = details?.address_components?.find?.(component =>
+        component.types.includes('locality'),
+      )?.short_name;
+      const _subLocality = details?.address_components?.find?.(
+        component =>
+          component.types.includes('sublocality') || component.types.includes('neighborhood'),
+      )?.short_name;
+      const _address = ref.current.getAddressText() || details.formatted_address;
+
+      setData({
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+        locality: _locality,
+        sublocality: _subLocality,
+        address: _address,
+      });
+      ref.current?.setAddressText(_address);
+      toggleModal();
+    },
+    [toggleModal],
+  );
+
+  const reverseGeolocate = useCallback(() => {
+    if (!location.latitude || !location.longitude) {
       return;
     }
 
-    setData({
-      latitude: details.geometry.location.lat,
-      longitude: details.geometry.location.lng,
-      locality: details.address_components[0].short_name,
-      address: details.address_components[0].long_name,
-      sublocality: details.address_components[1].short_name,
-    });
-  }, []);
+    setLoading(true);
+
+    // Reverse geocoding to get the address details
+    Geocoder.from(location.latitude, location.longitude)
+      .then(json => {
+        setLoading(false);
+        onPress(undefined, json.results[0], true);
+      })
+      .catch(console.error);
+  }, [location, onPress]);
+
+  const requestLocation = useCallback(() => {
+    // When requesting times other than the first time, then permission
+    // was already granted, so geolocate the user immediately
+    if (permissionRequest) {
+      reverseGeolocate();
+    } else {
+      setPermissionRequest(true);
+    }
+  }, [permissionRequest, reverseGeolocate]);
+
+  const getPosition = useCallback(
+    ({coords}) => {
+      setLocation({latitude: coords.latitude, longitude: coords.longitude});
+
+      if (loading) {
+        reverseGeolocate();
+      }
+    },
+    [loading, reverseGeolocate],
+  );
 
   const renderRow = useCallback(
     item => (
-      <>
-        <Whitespace marginTop={15} />
+      <Container width="100%">
+        {item.isCurrentLocation || item.isPredefinedPlace ? (
+          <>
+            <Whitespace marginTop={10} />
 
-        <Container row type="spaceBetween" height={50}>
-          <Container center type="smallBorderRadius" color="#F2F2F2" left height={50} width={50}>
-            <Image src={locationPin} width={20} height={25} />
-          </Container>
+            <Typography weight="800" width="100%" color="#252525" left size={14}>
+              {item.description}
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Whitespace marginTop={15} />
 
-          <Typography weight="800" width="80%" color="#252525" left size={14}>
-            {item.description}
-          </Typography>
-        </Container>
+            <Container row type="spaceBetween">
+              <Container
+                center
+                type="smallBorderRadius"
+                color="#F2F2F2"
+                left
+                height={50}
+                width={50}>
+                <Image src={locationPin} width={20} height={25} />
+              </Container>
 
-        <Whitespace marginTop={10} />
-      </>
+              <Typography weight="800" width="80%" color="#252525" left size={14}>
+                {item.description || `${item.name}, ${item.vicinity}`}
+              </Typography>
+            </Container>
+
+            <Whitespace marginTop={10} />
+          </>
+        )}
+      </Container>
     ),
     [],
   );
 
+  const renderUseMyCurrentLocation = useCallback(
+    (callback, marginLeft) => (
+      <Container onPress={callback}>
+        <Whitespace marginTop={10} />
+
+        <Container row>
+          <Whitespace marginLeft={marginLeft} />
+
+          <Typography weight="800" width={155} color="#252525" left size={14}>
+            Use my current location
+          </Typography>
+
+          {loading ? <Loader /> : null}
+        </Container>
+      </Container>
+    ),
+    [loading],
+  );
+
   return (
     <Base index={12} total={12} isComplete={!!data.latitude} data={data} inline>
+      {permissionRequest && <Location interval={1000} noRender getPosition={getPosition} />}
+
       <Whitespace marginTop={30} />
 
       <View style={containerStyle}>
@@ -81,22 +206,44 @@ const OnboardingScreen11 = () => {
 
         <Whitespace marginTop={69} />
 
-        <GooglePlacesAutocomplete
-          fetchDetails
-          suppressDefaultStyles
-          returnKeyType="search"
-          disableScroll={false}
-          enablePoweredByContainer={false}
-          isRowScrollable={false}
+        <Input
           placeholder="Type where your home is located"
-          onPress={onPress}
-          styles={styles}
-          query={query}
-          renderRow={renderRow}
-          onFail={console.error}
-          onNotFound={console.error}
-          onTimeout={console.error}
+          value={data.address || ''}
+          type="text"
+          onFocus={toggleModal}
+          onChange={toggleModal}
         />
+
+        {open ? (
+          <Modal animationType="slide" visible>
+            <GooglePlacesAutocomplete
+              ref={ref}
+              fetchDetails
+              suppressDefaultStyles
+              minLength={2}
+              textInputProps={textInputProps(data.address || '')}
+              isRowScrollable={false}
+              listViewDisplayed={false}
+              keyboardShouldPersistTaps="handled"
+              keepResultsAfterBlur={false}
+              returnKeyType="search"
+              disableScroll={false}
+              enablePoweredByContainer={false}
+              placeholder="Type where your home is located"
+              onPress={onPress}
+              styles={styles}
+              query={query}
+              renderRow={renderRow}
+              onFail={console.error}
+              onNotFound={console.error}
+              onTimeout={console.error}
+            />
+
+            {renderUseMyCurrentLocation(requestLocation, 15)}
+          </Modal>
+        ) : null}
+
+        {renderUseMyCurrentLocation(toggleModal, 0)}
       </View>
     </Base>
   );
