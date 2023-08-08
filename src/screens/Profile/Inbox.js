@@ -2,6 +2,9 @@ import React, {useMemo, useEffect, useState, useCallback} from 'react';
 import auth from '@react-native-firebase/auth';
 import {StreamChat} from 'stream-chat';
 import {useNavigation} from '@react-navigation/native';
+import {STREAM_CHAT_KEY} from 'react-native-dotenv';
+
+// import AppNotifications from '../../screens/AppNotifications/AppNotifications';
 
 import {Page, Whitespace, Tabs, Divider, CardDisplay} from '../../components';
 
@@ -78,7 +81,7 @@ const Inbox = () => {
   );
 
   useEffect(() => {
-    const client = StreamChat.getInstance('dz5f4d5kzrue'); // 'upcrj3b3pp7v');
+    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
 
     (async () => {
       const user = auth().currentUser;
