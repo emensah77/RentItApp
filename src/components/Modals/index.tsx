@@ -42,6 +42,11 @@ const CUSTOM_LOCALE = {
 
 export const SearchModal = (props: ModalProps) => {
   const [subLocalities, setSubLocalities] = useState([]);
+  const [selectedHomeType, setSelectedHomeType] = useState(null);
+  const [selectedLocality, setSelectedLocality] = useState(null);
+  const [selectedSubLocality, setSelectedSubLocality] = useState(null);
+  const [selectedMode, setSelectedMode] = useState(null);
+
   const modes = useMemo(
     () => [
       {
@@ -122,10 +127,10 @@ export const SearchModal = (props: ModalProps) => {
                 components: 'country:gh',
               }}
               textInputProps={{
-                onSubmitEditing: (event) => { 
+                onSubmitEditing: event => {
                   const inputText = event.nativeEvent.text;
                   props.onEmptySubmit(inputText);
-                }
+                },
               }}
               // suppressDefaultStyles
               renderRow={renderRow}
@@ -190,7 +195,7 @@ export const SearchModal = (props: ModalProps) => {
                   name="description"
                   type="text"
                   placeholder="Type what you want. The more details the better."
-                  multiLine={5}
+                  multiLine={1}
                   onChange={onChange}
                 />
                 <SizedBox height={20} />
@@ -201,45 +206,57 @@ export const SearchModal = (props: ModalProps) => {
                   onChange={onChange}
                   placeholder="Type the exact place you want"
                 />
-
+                <SizedBox height={20} />
                 <Dropdown
                   label="Select the home type you want"
                   data={hometypes}
                   name="homeType"
                   displayKey="value"
                   onChange={selectedValue => {
+                    setSelectedHomeType(selectedValue.value);
                     onChange(selectedValue.value, 'homeType');
                   }}
+                  value={selectedHomeType} // To set the current value
                 />
-
+                <SizedBox height={20} />
                 <Dropdown
                   label="Select whether you want to rent or buy"
                   name="type"
                   data={modes}
                   displayKey="value"
                   onChange={selectedValue => {
+                    setSelectedMode(selectedValue.value);
                     onChange(selectedValue.value, 'type');
                   }}
+                  value={selectedMode} // To set the current value
                 />
 
                 <Dropdown
                   label="Select the region you want"
                   name="localities"
                   placholder="Select a locality"
-                  data={localities} // Replace with appropriate data
-                  displayKey="name" // Adjust according to the structure of localitiesData
+                  data={localities}
+                  displayKey="name"
                   onChange={selectedValue => {
                     handleLocalityChange(selectedValue);
+                    setSelectedLocality(selectedValue.name); // Set the selected value
                     onChange(selectedValue.name, 'locality');
                   }}
+                  value={selectedLocality} // To set the current value
                 />
+
                 <Dropdown
                   label="Select the district you want"
                   name="subLocalities"
-                  data={subLocalities} // Replace with appropriate data
-                  displayKey="name" // Adjust according to the structure of subLocalitiesData
-                  onChange={selectedValue => onChange(selectedValue.name, 'sublocality')} // Pass name of the field
+                  data={subLocalities}
+                  displayKey="name"
+                  onChange={selectedValue => {
+                    setSelectedSubLocality(selectedValue.name); // Set the selected value
+                    onChange(selectedValue.name, 'sublocality');
+                  }}
+                  value={selectedSubLocality} // To set the current value
                 />
+
                 <SizedBox height={20} />
                 <Button type="primary" onPress={props.handleSubmit}>
                   Submit

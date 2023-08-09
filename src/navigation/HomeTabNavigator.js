@@ -10,6 +10,7 @@ import ProfileScreen from '../screens/Profile/Menu';
 import Wishlists from '../screens/Wishlists';
 import House from '../screens/House';
 import AppNotifications from '../screens/AppNotifications/AppNotifications';
+import Inbox from '../screens/Profile/Inbox';
 
 const Tab = createBottomTabNavigator();
 
@@ -119,7 +120,7 @@ const HomeTabNavigator = () => {
       /> */}
       <Tab.Screen
         name="Inbox"
-        component={AppNotifications}
+        component={Inbox}
         options={{
           tabBarIcon: ({color}) => <Icon icon="inbox" size={22} color={color} />,
         }}

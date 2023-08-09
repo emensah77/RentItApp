@@ -1,6 +1,7 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback, useMemo, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {PhoneNumberUtil} from 'google-libphonenumber';
+import firestore from '@react-native-firebase/firestore';
 
 import {Page, Input, Typography, Button, Dropdown, Whitespace} from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
@@ -9,6 +10,7 @@ const RentItPay = () => {
   const [data, setData] = useState({paymentType: {value: ''}, amount: '', phoneNumber: ''});
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(false);
+  const [names, setNames] = useState([]);
 
   const navigation = useNavigation();
 
@@ -28,7 +30,7 @@ const RentItPay = () => {
       params: {
         screen: 'Payment',
         params: {
-          totalAmount: data.amount,
+          totalAmount: parseFloat(data.amount),
           selectedType: data.paymentType.value,
           checkoutNumber: data.phoneNumber,
           homelatitude: '',
@@ -41,10 +43,40 @@ const RentItPay = () => {
           homeWeeks: '',
           homeDays: '',
           homeid: '',
+          marketerName: data.marketer ? data.marketer.name : '',
         },
       },
     });
   }, [navigation, data]);
+
+  // Fetch marketers in real-time
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('users')
+      .where('marketer_status', '==', 'ACCEPTED')
+      .onSnapshot(snapshot => {
+        const uids = new Set(); // to track unique uids
+        const marketers = snapshot.docs
+          .map(doc => ({
+            id: doc.data().uid,
+            name: doc.data().displayName,
+            ...doc.data(),
+          }))
+          .filter(marketer => marketer.id && !uids.has(marketer.id))
+          .filter(marketer => {
+            if (uids.has(marketer.id)) {
+              return false;
+            } else {
+              uids.add(marketer.id);
+              return true;
+            }
+          });
+
+        setNames(marketers);
+      });
+
+    return () => unsubscribe();
+  }, []);
 
   const onChangeData = useCallback(
     type => async _data => {
@@ -87,6 +119,23 @@ const RentItPay = () => {
         label="Select type of payment"
         suffix={arrowDown}
         onChange={onChangeData('paymentType')}
+      />
+
+      <Whitespace marginTop={35} />
+
+      <Typography type="heading" weight="400" width="100%">
+        Choose a Marketer
+      </Typography>
+
+      <Whitespace marginTop={-15} />
+
+      <Dropdown
+        value={data.marketer?.name || ''}
+        data={names}
+        displayKey="name"
+        label="Select a marketer"
+        suffix={arrowDown}
+        onChange={onChangeData('marketer')}
       />
 
       <Whitespace marginTop={35} />

@@ -8,7 +8,6 @@ import Whitespace from './Whitespace';
 import Typography from './Typography';
 
 import {global} from '../assets/styles';
-import {pageInnerHorizontalPadding} from '../assets/styles/global';
 
 interface PageProps {
   /**
@@ -27,8 +26,6 @@ interface PageProps {
    * Pass any additional props directly to the StatusBar component.
    */
   StatusBarProps?: StatusBarProps;
-
-  hasPadding?: boolean;
   // wildcard
   [x: string]: any;
 }
@@ -48,10 +45,8 @@ const Page = (props: PageProps) => {
     accessibilityLabel,
     backgroundColor = '#FFFFFF',
     safeAreaEdges = ['top'],
-    statusBarStyle,
-    hasPadding = true,
-    // eslint-disable-next-line no-shadow
-    StatusBarProps,
+    statusBarStyle = 'dark-content',
+    statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
@@ -78,26 +73,15 @@ const Page = (props: PageProps) => {
     setFooterTop(height);
   }, []);
 
-
-  const $wrapperStyle = useMemo(() => {
-    return [$containerStyle, {backgroundColor}, $containerInsets];
-  }, [$containerInsets, backgroundColor]);
-
-  const $displayStyles = useMemo(() => {
-    return [global.page, hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding}];
-  }, [hasPadding, inline]);
-
-  const $displayContentStyles = useMemo(() => {
-    return [
-      global.pageContent,
-      reverse ? global.columnReverse : {},
-      hasPadding && {paddingHorizontal: pageInnerHorizontalPadding},
-    ];
-  }, [hasPadding, reverse]);
-
   return (
-    <View style={$wrapperStyle}>
-      <StatusBar style={statusBarStyle} {...StatusBarProps} />
+    <View style={pageStyle}>
+      {!inline && (
+        <StatusBar
+          backgroundColor={backgroundColor}
+          barStyle={statusBarStyle}
+          {...statusBarProps}
+        />
+      )}
 
       {type === 'small' && header && !inline ? (
         <Header
@@ -113,8 +97,8 @@ const Page = (props: PageProps) => {
       <Display
         accessible
         accessibilityLabel={accessibilityLabel}
-        style={$displayStyles}
-        contentContainerStyle={$displayContentStyles}
+        style={global.page}
+        contentContainerStyle={contentContainerStyle}
         keyboardShouldPersistTaps="handled"
         bounces={false}>
         {type === 'large' && header && !inline ? (
@@ -139,10 +123,6 @@ const Page = (props: PageProps) => {
       ) : null}
     </View>
   );
-};
-
-const $containerStyle: ViewStyle = {
-  flex: 1,
 };
 
 export default Page;

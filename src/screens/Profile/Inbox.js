@@ -10,17 +10,17 @@ import * as Utils from '../../utils';
 const Inbox = () => {
   const [messages, setMessages] = useState([]);
   const [notifications] = useState([
-    // {
-    //   id: 3,
-    //   name: 'Hi!',
-    //   location: '',
-    //   description:
-    //     "We'll send your $49.19 (USD) refund\nright away. It may take your bank 3-5\ndays to deposit it in your account",
-    //   status: '',
-    //   date: 'August 23, 2023',
-    //   read: true,
-    //   uri: '',
-    // },
+    {
+      id: 3,
+      name: 'Hi!',
+      location: '',
+      description:
+        "We'll send your $49.19 (USD) refund\nright away. It may take your bank 3-5\ndays to deposit it in your account",
+      status: '',
+      date: 'August 23, 2023',
+      read: true,
+      uri: '',
+    },
   ]);
 
   const navigation = useNavigation();

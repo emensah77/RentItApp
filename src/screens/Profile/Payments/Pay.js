@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useCallback, useEffect, useState, useMemo, useContext} from 'react';
 import {ActivityIndicator, Alert, Dimensions, View} from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -7,7 +7,8 @@ import {API, graphqlOperation} from 'aws-amplify';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WebView} from 'react-native-webview';
 import auth from '@react-native-firebase/auth';
-import {deletePost} from '../../graphql/mutations';
+import {deletePost} from '../../../graphql/mutations';
+import {AuthContext} from '../../../navigation/AuthProvider';
 
 const containerStyle = {
   alignItems: 'center',
@@ -19,7 +20,7 @@ const containerStyle = {
 const originWhitelist = ['*'];
 
 const PaymentScreen = () => {
-  const user = useMemo(async () => auth().currentUser, []);
+  const {user} = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -30,6 +31,7 @@ const PaymentScreen = () => {
   const {homeimage} = route.params;
   const {hometitle} = route.params;
   const {homebed} = route.params;
+  const {marketerName} = route.params;
 
   const {homeyears} = route.params;
   const {homeMonths} = route.params;
@@ -86,11 +88,14 @@ const PaymentScreen = () => {
         merchantTransactionID,
         paymentStatus: 'Processing',
         checkoutNumber,
+        marketerName: marketerName || '',
       })
       .catch(e => {
         console.error('Something went wrong adding to payments!', e);
       });
   }, [amount, checkoutNumber, merchantTransactionID, selectedType, user.displayName, user.uid]);
+
+  const isHomeIdValid = () => !(homeid === null || homeid === undefined || homeid === '');
 
   const addTransaction = useCallback(async () => {
     await firestore()
@@ -102,7 +107,7 @@ const PaymentScreen = () => {
         userId: user.uid,
         userName: user.displayName,
         merchantTransactionID,
-        orderType: homeid === null ? 'payment' : 'order',
+        orderType: isHomeIdValid() ? 'order' : 'payment',
         paymentStatus: 'Processing',
         checkoutNumber,
       })
@@ -204,7 +209,7 @@ const PaymentScreen = () => {
       const words = url.split('type=');
       if (words[1] === 'success') {
         if (navigation.canGoBack()) {
-          if (homeid === null) {
+          if (homeid === null || homeid === undefined || homeid === '') {
             Alert.alert(
               'Payment Confirmation!',
               `Keep your confirmation code: ${merchantTransactionID}`,
@@ -251,6 +256,8 @@ const PaymentScreen = () => {
   // });
 
   useEffect(() => {
+    console.log('marketerName', marketerName);
+
     (async () => {
       await generatePaymentUrl();
     })();
@@ -260,9 +267,12 @@ const PaymentScreen = () => {
     if (!paymentUrl) {
       return;
     }
+    console.log('HomeID', homeid);
+    console.log('MerchantID', merchantTransactionID);
 
-    if (homeid === null) {
+    if (!isHomeIdValid()) {
       addPayment();
+      console.log('Added to payments');
     }
 
     addTransaction();

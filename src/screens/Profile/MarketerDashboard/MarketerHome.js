@@ -152,33 +152,49 @@ const MarketerHome = props => {
       ) {
         makeANewRequest(true);
       }
-
-      if (ws) {
-        ws.send(
-          JSON.stringify({
-            action: 'locationUpdate',
-            marketerId: auth().currentUser.uid,
-            location: {
-              latitude: _position.coords.latitude,
-              longitude: _position.coords.longitude,
-            },
-            marketerStatus: 'online',
-          }),
-        );
-      }
     },
-    [calculateDistance, currentPosition, makeANewRequest, ws],
+    [calculateDistance, currentPosition, makeANewRequest],
   );
 
   useEffect(() => {
     const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
     _ws.onopen = function () {
+      console.log('WebSocket connection opened');
+
       setWS(_ws);
     };
     return () => {
       _ws.close(undefined, 'Unmount');
     };
   }, []);
+
+  useEffect(() => {
+    if (ws && position) {
+      const sendLocationUpdate = () => {
+        ws.send(
+          JSON.stringify({
+            action: 'locationUpdate',
+            data: {
+              marketerId: auth().currentUser.uid,
+              marketerStatus: 'online',
+              location: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              },
+            },
+          }),
+        );
+      };
+
+      // Send the initial update immediately after position change
+      sendLocationUpdate();
+
+      // Set interval to continue sending updates every 10 seconds
+      const locationUpdateInterval = setInterval(sendLocationUpdate, 10000);
+
+      return () => clearInterval(locationUpdateInterval); // Clear the interval when position changes or component unmounts
+    }
+  }, [ws, position]);
 
   useEffect(() => {
     (async () => {
