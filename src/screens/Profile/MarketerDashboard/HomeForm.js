@@ -125,7 +125,7 @@ const HomeForm = props => {
 
   return (
     <>
-      <Whitespace marginTop={30} />
+      <Whitespace marginTop={10} />
 
       <Typography size={12} left width="100%">
         Mode

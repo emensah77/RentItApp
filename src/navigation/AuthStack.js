@@ -21,7 +21,8 @@ const Stack = createStackNavigator();
 
 // AsyncStorage.removeItem('authentication::data');
 // auth().signOut();
-// Make phoneNumber an array, and then prevent signin with mobile if greater than 1
+const date = new Date();
+
 const AuthStack = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
 
@@ -47,7 +48,11 @@ const AuthStack = () => {
     let loaded = false;
 
     const id = setInterval(() => {
-      console.debug('Waiting for AsyncStorage', loaded);
+      console.debug(
+        'Waiting for AsyncStorage',
+        loaded,
+        `${new Date().getTime() - date.getTime()}ms`,
+      );
 
       if (loaded) {
         clearInterval(id);

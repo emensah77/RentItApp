@@ -104,7 +104,7 @@ const MyClaims = props => {
         {data.length === 0 && !loading ? (
           <Typography>There are no homes to show</Typography>
         ) : data.length > 0 ? (
-          <Container type="row" width="90%" height="60%" center>
+          <Container type="row" width="90%" height="100%" center>
             <Whitespace width="1%" />
 
             <FlatList

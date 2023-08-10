@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import {StreamChat} from 'stream-chat';
 import {API, graphqlOperation} from 'aws-amplify';
 import sha256 from 'sha256';
+import {STREAM_CHAT_KEY} from 'react-native-dotenv';
 
 import {getPost} from '../../graphql/queries';
 
@@ -32,7 +33,7 @@ const Chat = props => {
   const {
     route: {
       params: {home_id} = {
-        home_id: 'ac1d2480-4b86-4d19-87bd-4674e433b179',
+        home_id: '', // 'ac1d2480-4b86-4d19-87bd-4674e433b179',
       },
     },
   } = props;
@@ -63,7 +64,7 @@ const Chat = props => {
   }, [channel, message, sender, receiver]);
 
   useEffect(() => {
-    const client = StreamChat.getInstance('dz5f4d5kzrue');
+    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
 
     (async () => {
       setLoading(true);
@@ -89,14 +90,15 @@ const Chat = props => {
       }
       recipient.uid = receiver_id;
 
-      console.debug(
-        'Chat Between:',
-        user.displayName,
-        `(uid: ${user.uid})`,
-        'and',
-        recipient.displayName,
-        `(uid: ${recipient.uid})`,
-      );
+      __DEV__ &&
+        console.debug(
+          'Chat Between:',
+          user.displayName,
+          `(uid: ${user.uid})`,
+          'and',
+          recipient.displayName,
+          `(uid: ${recipient.uid})`,
+        );
 
       await Utils.promiseAll(
         async (item, i) => {
