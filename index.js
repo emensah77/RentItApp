@@ -11,13 +11,13 @@ import {GoogleSignin} from '@react-native-community/google-signin';
 import AWS from 'aws-sdk';
 import {AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, GOOGLE_WEB_CLIENT_ID} from 'react-native-dotenv';
 
-import config from './src/aws-exports';
+import awsmobile from './src/aws-exports';
 import {name as appName} from './app.json';
 import App from './App';
 import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
 
-Amplify.configure(config);
+Amplify.configure(awsmobile);
 AWS.config.update({
   region: 'us-east-2',
   accessKeyId: AWS_ACCESS_KEY,

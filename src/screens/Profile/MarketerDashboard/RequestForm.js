@@ -17,8 +17,8 @@ const RequestForm = props => {
     amount: '0',
     description: '',
     tags: '',
-    marketerName: currentUser.displayName,
-    contactNumber: currentUser.phoneNumber,
+    marketerName: currentUser?.displayName,
+    contactNumber: currentUser?.phoneNumber,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
