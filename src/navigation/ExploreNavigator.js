@@ -16,7 +16,7 @@ import Marketer from '../screens/Marketer';
 import MyHomes from '../screens/MyHomes';
 import EditHome from '../screens/EditHome';
 import HeatMapScreen from '../screens/HeatMapScreen';
-import MarketerDashboard from '../screens/MarketerDashboard';
+import MarketerDashboard from '../screens/Profile/MarketerDashboard';
 import DashboardScreen from '../screens/DashboardScreen';
 
 const Stack = createStackNavigator();
