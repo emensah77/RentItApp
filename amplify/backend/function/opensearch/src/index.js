@@ -256,10 +256,13 @@ exports.handler = async event => {
       };
     }
   } else if (event.httpMethod === 'POST' && event.path === '/filter') {
-    let filterParams;
+    let filterParams, userLocation, searchAfter;
     try {
       // Parse the request body to get the filter parameters
-      filterParams = JSON.parse(event.body);
+      const requestBody = JSON.parse(event.body);
+      filterParams = requestBody.filterParams;
+      userLocation = requestBody.userLocation || null;
+      searchAfter = requestBody.searchAfter || null;
     } catch (error) {
       console.error('Error parsing filter parameters: ', error);
       return {
@@ -268,7 +271,7 @@ exports.handler = async event => {
       };
     }
     try {
-      const results = await filterHomes(filterParams, filterParams.userLocation);
+      const results = await filterHomes(filterParams, userLocation, searchAfter);
       return {
         statusCode: 200,
         headers: {
@@ -906,7 +909,7 @@ async function filterHomes(filterParams, userLocation = null, searchAfter = null
         httpResp.on('end', chunk => {
           const data = JSON.parse(responseBody);
 
-          console.log(`Search results: ${JSON.stringify(data.hits.hits)}`);
+          console.log(`Filter results: ${JSON.stringify(data.hits.hits)}`);
 
           const homesData = data.hits.hits.map(hit => hit._source);
           const result = {

@@ -36,6 +36,7 @@ import {pageInnerHorizontalPadding} from '@assets/styles/global';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import {mapIcon} from '@assets/images';
+import Filter from '../Explore/Filter';
 import styles from './styles';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
@@ -172,6 +173,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
 
   const open = useCallback(() => {
     // setmodalvisible(true);
+    navigation.navigate('Filter');
   }, []);
   const handleVideoPlaybackComplete = useCallback(() => {
     updateWatchVideoStatus(videoVersion);

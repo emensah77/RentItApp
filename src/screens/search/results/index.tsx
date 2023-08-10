@@ -23,24 +23,36 @@ import styles from './styles';
 export const SearchResultsScreen = _props => {
   const {navigation} = _props;
   const route: any = useRoute();
-  const {guests, location, dates, searchText} = route.params;
-  const [posts, setPosts] = useState([]);
+  const {
+    guests,
+    location,
+    dates,
+    searchText,
+    preloadedHomes,
+    prehomesCount,
+    presearchAfter,
+    selection,
+  } = route.params;
+  const [posts, setPosts] = useState(preloadedHomes || []);
   const [latitude, setLatitude] = useState<any>(null);
   const [longitude, setLongitude] = useState<any>(null);
   const [selectedPlacedId, setSelectedPlacedId] = useState(null);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['10%', '50%', '100%'], []);
-  const [homesCount, setHomesCount] = useState<number>(0);
-  const [searchAfter, setSearchAfter] = useState<string | null>(null);
+  const [homesCount, setHomesCount] = useState<number>(prehomesCount || 0);
+  const [searchAfter, setSearchAfter] = useState<string | null>(presearchAfter || null);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [visibleHomes, setVisibleHomes] = useState([]);
   const [isMapReady, setMapReady] = useState(false);
   const [postsLoaded, setPostsLoaded] = useState(false);
+  const [isDataPreloaded, setIsDataPreloaded] = useState(!!preloadedHomes);
 
   const mapRef = useRef();
 
   const totalGuests = useMemo(() => {
+    if (!guests) return 0;
+
     return Object.keys(guests)
       .map(el => guests[el])
       .reduce((partialSum, a) => partialSum + a, 0);
@@ -63,6 +75,46 @@ export const SearchResultsScreen = _props => {
   useEffect(() => {
     fetchUserLocation();
   }, [fetchUserLocation]);
+
+  const fetchFilteredHomes = async (searchAfterValue, selectionData) => {
+    const requestBody = {
+      filterParams: {
+        ...selectionData.all.amenities.reduce(
+          (prev, {title}) => ({
+            ...prev,
+            [title.toLowerCase()]: selectionData.amenities.includes(title) ? 'Yes' : 'No',
+          }),
+          {},
+        ),
+        ...selectionData.all.typesOfPlace.reduce(
+          (prev, {title}) => ({
+            ...prev,
+            [title.toLowerCase()]: selectionData.typeOfPlace.includes(title) ? 'Yes' : 'No',
+          }),
+          {},
+        ),
+        type: selectionData.type,
+        mode: selectionData.mode,
+        bedroom: selectionData.bedroom,
+        bed: selectionData.bed,
+        bathroom: selectionData.bathroom,
+      },
+      searchAfter: searchAfterValue,
+      userLocation: {latitude, longitude},
+    };
+
+    const response = await fetch(
+      'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
+      {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody),
+      },
+    );
+
+    const responseData = await response.json();
+    return responseData;
+  };
 
   const personalizedHomes = useCallback(
     async (searchAfter: string | null) => {
@@ -108,13 +160,25 @@ export const SearchResultsScreen = _props => {
     if (searchAfter === null) {
       return;
     }
+
     setLoadingMore(true); // Start loading
-    const data = await personalizedHomes(searchAfter);
-    if (data && data.homes) {
-      const newHomes = filterDuplicates([...posts, ...data.homes]); // filter duplicates at this stage
-      setPosts(newHomes); // Use the filtered list of homes
-      setSearchAfter(data.searchAfter); // Update the searchAfter value for the next fetch
+
+    let data;
+
+    if (preloadedHomes) {
+      // If homes are preloaded, we call the other function (which I'll name `fetchFilteredHomes` for now)
+      data = await fetchFilteredHomes(searchAfter, selection);
+    } else {
+      // Default to personalizedHomes
+      data = await personalizedHomes(searchAfter);
     }
+
+    if (data && data.homes) {
+      const newHomes = filterDuplicates([...posts, ...data.homes]);
+      setPosts(newHomes);
+      setSearchAfter(data.searchAfter);
+    }
+
     setLoadingMore(false);
   };
 
@@ -156,7 +220,6 @@ export const SearchResultsScreen = _props => {
     setLoading(true);
     const fetchInitialData = async () => {
       const data = await personalizedHomes(searchAfter);
-
       if (data && data.homes) {
         setPosts(data.homes);
         setHomesCount(data.count);
@@ -168,10 +231,12 @@ export const SearchResultsScreen = _props => {
     };
     setLoading(false);
 
-    if (latitude && longitude) {
+    if (!isDataPreloaded && latitude && longitude) {
       fetchInitialData();
+    } else {
+      setPostsLoaded(true);
     }
-  }, [latitude, longitude, personalizedHomes]);
+  }, [latitude, longitude, personalizedHomes, isDataPreloaded]);
 
   useEffect(() => {
     if (postsLoaded && isMapReady) {
