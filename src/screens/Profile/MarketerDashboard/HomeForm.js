@@ -3,7 +3,16 @@ import auth from '@react-native-firebase/auth';
 
 import PhoneNumber from '../../Authentication/PhoneNumber';
 
-import {Input, Typography, Button, Whitespace, Error, Dropdown, Upload} from '../../../components';
+import {
+  Input,
+  Typography,
+  Button,
+  Whitespace,
+  Error,
+  Dropdown,
+  Upload,
+  Header,
+} from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
 import {TYPES} from '../../../utils';
 
@@ -37,7 +46,7 @@ const oldData = {
 };
 
 const HomeForm = props => {
-  const {data: preFillData, onSuccess} = props;
+  const {data: preFillData, onSuccess, onClose} = props;
 
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
@@ -125,6 +134,8 @@ const HomeForm = props => {
 
   return (
     <>
+      <Header onClose={onClose}>Edit Homes</Header>
+
       <Whitespace marginTop={10} />
 
       <Typography size={12} left width="100%">

@@ -13,10 +13,10 @@ const Typography = ({variant = 'default', style, bold, onPress, children}) => {
       completeStyles.fontWeight = 'bold';
     }
 
-    return completeStyles;
-  }, [bold, variant]);
+    return [completeStyles, style];
+  }, [bold, variant, style]);
 
-  const Comp = <Text style={[mainStyle, style]}>{children}</Text>;
+  const Comp = useMemo(() => <Text style={mainStyle}>{children}</Text>, [children, mainStyle]);
 
   if (onPress) {
     return <Pressable onPress={onPress}>{Comp}</Pressable>;

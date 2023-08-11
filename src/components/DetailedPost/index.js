@@ -53,6 +53,44 @@ import {deletePost} from '../../graphql/mutations';
 import useWishlist from '../../hooks/useWishlist';
 import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto';
 
+const skeletonLayout = [
+  {
+    key: 'item1',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item2',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item3',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item4',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item5',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+];
+
 const DetailedPost = props => {
   const {post} = props;
 
@@ -377,8 +415,7 @@ const DetailedPost = props => {
   );
 
   const onPress = useCallback(
-    item => {
-      console.log('Item pressed: ', item);
+    item => () => {
       navigation.replace('Post', {postId: item.id});
     },
     [navigation],
@@ -414,6 +451,8 @@ const DetailedPost = props => {
 
   const onStartShouldSetResponder = useCallback(() => true, []);
 
+  const makeUri = useCallback(uri => ({uri}), []);
+
   const renderItem = useCallback(
     ({item}) => {
       const monthlyPrice = item.newPrice ? Math.floor((item.newPrice * 1.07) / 12) : 0;
@@ -431,9 +470,9 @@ const DetailedPost = props => {
       }
 
       return (
-        <Pressable onPress={() => onPress(item)} style={styles.itemContainer}>
+        <Pressable onPress={onPress(item)} style={styles.itemContainer}>
           <View style={styles.imageContainer}>
-            <Image source={{uri: item.image}} style={styles.image} />
+            <Image source={makeUri(item.image)} style={styles.image} />
           </View>
           <View style={styles.detailsContainer}>
             <Text style={styles.title}>{item.title}</Text>
@@ -447,7 +486,7 @@ const DetailedPost = props => {
         </Pressable>
       );
     },
-    [onPress],
+    [makeUri, onPress],
   );
 
   const keyExtractor = useCallback(item => item.id, []);
@@ -578,7 +617,7 @@ const DetailedPost = props => {
                       <View style={styles.videoWrapper}>
                         <Video
                           ref={videoRef}
-                          source={{uri: post.videoUrl}}
+                          source={makeUri(post.videoUrl)}
                           style={styles.video}
                           resizeMode="contain"
                           repeat
@@ -606,7 +645,7 @@ const DetailedPost = props => {
                       <TouchableOpacity onPress={closeFullScreen}>
                         <Video
                           ref={videoRef}
-                          source={{uri: post.videoUrl}}
+                          source={makeUri(post.videoUrl)}
                           style={styles.fullscreenVideo}
                           resizeMode="cover"
                           repeat
@@ -642,43 +681,7 @@ const DetailedPost = props => {
             <SkeletonContent
               containerStyle={styles.flexRow}
               isLoading={isLoading}
-              layout={[
-                {
-                  key: 'item1',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item2',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item3',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item4',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item5',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-              ]}>
+              layout={skeletonLayout}>
               {similarHomes.length > 0 ? (
                 <View>
                   <View>

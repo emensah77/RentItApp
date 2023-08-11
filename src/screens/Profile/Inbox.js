@@ -92,9 +92,9 @@ const Inbox = () => {
           <Typography>No notifications to see yet.</Typography>
         ) : (
           notifications.map(
-            ({postId, description, title, createdAt, read, image}, i) =>
+            ({noticeId, postId, description, title, createdAt, read, image}, i) =>
               !!(image && description && title) && (
-                <React.Fragment key={`${image}${description}${postId}`}>
+                <React.Fragment key={`${noticeId}${postId}`}>
                   <CardDisplay
                     leftImageCircle={40}
                     leftImageSrc={makeUri(image)}
@@ -130,7 +130,7 @@ const Inbox = () => {
       // .doc('S1e9IadGFJRPaDIe8nb0AszDPMx1')
       .collection('notifications')
       .onSnapshot(querySnapshot => {
-        setNotifications(querySnapshot.docs.map(doc => doc.data()));
+        setNotifications(querySnapshot.docs.map(doc => ({noticeId: doc.id, ...doc.data()})));
       });
 
     setTimeout(() => {
@@ -142,14 +142,17 @@ const Inbox = () => {
     firestore()
       .collection('users')
       .doc(user?.uid)
+      // Use for testing ONLY!
+      // .doc('S1e9IadGFJRPaDIe8nb0AszDPMx1')
       .collection('notifications')
       .get()
-      .then(snapshot => {
-        snapshot.docs.forEach(doc => {
-          doc.ref.delete();
+      .then(async snapshot => {
+        snapshot.docs.forEach(async doc => {
+          return doc.ref.delete();
         });
-        loadNotifications();
-      });
+        setTimeout(loadNotifications, 1000);
+      })
+      .catch(console.error);
   }, [user, loadNotifications]);
 
   useEffect(() => {
@@ -217,11 +220,9 @@ const Inbox = () => {
 
   return (
     <Page type="large" header="Inbox">
-      <Container type="right-60">
-        <Container type="top-60">
-          <Typography type="levelTwoThick" onPress={clear}>
-            Clear
-          </Typography>
+      <Container type="right-60" onPress={clear}>
+        <Container type="top-40">
+          <Typography type="levelTwoThick">Clear</Typography>
         </Container>
       </Container>
 

@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from 'react';
-import {ScrollView, View, ViewStyle, StatusBar, StatusBarProps} from 'react-native';
+import {ScrollView, View, ViewStyle, StatusBar, StatusBarProps, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import {ExtendedEdge, useSafeAreaInsetsStyle} from '@utils/useSafeAreaInsetsStyle';
@@ -26,12 +26,16 @@ interface PageProps {
   /**
    * Pass any additional props directly to the StatusBar component.
    */
-  StatusBarProps?: StatusBarProps;
+  statusBarProps?: StatusBarProps;
 
   hasPadding?: boolean;
   // wildcard
   [x: string]: any;
 }
+
+const containerStyle: ViewStyle = {
+  flex: 1,
+};
 
 const Page = (props: PageProps) => {
   const {
@@ -47,10 +51,9 @@ const Page = (props: PageProps) => {
     accessibilityLabel,
     backgroundColor = colors.palette.textInverse,
     safeAreaEdges = ['top'],
-    statusBarStyle,
     hasPadding = true,
-    // eslint-disable-next-line no-shadow
-    StatusBarProps,
+    statusBarStyle,
+    statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
@@ -65,17 +68,21 @@ const Page = (props: PageProps) => {
     setFooterTop(height);
   }, []);
 
-  const $containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
+  const containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
 
-  const $wrapperStyle = useMemo(() => {
-    return [$containerStyle, {backgroundColor}, $containerInsets];
-  }, [$containerInsets, backgroundColor]);
+  const wrapperStyle = useMemo(() => {
+    return [containerStyle, {backgroundColor}, containerInsets];
+  }, [containerInsets, backgroundColor]);
 
-  const $displayStyles = useMemo(() => {
-    return [global.page, hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding}];
+  const displayStyles = useMemo(() => {
+    return [
+      global.page,
+      hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding},
+      Platform.OS === 'ios' ? {paddingTop: 20} : {},
+    ];
   }, [hasPadding, inline]);
 
-  const $displayContentStyles = useMemo(() => {
+  const displayContentStyles = useMemo(() => {
     return [
       global.pageContent,
       reverse ? global.columnReverse : {},
@@ -84,8 +91,8 @@ const Page = (props: PageProps) => {
   }, [hasPadding, reverse]);
 
   return (
-    <View style={$wrapperStyle}>
-      <StatusBar style={statusBarStyle} {...StatusBarProps} />
+    <View style={wrapperStyle}>
+      <StatusBar style={statusBarStyle} {...statusBarProps} />
 
       {type === 'small' && header && !inline ? (
         <Header
@@ -100,8 +107,8 @@ const Page = (props: PageProps) => {
       <Display
         accessible
         accessibilityLabel={accessibilityLabel}
-        style={$displayStyles}
-        contentContainerStyle={$displayContentStyles}
+        style={displayStyles}
+        contentContainerStyle={displayContentStyles}
         keyboardShouldPersistTaps="handled"
         bounces={false}>
         {type === 'large' && header && !inline ? (
@@ -127,11 +134,5 @@ const Page = (props: PageProps) => {
     </View>
   );
 };
-
-const $containerStyle: ViewStyle = {
-  flex: 1,
-};
-
-export default Page;
 
 export default Page;

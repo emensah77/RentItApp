@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useCallback} from 'react';
 import {View} from 'react-native';
 
 import {styles} from './styles';
@@ -30,12 +30,15 @@ const DividedProgress = ({total, progress, style}) => {
     return percentArr;
   }, [total, progress]);
 
+  const outerStyle = useMemo(() => [styles.main, style], [style]);
+
+  const percentStyle = useCallback(percent => [styles.progress, {width: `${percent}%`}], []);
+
   return (
-    <View style={[styles.main, style]}>
-      {percents.map((percent, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <View key={index} style={styles.progressBar}>
-          <View style={[styles.progress, {width: `${percent}%`}]} />
+    <View style={outerStyle}>
+      {percents.map(percent => (
+        <View key={percent} style={styles.progressBar}>
+          <View style={percentStyle(percent)} />
         </View>
       ))}
     </View>

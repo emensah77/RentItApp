@@ -1,12 +1,11 @@
 import React, {useState, useCallback} from 'react';
 import {
   View,
-  Image,
+  Alert,
   Text,
   Share,
   FlatList,
   StyleSheet,
-  useWindowDimensions,
   Pressable,
   Dimensions,
   Platform,
@@ -14,30 +13,93 @@ import {
 import FastImage from 'react-native-fast-image';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {useNavigation} from '@react-navigation/native';
-import PaginationDot from 'react-native-animated-pagination-dot';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faArrowAltCircleUp,
-  faArrowsAltV,
-  faArrowUp,
-  faShare,
-  faShareAltSquare,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons';
-import useWishlist from '../../hooks/useWishlist';
+import {faShare} from '@fortawesome/free-solid-svg-icons';
+
+const viewabilityConfig = {
+  viewAreaCoveragePercentThreshold: 50,
+};
+
+const leftArrowStyle = {
+  margin: 20,
+  shadowColor: 'black',
+  shadowOpacity: 0.5,
+  shadowRadius: 20,
+  position: 'absolute',
+  top: Platform.OS === 'ios' ? 30 : 0,
+  left: 0,
+  height: 40,
+  width: 40,
+  backgroundColor: 'white',
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const likeStyle = {
+  margin: 20,
+  shadowColor: 'black',
+  shadowOpacity: 0.5,
+  shadowRadius: 20,
+  position: 'absolute',
+  top: Platform.OS === 'ios' ? 30 : 0,
+  right: 0,
+  height: 40,
+  width: 40,
+  backgroundColor: 'white',
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const shareStyle = {
+  margin: 20,
+  shadowColor: 'black',
+  shadowOpacity: 0.5,
+  shadowRadius: 20,
+  position: 'absolute',
+  top: Platform.OS === 'ios' ? 30 : 0,
+  right: 50,
+  height: 40,
+  width: 40,
+  backgroundColor: 'white',
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+const countContainer = {
+  opacity: 0.7,
+  marginHorizontal: 20,
+  position: 'absolute',
+  right: 0,
+  bottom: Platform.OS === 'android' ? 25 : 40,
+  borderRadius: 10,
+  flex: 1,
+  alignItems: 'center',
+  backgroundColor: 'black',
+  width: 60,
+};
+
+const countContainerText = {
+  margin: 5,
+  color: 'white',
+  fontSize: 15,
+  fontWeight: 'bold',
+};
+
+const black = {color: 'black'};
 
 const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [currPage] = useState(1);
-  const windowWidth = useWindowDimensions().width;
   const navigation = useNavigation();
-  const [isLike, setIsLike] = useState(false);
   const onFlatlistUpdate = useCallback(({viewableItems}) => {
     if (viewableItems?.length > 0) {
       setActiveIndex(viewableItems?.[0]?.index || 0);
     }
   }, []);
-  const onShare = async () => {
+
+  const onShare = useCallback(async () => {
     try {
       const result = await Share.share({
         title: 'Check this home on RentIt',
@@ -54,113 +116,52 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
         // dismissed
       }
     } catch (error) {
-      alert(error.message);
+      Alert.alert(error.message);
     }
-  };
-  const handleClick = () => {
-    // handleChangeFavorite(post);
-  };
+  }, [postId]);
+
+  const makeUri = useCallback(
+    uri => ({
+      uri,
+      headers: {Authorization: 'token'},
+      priority: FastImage.priority.high,
+    }),
+    [],
+  );
+
+  const renderItem = useCallback(
+    ({item}) => <FastImage style={styles.image} source={makeUri(item)} />,
+    [makeUri],
+  );
+
   return (
     <View style={styles.root}>
       <FlatList
         data={images}
-        renderItem={({item}) => (
-          <FastImage
-            style={styles.image}
-            source={{
-              uri: item,
-              headers: {Authorization: 'token'},
-              priority: FastImage.priority.high,
-            }}
-          />
-        )}
+        renderItem={renderItem}
         horizontal
         showsHorizontalScrollIndicator={false}
         snapToInterval={Dimensions.get('screen').width}
         snapToAlignment="center"
         decelerationRate="fast"
-        viewabilityConfig={{
-          viewAreaCoveragePercentThreshold: 50,
-        }}
+        viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onFlatlistUpdate}
       />
-      <Pressable
-        style={{
-          margin: 20,
-          shadowColor: 'black',
-          shadowOpacity: 0.5,
-          shadowRadius: 20,
-          position: 'absolute',
-          top: Platform.OS === 'ios' ? 30 : 0,
-          left: 0,
-          height: 40,
-          width: 40,
-          backgroundColor: 'white',
-          borderRadius: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => navigation.goBack()}>
-        <Fontisto name="angle-left" size={15} style={{color: 'black'}} />
+
+      <Pressable style={leftArrowStyle} onPress={navigation.goBack}>
+        <Fontisto name="angle-left" size={15} style={black} />
       </Pressable>
-      <Pressable
-        style={{
-          margin: 20,
-          shadowColor: 'black',
-          shadowOpacity: 0.5,
-          shadowRadius: 20,
-          position: 'absolute',
-          top: Platform.OS === 'ios' ? 30 : 0,
-          right: 0,
-          height: 40,
-          width: 40,
-          backgroundColor: 'white',
-          borderRadius: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={handleChangeFavorite}>
+
+      <Pressable style={likeStyle} onPress={handleChangeFavorite}>
         <Fontisto name="heart" size={15} color={isFav ? 'deeppink' : 'black'} />
       </Pressable>
-      <Pressable
-        style={{
-          margin: 20,
-          shadowColor: 'black',
-          shadowOpacity: 0.5,
-          shadowRadius: 20,
-          position: 'absolute',
-          top: Platform.OS === 'ios' ? 30 : 0,
-          right: 50,
-          height: 40,
-          width: 40,
-          backgroundColor: 'white',
-          borderRadius: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={onShare}>
+
+      <Pressable style={shareStyle} onPress={onShare}>
         <FontAwesomeIcon icon={faShare} size={15} />
       </Pressable>
-      <View
-        style={{
-          opacity: 0.7,
-          marginHorizontal: 20,
-          position: 'absolute',
-          right: 0,
-          bottom: Platform.OS === 'android' ? 25 : 40,
-          borderRadius: 10,
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: 'black',
-          width: 60,
-        }}>
-        <Text
-          style={{
-            margin: 5,
-            color: 'white',
-            fontSize: 15,
-            fontWeight: 'bold',
-          }}>
+
+      <View style={countContainer}>
+        <Text style={countContainerText}>
           {activeIndex + 1}/{images.length}
         </Text>
       </View>

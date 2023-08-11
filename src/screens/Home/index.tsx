@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {FC, useCallback, useState, useEffect, useRef, useMemo} from 'react';
 import {
   ViewStyle,
@@ -14,24 +12,22 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {Page, Text} from '@components';
 import {AppStackScreenProps} from '@navigation/AppStack';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import Geolocation from 'react-native-geolocation-service';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+import {Page, Text} from '@components';
 import {Icon} from '@components/Icon';
 import {SizedBox} from '@components/SizedBox';
 import {Card} from '@components/Card';
 import {colors, palette} from '@theme';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import CustomMarker from '@components/CustomMarker';
 import {SearchModal as VideoModal, SearchModal} from '@components/Modals';
 import {mapStyle} from '@theme/global';
-
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
-
-import Geolocation from 'react-native-geolocation-service';
 
 import {CategoryNavigator} from '@components/Explore';
 import {pageInnerHorizontalPadding} from '@assets/styles/global';
@@ -41,6 +37,9 @@ import {mapIcon} from '@assets/images';
 import styles from './styles';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
+
+const loaderStyle = {flex: 1, justifyContent: 'center', alignItems: 'center'};
+
 const HomeScreen: FC<HomeScreenProps> = _props => {
   const {navigation} = _props;
   const [status, setStatus] = useState('Entire Flat');
@@ -107,6 +106,10 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     } catch (error) {
       console.error('Error fetching video watch status:', error);
     }
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setShowVideo(false);
   }, []);
 
   const updateWatchVideoStatus = useCallback(
@@ -178,30 +181,31 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const open = useCallback(() => {
     // setmodalvisible(true);
     navigation.navigate('Filter');
-  }, []);
+  }, [navigation]);
+
   const handleVideoPlaybackComplete = useCallback(() => {
     updateWatchVideoStatus(videoVersion);
-  }, [videoVersion]);
+  }, [videoVersion, updateWatchVideoStatus]);
 
   const onRegionChangeComplete = useCallback(
     region => {
-      const {latitude, longitude, latitudeDelta, longitudeDelta} = region;
+      const {latitude: _lat, longitude: _long, latitudeDelta, longitudeDelta} = region;
 
       // calculate the corners of the map
-      const northLat = latitude + latitudeDelta / 2;
-      const southLat = latitude - latitudeDelta / 2;
-      const westLon = longitude - longitudeDelta / 2;
-      const eastLon = longitude + longitudeDelta / 2;
+      const northLat = _lat + latitudeDelta / 2;
+      const southLat = _lat - latitudeDelta / 2;
+      const westLon = _long - longitudeDelta / 2;
+      const eastLon = _long + longitudeDelta / 2;
 
       // filter the posts to include only those within the map bounds
-      const visibleHomes = posts.filter(post => {
-        const {
-          location: {lat, lon},
-        } = post;
-        return lat <= northLat && lat >= southLat && lon <= eastLon && lon >= westLon;
-      });
-
-      setVisibleHomes(visibleHomes);
+      setVisibleHomes(
+        posts.filter(post => {
+          const {
+            location: {lat, lon},
+          } = post;
+          return lat <= northLat && lat >= southLat && lon <= eastLon && lon >= westLon;
+        }),
+      );
     },
     [posts],
   );
@@ -239,7 +243,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
         };
         fetchInitialData(); // Call the function
       }
-      prevStatus.current = status;
+      prevStatus.current = status || null;
     }
   }, [fetchPosts, latitude, longitude, status]);
 
@@ -251,16 +255,17 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     ),
     [],
   );
+
   const renderLoader = useMemo(
     () => (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={loaderStyle}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     ),
     [],
   );
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     setLoadingMore(true); // Start loading
     const data = await fetchPosts();
     if (data && data.homes) {
@@ -268,7 +273,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       searchAfter.current = data.searchAfter; // Update the searchAfter value for the next fetch
     }
     setLoadingMore(false);
-  };
+  }, [fetchPosts]);
 
   const hasPermissionIOS = useCallback(async () => {
     const openSetting = () => {
@@ -295,6 +300,17 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
 
     return false;
   }, []);
+
+  const hasLocationPermission = useCallback(async () => {
+    if (Platform.OS === 'ios') {
+      const hasPermission = await hasPermissionIOS();
+      return hasPermission;
+    } else {
+      const hasPermission = await hasLocationPermissionAndroid();
+      return hasPermission;
+    }
+  }, [hasPermissionIOS]);
+
   const getLocation = useCallback(async () => {
     const hasPermission = await hasLocationPermission();
 
@@ -343,7 +359,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
         showLocationDialog: true,
       },
     );
-  }, []);
+  }, [hasLocationPermission]);
 
   const hasLocationPermissionAndroid = async () => {
     const hasPermission = await PermissionsAndroid.check(
@@ -369,16 +385,6 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     }
 
     return false;
-  };
-
-  const hasLocationPermission = async () => {
-    if (Platform.OS === 'ios') {
-      const hasPermission = await hasPermissionIOS();
-      return hasPermission;
-    } else {
-      const hasPermission = await hasLocationPermissionAndroid();
-      return hasPermission;
-    }
   };
 
   useEffect(() => {
@@ -432,8 +438,9 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       setSelectedHome(place);
       // navigation.navigate('Post', {post: place});
     },
-    [navigation],
+    [],
   );
+
   const handleSubmit = useCallback(() => {
     // Copy formData
     const formattedFormData = {...formData};
@@ -459,7 +466,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       !formattedFormData.Sublocality ||
       !formattedFormData.Type
     ) {
-      alert('Please fill out all required fields.');
+      Alert.alert('Please fill out all required fields.');
       return;
     }
 
@@ -471,24 +478,24 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       body: JSON.stringify(formattedFormData),
     })
       .then(response => response.json())
-      .then(data => {
+      .then(() => {
         handleFormClose();
       })
       .catch(error => {
         console.error('Error:', error);
       });
-  }, [formData]);
+  }, [formData, handleFormClose]);
 
   const goToPostPage = useCallback(() => {
     navigation.navigate('Post', {postId: selectedHome?.id});
   }, [navigation, selectedHome?.id]);
 
-  const handleModalClose = useCallback(() => {
-    setShowVideo(false);
-  }, []);
+  const makeUri = useCallback(() => ({uri: selectedHome?.image}), [selectedHome]);
+
   const handleFormClose = useCallback(() => {
     setShowForm(false);
   }, []);
+
   const layout: any = useMemo(
     () => [
       // long line
@@ -502,11 +509,10 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       // short line
       {width: 90, height: wp(5.6), marginBottom: 10},
       {width: 40, height: wp(5.6), marginBottom: 80},
-
-      // ...
     ],
     [],
   );
+
   return (
     <Page
       safeAreaEdges={memoizedSafeAreaEdges}
@@ -564,7 +570,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
 
           {selectedHome && (
             <TouchableOpacity style={styles.cardContainer} onPress={goToPostPage}>
-              <Image source={{uri: selectedHome.image}} style={styles.cardImage} />
+              <Image source={makeUri} style={styles.cardImage} />
               <View style={styles.cardDetails}>
                 <Text style={styles.locality}>
                   {selectedHome.locality}, {selectedHome.sublocality}

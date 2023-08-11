@@ -6,14 +6,17 @@ export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
 export const pageInnerHorizontalPadding = 20;
 export const standardWidth = isPortrait && size().width > 450 ? 800 : 450;
+
 export const sizing = {
   maxWidth: standardWidth,
   width: '100%',
   alignSelf: 'center',
 };
+
 export const fonts = {
   primary: 'Manrope ExtraLight',
 };
+
 export const colors = {
   primary: '#194CC3',
   secondary: '#FFFFFF',
@@ -287,9 +290,10 @@ const global = StyleSheet.create({
     height: '100%',
   },
   page: {
-    // backgroundColor: '#FFF',
     flex: 1,
-    // borderWidth: 1,
+    backgroundColor: '#FFF',
+    height: '100%',
+    width: '100%',
   },
   pageContent: {
     paddingHorizontal: pageInnerHorizontalPadding,

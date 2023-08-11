@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {Pressable, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
@@ -10,16 +10,21 @@ const WishListItem = ({item}) => {
 
   const goWishList = useCallback(() => {
     navigation.navigate('Post', {postId: item.id});
-  }, [item]);
+  }, [item.id, navigation]);
+
+  const imageUri = useMemo(
+    () => ({
+      uri: item.image,
+    }),
+    [item.image],
+  );
 
   return (
     <>
       <Pressable style={styles.content} onPress={goWishList}>
         {item?.image && (
           <Image
-            source={{
-              uri: item.image,
-            }}
+            source={imageUri}
             style={styles.image}
             width={75}
             height={75}
