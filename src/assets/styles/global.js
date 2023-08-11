@@ -1,16 +1,252 @@
 import {StyleSheet, Dimensions} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 export const size = () => Dimensions.get('screen');
 export const isPortrait = () => size().height > size().width;
 export const isLandscape = () => !isPortrait;
 export const pageInnerHorizontalPadding = 20;
 export const standardWidth = isPortrait && size().width > 450 ? 800 : 450;
-export const colors = {primary: '#194CC3'};
+
 export const sizing = {
   maxWidth: standardWidth,
   width: '100%',
   alignSelf: 'center',
 };
+
+export const fonts = {
+  primary: 'Manrope ExtraLight',
+};
+
+export const colors = {
+  primary: '#194CC3',
+  secondary: '#FFFFFF',
+  text: '#1F2D3D',
+  border: 'lightgrey',
+  gray: '#DDDDDD',
+  active: '#0047B3',
+};
+
+export const offsets = {
+  minor: wp(1),
+  offsetA: wp(2.56),
+  offsetB: wp(4.1),
+  offsetC: wp(5.64),
+};
+
+export const mapStyle = [
+  {
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#f5f5f5',
+      },
+    ],
+  },
+  {
+    elementType: 'labels.icon',
+    stylers: [
+      {
+        visibility: 'off',
+      },
+    ],
+  },
+  {
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#616161',
+      },
+    ],
+  },
+  {
+    elementType: 'labels.text.stroke',
+    stylers: [
+      {
+        color: '#f5f5f5',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.land_parcel',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#383838',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.locality',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#120202',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.neighborhood',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#120202',
+      },
+    ],
+  },
+  {
+    featureType: 'administrative.province',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#383838',
+      },
+    ],
+  },
+  {
+    featureType: 'poi',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#eeeeee',
+      },
+    ],
+  },
+  {
+    featureType: 'poi',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#757575',
+      },
+    ],
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#e5e5e5',
+      },
+    ],
+  },
+  {
+    featureType: 'poi.park',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#9e9e9e',
+      },
+    ],
+  },
+  {
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#ffffff',
+      },
+    ],
+  },
+  {
+    featureType: 'road.arterial',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#757575',
+      },
+    ],
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#dadada',
+      },
+    ],
+  },
+  {
+    featureType: 'road.highway',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#616161',
+      },
+    ],
+  },
+  {
+    featureType: 'road.local',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#9e9e9e',
+      },
+    ],
+  },
+  {
+    featureType: 'transit.line',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#e5e5e5',
+      },
+    ],
+  },
+  {
+    featureType: 'transit.station',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#eeeeee',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [
+      {
+        color: '#c9c9c9',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'geometry.fill',
+    stylers: [
+      {
+        color: '#23a0fd',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.icon',
+    stylers: [
+      {
+        color: '#16659e',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text',
+    stylers: [
+      {
+        color: '#16659e',
+      },
+    ],
+  },
+  {
+    featureType: 'water',
+    elementType: 'labels.text.fill',
+    stylers: [
+      {
+        color: '#16659e',
+      },
+    ],
+  },
+];
 
 const global = StyleSheet.create({
   flex: {flex: 1},
@@ -54,6 +290,7 @@ const global = StyleSheet.create({
     height: '100%',
   },
   page: {
+    flex: 1,
     backgroundColor: '#FFF',
     height: '100%',
     width: '100%',

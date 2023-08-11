@@ -26,7 +26,7 @@
         },
         "tinggPaymentGateway": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/tinggPaymentGateway-6d706d4c70466b454b57-build.zip"
+          "s3Key": "amplify-builds/tinggPaymentGateway-4b6c59554f62642f4b4e-build.zip"
         },
         "similarHomes": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -74,7 +74,7 @@
         },
         "marketerSalary": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/marketerSalary-4e676853635138634b6a-build.zip"
+          "s3Key": "amplify-builds/marketerSalary-2f7a6f4e572b4b642f52-build.zip"
         },
         "homeData": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -83,6 +83,38 @@
         "homeDashboard": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
           "s3Key": "amplify-builds/homeDashboard-4f353531716454737043-build.zip"
+        },
+        "homes": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/homes-4346696b737231453448-build.zip"
+        },
+        "homeSearch": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/homeSearch-31635036723751495536-build.zip"
+        },
+        "jwtgenerator": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/jwtgenerator-34344a6c354661653942-build.zip"
+        },
+        "opensearch": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/opensearch-34534f346f5445374250-build.zip"
+        },
+        "imageAnalyzer": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/imageAnalyzer-73544d442f7250613670-build.zip"
+        },
+        "dynamodStreamer": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/dynamodStreamer-4d304953735037774b4a-build.zip"
+        },
+        "stepFunctionTrigger": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/stepFunctionTrigger-4c4a7171556c2f65366a-build.zip"
+        },
+        "locationUpdater": {
+          "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
+          "s3Key": "amplify-builds/locationUpdater-6948586f6a566e583253-build.zip"
         }
       },
       "storage": {

@@ -12,8 +12,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 5,
     position: 'absolute',
-    height: 35,
-    width: 35,
+    height: 30,
+    width: 30,
     backgroundColor: 'white',
     elevation: 90,
     borderRadius: 20,
@@ -80,6 +80,16 @@ const styles = StyleSheet.create({
   totalPrice: {
     color: 'darkgray',
     textDecorationLine: 'underline',
+  },
+
+  contentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  starContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
   },
 });
 

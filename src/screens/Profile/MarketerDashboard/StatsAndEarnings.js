@@ -283,8 +283,12 @@ const StatsAndEarnings = props => {
 
       {editId !== null && data?.pending?.homes.length > 0 && (
         <Modal animationType="slide" visible>
-          <Page onLeftIconPress={setCurrentEditId(null)} header="Edit Home">
-            <HomeForm data={data?.pending?.homes?.[editId]} onSuccess={setCurrentEditId(null)} />
+          <Page>
+            <HomeForm
+              onLeftIconPress={setCurrentEditId(null)}
+              data={data?.pending?.homes?.[editId]}
+              onSuccess={setCurrentEditId(null)}
+            />
           </Page>
         </Modal>
       )}

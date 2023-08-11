@@ -1,5 +1,4 @@
-/* eslint-disable no-shadow */
-import React, {ReactElement} from 'react';
+import React, {ReactElement, useMemo} from 'react';
 import {
   StyleProp,
   TextStyle,
@@ -8,7 +7,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import {spacing} from '../theme';
+import {spacing} from '@theme';
 import {Icon, IconTypes} from './Icon';
 import {Text, TextProps} from './Text';
 
@@ -80,6 +79,8 @@ export interface ListItemProps extends TouchableOpacityProps {
    * Overrides `leftIcon`.
    */
   LeftComponent?: ReactElement;
+
+  textProps?: TextProps;
 }
 
 interface ListItemActionProps {
@@ -108,22 +109,31 @@ export function ListItem(props: ListItemProps) {
     rightIconColor,
     style,
     text,
-    TextProps,
+    textProps,
     topSeparator,
     textStyle: $textStyleOverride,
     containerStyle: $containerStyleOverride,
-    ...TouchableOpacityProps
+    // ...TouchableOpacityProps
   } = props;
 
-  const $textStyles = [$textStyle, $textStyleOverride, TextProps?.style];
+  const $textStyles = useMemo(
+    () => [$textStyle, $textStyleOverride, textProps?.style],
+    [$textStyleOverride, textProps?.style],
+  );
 
-  const $containerStyles = [
-    topSeparator && $separatorTop,
-    bottomSeparator && $separatorBottom,
-    $containerStyleOverride,
-  ];
+  const $containerStyles = useMemo(
+    () => [
+      topSeparator && $separatorTop,
+      bottomSeparator && $separatorBottom,
+      $containerStyleOverride,
+    ],
+    [$containerStyleOverride, bottomSeparator, topSeparator],
+  );
 
-  const $touchableStyles = [$touchableStyle, {minHeight: height}, style];
+  const $touchableStyles = useMemo(
+    () => [$touchableStyle, {minHeight: height}, style],
+    [height, style],
+  );
 
   return (
     <View style={$containerStyles}>
@@ -136,7 +146,7 @@ export function ListItem(props: ListItemProps) {
           Component={LeftComponent}
         />
 
-        <Text {...TextProps} text={text} style={$textStyles}>
+        <Text {...textProps} text={text} style={$textStyles}>
           {children}
         </Text>
 
@@ -155,24 +165,20 @@ export function ListItem(props: ListItemProps) {
 function ListItemAction(props: ListItemActionProps) {
   const {icon, Component, iconColor, size, side} = props;
 
-  const $iconContainerStyles = [$iconContainer];
+  const $containerStyle = useMemo(
+    () => [
+      $iconContainer,
+      side === 'left' && $iconContainerLeft,
+      side === 'right' && $iconContainerRight,
+      {height: size},
+    ],
+    [side, size],
+  );
 
   if (Component) return Component;
 
   if (icon) {
-    return (
-      <Icon
-        size={24}
-        icon={icon}
-        color={iconColor}
-        containerStyle={[
-          $iconContainerStyles,
-          side === 'left' && $iconContainerLeft,
-          side === 'right' && $iconContainerRight,
-          {height: size},
-        ]}
-      />
-    );
+    return <Icon size={24} icon={icon} color={iconColor} containerStyle={$containerStyle} />;
   }
 
   return null;

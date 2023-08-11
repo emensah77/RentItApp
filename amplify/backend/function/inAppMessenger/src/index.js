@@ -2,13 +2,13 @@ const AWS = require('aws-sdk');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   const requestBody = JSON.parse(event.body);
-  const {action} = requestBody;
-  const {userId} = requestBody;
+  const { action } = requestBody;
+  const { userId } = requestBody;
 
   if (action === 'updateWatchStatus') {
-    const {videoVersion} = requestBody;
+    const { videoVersion } = requestBody;
     return await updateWatchStatus(userId, videoVersion);
   }
   if (action === 'fetchVideoUrl') {
@@ -25,7 +25,7 @@ exports.handler = async event => {
 async function updateWatchStatus(userId, videoVersion) {
   const params = {
     TableName: 'inAppVideoMetrics',
-    Key: {userId},
+    Key: { userId },
     UpdateExpression: 'set hasWatchedVideo = :watched, watchedVideoVersion = :version',
     ExpressionAttributeValues: {
       ':watched': true,
@@ -55,7 +55,7 @@ async function updateWatchStatus(userId, videoVersion) {
 async function fetchVideoUrl(userId) {
   const params = {
     TableName: 'inAppVideoMetrics',
-    Key: {userId},
+    Key: { userId },
   };
 
   try {

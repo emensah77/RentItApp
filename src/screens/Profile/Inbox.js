@@ -92,9 +92,9 @@ const Inbox = () => {
           <Typography>No notifications to see yet.</Typography>
         ) : (
           notifications.map(
-            ({postId, description, title, createdAt, read, image}, i) =>
+            ({noticeId, postId, description, title, createdAt, read, image}, i) =>
               !!(image && description && title) && (
-                <React.Fragment key={`${image}${description}${postId}`}>
+                <React.Fragment key={`${noticeId}${postId}`}>
                   <CardDisplay
                     leftImageCircle={40}
                     leftImageSrc={makeUri(image)}
@@ -116,20 +116,7 @@ const Inbox = () => {
     [loading, messages, notifications, goToChat, makeUri],
   );
 
-  const clear = useCallback(() => {
-    firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .collection('notifications')
-      .get()
-      .then(snapshot => {
-        snapshot.docs.forEach(doc => {
-          doc.ref.delete();
-        });
-      });
-  }, [user?.uid]);
-
-  useEffect(() => {
+  const loadNotifications = useCallback(() => {
     if (!user?.uid) {
       return;
     }
@@ -143,13 +130,34 @@ const Inbox = () => {
       // .doc('S1e9IadGFJRPaDIe8nb0AszDPMx1')
       .collection('notifications')
       .onSnapshot(querySnapshot => {
-        setNotifications(querySnapshot.docs.map(doc => doc.data()));
+        setNotifications(querySnapshot.docs.map(doc => ({noticeId: doc.id, ...doc.data()})));
       });
 
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   }, [user]);
+
+  const clear = useCallback(() => {
+    firestore()
+      .collection('users')
+      .doc(user?.uid)
+      // Use for testing ONLY!
+      // .doc('S1e9IadGFJRPaDIe8nb0AszDPMx1')
+      .collection('notifications')
+      .get()
+      .then(async snapshot => {
+        snapshot.docs.forEach(async doc => {
+          return doc.ref.delete();
+        });
+        setTimeout(loadNotifications, 1000);
+      })
+      .catch(console.error);
+  }, [user, loadNotifications]);
+
+  useEffect(() => {
+    loadNotifications();
+  }, [loadNotifications]);
 
   useEffect(() => {
     const client = StreamChat.getInstance(STREAM_CHAT_KEY);
@@ -212,11 +220,9 @@ const Inbox = () => {
 
   return (
     <Page type="large" header="Inbox">
-      <Container type="right-60">
-        <Container type="top-60">
-          <Typography type="levelTwoThick" onPress={clear}>
-            Clear
-          </Typography>
+      <Container type="right-60" onPress={clear}>
+        <Container type="top-40">
+          <Typography type="levelTwoThick">Clear</Typography>
         </Container>
       </Container>
 

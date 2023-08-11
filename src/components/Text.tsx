@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle} from 'react-native';
-import {colors, fontFamily} from '@theme';
+import {colors, fontFamily as fontFamilie} from '@theme';
 
 type Sizes = keyof typeof $sizeStyles;
-type Weights = keyof typeof fontFamily.manrope;
+type Weights = keyof typeof fontFamilie.manrope;
 type Presets = keyof typeof $presets;
 
 export interface TextProps extends RNTextProps {
@@ -41,6 +41,14 @@ export interface TextProps extends RNTextProps {
    * Children components.
    */
   children?: React.ReactNode;
+  /**
+   * Text color.
+   */
+  color?: string;
+  /**
+   * Wildcard.
+   */
+  [x: string]: any;
 }
 
 /**
@@ -50,19 +58,22 @@ export interface TextProps extends RNTextProps {
  * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Text.md)
  */
 export function Text(props: TextProps) {
-  const {weight, size, text, children, style: $styleOverride, ...rest} = props;
+  const {weight, size, text, children, color, style: $styleOverride, ...rest} = props;
 
   const content = text || children;
   // @ts-ignore
   const preset: Presets = $presets[props.preset] ? props.preset : 'default';
   // @ts-ignore
-  const $styles = [
-    {fontFamily: fontFamily.manrope, fontWeight: weight},
-    $presets[preset],
-    // @ts-ignore
-    $sizeStyles[size],
-    $styleOverride,
-  ];
+  const $styles = useMemo(() => {
+    return [
+      {fontFamily: fontFamilie.manrope, fontWeight: weight},
+      $presets[preset],
+      // @ts-ignore
+      $sizeStyles[size],
+      {color},
+      $styleOverride,
+    ];
+  }, [$styleOverride, color, preset, size, weight]);
   return (
     // @ts-ignore
     <RNText {...rest} style={$styles}>
@@ -81,9 +92,12 @@ const $sizeStyles = {
   xxs: {fontSize: 12, lineHeight: 18} as TextStyle,
 };
 
-const $fontWeightStyles = Object.entries(fontFamily.manrope).reduce((acc, [weight, fontFamily]) => {
-  return {...acc, [weight]: {fontFamily}};
-}, {}) as Record<Weights, TextStyle>;
+const $fontWeightStyles = Object.entries(fontFamilie.manrope).reduce(
+  (acc, [weight, fontFamily]) => {
+    return {...acc, [weight]: {fontFamily}};
+  },
+  {},
+) as Record<Weights, TextStyle>;
 
 const $baseStyle: StyleProp<TextStyle> = [$sizeStyles.sm, {color: colors.text}];
 

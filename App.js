@@ -4,6 +4,8 @@ import SplashScreen from 'react-native-splash-screen';
 import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import Crashes, {ErrorAttachmentLog} from 'appcenter-crashes';
+import {Provider} from 'react-redux';
+import {store} from './src/redux/store';
 
 import Providers from './src/navigation/Providers';
 import requestUserPermission, {notificationListener} from './src/utils/notificationService';
@@ -58,12 +60,14 @@ const App = () => {
 
   return (
     <>
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <WishListProvider>
-          <StatusBar barStyle={barStyle} />
-          <Providers />
-        </WishListProvider>
-      </ApplicationProvider>
+      <Provider store={store}>
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <WishListProvider>
+            <StatusBar barStyle={barStyle} />
+            <Providers />
+          </WishListProvider>
+        </ApplicationProvider>
+      </Provider>
     </>
   );
 };

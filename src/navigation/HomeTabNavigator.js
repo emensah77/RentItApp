@@ -1,51 +1,74 @@
 import React from 'react';
-import {View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faSearch,
-  faHeart,
-  faChartLine,
-  faHouseUser,
-  faUser,
-  faCoins,
-  faBell,
-} from '@fortawesome/free-solid-svg-icons';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {View} from 'react-native';
 
+import {Icon} from '@components/Icon';
+import {colors} from '@theme';
 import ExploreNavigator from './ExploreNavigator';
 import ProfileScreen from '../screens/Profile/Menu';
-import LowPriceScreen from '../screens/LowPriceScreen';
 import Wishlists from '../screens/Wishlists';
-import Trending from '../screens/TrendingScreen';
 import House from '../screens/House';
-import AppNotifications from '../screens/AppNotifications/AppNotifications';
+import Inbox from '../screens/Profile/Inbox';
 
 const Tab = createBottomTabNavigator();
 
+const options = icon => ({
+  tabBarIcon: ({color}) => <Icon icon={icon} size={22} color={color} />,
+});
+
+const wishlistStyle = {
+  borderWidth: 1,
+  borderColor: 'white',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'absolute',
+  width: 10,
+  height: 10,
+  backgroundColor: colors.palette.pink,
+  top: -3,
+  right: -10,
+  borderRadius: 10,
+};
+
+const wishListOptions = {
+  tabBarIcon: ({color}) => (
+    <View>
+      <Icon icon="heart" size={22} color={color} />
+      <View style={wishlistStyle}>
+        {/* <Text style={{color:'white', fontSize:12, fontWeight:'bold'}}>
+                3
+            </Text> */}
+      </View>
+    </View>
+  ),
+};
+
+const routes = [
+  'HouseUpload',
+  'OnboardingScreen1',
+  'OnboardingScreen2',
+  'OnboardingScreen3',
+  'OnboardingScreen4',
+  'OnboardingScreen5',
+  'OnboardingScreen6',
+  'OnboardingScreen7',
+  'OnboardingScreen8',
+  'OnboardingScreen9',
+  'OnboardingScreen10',
+  'OnboardingScreen11',
+  'OnboardingScreen12',
+  'OnboardingScreen13',
+  'OnboardingScreen14',
+  'OnboardingScreen15',
+  'OnboardingScreen16',
+  'SearchHome',
+];
+
 const exploreOptions = ({route}) => ({
-  tabBarIcon: ({color}) => <FontAwesomeIcon icon={faSearch} size={25} color={color} />,
-  tabBarVisible: (r => {
-    const routes = [
-      'HouseUpload',
-      'OnboardingScreen1',
-      'OnboardingScreen2',
-      'OnboardingScreen3',
-      'OnboardingScreen4',
-      'OnboardingScreen5',
-      'OnboardingScreen6',
-      'OnboardingScreen7',
-      'OnboardingScreen8',
-      'OnboardingScreen9',
-      'OnboardingScreen10',
-      'OnboardingScreen11',
-      'OnboardingScreen12',
-      'OnboardingScreen13',
-      'OnboardingScreen14',
-      'OnboardingScreen15',
-      'OnboardingScreen16',
-    ];
-    const routeName = getFocusedRouteNameFromRoute(r) ?? '';
+  tabBarIcon: ({color}) => <Icon icon="search" size={22} color={color} />,
+  tabBarVisible: (_route => {
+    const routeName = getFocusedRouteNameFromRoute(_route) ?? '';
 
     if (routes.includes(routeName)) {
       return false;
@@ -55,34 +78,11 @@ const exploreOptions = ({route}) => ({
   })(route),
 });
 
-const alertStyle = () => ({
-  borderWidth: 1,
-  borderColor: 'white',
-  justifyContent: 'center',
-  alignItems: 'center',
-  position: 'absolute',
-  width: 15,
-  height: 15,
-  backgroundColor: 'deeppink',
-  top: -3,
-  right: -3,
-  borderRadius: 10,
-});
-
-const alertOptions = () => ({
-  tabBarIcon: ({color}) => (
-    <View>
-      <FontAwesomeIcon icon={faBell} size={25} color={color} />
-      <View style={alertStyle} />
-    </View>
-  ),
-});
-
-const tabBarOptions = () => ({
+const tabBarOptions = {
   activeTintColor: 'blue',
-});
+};
 
-const screenOptions = () => ({
+const screenOptions = {
   headerStyle: {
     backgroundColor: '#fff',
   },
@@ -90,28 +90,35 @@ const screenOptions = () => ({
   headerTitleStyle: {
     fontWeight: 'bold',
   },
-});
-
-const options = icon => ({
-  tabBarIcon: ({color}) => <FontAwesomeIcon icon={icon} size={25} color={color} />,
-});
+};
 
 const HomeTabNavigator = () => {
   return (
     <Tab.Navigator tabBarOptions={tabBarOptions} screenOptions={screenOptions}>
       <Tab.Screen name="Explore" component={ExploreNavigator} options={exploreOptions} />
 
-      <Tab.Screen name="House" component={House} options={options(faHouseUser)} />
+      <Tab.Screen name="Wishlists" component={Wishlists} options={wishListOptions} />
 
-      <Tab.Screen name="Discount" component={LowPriceScreen} options={options(faCoins)} />
+      <Tab.Screen name="Homes" component={House} options={options('home')} />
 
-      <Tab.Screen name="Wishlists" component={Wishlists} options={options(faHeart)} />
+      {/* <Tab.Screen
+        name="Discount"
+        component={LowPriceScreen}
+        options={{
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faCoins} size={25} color={color} />,
+        }}
+      />
 
-      <Tab.Screen name="Trending" component={Trending} options={options(faChartLine)} />
+      <Tab.Screen
+        name="Trending"
+        component={Trending}
+        options={{
+          tabBarIcon: ({color}) => <FontAwesomeIcon icon={faChartLine} size={25} color={color} />,
+        }}
+      /> */}
+      <Tab.Screen name="Inbox" component={Inbox} options={options('inbox')} />
 
-      <Tab.Screen name="Alerts" component={AppNotifications} options={alertOptions} />
-
-      <Tab.Screen name="Profile" component={ProfileScreen} options={options(faUser)} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={options('user')} />
     </Tab.Navigator>
   );
 };

@@ -1,4 +1,4 @@
-import React, {ComponentType, Fragment, ReactElement} from 'react';
+import React, {ComponentType, Fragment, ReactElement, useMemo} from 'react';
 import {
   StyleProp,
   TextStyle,
@@ -92,7 +92,7 @@ interface CardProps extends TouchableOpacityProps {
 
   style?: StyleProp<ViewStyle>;
 
-  onPress?: () => void;
+  onPress?: any;
 }
 
 /**
@@ -133,32 +133,46 @@ export function Card(props: CardProps) {
   const Wrapper: ComponentType<TouchableOpacityProps> = isPressable ? TouchableOpacity : View;
   const HeaderContentWrapper = verticalAlignment === 'force-footer-bottom' ? View : Fragment;
 
-  const $containerStyle = [$containerPresets[preset], $containerStyleOverride];
-  const $headingStyle = [
-    $headingPresets[preset],
-    (isFooterPresent || isContentPresent) && {marginBottom: spacing.micro},
-    $headingStyleOverride,
-    HeadingTextProps?.style,
-  ];
-  const $contentStyle = [
-    $contentPresets[preset],
-    isHeadingPresent && {marginTop: spacing.micro},
-    isFooterPresent && {marginBottom: spacing.micro},
-    $contentStyleOverride,
-    ContentTextProps?.style,
-  ];
-  const $footerStyle = [
-    $footerPresets[preset],
-    (isHeadingPresent || isContentPresent) && {marginTop: spacing.micro},
-    $footerStyleOverride,
-    FooterTextProps?.style,
-  ];
-  const $alignmentWrapperStyle = [
-    $alignmentWrapper,
-    {justifyContent: $alignmentWrapperFlexOptions[verticalAlignment]},
-    LeftComponent && {marginStart: spacing.medium},
-    RightComponent && {marginEnd: spacing.medium},
-  ];
+  const $containerStyle = useMemo(() => {
+    return [$containerPresets[preset], $containerStyleOverride];
+  }, [$containerStyleOverride, preset]);
+
+  const $headingStyle = useMemo(() => {
+    return [
+      $headingPresets[preset],
+      (isFooterPresent || isContentPresent) && {marginBottom: spacing.micro},
+      $headingStyleOverride,
+      HeadingTextProps?.style,
+    ];
+  }, [$headingStyleOverride, HeadingTextProps?.style, isContentPresent, isFooterPresent, preset]);
+
+  const $contentStyle = useMemo(() => {
+    return [
+      $contentPresets[preset],
+      isHeadingPresent && {marginTop: spacing.micro},
+      isFooterPresent && {marginBottom: spacing.micro},
+      $contentStyleOverride,
+      ContentTextProps?.style,
+    ];
+  }, [$contentStyleOverride, ContentTextProps?.style, isFooterPresent, isHeadingPresent, preset]);
+
+  const $footerStyle = useMemo(() => {
+    return [
+      $footerPresets[preset],
+      (isHeadingPresent || isContentPresent) && {marginTop: spacing.micro},
+      $footerStyleOverride,
+      FooterTextProps?.style,
+    ];
+  }, [$footerStyleOverride, FooterTextProps?.style, isContentPresent, isHeadingPresent, preset]);
+
+  const $alignmentWrapperStyle = useMemo(() => {
+    return [
+      $alignmentWrapper,
+      {justifyContent: $alignmentWrapperFlexOptions[verticalAlignment]},
+      LeftComponent && {marginStart: spacing.medium},
+      RightComponent && {marginEnd: spacing.medium},
+    ];
+  }, [LeftComponent, RightComponent, verticalAlignment]);
 
   return (
     <Wrapper

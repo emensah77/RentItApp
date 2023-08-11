@@ -1,10 +1,9 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {ScrollView} from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 
-import Location from '../Authentication/Location';
+import Geolocation from 'react-native-geolocation-service';
 
 import {
   Page,
@@ -101,13 +100,20 @@ const Explore = () => {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
+  const [searchAfter, setSearchAfter] = useState(null);
   const [selection, setSelection] = useState(JSON.parse(JSON.stringify(originalSelection)));
 
   const navigation = useNavigation();
 
   const goToSearch = useCallback(
-    () => navigation.navigate('Search', {params: {selection, data}}),
-    [navigation, data, selection],
+    () =>
+      navigation.navigate('SearchResults', {
+        preloadedHomes: data,
+        prehomesCount: count,
+        presearchAfter: searchAfter,
+        selection,
+      }),
+    [navigation, data, count, searchAfter, selection],
   );
 
   const reset = useCallback(() => {
@@ -158,58 +164,84 @@ const Explore = () => {
 
   useEffect(() => {
     setLoading(true);
-    (async () => {
-      const userLocation = JSON.parse((await AsyncStorage.getItem('position')) || '{}');
-      const body = JSON.stringify({
-        ...selection.all.amenities.reduce(
-          (prev, {title}) => ({
-            ...prev,
-            [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
-          }),
-          {},
-        ),
-        ...selection.all.typesOfPlace.reduce(
-          (prev, {title}) => ({
-            ...prev,
-            [title.toLowerCase()]: isSelected('typeOfPlace', title) ? 'Yes' : 'No',
-          }),
-          {},
-        ),
-        type: selection.type,
-        mode: selection.mode,
-        bedroom: selection.bedrooms,
-        bed: selection.beds,
-        bathroom: selection.bathrooms,
-        userLocation: {
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-        },
-      });
 
-      const request = await fetch(
-        'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
-        {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body,
-        },
-      ).catch(e => console.error('Filter Request Failure:', e));
+    // Step 1: Retrieve User Location First
+    Geolocation.getCurrentPosition(
+      async position => {
+        const userLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
 
-      const response = await request.json();
-      if (__DEV__) {
-        console.debug('Response:', response, body);
+        // Proceed to create the request body and make API call
+        await sendFilterRequest(userLocation);
+      },
+      async error => {
+        console.error(error);
+
+        // User location retrieval failed. Proceed without it.
+        await sendFilterRequest();
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    );
+  }, [isSelected, selection, sendFilterRequest]);
+
+  const sendFilterRequest = useCallback(
+    async userLocation => {
+      try {
+        const filterParams = {
+          ...selection.all.amenities.reduce(
+            (prev, {title}) => ({
+              ...prev,
+              [title.toLowerCase()]: isSelected('amenities', title) ? 'Yes' : 'No',
+            }),
+            {},
+          ),
+          ...selection.all.typesOfPlace.reduce(
+            (prev, {title}) => ({
+              ...prev,
+              [title.toLowerCase()]: isSelected('typeOfPlace', title) ? 'Yes' : 'No',
+            }),
+            {},
+          ),
+          type: selection.type,
+          mode: selection.mode,
+          bedroom: selection.bedrooms,
+          bed: selection.beds,
+          bathroom: selection.bathrooms,
+        };
+
+        const requestBody = {
+          filterParams,
+          userLocation: userLocation || null,
+          searchAfter: null,
+        };
+
+        const response = await fetch(
+          'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
+          {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(requestBody),
+          },
+        );
+
+        const responseData = await response.json();
+        if (__DEV__) {
+          // console.debug('Response:', responseData, requestBody);
+        }
+
+        setData(responseData.homes);
+        setCount(responseData.count);
+        setSearchAfter(responseData.searchAfter);
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        console.error('Request Error', e);
       }
-
-      setData(response);
-      setCount(parseInt(response.length, 10) || 0);
-      setLoading(false);
-    })().catch(e => {
-      setLoading(false);
-      console.error('Request Error', e);
-    });
-  }, [isSelected, selection]);
-
-  // console.log('selection', selection, priceRange);
+    },
+    [isSelected, selection],
+  );
 
   return (
     <Page
@@ -227,7 +259,7 @@ const Explore = () => {
           </Button>
         </Container>
       }>
-      <Location noRender />
+      {/* <Location noRender /> */}
 
       <Typography type="heading" left width="100%">
         Price range
