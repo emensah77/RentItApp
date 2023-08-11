@@ -36,7 +36,6 @@ import {pageInnerHorizontalPadding} from '@assets/styles/global';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import {mapIcon} from '@assets/images';
-import Filter from '../Explore/Filter';
 import styles from './styles';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
@@ -79,7 +78,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   }, []);
 
   const fetchVideoWatchStatus = useCallback(async () => {
-    const userId = auth().currentUser.uid;
+    const userId = auth().currentUser?.uid;
 
     try {
       const response = await fetch(
@@ -108,36 +107,39 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     }
   }, []);
 
-  const updateWatchVideoStatus = useCallback(async version => {
-    const userId = auth().currentUser.uid;
+  const updateWatchVideoStatus = useCallback(
+    async version => {
+      const userId = auth().currentUser?.uid;
 
-    try {
-      const response = await fetch(
-        'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+      try {
+        const response = await fetch(
+          'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'updateWatchStatus',
+              userId,
+              videoVersion: version,
+            }),
           },
-          body: JSON.stringify({
-            action: 'updateWatchStatus',
-            userId,
-            videoVersion: version,
-          }),
-        },
-      );
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.status === 200) {
-        handleModalClose();
-      } else {
-        console.error('Error updating watch status:', data.message);
+        if (response.status === 200) {
+          handleModalClose();
+        } else {
+          console.error('Error updating watch status:', data.message);
+        }
+      } catch (error) {
+        console.error('Error updating watch status:', error);
       }
-    } catch (error) {
-      console.error('Error updating watch status:', error);
-    }
-  }, []);
+    },
+    [handleModalClose],
+  );
 
   const fetchPosts = useCallback(async () => {
     const response = await fetch(

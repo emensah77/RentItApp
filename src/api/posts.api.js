@@ -37,5 +37,5 @@ export async function fetchSimilarPosts_req(post) {
     },
   );
 
-  return await response.json();
+  return response.json();
 }
