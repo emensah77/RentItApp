@@ -17,6 +17,8 @@ const containerStyle = {
   flex: 1,
 };
 
+const originWhitelist = ['*'];
+
 const PaymentScreen = () => {
   const {user} = useContext(AuthContext);
   const navigation = useNavigation();
@@ -237,6 +239,8 @@ const PaymentScreen = () => {
     [_storeData, addHomeOrder, homeid, merchantTransactionID, navigation, route.name],
   );
 
+  const makeUri = useMemo(() => ({uri: paymentUrl}), [paymentUrl]);
+
   // console.log({
   //   homeid,
   //   homeyears,
@@ -269,12 +273,9 @@ const PaymentScreen = () => {
     <View style={containerStyle}>
       {paymentUrl ? (
         <WebView
-          source={{uri: paymentUrl}}
-          style={{
-            width: Dimensions.get('screen').width,
-            height: Dimensions.get('screen').height,
-          }}
-          originWhitelist={['*']}
+          source={makeUri}
+          style={Dimensions.get('screen')}
+          originWhitelist={originWhitelist}
           scalesPageToFit={false}
           scrollEnabled
           mixedContentMode="compatibility"

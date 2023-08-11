@@ -38,9 +38,9 @@ const AllDemands = props => {
     setLoading(0);
 
     const response = await fetch(
-      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands?locality=${
-        locality.value || null
-      }&subLocality=${subLocality.value || null}&pageSize=${30}`,
+      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands?locality=${encodeURIComponent(
+        locality.value || null,
+      )}&sublocality=${encodeURIComponent(subLocality.value || null)}&pageSize=${30}`,
       {
         method: 'GET',
         headers: {

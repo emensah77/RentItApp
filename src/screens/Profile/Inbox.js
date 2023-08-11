@@ -116,20 +116,7 @@ const Inbox = () => {
     [loading, messages, notifications, goToChat, makeUri],
   );
 
-  const clear = useCallback(() => {
-    firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .collection('notifications')
-      .get()
-      .then(snapshot => {
-        snapshot.docs.forEach(doc => {
-          doc.ref.delete();
-        });
-      });
-  }, [user?.uid]);
-
-  useEffect(() => {
+  const loadNotifications = useCallback(() => {
     if (!user?.uid) {
       return;
     }
@@ -150,6 +137,24 @@ const Inbox = () => {
       setLoading(false);
     }, 2000);
   }, [user]);
+
+  const clear = useCallback(() => {
+    firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .collection('notifications')
+      .get()
+      .then(snapshot => {
+        snapshot.docs.forEach(doc => {
+          doc.ref.delete();
+        });
+        loadNotifications();
+      });
+  }, [user, loadNotifications]);
+
+  useEffect(() => {
+    loadNotifications();
+  }, [loadNotifications]);
 
   useEffect(() => {
     const client = StreamChat.getInstance(STREAM_CHAT_KEY);

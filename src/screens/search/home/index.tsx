@@ -219,13 +219,10 @@ export const SearchHome = props => {
                 </TouchableOpacity>
                 <SizedBox height={20} />
                 <ScrollArea horizontal>
-                  {whereToList.map((item, index: number) => {
+                  {whereToList.map(item => {
                     const isSelected = selectedMap === item.title.toLowerCase();
                     return (
-                      <TouchableOpacity
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={index}
-                        onPress={handleMapSelect(item)}>
+                      <TouchableOpacity key={item.title} onPress={handleMapSelect(item)}>
                         <View style={$mapViewStyles(isSelected)}>
                           <Image source={item.map} />
                         </View>

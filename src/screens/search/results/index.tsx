@@ -1,24 +1,24 @@
 import React, {useCallback, useState, useEffect, useMemo, useRef} from 'react';
-import {ViewStyle, View, FlatList, ActivityIndicator, Text, Alert, Linking} from 'react-native';
+import {ViewStyle, View, ActivityIndicator, Text} from 'react-native';
 import {Page} from '@components';
 import {Icon} from '@components/Icon';
 import {Card} from '@components/Card';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import BottomSheet, {BottomSheetFlatList} from '@gorhom/bottom-sheet';
-
 import Geolocation from 'react-native-geolocation-service';
-import {colors, palette} from '@theme';
-
-import {pageInnerHorizontalPadding} from '@assets/styles/global';
+import moment from 'moment';
+import {useRoute} from '@react-navigation/native';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+
+import {colors, palette} from '@theme';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import CustomMarker from '@components/CustomMarker';
-import moment from 'moment';
-import {useRoute} from '@react-navigation/native';
 import {mapStyle} from '@theme/global';
 import styles from './styles';
+import {global} from '../../../assets/styles';
+import {pageInnerHorizontalPadding} from '../../../assets/styles/global';
+
+const loaderStyle = [global.flex, global.center];
 
 export const SearchResultsScreen = _props => {
   const {navigation} = _props;
@@ -46,7 +46,7 @@ export const SearchResultsScreen = _props => {
   const [visibleHomes, setVisibleHomes] = useState([]);
   const [isMapReady, setMapReady] = useState(false);
   const [postsLoaded, setPostsLoaded] = useState(false);
-  const [isDataPreloaded, setIsDataPreloaded] = useState(!!preloadedHomes);
+  const [isDataPreloaded] = useState(!!preloadedHomes);
 
   const mapRef = useRef();
 
@@ -64,7 +64,7 @@ export const SearchResultsScreen = _props => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
       },
-      error => {
+      () => {
         setLatitude(null);
         setLongitude(null);
       },
@@ -76,48 +76,51 @@ export const SearchResultsScreen = _props => {
     fetchUserLocation();
   }, [fetchUserLocation]);
 
-  const fetchFilteredHomes = async (searchAfterValue, selectionData) => {
-    const requestBody = {
-      filterParams: {
-        ...selectionData.all.amenities.reduce(
-          (prev, {title}) => ({
-            ...prev,
-            [title.toLowerCase()]: selectionData.amenities.includes(title) ? 'Yes' : 'No',
-          }),
-          {},
-        ),
-        ...selectionData.all.typesOfPlace.reduce(
-          (prev, {title}) => ({
-            ...prev,
-            [title.toLowerCase()]: selectionData.typeOfPlace.includes(title) ? 'Yes' : 'No',
-          }),
-          {},
-        ),
-        type: selectionData.type,
-        mode: selectionData.mode,
-        bedroom: selectionData.bedroom,
-        bed: selectionData.bed,
-        bathroom: selectionData.bathroom,
-      },
-      searchAfter: searchAfterValue,
-      userLocation: {latitude, longitude},
-    };
+  const fetchFilteredHomes = useCallback(
+    async (searchAfterValue, selectionData) => {
+      const requestBody = {
+        filterParams: {
+          ...selectionData.all.amenities.reduce(
+            (prev, {title}) => ({
+              ...prev,
+              [title.toLowerCase()]: selectionData.amenities.includes(title) ? 'Yes' : 'No',
+            }),
+            {},
+          ),
+          ...selectionData.all.typesOfPlace.reduce(
+            (prev, {title}) => ({
+              ...prev,
+              [title.toLowerCase()]: selectionData.typeOfPlace.includes(title) ? 'Yes' : 'No',
+            }),
+            {},
+          ),
+          type: selectionData.type,
+          mode: selectionData.mode,
+          bedroom: selectionData.bedroom,
+          bed: selectionData.bed,
+          bathroom: selectionData.bathroom,
+        },
+        searchAfter: searchAfterValue,
+        userLocation: {latitude, longitude},
+      };
 
-    const response = await fetch(
-      'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
-      {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(requestBody),
-      },
-    );
+      const response = await fetch(
+        'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/filter',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(requestBody),
+        },
+      );
 
-    const responseData = await response.json();
-    return responseData;
-  };
+      const responseData = await response.json();
+      return responseData;
+    },
+    [latitude, longitude],
+  );
 
   const personalizedHomes = useCallback(
-    async (searchAfter: string | null) => {
+    async (_searchAfter: string | null) => {
       const viewPort = {
         northeast: {
           lat: location?.viewPort?.northeast?.lat || null,
@@ -141,7 +144,7 @@ export const SearchResultsScreen = _props => {
               region: viewPort,
               userLocation: {latitude, longitude},
               searchQuery: location?.viewport ? 'nice apartment' : searchText,
-              searchAfter,
+              searchAfter: _searchAfter,
             }),
           },
         );
@@ -156,7 +159,7 @@ export const SearchResultsScreen = _props => {
     [location, latitude, longitude, searchText],
   );
 
-  const fetchMoreData = async () => {
+  const fetchMoreData = useCallback(async () => {
     if (searchAfter === null) {
       return;
     }
@@ -180,30 +183,31 @@ export const SearchResultsScreen = _props => {
     }
 
     setLoadingMore(false);
-  };
+  }, [fetchFilteredHomes, personalizedHomes, posts, preloadedHomes, searchAfter, selection]);
 
   const onRegionChangeComplete = useCallback(
     region => {
-      const {latitude, longitude, latitudeDelta, longitudeDelta} = region;
+      const {latitude: _lat, longitude: _long, latitudeDelta, longitudeDelta} = region;
 
       // calculate the corners of the map
-      const northLat = latitude + latitudeDelta / 2;
-      const southLat = latitude - latitudeDelta / 2;
-      const westLon = longitude - longitudeDelta / 2;
-      const eastLon = longitude + longitudeDelta / 2;
+      const northLat = _lat + latitudeDelta / 2;
+      const southLat = _lat - latitudeDelta / 2;
+      const westLon = _long - longitudeDelta / 2;
+      const eastLon = _long + longitudeDelta / 2;
 
       // filter the posts to include only those within the map bounds
-      const visibleHomes = posts.filter(post => {
+      const _visibleHomes = posts.filter(post => {
         const {
           location: {lat, lon},
         } = post;
         return lat <= northLat && lat >= southLat && lon <= eastLon && lon >= westLon;
       });
 
-      setVisibleHomes(visibleHomes);
+      setVisibleHomes(_visibleHomes);
     },
     [posts],
   );
+
   const filterDuplicates = arr => {
     const uniqueIds = new Set();
     const filteredArray = arr.filter(post => {
@@ -236,7 +240,16 @@ export const SearchResultsScreen = _props => {
     } else {
       setPostsLoaded(true);
     }
-  }, [latitude, longitude, personalizedHomes, isDataPreloaded]);
+  }, [isDataPreloaded, latitude, longitude, personalizedHomes, searchAfter]);
+
+  const initialRegion = useMemo(() => {
+    return {
+      latitude: 5.602028159656166,
+      longitude: -0.183158678544458,
+      latitudeDelta: 0.8,
+      longitudeDelta: 0.8,
+    };
+  }, []);
 
   useEffect(() => {
     if (postsLoaded && isMapReady) {
@@ -255,6 +268,7 @@ export const SearchResultsScreen = _props => {
         const latitudeDelta = 0.8; // Adjust these values as per your needs
         const longitudeDelta = 0.8; // Adjust these values as per your needs
 
+        // @ts-ignore
         mapRef.current?.animateToRegion({
           latitude: averageLatitude,
           longitude: averageLongitude,
@@ -263,19 +277,21 @@ export const SearchResultsScreen = _props => {
         });
       } else {
         // No posts, animate to default region
+        // @ts-ignore
         mapRef.current?.animateToRegion(initialRegion);
       }
     }
-  }, [postsLoaded, isMapReady, posts]);
+  }, [postsLoaded, isMapReady, posts, initialRegion]);
 
   const renderLoader = useMemo(
     () => (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={loaderStyle}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     ),
     [],
   );
+
   const renderItem = useCallback(
     ({item}) => (
       <View>
@@ -303,15 +319,6 @@ export const SearchResultsScreen = _props => {
     return {style: {color: palette.textInverse300}, size: 'xxs'};
   }, []);
 
-  const initialRegion = useMemo(() => {
-    return {
-      latitude: 5.602028159656166,
-      longitude: -0.183158678544458,
-      latitudeDelta: 0.8,
-      longitudeDelta: 0.8,
-    };
-  }, []);
-
   const coords = useCallback(place => {
     return {latitude: place.location.lat, longitude: place.location.lon};
   }, []);
@@ -322,9 +329,13 @@ export const SearchResultsScreen = _props => {
     },
     [],
   );
+
+  const onMapReady = useCallback(() => setMapReady(true), []);
+
   if (loading) {
     return renderLoader;
   }
+
   return (
     <Page
       safeAreaEdges={memoizedSafeAreaEdges}
@@ -355,7 +366,7 @@ export const SearchResultsScreen = _props => {
         zoomEnabled
         minZoomLevel={1}
         onRegionChangeComplete={onRegionChangeComplete}
-        onMapReady={() => setMapReady(true)}
+        onMapReady={onMapReady}
         initialRegion={initialRegion}>
         {visibleHomes.map((place: any) => (
           <CustomMarker

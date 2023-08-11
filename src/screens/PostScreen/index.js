@@ -1,55 +1,93 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {View, Text, Pressable, Linking} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
+import {View, Linking} from 'react-native';
 import {API, graphqlOperation} from 'aws-amplify';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+
 import {getPost} from '../../graphql/queries';
 import DetailedPost from '../../components/DetailedPost';
+
+const loadingContainerStyle = {
+  flex: 1,
+  justifyContent: 'center',
+  alignContent: 'center',
+};
+
+const layout = [
+  {
+    width: '100%',
+    height: 300,
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  {width: 220, height: 20, marginBottom: 10},
+  // short line
+  {width: 90, height: 20, marginBottom: 10},
+  {width: 40, height: 20, marginBottom: 80},
+  {width: '100%', height: 150, marginBottom: 100},
+  {
+    width: '100%',
+    height: 20,
+    marginBottom: 12,
+    paddingHorizontal: 40,
+  },
+  {width: '100%', height: 20, marginBottom: 12},
+  {width: '100%', height: 20, marginBottom: 12},
+  {width: '100%', height: 20, marginBottom: 12},
+  {width: '100%', height: 20, marginBottom: 12},
+  {width: '100%', height: 20, marginBottom: 12},
+  {width: '100%', height: 20, marginBottom: 12},
+];
+
+const white = {backgroundColor: 'white'};
+
+const containerStyle = {flex: 1, width: '100%'};
 
 const PostScreen = ({route}) => {
   const isMounted = useRef(true);
 
-  const navigation = useNavigation();
   const params = route.params || {};
   const {postId} = params;
   const [newPost, setNewPost] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [deepLinkUrl, setDeepLinkUrl] = useState();
+  const [deepLinkUrl] = useState();
 
-  const handleDeepLink = event => {
-    const {url} = event;
-    if (url) {
-      const path = url.replace(/.*?:\/\//g, '');
-      const postIdParam = path.split('/')[2];
-      if (postIdParam !== postId) {
-        fetchPost(postIdParam);
+  const handleDeepLink = useCallback(
+    event => {
+      const {url} = event;
+      if (url) {
+        const path = url.replace(/.*?:\/\//g, '');
+        const postIdParam = path.split('/')[2];
+        if (postIdParam !== postId) {
+          fetchPost(postIdParam);
+        }
       }
-    }
-  };
+    },
+    [fetchPost, postId],
+  );
 
-  const fetchPost = async postId => {
+  const fetchPost = useCallback(async id => {
     setLoading(true);
     try {
       const postResult = await API.graphql(
         graphqlOperation(getPost, {
-          id: postId,
+          id,
         }),
       );
       if (isMounted.current) {
         setNewPost(postResult.data.getPost);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (postId || deepLinkUrl) {
       fetchPost(postId || deepLinkUrl);
     }
-  }, [postId, deepLinkUrl]);
+  }, [postId, deepLinkUrl, fetchPost]);
 
   useEffect(() => {
     const handleUrl = event => {
@@ -59,13 +97,13 @@ const PostScreen = ({route}) => {
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [handleDeepLink]);
 
   useEffect(() => {
     if (deepLinkUrl) {
       fetchPost(deepLinkUrl);
     }
-  }, [deepLinkUrl]);
+  }, [deepLinkUrl, fetchPost]);
 
   useEffect(() => {
     return () => {
@@ -75,42 +113,11 @@ const PostScreen = ({route}) => {
 
   if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}>
+      <View style={loadingContainerStyle}>
         <SkeletonContent
-          containerStyle={{flex: 1, width: '100%'}}
+          containerStyle={containerStyle}
           animationDirection="horizontalLeft"
-          layout={[
-            {
-              width: '100%',
-              height: 300,
-              marginBottom: 10,
-              borderRadius: 10,
-            },
-            {width: 220, height: 20, marginBottom: 10},
-            // short line
-            {width: 90, height: 20, marginBottom: 10},
-            {width: 40, height: 20, marginBottom: 80},
-
-            {width: '100%', height: 150, marginBottom: 100},
-
-            {
-              width: '100%',
-              height: 20,
-              marginBottom: 12,
-              paddingHorizontal: 40,
-            },
-            {width: '100%', height: 20, marginBottom: 12},
-            {width: '100%', height: 20, marginBottom: 12},
-            {width: '100%', height: 20, marginBottom: 12},
-            {width: '100%', height: 20, marginBottom: 12},
-            {width: '100%', height: 20, marginBottom: 12},
-            {width: '100%', height: 20, marginBottom: 12},
-          ]}
+          layout={layout}
         />
       </View>
     );
@@ -118,7 +125,7 @@ const PostScreen = ({route}) => {
 
   if (newPost) {
     return (
-      <View style={{backgroundColor: 'white'}}>
+      <View style={white}>
         <DetailedPost post={newPost} />
       </View>
     );

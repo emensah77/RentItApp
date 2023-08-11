@@ -8,6 +8,11 @@ import Typography from '../../components/DataDisplay/Typography';
 import FirebaseRepo from '../../repositry/FirebaseRepo';
 import {AuthContext} from '../../navigation/AuthProvider';
 import WishListItem from '../../components/DataDisplay/WishListItem';
+import {global} from '../../assets/styles';
+
+const loadingStyle = [global.flex, global.center];
+const safeAreaStyle = {flex: 1, backgroundColor: '#fff'};
+const wishListTextStyle = {marginTop: offsets.offsetC, marginBottom: 32};
 
 const WishList = () => {
   const {user} = useContext(AuthContext);
@@ -15,7 +20,7 @@ const WishList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     const wishList = await FirebaseRepo.getWishlist(user?.uid);
     const temp = {};
     const uniquePosts = [];
@@ -28,26 +33,26 @@ const WishList = () => {
 
     setPosts(uniquePosts);
     setLoading(false);
-  };
+  }, [user]);
+
+  const keyExtractor = useCallback(item => item.id, []);
 
   useEffect(() => {
     if (!user.uid) {
       return;
     }
     fetchPosts();
-  }, []);
-
-  const keyExtractor = useCallback(item => item.id, []);
+  }, [fetchPosts, user]);
 
   return (
     <>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <SafeAreaView style={safeAreaStyle}>
         <View style={styles.mainContent}>
-          <Typography variant="xlarge" bold style={{marginTop: offsets.offsetC, marginBottom: 32}}>
+          <Typography variant="xlarge" bold style={wishListTextStyle}>
             Wishlists
           </Typography>
           {loading ? (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <View style={loadingStyle}>
               <ActivityIndicator size="large" color="#0000ff" />
             </View>
           ) : (
