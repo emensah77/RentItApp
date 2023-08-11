@@ -21,10 +21,13 @@ import {
 } from '../../../components';
 
 import hamburger from '../../../assets/images/hamburger.png';
-import homeMarker from '../../../assets/images/home-marker.png';
+import neutral from '../../../assets/images/markers/neutral.png';
+import pending from '../../../assets/images/markers/pending.png';
+import rejected from '../../../assets/images/markers/rejected.png';
+import approved from '../../../assets/images/markers/approved.png';
 import {global} from '../../../assets/styles';
 
-const style = {width: '100%', height: '100%', backgroundColor: 'white'};
+const style = {width: '100%', height: '100%', backgroundColor: '#FFF'};
 
 const initialMarker = screen => ({
   latitude: 5.60589164450265,
@@ -66,14 +69,6 @@ const MarketerHome = props => {
     [top],
   );
 
-  const expand = useCallback(() => {
-    Animated.timing(top, {
-      toValue: 0.25 * screen.height,
-      duration: 400,
-      useNativeDriver: false,
-    }).start();
-  }, [top]);
-
   const collapse = useCallback(() => {
     setMode('default');
 
@@ -84,20 +79,35 @@ const MarketerHome = props => {
     }).start();
   }, [top]);
 
+  const expand = useCallback(
+    _mode => {
+      if (_mode === 'default' && JSON.stringify(top) === '0') {
+        return collapse();
+      }
+
+      Animated.timing(top, {
+        toValue: _mode === 'home' ? 0 : 0.25 * screen.height,
+        duration: 400,
+        useNativeDriver: false,
+      }).start();
+    },
+    [top, collapse],
+  );
+
   const onRegionChangeComplete = useCallback(_region => {
     setRegion(_region);
   }, []);
 
   const changeMode = useCallback(
-    _mode => e => {
-      if (_mode === 'default') {
+    (_mode, success) => e => {
+      if (success) {
         Alert.alert('Successfully saved the data.');
       }
       if (_mode === 'home') {
         setMarkerData(markers.find(item => item.id === e.nativeEvent.id));
       }
       setMode(_mode);
-      expand();
+      expand(_mode);
     },
     [markers, expand],
   );
@@ -149,22 +159,8 @@ const MarketerHome = props => {
       ) {
         makeANewRequest(true);
       }
-
-      if (ws) {
-        ws.send(
-          JSON.stringify({
-            action: 'locationUpdate',
-            marketerId: auth().currentUser.uid,
-            location: {
-              latitude: _position.coords.latitude,
-              longitude: _position.coords.longitude,
-            },
-            marketerStatus: 'online',
-          }),
-        );
-      }
     },
-    [calculateDistance, currentPosition, makeANewRequest, ws],
+    [calculateDistance, currentPosition, makeANewRequest],
   );
 
   useEffect(() => {
@@ -176,6 +172,34 @@ const MarketerHome = props => {
       _ws.close(undefined, 'Unmount');
     };
   }, []);
+
+  useEffect(() => {
+    if (ws && position) {
+      const sendLocationUpdate = () => {
+        ws.send(
+          JSON.stringify({
+            action: 'locationUpdate',
+            data: {
+              marketerId: auth().currentUser.uid,
+              marketerStatus: 'online',
+              location: {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              },
+            },
+          }),
+        );
+      };
+
+      // Send the initial update immediately after position change
+      sendLocationUpdate();
+
+      // Set interval to continue sending updates every 10 seconds
+      const locationUpdateInterval = setInterval(sendLocationUpdate, 10000);
+
+      return () => clearInterval(locationUpdateInterval); // Clear the interval when position changes or component unmounts
+    }
+  }, [ws, position]);
 
   useEffect(() => {
     (async () => {
@@ -261,7 +285,15 @@ const MarketerHome = props => {
                 : marker.title
             }
             description={marker.description}
-            image={homeMarker}
+            image={
+              marker.status === 'PENDING'
+                ? pending
+                : marker.status === 'APPROVED'
+                ? approved
+                : marker.status === 'REJECTED'
+                ? rejected
+                : neutral
+            }
             onPress={changeMode('home')}
           />
         ))}
@@ -311,11 +343,23 @@ const MarketerHome = props => {
             </Container>
           </>
         ) : mode === 'home' ? (
-          <HomeForm data={markerData} onSuccess={changeMode('default')} />
+          <HomeForm
+            data={markerData}
+            onClose={changeMode('default')}
+            onSuccess={changeMode('default', true)}
+          />
         ) : mode === 'demand' ? (
-          <DemandForm data={markerData} onSuccess={changeMode('default')} />
+          <DemandForm
+            data={markerData}
+            onClose={changeMode('default')}
+            onSuccess={changeMode('default', true)}
+          />
         ) : mode === 'request' ? (
-          <RequestForm data={markerData} onSuccess={changeMode('default')} />
+          <RequestForm
+            data={markerData}
+            onClose={changeMode('default')}
+            onSuccess={changeMode('default', true)}
+          />
         ) : null}
       </Animated.ScrollView>
     </>

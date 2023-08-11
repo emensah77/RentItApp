@@ -1,25 +1,39 @@
 import React, {useMemo, useEffect, useState, useCallback} from 'react';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {StreamChat} from 'stream-chat';
 import {useNavigation} from '@react-navigation/native';
+import {STREAM_CHAT_KEY} from 'react-native-dotenv';
 
-import {Page, Whitespace, Tabs, Divider, CardDisplay} from '../../components';
+import {
+  Page,
+  Whitespace,
+  Tabs,
+  Divider,
+  CardDisplay,
+  PageSpinner,
+  Container,
+  Typography,
+} from '../../components';
 
 import * as Utils from '../../utils';
 
 const Inbox = () => {
+  const user = auth().currentUser;
+
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [notifications] = useState([
+  const [notifications, setNotifications] = useState([
     // {
-    //   id: 3,
-    //   name: 'Hi!',
-    //   location: '',
+    //   postId: 3,
+    //   title: 'Hi!',
+    //   // location: '',
     //   description:
     //     "We'll send your $49.19 (USD) refund\nright away. It may take your bank 3-5\ndays to deposit it in your account",
-    //   status: '',
-    //   date: 'August 23, 2023',
+    //   // status: '',
+    //   createdAt: 'August 23, 2023',
     //   read: true,
-    //   uri: '',
+    //   image: 'https://d1mgzi0ytcdaf9.cloudfront.net/public/1cc4cc8e-d5b5-4e80-a378-00d038a31e58',
     // },
   ]);
 
@@ -37,52 +51,118 @@ const Inbox = () => {
   const content = useMemo(
     () => [
       {
-        title: 'Messages',
-        content: messages.map(({id, name, location, description, status, date, read, uri}, i) => (
-          <React.Fragment key={name}>
-            <CardDisplay
-              onPress={goToChat(id)}
-              leftImageCircle={30}
-              leftImageSrc={makeUri(uri)}
-              name={name}
-              location={location}
-              description={description}
-              status={status}
-              date={date}
-              bold={read}
-            />
-            {i !== messages.length - 1 ? <Divider small /> : null}
-          </React.Fragment>
-        )),
+        title: `Messages${
+          messages.filter(item => item.read === false).length > 0
+            ? ` (${messages.filter(item => item.read === false).length})`
+            : ''
+        }`,
+        content: loading ? (
+          <PageSpinner />
+        ) : messages.length === 0 ? (
+          <Typography>No messages to see yet.</Typography>
+        ) : (
+          messages.map(({id, name, location, description, status, date, read, uri}, i) => (
+            <React.Fragment key={name}>
+              <CardDisplay
+                onPress={goToChat(id)}
+                leftImageCircle={30}
+                leftImageSrc={makeUri(uri)}
+                name={name}
+                location={location}
+                description={description}
+                status={status}
+                date={date}
+                bold={read}
+              />
+
+              {i !== messages.length - 1 ? <Divider small /> : null}
+            </React.Fragment>
+          ))
+        ),
       },
       {
-        title: 'Notifications',
-        content: notifications.map(({name, location, description, status, date, read, uri}, i) => (
-          <React.Fragment key={name}>
-            <CardDisplay
-              leftImageCircle={60}
-              leftImageSrc={makeUri(uri)}
-              name={name}
-              location={location}
-              description={description}
-              status={status}
-              date={date}
-              bold={read}
-            />
-            {i !== messages.length - 1 ? <Divider small /> : null}
-          </React.Fragment>
-        )),
+        title: `Notifications${
+          notifications.filter(item => item.read === false).length > 0
+            ? ` (${notifications.filter(item => item.read === false).length})`
+            : ''
+        }`,
+        content: loading ? (
+          <PageSpinner />
+        ) : notifications.length === 0 ? (
+          <Typography>No notifications to see yet.</Typography>
+        ) : (
+          notifications.map(
+            ({noticeId, postId, description, title, createdAt, read, image}, i) =>
+              !!(image && description && title) && (
+                <React.Fragment key={`${noticeId}${postId}`}>
+                  <CardDisplay
+                    leftImageCircle={40}
+                    leftImageSrc={makeUri(image)}
+                    name={title}
+                    // location={location}
+                    // status={title}
+                    description={description}
+                    date={Utils.formatDate(createdAt)}
+                    bold={read}
+                  />
+
+                  {i !== notifications.length - 1 ? <Divider small /> : null}
+                </React.Fragment>
+              ),
+          )
+        ),
       },
     ],
-    [goToChat, messages, notifications, makeUri],
+    [loading, messages, notifications, goToChat, makeUri],
   );
 
+  const loadNotifications = useCallback(() => {
+    if (!user?.uid) {
+      return;
+    }
+
+    setLoading(true);
+
+    firestore()
+      .collection('users')
+      .doc(user?.uid)
+      // Use for testing ONLY!
+      // .doc('S1e9IadGFJRPaDIe8nb0AszDPMx1')
+      .collection('notifications')
+      .onSnapshot(querySnapshot => {
+        setNotifications(querySnapshot.docs.map(doc => ({noticeId: doc.id, ...doc.data()})));
+      });
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, [user]);
+
+  const clear = useCallback(() => {
+    firestore()
+      .collection('users')
+      .doc(user?.uid)
+      // Use for testing ONLY!
+      // .doc('S1e9IadGFJRPaDIe8nb0AszDPMx1')
+      .collection('notifications')
+      .get()
+      .then(async snapshot => {
+        snapshot.docs.forEach(async doc => {
+          return doc.ref.delete();
+        });
+        setTimeout(loadNotifications, 1000);
+      })
+      .catch(console.error);
+  }, [user, loadNotifications]);
+
   useEffect(() => {
-    const client = StreamChat.getInstance('dz5f4d5kzrue'); // 'upcrj3b3pp7v');
+    loadNotifications();
+  }, [loadNotifications]);
+
+  useEffect(() => {
+    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
 
     (async () => {
-      const user = auth().currentUser;
-
       const request = await fetch(
         'https://bnymw2nuxn6zstrhiiz4nibuum0zkovn.lambda-url.us-east-2.on.aws/',
         {
@@ -136,10 +216,16 @@ const Inbox = () => {
     })().catch(e => console.error('There was an issue loading the chat', e));
 
     return () => client.disconnectUser(1);
-  }, []);
+  }, [user]);
 
   return (
     <Page type="large" header="Inbox">
+      <Container type="right-60" onPress={clear}>
+        <Container type="top-40">
+          <Typography type="levelTwoThick">Clear</Typography>
+        </Container>
+      </Container>
+
       <Whitespace marginTop={40} />
 
       <Tabs content={content} />

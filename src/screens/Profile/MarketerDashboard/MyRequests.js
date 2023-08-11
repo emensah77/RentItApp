@@ -104,6 +104,7 @@ const MyRequests = props => {
               initialNumToRender={2}
               maxToRenderPerBatch={2}
               persistentScrollbar
+              showsVerticalScrollIndicator={false}
               data={data}
               renderItem={renderItem}
               keyExtractor={keyExtractor}

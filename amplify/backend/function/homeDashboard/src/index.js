@@ -2,8 +2,8 @@ const AWS = require('aws-sdk');
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async event => {
-  const {nextToken, limit, postId} = event;
+exports.handler = async (event) => {
+  const { nextToken, limit, postId } = event;
 
   const filterExpressions = [];
   const expressionAttributeValues = {};
@@ -53,7 +53,7 @@ exports.handler = async event => {
         'Access-Control-Allow-Headers':
           'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token',
       },
-      body: JSON.stringify({message: 'Error fetching items'}),
+      body: JSON.stringify({ message: 'Error fetching items' }),
     };
   }
 };

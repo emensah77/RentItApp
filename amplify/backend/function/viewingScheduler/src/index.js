@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const {v4: uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const currentDate = new Date().toISOString();
@@ -39,9 +39,10 @@ async function findRepForUser(userId) {
 
   return null;
 }
-exports.handler = async event => {
-  const {postId, viewingDate, viewingTime, userName, userContact, userLocation, userId} =
-    JSON.parse(event.body);
+exports.handler = async (event) => {
+  const {
+    postId, viewingDate, viewingTime, userName, userContact, userLocation, userId,
+  } = JSON.parse(event.body);
   const viewingDateTime = `${viewingDate}_${viewingTime}`;
 
   const bufferInMinutes = 30;
@@ -118,7 +119,7 @@ exports.handler = async event => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({message: 'Viewing scheduled successfully.'}),
+      body: JSON.stringify({ message: 'Viewing scheduled successfully.' }),
     };
   } catch (error) {
     console.error(error);

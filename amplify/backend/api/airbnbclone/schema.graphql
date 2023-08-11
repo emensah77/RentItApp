@@ -70,8 +70,8 @@ type Post
   reviews: [Review] @connection(keyName: "byPost", fields: ["id"])
   image: String
   images: [String]
-  type: String!
-  title: String!
+  type: String
+  title: String
   description: String!
   mode: String
   phoneNumbers: [String]
@@ -86,25 +86,30 @@ type Post
   loyaltyProgram: String
   verified: String
   available: String
-  bed: Int!
-  bedroom: Int!
+  bed: Int
+  bedroom: Int
   bathroomNumber: Int
-  maxGuests: Int!
-  wifi: String!
-  kitchen: String!
-  bathroom: String!
-  water: String!
-  toilet: String!
-  aircondition: String!
+  maxGuests: Int
+  wifi: String
+  kitchen: String
+  bathroom: String
+  water: String
+  toilet: String
+  aircondition: String
   locality: String
   sublocality: String
   videoUrl: String
+  qualityScore: Float
+  qualityListing: Float
+  dataAccuracy: Float
+  responsiveness: Float
+  rentersFeedback: Float
 
   oldPrice: Float
-  newPrice: Float!
+  newPrice: Float
 
-  latitude: Float!
-  longitude: Float!
+  latitude: Float
+  longitude: Float
 }
 
 type PostNew @model @key(fields: ["latitude", "longitude"]) {

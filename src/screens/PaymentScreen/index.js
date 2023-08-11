@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useCallback, useEffect, useState, useMemo, useContext} from 'react';
 import {ActivityIndicator, Alert, Dimensions, View} from 'react-native';
 import axios from 'axios';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WebView} from 'react-native-webview';
 import auth from '@react-native-firebase/auth';
 import {deletePost} from '../../graphql/mutations';
+import {AuthContext} from '../../navigation/AuthProvider';
 
 const containerStyle = {
   alignItems: 'center',
@@ -16,8 +17,10 @@ const containerStyle = {
   flex: 1,
 };
 
+const originWhitelist = ['*'];
+
 const PaymentScreen = () => {
-  const user = useMemo(async () => auth().currentUser, []);
+  const {user} = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -100,7 +103,7 @@ const PaymentScreen = () => {
         userId: user.uid,
         userName: user.displayName,
         merchantTransactionID,
-        orderType: homeid === null ? 'payment' : 'order',
+        orderType: homeid === null || '' ? 'payment' : 'order',
         paymentStatus: 'Processing',
         checkoutNumber,
       })
@@ -202,7 +205,7 @@ const PaymentScreen = () => {
       const words = url.split('type=');
       if (words[1] === 'success') {
         if (navigation.canGoBack()) {
-          if (homeid === null) {
+          if (homeid === null || homeid === undefined || homeid === '') {
             Alert.alert(
               'Payment Confirmation!',
               `Keep your confirmation code: ${merchantTransactionID}`,
@@ -236,6 +239,8 @@ const PaymentScreen = () => {
     [_storeData, addHomeOrder, homeid, merchantTransactionID, navigation, route.name],
   );
 
+  const makeUri = useMemo(() => ({uri: paymentUrl}), [paymentUrl]);
+
   // console.log({
   //   homeid,
   //   homeyears,
@@ -257,7 +262,7 @@ const PaymentScreen = () => {
       return;
     }
 
-    if (homeid === null) {
+    if (homeid === null || homeid === undefined || homeid === '') {
       addPayment();
     }
 
@@ -268,12 +273,9 @@ const PaymentScreen = () => {
     <View style={containerStyle}>
       {paymentUrl ? (
         <WebView
-          source={{uri: paymentUrl}}
-          style={{
-            width: Dimensions.get('screen').width,
-            height: Dimensions.get('screen').height,
-          }}
-          originWhitelist={['*']}
+          source={makeUri}
+          style={Dimensions.get('screen')}
+          originWhitelist={originWhitelist}
           scalesPageToFit={false}
           scrollEnabled
           mixedContentMode="compatibility"

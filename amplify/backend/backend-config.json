@@ -55,6 +55,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "dynamodStreamer": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "homeDashboard": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -65,7 +70,22 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "homeSearch": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "homeUploadProgress": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "homes": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "imageAnalyzer": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -80,12 +100,27 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "jwtgenerator": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "locationUpdater": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "marketerData": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
     "marketerSalary": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "opensearch": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -101,6 +136,11 @@
       "service": "Lambda"
     },
     "similarHomes": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "stepFunctionTrigger": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -164,6 +204,22 @@
         }
       ]
     },
+    "AMPLIFY_function_dynamodStreamer_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dynamodStreamer"
+        }
+      ]
+    },
+    "AMPLIFY_function_dynamodStreamer_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dynamodStreamer"
+        }
+      ]
+    },
     "AMPLIFY_function_homeDashboard_deploymentBucketName": {
       "usedBy": [
         {
@@ -196,6 +252,22 @@
         }
       ]
     },
+    "AMPLIFY_function_homeSearch_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeSearch"
+        }
+      ]
+    },
+    "AMPLIFY_function_homeSearch_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homeSearch"
+        }
+      ]
+    },
     "AMPLIFY_function_homeUploadProgress_deploymentBucketName": {
       "usedBy": [
         {
@@ -209,6 +281,38 @@
         {
           "category": "function",
           "resourceName": "homeUploadProgress"
+        }
+      ]
+    },
+    "AMPLIFY_function_homes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homes"
+        }
+      ]
+    },
+    "AMPLIFY_function_homes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "homes"
+        }
+      ]
+    },
+    "AMPLIFY_function_imageAnalyzer_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "imageAnalyzer"
+        }
+      ]
+    },
+    "AMPLIFY_function_imageAnalyzer_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "imageAnalyzer"
         }
       ]
     },
@@ -244,6 +348,38 @@
         }
       ]
     },
+    "AMPLIFY_function_jwtgenerator_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "jwtgenerator"
+        }
+      ]
+    },
+    "AMPLIFY_function_jwtgenerator_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "jwtgenerator"
+        }
+      ]
+    },
+    "AMPLIFY_function_locationUpdater_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "locationUpdater"
+        }
+      ]
+    },
+    "AMPLIFY_function_locationUpdater_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "locationUpdater"
+        }
+      ]
+    },
     "AMPLIFY_function_marketerData_deploymentBucketName": {
       "usedBy": [
         {
@@ -273,6 +409,22 @@
         {
           "category": "function",
           "resourceName": "marketerSalary"
+        }
+      ]
+    },
+    "AMPLIFY_function_opensearch_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "opensearch"
+        }
+      ]
+    },
+    "AMPLIFY_function_opensearch_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "opensearch"
         }
       ]
     },
@@ -321,6 +473,22 @@
         {
           "category": "function",
           "resourceName": "similarHomes"
+        }
+      ]
+    },
+    "AMPLIFY_function_stepFunctionTrigger_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "stepFunctionTrigger"
+        }
+      ]
+    },
+    "AMPLIFY_function_stepFunctionTrigger_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "stepFunctionTrigger"
         }
       ]
     },

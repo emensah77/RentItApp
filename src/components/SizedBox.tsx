@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {View} from 'react-native';
 /* ANCHOR SIZED BOX */
 interface SizedBoxProps {
@@ -9,18 +9,17 @@ interface SizedBoxProps {
   style?: any;
 }
 export const SizedBox = ({width, height, flex, backgroundColor, style}: SizedBoxProps) => {
-  return (
-    <View
-      style={[
-        {
-          width,
-
-          height,
-          flex,
-          backgroundColor,
-        },
-        style,
-      ]}
-    />
+  const $style = useMemo(
+    () => [
+      {
+        width,
+        height,
+        flex,
+        backgroundColor,
+      },
+      style,
+    ],
+    [backgroundColor, flex, height, style, width],
   );
+  return <View style={$style} />;
 };

@@ -43,6 +43,13 @@ export type AmplifyDependentResourcesAttributes = {
       Name: 'string';
       Region: 'string';
     };
+    dynamodStreamer: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
     homeDashboard: {
       Arn: 'string';
       LambdaExecutionRole: 'string';
@@ -57,7 +64,28 @@ export type AmplifyDependentResourcesAttributes = {
       Name: 'string';
       Region: 'string';
     };
+    homeSearch: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
     homeUploadProgress: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
+    homes: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
+    imageAnalyzer: {
       Arn: 'string';
       LambdaExecutionRole: 'string';
       LambdaExecutionRoleArn: 'string';
@@ -78,6 +106,20 @@ export type AmplifyDependentResourcesAttributes = {
       Name: 'string';
       Region: 'string';
     };
+    jwtgenerator: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
+    locationUpdater: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
     marketerData: {
       Arn: 'string';
       LambdaExecutionRole: 'string';
@@ -86,6 +128,13 @@ export type AmplifyDependentResourcesAttributes = {
       Region: 'string';
     };
     marketerSalary: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
+    opensearch: {
       Arn: 'string';
       LambdaExecutionRole: 'string';
       LambdaExecutionRoleArn: 'string';
@@ -107,6 +156,13 @@ export type AmplifyDependentResourcesAttributes = {
       Region: 'string';
     };
     similarHomes: {
+      Arn: 'string';
+      LambdaExecutionRole: 'string';
+      LambdaExecutionRoleArn: 'string';
+      Name: 'string';
+      Region: 'string';
+    };
+    stepFunctionTrigger: {
       Arn: 'string';
       LambdaExecutionRole: 'string';
       LambdaExecutionRoleArn: 'string';

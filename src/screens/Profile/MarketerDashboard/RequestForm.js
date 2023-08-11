@@ -17,8 +17,8 @@ const RequestForm = props => {
     amount: '0',
     description: '',
     tags: '',
-    marketerName: currentUser.displayName,
-    contactNumber: currentUser.phoneNumber,
+    marketerName: currentUser?.displayName,
+    contactNumber: currentUser?.phoneNumber,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ const RequestForm = props => {
   const submit = useCallback(async () => {
     setLoading(true);
     const response = await fetch(
-      'https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/marketerrequests',
+      'https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/marketerrequest',
       {
         method: 'POST',
         headers: {

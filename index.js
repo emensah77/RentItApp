@@ -8,21 +8,16 @@ import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import {GoogleSignin} from '@react-native-community/google-signin';
-import AWS from 'aws-sdk';
-import {AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY, GOOGLE_WEB_CLIENT_ID} from 'react-native-dotenv';
+import {GOOGLE_WEB_CLIENT_ID} from 'react-native-dotenv';
 
-import config from './src/aws-exports';
 import {name as appName} from './app.json';
 import App from './App';
 import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
+import awsmobile from './src/aws-exports';
 
-Amplify.configure(config);
-AWS.config.update({
-  region: 'us-east-2',
-  accessKeyId: AWS_ACCESS_KEY,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
-});
+Amplify.configure(awsmobile);
+Amplify.Logger.LOG_LEVEL = 'DEBUG';
 
 GoogleSignin.configure({
   webClientId: GOOGLE_WEB_CLIENT_ID,

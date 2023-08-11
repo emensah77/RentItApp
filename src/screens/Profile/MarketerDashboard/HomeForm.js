@@ -3,13 +3,23 @@ import auth from '@react-native-firebase/auth';
 
 import PhoneNumber from '../../Authentication/PhoneNumber';
 
-import {Input, Typography, Button, Whitespace, Error, Dropdown} from '../../../components';
+import {
+  Input,
+  Typography,
+  Button,
+  Whitespace,
+  Error,
+  Dropdown,
+  Upload,
+  Header,
+} from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
 import {TYPES} from '../../../utils';
 
 const oldData = {
   id: '',
   mode: {value: 'For Rent'},
+  images: [],
   ownerName: '',
   title: '',
   description: '',
@@ -28,14 +38,15 @@ const oldData = {
   available: {value: 'No'},
   furnished: {value: 'No'},
   homeType: {value: ''},
+  status: {value: ''},
   ...TYPES.AMENITIES.map(item => ({[item.value]: {value: 'No'}})).reduce(
     (a, b) => ({...a, ...b}),
     {},
   ),
 };
 
-const MarkerForm = props => {
-  const {data: preFillData, onSuccess} = props;
+const HomeForm = props => {
+  const {data: preFillData, onSuccess, onClose} = props;
 
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
@@ -123,7 +134,9 @@ const MarkerForm = props => {
 
   return (
     <>
-      <Whitespace marginTop={30} />
+      <Header onClose={onClose}>Edit Homes</Header>
+
+      <Whitespace marginTop={10} />
 
       <Typography size={12} left width="100%">
         Mode
@@ -141,6 +154,15 @@ const MarkerForm = props => {
       />
 
       <Whitespace marginTop={30} />
+
+      <Upload
+        camera={false}
+        imageNamePrefix="home-marketer"
+        noFlatlist
+        getImages={onChangeData('images')}
+      />
+
+      <Whitespace marginTop={10} />
 
       <Typography size={12} left width="100%">
         Home Type
@@ -359,6 +381,23 @@ const MarkerForm = props => {
       <Whitespace marginTop={20} />
 
       <Typography size={12} left width="100%">
+        Status
+      </Typography>
+
+      <Whitespace marginTop={-20} />
+
+      <Dropdown
+        onChange={onChangeData('status')}
+        value={data.status.value}
+        data={TYPES.STATUSES}
+        displayKey="value"
+        label="Status"
+        suffix={arrowDown}
+      />
+
+      <Whitespace marginTop={20} />
+
+      <Typography size={12} left width="100%">
         Furnished
       </Typography>
 
@@ -427,4 +466,4 @@ const MarkerForm = props => {
   );
 };
 
-export default MarkerForm;
+export default HomeForm;

@@ -1,28 +1,30 @@
-import React from 'react';
-import {View, Text} from 'react-native';
+import React, {useMemo} from 'react';
+import {View} from 'react-native';
+import {Text} from '@components';
 import {Marker} from 'react-native-maps';
 
 const CustomMarker = props => {
   const {coordinate, price, onPress, isSelected} = props;
+  const $style = useMemo(() => {
+    return {
+      backgroundColor: isSelected ? 'black' : 'white',
+      padding: 5,
+      elevation: isSelected ? 3 : 0,
+      borderRadius: 20,
+      borderColor: 'grey',
+      borderWidth: 1,
+      height: 30,
+    };
+  }, [isSelected]);
   return (
-    <Marker coordinate={coordinate} onPress={onPress}>
-      <View
-        style={{
-          backgroundColor: isSelected ? 'black' : 'white',
-          padding: isSelected ? 10 : 5,
-          elevation: isSelected ? 3 : 0,
-          borderRadius: 20,
-          borderColor: 'grey',
-          borderWidth: 1,
-        }}>
+    <Marker coordinate={coordinate} onPress={onPress} zIndex={isSelected ? 1000 : 0}>
+      <View style={$style}>
         <Text
-          style={{
-            fontSize: isSelected ? 16 : 14,
-            color: isSelected ? 'white' : 'black',
-            fontWeight: 'bold',
-          }}>
-          GH₵ {Math.round(price * 1.07)}
-        </Text>
+          text={`GH₵ ${Math.round(price * 1.07)}`}
+          color={isSelected ? 'white' : 'black'}
+          weight="bold"
+          size="xs"
+        />
       </View>
     </Marker>
   );

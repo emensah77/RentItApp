@@ -52,6 +52,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
           GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
           EOF
 
       - name: Run tests

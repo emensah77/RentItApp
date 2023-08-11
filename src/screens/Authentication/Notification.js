@@ -65,7 +65,11 @@ const Notification = () => {
         if (!userCredential) {
           return setError('An unknown error occurred. Try again');
         }
-        await firestore().collection('users').doc(auth().currentUser.uid).set(newData);
+        await firestore()
+          .collection('users')
+          .doc(auth().currentUser.uid)
+          .set({...newData, location: location || false})
+          .catch(console.error);
         return setTimeout(() => navigation.replace('Home'), 1000);
       }
 
@@ -154,10 +158,10 @@ const Notification = () => {
     (async () => {
       const notification = await init();
 
+      setEnabled(!!notification);
       if (notification) {
         return goToHome(notification);
       }
-      setEnabled(!!notification);
     })();
   }, [goToHome, init]);
 
@@ -173,7 +177,7 @@ const Notification = () => {
 
       <Whitespace marginTop={24} />
 
-      <Typography type="heading">
+      <Typography type="heading" width="100%">
         Don&apos;t miss important messages like check-in details and account activity
       </Typography>
 

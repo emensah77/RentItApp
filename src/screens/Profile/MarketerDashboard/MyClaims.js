@@ -13,6 +13,7 @@ const MyClaims = props => {
   } = props;
 
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(-1);
 
   const navigation = useNavigation();
 
@@ -65,6 +66,8 @@ const MyClaims = props => {
   }, []);
 
   const load = useCallback(async () => {
+    setLoading(true);
+
     const response = await fetch(
       `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/claimedDemands?marketerId=${
         auth().currentUser.uid
@@ -81,6 +84,8 @@ const MyClaims = props => {
     }
     const _data = await response.json();
     setData(_data.items);
+
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -96,14 +101,17 @@ const MyClaims = props => {
       <Container height="90%" color="#FFF">
         <Whitespace paddingTop={10} />
 
-        {data.length > 0 ? (
-          <Container type="row" width="90%" center>
+        {data.length === 0 && !loading ? (
+          <Typography>There are no homes to show</Typography>
+        ) : data.length > 0 ? (
+          <Container type="row" width="90%" height="100%" center>
             <Whitespace width="1%" />
 
             <FlatList
               initialNumToRender={2}
               maxToRenderPerBatch={2}
               persistentScrollbar
+              showsVerticalScrollIndicator={false}
               data={data}
               renderItem={renderItem}
               keyExtractor={keyExtractor}

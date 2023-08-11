@@ -53,19 +53,55 @@ import {deletePost} from '../../graphql/mutations';
 import useWishlist from '../../hooks/useWishlist';
 import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto';
 
+const skeletonLayout = [
+  {
+    key: 'item1',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item2',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item3',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item4',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  {
+    key: 'item5',
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+];
+
 const DetailedPost = props => {
   const {post} = props;
-  // const [post, setPost] = useState(props.post);
+
   const navigation = useNavigation();
   const {user} = useContext(AuthContext);
   const {checkIsFav, handleChangeFavorite} = useWishlist();
-  // const [phoneNumbers, setphones] = useState([]);
+
   const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
-  // const [value, setValue] = useState('');
-  // const [title, setTitle] = useState('');
-  // const [description, setDescription] = useState('');
+
   const [similarHomes, setSimilarHomes] = useState([]);
-  // const [totalItems, setTotalItems] = useState(0);
+
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -177,24 +213,6 @@ const DetailedPost = props => {
     setVideoLoading(false);
   }, []);
 
-  // const handlePlaybackStatusUpdate = playbackStatus => {
-  //   if (playbackStatus.isPlaying) {
-  //     // Track the video view event
-  //     mixpanel.track('Video Viewed', {
-  //       'Home ID': post.id,
-  //       'Home VideoURL': post.videoURL,
-  //     });
-  //     playStartPosition.current = playbackStatus.positionMillis;
-  //   } else if (playbackStatus.didJustFinish) {
-  //     const playDurationSeconds =
-  //       (playbackStatus.positionMillis - playStartPosition.current) / 1000;
-  //     mixpanel.track('Video Played Duration', {
-  //       'Home ID': post.id,
-  //       'Home VideoURL': post.videoURL,
-  //       'Video PlayDuration': playDurationSeconds,
-  //     });
-  //   }
-  // };
   const onError = useCallback(error => console.error('Error playing video:', error), []);
 
   const closeFullScreen = useCallback(() => setFullscreen(false), []);
@@ -282,7 +300,6 @@ const DetailedPost = props => {
         );
         const data = await response.json();
         setSimilarHomes(data);
-        // setTotalItems(data.totalItems);
       } catch (error) {
         console.error(error);
       } finally {
@@ -397,58 +414,9 @@ const DetailedPost = props => {
     [deleteFromFavorites, deleteFromTrends, deleteHome],
   );
 
-  // const sendWhatsApp = () => {
-  //   mixpanel.track('User Home Interest', {
-  //     propertyId: post.id,
-  //     propertyTitle: post.title,
-  //     propertyType: post.type,
-  //     price: post.newPrice,
-  //     locality: post.locality,
-  //     url: `https://rentit.homes/rooms/room/${post.id}`,
-  //   });
-
-  //   const msg =
-  //     'I am interested in this home ' +
-  //     `https://rentit.homes/rooms/room/${post.id}` +
-  //     ' ' +
-  //     `${post.title}` +
-  //     ' which is located in ' +
-  //     `${post.locality}` +
-  //     ' , ' +
-  //     `${post.sublocality}` +
-  //     ' and the price is ' +
-  //     `${Math.round((post.newPrice / 12) * 1.07)}` +
-  //     ' per month';
-
-  //   const phoneWithCountryCode = `+233${
-  //     phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)]
-  //   }`;
-
-  //   const mobile = Platform.OS == 'ios' ? phoneWithCountryCode : `+${phoneWithCountryCode}`;
-  //   if (mobile) {
-  //     if (msg) {
-  //       const url = `whatsapp://send?text=${msg}&phone=${mobile}`;
-  //       Linking.openURL(url)
-  //         .then(data => {
-  //           console.debug('WhatsApp Opened', data);
-  //         })
-  //         .catch(() => {
-  //           alert('Make sure WhatsApp installed on your device');
-  //         });
-  //     } else {
-  //       alert('Please insert message to send');
-  //     }
-  //   } else {
-  //     alert('Please insert mobile no');
-  //   }
-  // };
   const onPress = useCallback(
-    item => {
-      // console.log('pressed', item.id);
-      navigation.navigate('Home');
-      setTimeout(() => {
-        navigation.navigate('Post', {postId: item.id});
-      }, 1); // Wait for 1 second before navigating to Post screen
+    item => () => {
+      navigation.replace('Post', {postId: item.id});
     },
     [navigation],
   );
@@ -483,6 +451,8 @@ const DetailedPost = props => {
 
   const onStartShouldSetResponder = useCallback(() => true, []);
 
+  const makeUri = useCallback(uri => ({uri}), []);
+
   const renderItem = useCallback(
     ({item}) => {
       const monthlyPrice = item.newPrice ? Math.floor((item.newPrice * 1.07) / 12) : 0;
@@ -500,9 +470,9 @@ const DetailedPost = props => {
       }
 
       return (
-        <Pressable onPress={onPress} style={styles.itemContainer}>
+        <Pressable onPress={onPress(item)} style={styles.itemContainer}>
           <View style={styles.imageContainer}>
-            <Image source={{uri: item.image}} style={styles.image} />
+            <Image source={makeUri(item.image)} style={styles.image} />
           </View>
           <View style={styles.detailsContainer}>
             <Text style={styles.title}>{item.title}</Text>
@@ -516,7 +486,7 @@ const DetailedPost = props => {
         </Pressable>
       );
     },
-    [onPress],
+    [makeUri, onPress],
   );
 
   const keyExtractor = useCallback(item => item.id, []);
@@ -559,35 +529,6 @@ const DetailedPost = props => {
             ) : null}
           </View>
 
-          {/* <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View>
-              <TouchableOpacity
-                style={{
-                  marginTop: 5,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                onPress={() => navigation.navigate('Reviews')}>
-                <StarRating
-                  disabled={true}
-                  starSize={13}
-                  maxStars={5}
-                  rating={4}
-                  fullStarColor={'orange'}
-                  on
-                />
-                <Text footnote grayColor style={{marginLeft: 5}}>
-                  (2) reviews
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
-
           <View style={styles.hairline} />
           <Text style={styles.bedrooms}>
             {post.type} |{post.bedroom} bedrooms |{post.bathroomNumber} bathrooms |
@@ -595,24 +536,6 @@ const DetailedPost = props => {
 
           <View style={styles.viewingContainer}>
             <View style={styles.flexColumn}>
-              {/*
-              <Pressable
-                onPress={sendWhatsApp}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  borderRadius: 5,
-                  padding: 10,
-                  backgroundColor: "limegreen",
-                  marginVertical: 5,
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <Fontisto name="whatsapp" size={20} />
-                <Text>Chat to Rent</Text>
-              </Pressable>
-              */}
-
               <View style={styles.container1}>
                 <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
@@ -694,7 +617,7 @@ const DetailedPost = props => {
                       <View style={styles.videoWrapper}>
                         <Video
                           ref={videoRef}
-                          source={{uri: post.videoUrl}}
+                          source={makeUri(post.videoUrl)}
                           style={styles.video}
                           resizeMode="contain"
                           repeat
@@ -722,7 +645,7 @@ const DetailedPost = props => {
                       <TouchableOpacity onPress={closeFullScreen}>
                         <Video
                           ref={videoRef}
-                          source={{uri: post.videoUrl}}
+                          source={makeUri(post.videoUrl)}
                           style={styles.fullscreenVideo}
                           resizeMode="cover"
                           repeat
@@ -758,43 +681,7 @@ const DetailedPost = props => {
             <SkeletonContent
               containerStyle={styles.flexRow}
               isLoading={isLoading}
-              layout={[
-                {
-                  key: 'item1',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item2',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item3',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item4',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-                {
-                  key: 'item5',
-                  width: 150,
-                  height: 150,
-                  borderRadius: 10,
-                  marginRight: 10,
-                },
-              ]}>
+              layout={skeletonLayout}>
               {similarHomes.length > 0 ? (
                 <View>
                   <View>
@@ -878,15 +765,7 @@ const DetailedPost = props => {
                 </View>
               </View>
             ) : null}
-            {/* {post.loyaltyProgram ? (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-      <FontAwesomeIcon icon={faStar} size={30} color="blue" />
-      <View style={{ marginLeft: 12 }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Loyalty Program</Text>
-        <Text style={{ marginTop: 4, fontSize: 12, color: '#555', maxWidth:"90%" }}>This property is part of a loyalty program where tenants can earn rewards and discounts.</Text>
-      </View>
-    </View>
-  ) : null} */}
+
             {post.verified ? (
               <View style={styles.verified}>
                 <FontAwesomeIcon icon={faCheckCircle} size={30} color="blue" />
@@ -1061,32 +940,6 @@ const DetailedPost = props => {
             {/* <Fontisto name="credit-card" size={25} style={{color: 'white' , margin: 10 ,}} /> */}
             <Text style={styles.payToRent}>Pay to Rent</Text>
           </Pressable>
-          {/* <Pressable
-                title="Call to Rent Event"
-
-                style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    marginBottom: 20,
-                    backgroundColor: 'blue',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '50%',
-                    width:'80%',
-                    marginHorizontal: 20,
-                    borderRadius: 5,
-                    justifyContent: 'center'
-                }}  onPress={() => {
-                    makeCall();
-                    logAnalyticsEvent();
-                }}>
-                    <Fontisto name="phone" size={25} style={{color: 'white' , margin: 10 ,transform: [{ rotate: '90deg' }]}} />
-                    <Text style={{
-                        fontSize: 20,
-                        color: 'white',
-                        fontWeight: 'bold',
-                    }}>Call to Rent</Text>
-                </Pressable> */}
         </View>
       </View>
     </View>

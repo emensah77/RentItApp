@@ -10,7 +10,7 @@ let counter = 0;
 async function isImageProcessed(imageKey) {
   const params = {
     TableName: 'ProcessedImages',
-    Key: {imageKey},
+    Key: { imageKey },
   };
 
   try {
@@ -25,7 +25,7 @@ async function isImageProcessed(imageKey) {
 async function markImageAsProcessed(imageKey) {
   const params = {
     TableName: 'ProcessedImages',
-    Item: {imageKey},
+    Item: { imageKey },
   };
 
   try {
@@ -35,12 +35,12 @@ async function markImageAsProcessed(imageKey) {
   }
 }
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   console.log('Received event:', event);
 
   try {
     const bucket = event.Records[0].s3.bucket.name;
-    const {subfolder} = event;
+    const { subfolder } = event;
     const key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
     console.log('Object key:', key);
     const fullKey = key.startsWith(subfolder) ? key : `${subfolder}/${key}`;
@@ -69,8 +69,8 @@ exports.handler = async event => {
     if (['jpeg', 'png', 'webp', 'tiff'].includes(imageMetadata.format)) {
       try {
         const optimizedImageBuffer = await Sharp(inputImageBuffer)
-          .resize(1024, 683, {withoutEnlargement: true, fit: 'inside'})
-          .jpeg({quality: 75})
+          .resize(1024, 683, { withoutEnlargement: true, fit: 'inside' })
+          .jpeg({ quality: 75 })
           .toBuffer();
 
         const originalSize = inputImageBuffer.length;
@@ -131,7 +131,7 @@ exports.handler = async event => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({message: error}),
+      body: JSON.stringify({ message: error }),
     };
   }
 };
