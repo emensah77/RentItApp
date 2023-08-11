@@ -1,5 +1,3 @@
-/* eslint no-param-reassign: 0 */
-
 import {createSlice} from '@reduxjs/toolkit';
 import {fetchPost_req} from '../api/posts.api';
 
@@ -13,10 +11,14 @@ export const postSlice = createSlice({
   initialState,
   reducers: {
     setLoading: (state, action) => {
-      state.isLoading = action.payload;
+      const newState = state;
+      newState.isLoading = action.payload;
+      return newState;
     },
     setPost: (state, action) => {
-      state.data = action.payload;
+      const newState = state;
+      newState.data = action.payload;
+      return newState;
     },
     clearPost: () => {
       return initialState;

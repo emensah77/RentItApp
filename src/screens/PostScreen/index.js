@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {View, Linking} from 'react-native';
+import {View, Linking, Text, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
@@ -10,6 +11,19 @@ const loadingContainerStyle = {
   flex: 1,
   justifyContent: 'center',
   alignContent: 'center',
+};
+
+const containerStyle = {flex: 1, justifyContent: 'center', alignItems: 'center'};
+
+const headingStyle = {fontSize: 18, textAlign: 'center', margin: 20};
+
+const searchingText = {color: '#fff', fontSize: 16};
+
+const pressableStyle = {
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  backgroundColor: '#227C9D',
+  borderRadius: 5,
 };
 
 const layout = [
@@ -40,7 +54,7 @@ const layout = [
 
 const white = {backgroundColor: 'white'};
 
-const containerStyle = {flex: 1, width: '100%'};
+const skeletonContainerStyle = {flex: 1, width: '100%'};
 
 const PostScreen = ({route}) => {
   const isMounted = useRef(true);
@@ -50,6 +64,8 @@ const PostScreen = ({route}) => {
   const [newPost, setNewPost] = useState(null);
   const [loading, setLoading] = useState(false);
   const [deepLinkUrl] = useState();
+
+  const navigation = useNavigation();
 
   const handleDeepLink = useCallback(
     event => {
@@ -115,7 +131,7 @@ const PostScreen = ({route}) => {
     return (
       <View style={loadingContainerStyle}>
         <SkeletonContent
-          containerStyle={containerStyle}
+          containerStyle={skeletonContainerStyle}
           animationDirection="horizontalLeft"
           layout={layout}
         />
@@ -131,19 +147,12 @@ const PostScreen = ({route}) => {
     );
   } else {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{fontSize: 18, textAlign: 'center', margin: 20}}>
-          We couldn't find the home you were looking for. Sometimes it happens.
+      <View style={containerStyle}>
+        <Text style={headingStyle}>
+          We couldn&apos;t find the home you were looking for. Sometimes it happens.
         </Text>
-        <Pressable
-          style={{
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            backgroundColor: '#227C9D',
-            borderRadius: 5,
-          }}
-          onPress={() => navigation.goBack()}>
-          <Text style={{color: '#fff', fontSize: 16}}>Keep Searching</Text>
+        <Pressable style={pressableStyle} onPress={navigation.goBack}>
+          <Text style={searchingText}>Keep Searching</Text>
         </Pressable>
       </View>
     );
