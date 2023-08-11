@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-const toRadians = degrees => degrees * (Math.PI / 180);
+const toRadians = (degrees) => degrees * (Math.PI / 180);
 
 const haversineDistance = (location1, location2) => {
   const earthRadius = 6371e3; // Earth's radius in meters
@@ -14,12 +14,11 @@ const haversineDistance = (location1, location2) => {
   const deltaLatitude = latitude2 - latitude1;
   const deltaLongitude = longitude2 - longitude1;
 
-  const a =
-    Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
-    Math.cos(latitude1) *
-      Math.cos(latitude2) *
-      Math.sin(deltaLongitude / 2) *
-      Math.sin(deltaLongitude / 2);
+  const a = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2)
+    + Math.cos(latitude1)
+      * Math.cos(latitude2)
+      * Math.sin(deltaLongitude / 2)
+      * Math.sin(deltaLongitude / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -40,19 +39,17 @@ const getUnverifiedHomes = async () => {
   }
 };
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   const userLocation = JSON.parse(event.body);
 
   try {
     const homesData = await getUnverifiedHomes();
-    const homeLocations = homesData.map(home => {
-      return {
-        latitude: home.latitude,
-        longitude: home.longitude,
-      };
-    });
+    const homeLocations = homesData.map((home) => ({
+      latitude: home.latitude,
+      longitude: home.longitude,
+    }));
 
-    const nearbyHomes = homeLocations.filter(home => {
+    const nearbyHomes = homeLocations.filter((home) => {
       const distance = haversineDistance(userLocation, home);
       return distance <= 10000; // Homes within 500 meters
     });

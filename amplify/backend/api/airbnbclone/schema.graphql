@@ -1,12 +1,11 @@
 type Mutation {
-  createPaymentIntent(amount: Int!): PaymentIntent!
-    @function(name: "CreatePaymentIntent-${env}")
+  createPaymentIntent(amount: Int!): PaymentIntent! @function(name: "CreatePaymentIntent-${env}")
 }
 
 type PaymentIntent {
   clientSecret: String!
 }
-type Review 
+type Review
   @model
   @key(name: "byUser", fields: ["userID", "postId"])
   @key(name: "byPost", fields: ["postId", "userID"]) {
@@ -100,11 +99,11 @@ type Post
   locality: String
   sublocality: String
   videoUrl: String
-  qualityScore: Float, 
-  qualityListing: Float, 
-  dataAccuracy: Float, 
-  responsiveness: Float, 
-  rentersFeedback: Float,
+  qualityScore: Float
+  qualityListing: Float
+  dataAccuracy: Float
+  responsiveness: Float
+  rentersFeedback: Float
 
   oldPrice: Float
   newPrice: Float

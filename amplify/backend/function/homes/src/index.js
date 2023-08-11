@@ -12,7 +12,7 @@ const https = require('https');
 http.globalAgent.maxSockets = Infinity;
 https.globalAgent.maxSockets = Infinity;
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   const bucket = 'pics175634-dev';
   const key = 'LandlordApp_Savannah.xlsx';
   const workbook = new excel.Workbook();
@@ -30,10 +30,10 @@ exports.handler = async event => {
   // Atomically increment the lastProcessedRow value in the LambdaState table
   let stateParams = {
     TableName: 'LambdaState',
-    Key: {id: 'lastProcessedRow'},
+    Key: { id: 'lastProcessedRow' },
     UpdateExpression: 'add #v :incr',
-    ExpressionAttributeNames: {'#v': 'value'},
-    ExpressionAttributeValues: {':incr': 1},
+    ExpressionAttributeNames: { '#v': 'value' },
+    ExpressionAttributeValues: { ':incr': 1 },
     ReturnValues: 'UPDATED_NEW',
   };
   const updatedState = await docClient.update(stateParams).promise();
@@ -51,12 +51,12 @@ exports.handler = async event => {
     // Check if the latitude and longitude values are not empty
 
     if (
-      rowData[7] === null ||
-      rowData[7] === '' ||
-      isNaN(latitude) ||
-      rowData[8] === null ||
-      rowData[8] === '' ||
-      isNaN(longitude)
+      rowData[7] === null
+      || rowData[7] === ''
+      || isNaN(latitude)
+      || rowData[8] === null
+      || rowData[8] === ''
+      || isNaN(longitude)
     ) {
       continue;
     }
@@ -129,10 +129,10 @@ exports.handler = async event => {
     putPromises.push(putPromise); // Add the promise to the array
     stateParams = {
       TableName: 'LambdaState',
-      Key: {id: 'lastProcessedRow'},
+      Key: { id: 'lastProcessedRow' },
       UpdateExpression: 'set #v = :v',
-      ExpressionAttributeNames: {'#v': 'value'},
-      ExpressionAttributeValues: {':v': row},
+      ExpressionAttributeNames: { '#v': 'value' },
+      ExpressionAttributeValues: { ':v': row },
     };
     await docClient.update(stateParams).promise();
   }

@@ -3,18 +3,17 @@ const https = require('https');
 const url = require('url');
 const path = require('path');
 
-const {unmarshall} = AWS.DynamoDB.Converter;
+const { unmarshall } = AWS.DynamoDB.Converter;
 
 AWS.config.update({
   region: 'us-east-2',
 });
 
-const opensearchDomain =
-  'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-east-2.es.amazonaws.com';
+const opensearchDomain = 'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-east-2.es.amazonaws.com';
 const index = 'rentit';
 const endpoint = new AWS.Endpoint(opensearchDomain);
 
-exports.handler = async record => {
+exports.handler = async (record) => {
   console.log('Processing record:', JSON.stringify(record, null, 2));
 
   // Unmarshall the DynamoDB data to JSON
@@ -66,7 +65,7 @@ async function postDocumentToOpenSearch(doc) {
   postReq.headers['Content-Type'] = 'application/json';
   postReq.body = JSON.stringify({
     ...doc,
-    location: {lat: doc.latitude, lon: doc.longitude},
+    location: { lat: doc.latitude, lon: doc.longitude },
   });
 
   const postSigner = new AWS.Signers.V4(postReq, 'es');
@@ -77,9 +76,9 @@ async function postDocumentToOpenSearch(doc) {
     send.handleRequest(
       postReq,
       null,
-      function (httpResp) {
+      (httpResp) => {
         let body = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           body += chunk;
         });
         httpResp.on('end', () => {
@@ -88,7 +87,7 @@ async function postDocumentToOpenSearch(doc) {
           resolve(body);
         });
       },
-      error => {
+      (error) => {
         console.error(`Error in HttpRequest: ${JSON.stringify(error)}`);
         reject(error);
       },
@@ -109,7 +108,7 @@ async function modifyDocumentInOpenSearch(doc) {
   modifyReq.headers['Content-Type'] = 'application/json';
   modifyReq.body = JSON.stringify({
     ...doc,
-    location: {lat: doc.latitude, lon: doc.longitude},
+    location: { lat: doc.latitude, lon: doc.longitude },
   });
 
   const modifySigner = new AWS.Signers.V4(modifyReq, 'es');
@@ -120,9 +119,9 @@ async function modifyDocumentInOpenSearch(doc) {
     send.handleRequest(
       modifyReq,
       null,
-      function (httpResp) {
+      (httpResp) => {
         let body = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           body += chunk;
         });
         httpResp.on('end', () => {
@@ -131,7 +130,7 @@ async function modifyDocumentInOpenSearch(doc) {
           resolve(body);
         });
       },
-      error => {
+      (error) => {
         console.error(`Error in HttpRequest: ${JSON.stringify(error)}`);
         reject(error);
       },
@@ -159,9 +158,9 @@ async function deleteDocumentFromOpenSearch(docId) {
     send.handleRequest(
       deleteReq,
       null,
-      function (httpResp) {
+      (httpResp) => {
         let body = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           body += chunk;
         });
         httpResp.on('end', () => {
@@ -170,7 +169,7 @@ async function deleteDocumentFromOpenSearch(docId) {
           resolve(body);
         });
       },
-      error => {
+      (error) => {
         console.error(`Error in HttpRequest: ${JSON.stringify(error)}`);
         reject(error);
       },

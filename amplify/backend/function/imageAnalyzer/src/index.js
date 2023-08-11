@@ -30,8 +30,8 @@ async function listAllKeys(marker, keys, maxKeys) {
     }
 
     s3.listObjectsV2(
-      {Bucket: params.Bucket, Prefix: params.Prefix, ContinuationToken: marker},
-      async function (err, data) {
+      { Bucket: params.Bucket, Prefix: params.Prefix, ContinuationToken: marker },
+      async (err, data) => {
         if (err) {
           console.log('Error listing S3 objects:', err);
           reject(err);
@@ -52,7 +52,7 @@ async function listAllKeys(marker, keys, maxKeys) {
   });
 }
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   console.log('Starting function execution');
   let processedImages = 0;
 

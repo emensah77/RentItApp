@@ -109,7 +109,7 @@ async function getHomeStats(userId, startTime, endTime) {
     try {
       const data = await dynamodb.query(params).promise();
       console.log(`Fetched ${status} homes for user ${userId}:`, data.Items);
-      stats[status] = {count: data.Items.length, homes: data.Items};
+      stats[status] = { count: data.Items.length, homes: data.Items };
     } catch (error) {
       console.error(`Error fetching ${status} homes for user ${userId}:`, error);
       throw error; // Re-throw the error to stop execution and propagate it up the call stack
@@ -173,9 +173,9 @@ async function addComment(commentDetails) {
 
   try {
     await dynamodb.put(params).promise();
-    return {statusCode: 200, body: JSON.stringify(params.Item)};
+    return { statusCode: 200, body: JSON.stringify(params.Item) };
   } catch (error) {
-    return {statusCode: 500, body: JSON.stringify(error)};
+    return { statusCode: 500, body: JSON.stringify(error) };
   }
 }
 
@@ -190,17 +190,17 @@ async function fetchComments(homeId) {
 
   try {
     const data = await dynamodb.query(params).promise();
-    return {statusCode: 200, body: JSON.stringify(data.Items)};
+    return { statusCode: 200, body: JSON.stringify(data.Items) };
   } catch (error) {
-    return {statusCode: 500, body: JSON.stringify(error)};
+    return { statusCode: 500, body: JSON.stringify(error) };
   }
 }
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event, null, 2));
 
-  const {httpMethod} = event;
-  const {path} = event;
+  const { httpMethod } = event;
+  const { path } = event;
 
   if (httpMethod === 'POST' && path.endsWith('/demands')) {
     const demandDetails = JSON.parse(event.body);
@@ -233,7 +233,7 @@ exports.handler = async event => {
   }
 
   if (httpMethod === 'GET' && path.endsWith('/demands')) {
-    const {locality, sublocality, pageSize} = event.queryStringParameters;
+    const { locality, sublocality, pageSize } = event.queryStringParameters;
 
     const demand = await fetchDemands(
       locality,
@@ -254,7 +254,7 @@ exports.handler = async event => {
   }
 
   if (httpMethod === 'POST' && path.endsWith('/claim')) {
-    const {marketerId, DemandId} = JSON.parse(event.body); // Note the changed variable names
+    const { marketerId, DemandId } = JSON.parse(event.body); // Note the changed variable names
     const claimedDemand = await claimDemand(DemandId, marketerId);
     return {
       statusCode: 200,
@@ -283,7 +283,7 @@ exports.handler = async event => {
     };
   }
   if (httpMethod === 'GET' && path.endsWith('/comments')) {
-    const {homeId} = event.queryStringParameters;
+    const { homeId } = event.queryStringParameters;
     const comments = await fetchComments(homeId);
     return {
       statusCode: 200,
@@ -298,9 +298,9 @@ exports.handler = async event => {
   }
 
   if (httpMethod === 'GET' && path.endsWith('/stats')) {
-    const {userId} = event.queryStringParameters;
-    const {startTime} = event.queryStringParameters;
-    const {endTime} = event.queryStringParameters;
+    const { userId } = event.queryStringParameters;
+    const { startTime } = event.queryStringParameters;
+    const { endTime } = event.queryStringParameters;
     const stats = await getHomeStats(userId, startTime, endTime);
 
     return {
@@ -316,15 +316,15 @@ exports.handler = async event => {
   }
 
   if (httpMethod === 'GET' && path.endsWith('/homeowner')) {
-    const {homeownerName} = event.queryStringParameters;
+    const { homeownerName } = event.queryStringParameters;
     return await getHomesByOwner(homeownerName);
   }
 
   if (httpMethod === 'POST') {
-    const {itemId, updateValues, userId} = JSON.parse(event.body);
+    const { itemId, updateValues, userId } = JSON.parse(event.body);
 
     if (itemId && updateValues && userId) {
-      const key = {id: itemId};
+      const key = { id: itemId };
       const updatedItem = await updateItem(key, updateValues, userId);
       return {
         statusCode: 200,
@@ -339,7 +339,7 @@ exports.handler = async event => {
     }
   }
   if (httpMethod === 'GET' && path.endsWith('/claimedDemands')) {
-    const {marketerId, pageSize} = event.queryStringParameters;
+    const { marketerId, pageSize } = event.queryStringParameters;
 
     const claimedDemands = await fetchClaimedDemandsByMarketer(
       marketerId,
@@ -356,9 +356,10 @@ exports.handler = async event => {
       },
       body: JSON.stringify(claimedDemands),
     };
-  } else if (httpMethod === 'GET' && path.endsWith('/homes')) {
-    const {locality, sublocality, status, type, mode, bedrooms, amenities, startKey} =
-      event.queryStringParameters;
+  } if (httpMethod === 'GET' && path.endsWith('/homes')) {
+    const {
+      locality, sublocality, status, type, mode, bedrooms, amenities, startKey,
+    } = event.queryStringParameters;
 
     console.log('Locality:', locality, 'Sublocality:', sublocality);
 
@@ -456,7 +457,7 @@ exports.handler = async event => {
   // Return an error if the HTTP method was not recognized
   return {
     statusCode: 400,
-    body: JSON.stringify({error: 'Invalid HTTP method'}),
+    body: JSON.stringify({ error: 'Invalid HTTP method' }),
   };
 };
 
@@ -543,7 +544,7 @@ async function createDemand(demand) {
 async function retrieveDemand(demandId) {
   const params = {
     TableName: 'Demand',
-    Key: {DemandID: demandId},
+    Key: { DemandID: demandId },
   };
 
   try {
@@ -559,7 +560,7 @@ async function claimDemand(demandId, MarketerId) {
   console.log('claimDemand', demandId, MarketerId);
   const params = {
     TableName: 'Demand',
-    Key: {DemandID: demandId}, // included MarketerID here
+    Key: { DemandID: demandId }, // included MarketerID here
     ExpressionAttributeNames: {
       '#C': 'Claimed',
       '#F': 'MarketerID',

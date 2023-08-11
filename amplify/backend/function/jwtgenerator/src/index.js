@@ -1,8 +1,8 @@
-const {StreamChat} = require('stream-chat');
+const { StreamChat } = require('stream-chat');
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   const body = JSON.parse(event.body);
-  const {user_id} = body;
+  const { user_id } = body;
 
   // Initialize the Stream Chat SDK with your API key and secret
   const chatClient = StreamChat.getInstance(
@@ -16,6 +16,6 @@ exports.handler = async event => {
   // Return the token in the response
   return {
     statusCode: 200,
-    body: JSON.stringify({token}),
+    body: JSON.stringify({ token }),
   };
 };

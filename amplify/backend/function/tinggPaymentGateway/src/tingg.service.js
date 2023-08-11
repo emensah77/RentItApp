@@ -101,13 +101,13 @@ class TinggService {
       customerFirstName: 'John',
       customerLastName: 'Smith',
       customerEmail: 'john.smith@example.com',
-      successRedirectUrl: this.getUrl(request, 'callback', {type: 'success'}), // '<YOUR_SUCCESS_REDIRECT_URL>',
-      failRedirectUrl: this.getUrl(request, 'callback', {type: 'fail'}), // '<YOUR_FAIL_REDIRECT_URL>',
-      pendingRedirectUrl: this.getUrl(request, 'callback', {type: 'pending'}), // '<YOUR_PENDING_REDIRECT_URL>',
+      successRedirectUrl: this.getUrl(request, 'callback', { type: 'success' }), // '<YOUR_SUCCESS_REDIRECT_URL>',
+      failRedirectUrl: this.getUrl(request, 'callback', { type: 'fail' }), // '<YOUR_FAIL_REDIRECT_URL>',
+      pendingRedirectUrl: this.getUrl(request, 'callback', { type: 'pending' }), // '<YOUR_PENDING_REDIRECT_URL>',
       paymentWebhookUrl: `${fullUrl}/webhook`, // '<PAYMENT_WEBHOOK_URL>',
       ...request.body,
     };
-    const {accessKey} = this;
+    const { accessKey } = this;
 
     const encryption = new Encryption(this.IVKey, this.secretKey, this.algorithm);
 
@@ -142,7 +142,7 @@ class TinggService {
     }
     let htmlStr = html.toString();
     htmlStr = htmlStr.replace('{{title}}', type);
-    htmlStr = htmlStr.replace('{{message}}', JSON.stringify({type}));
+    htmlStr = htmlStr.replace('{{message}}', JSON.stringify({ type }));
     return response.send(htmlStr);
   }
 
@@ -178,7 +178,7 @@ class TinggService {
     let orderId;
     console.log('webhook');
     console.log(JSON.stringify(request.body));
-    const {merchantTransactionID} = request.body;
+    const { merchantTransactionID } = request.body;
     console.log('merchantId', merchantTransactionID);
     if (request.body.requestStatusCode == 178) {
       const transactionsRef = db.collection('transactions').doc(merchantTransactionID);
@@ -197,17 +197,17 @@ class TinggService {
             await db
               .collection('payments')
               .doc(merchantTransactionID)
-              .update({paymentStatus: 'Success'});
+              .update({ paymentStatus: 'Success' });
           } else if (data.orderType === 'nsspayment') {
             await db
               .collection('subscriptiontransactions')
               .doc(merchantTransactionID)
-              .update({paymentStatus: 'Success'});
+              .update({ paymentStatus: 'Success' });
           } else {
             await db
               .collection('homeorders')
               .doc(merchantTransactionID)
-              .update({paymentStatus: 'Success'});
+              .update({ paymentStatus: 'Success' });
           }
         }
         if (verifiedInFirebase) {
@@ -269,39 +269,39 @@ class TinggService {
         statusDescription: 'Countries code fetched successfully',
       },
       results: [
-        {country: 'Cameroon', code: 'CM'},
-        {country: 'Cape Verde', code: 'CV'},
-        {country: 'Central Africa', code: 'CA'},
-        {country: 'Chad', code: 'TD'},
-        {country: 'Congo Brazzaville', code: 'CG'},
-        {country: 'Congo DRC', code: 'CD'},
-        {country: "Cote D'Ivoire", code: 'CI'},
-        {country: 'Egypt', code: 'EG'},
-        {country: 'Equatorial Guinea', code: 'GQ'},
-        {country: 'Ethiopia', code: 'ET'},
-        {country: 'Gabon', code: 'GA'},
-        {country: 'Gambia', code: 'GM'},
-        {country: 'Ghana', code: 'GH'},
-        {country: 'Guinea-Bissau', code: 'GW'},
-        {country: 'Guinea Conakry', code: 'GN'},
-        {country: 'Kenya', code: 'KE'},
-        {country: 'Liberia', code: 'LR'},
-        {country: 'Malawi', code: 'MW'},
-        {country: 'Mali', code: 'ML'},
-        {country: 'Morocco', code: 'MR'},
-        {country: 'Mozambique', code: 'MZ'},
-        {country: 'Nigeria', code: 'NG'},
-        {country: 'Niger', code: 'NE'},
-        {country: 'Rwanda', code: 'RW'},
-        {country: 'Sao Tome', code: 'ST'},
-        {country: 'Senegal', code: 'SN'},
-        {country: 'Sierra Leone', code: 'SL'},
-        {country: 'South Sudan', code: 'SD'},
-        {country: 'Uganda', code: 'UG'},
-        {country: 'Tanzania', code: 'TZ'},
-        {country: 'Togo', code: 'TG'},
-        {country: 'Zambia', code: 'ZM'},
-        {country: 'Zimbabwe', code: 'ZW'},
+        { country: 'Cameroon', code: 'CM' },
+        { country: 'Cape Verde', code: 'CV' },
+        { country: 'Central Africa', code: 'CA' },
+        { country: 'Chad', code: 'TD' },
+        { country: 'Congo Brazzaville', code: 'CG' },
+        { country: 'Congo DRC', code: 'CD' },
+        { country: "Cote D'Ivoire", code: 'CI' },
+        { country: 'Egypt', code: 'EG' },
+        { country: 'Equatorial Guinea', code: 'GQ' },
+        { country: 'Ethiopia', code: 'ET' },
+        { country: 'Gabon', code: 'GA' },
+        { country: 'Gambia', code: 'GM' },
+        { country: 'Ghana', code: 'GH' },
+        { country: 'Guinea-Bissau', code: 'GW' },
+        { country: 'Guinea Conakry', code: 'GN' },
+        { country: 'Kenya', code: 'KE' },
+        { country: 'Liberia', code: 'LR' },
+        { country: 'Malawi', code: 'MW' },
+        { country: 'Mali', code: 'ML' },
+        { country: 'Morocco', code: 'MR' },
+        { country: 'Mozambique', code: 'MZ' },
+        { country: 'Nigeria', code: 'NG' },
+        { country: 'Niger', code: 'NE' },
+        { country: 'Rwanda', code: 'RW' },
+        { country: 'Sao Tome', code: 'ST' },
+        { country: 'Senegal', code: 'SN' },
+        { country: 'Sierra Leone', code: 'SL' },
+        { country: 'South Sudan', code: 'SD' },
+        { country: 'Uganda', code: 'UG' },
+        { country: 'Tanzania', code: 'TZ' },
+        { country: 'Togo', code: 'TG' },
+        { country: 'Zambia', code: 'ZM' },
+        { country: 'Zimbabwe', code: 'ZW' },
       ],
     });
   }
@@ -313,61 +313,61 @@ class TinggService {
         statusDescription: 'Countries with currency code fetched successfully',
       },
       results: [
-        {country: 'Cameroon', name: 'Central African CFA franc', code: 'XAF'},
-        {country: 'Cape Verde', name: 'Cape Verdean escudo', code: 'CVE'},
+        { country: 'Cameroon', name: 'Central African CFA franc', code: 'XAF' },
+        { country: 'Cape Verde', name: 'Cape Verdean escudo', code: 'CVE' },
         {
           country: 'Central Africa',
           name: 'Central African CFA franc',
           code: 'XAF',
         },
-        {country: 'Chad', name: 'Central African CFA franc', code: 'XAF'},
+        { country: 'Chad', name: 'Central African CFA franc', code: 'XAF' },
         {
           country: 'Congo Brazzaville',
           name: 'Central African CFA franc',
           code: 'XAF',
         },
-        {country: 'Congo DRC', name: 'Congolese franc', code: 'CDF'},
+        { country: 'Congo DRC', name: 'Congolese franc', code: 'CDF' },
         {
           country: "Cote D'Ivoire",
           name: 'West African CFA franc',
           code: 'XOF',
         },
-        {country: 'Egypt', name: 'Egyptian Pounds', code: 'utc'},
+        { country: 'Egypt', name: 'Egyptian Pounds', code: 'utc' },
         {
           country: 'Equatorial Guinea',
           name: 'Central African CFA franc',
           code: 'XAF',
         },
-        {country: 'Gabon', name: 'Central African CFA franc', code: 'XAF'},
-        {country: 'Gambia', name: 'Gambian Dalasi', code: 'GMD'},
-        {country: 'Ghana', name: 'Ghanaian Cedi', code: 'GHS'},
+        { country: 'Gabon', name: 'Central African CFA franc', code: 'XAF' },
+        { country: 'Gambia', name: 'Gambian Dalasi', code: 'GMD' },
+        { country: 'Ghana', name: 'Ghanaian Cedi', code: 'GHS' },
         {
           country: 'Guinea-Bissau',
           name: 'West African CFA Franc',
           code: 'XOF',
         },
-        {country: 'Guinea Conakry', name: 'Guinean Franc', code: 'GNF'},
-        {country: 'Kenya', name: 'Kenyan Shilling', code: 'KES'},
-        {country: 'Liberia', name: 'Liberian Dollar', code: 'LRD'},
-        {country: 'Malawi', name: 'Malawi Kwacha', code: 'MWK'},
-        {country: 'Mali', name: 'West African CFA franc', code: 'XAF'},
-        {country: 'Mozambique', name: 'Mozambique Metical', code: 'MZN'},
-        {country: 'Nigeria', name: 'Nigerian Naira', code: 'NGN'},
-        {country: 'Niger', name: 'West African CFA franc', code: 'XOF'},
-        {country: 'Rwanda', name: 'Rwandan Franc', code: 'RWF'},
+        { country: 'Guinea Conakry', name: 'Guinean Franc', code: 'GNF' },
+        { country: 'Kenya', name: 'Kenyan Shilling', code: 'KES' },
+        { country: 'Liberia', name: 'Liberian Dollar', code: 'LRD' },
+        { country: 'Malawi', name: 'Malawi Kwacha', code: 'MWK' },
+        { country: 'Mali', name: 'West African CFA franc', code: 'XAF' },
+        { country: 'Mozambique', name: 'Mozambique Metical', code: 'MZN' },
+        { country: 'Nigeria', name: 'Nigerian Naira', code: 'NGN' },
+        { country: 'Niger', name: 'West African CFA franc', code: 'XOF' },
+        { country: 'Rwanda', name: 'Rwandan Franc', code: 'RWF' },
         {
           country: 'Sao Tome',
           name: 'Sao Tome and Principe Dobra',
           code: 'STD',
         },
-        {country: 'Senegal', name: 'West African CFA franc', code: 'XOF'},
-        {country: 'Sierra Leone', name: 'Sierra Leonean Leone', code: 'SLL'},
-        {country: 'South Sudan', name: 'South Sudanese Pound', code: 'SSP'},
-        {country: 'Uganda', name: 'Ugandan Shilling', code: 'UGX'},
-        {country: 'Tanzania', name: 'Tanzanian Shilling', code: 'TZS'},
-        {country: 'Togo', name: 'West African CFA franc', code: 'XOF'},
-        {country: 'Zambia', name: 'Rebased Zambian Kwacha', code: 'ZMW'},
-        {country: 'Zimbabwe', name: 'US Dollar', code: 'USD'},
+        { country: 'Senegal', name: 'West African CFA franc', code: 'XOF' },
+        { country: 'Sierra Leone', name: 'Sierra Leonean Leone', code: 'SLL' },
+        { country: 'South Sudan', name: 'South Sudanese Pound', code: 'SSP' },
+        { country: 'Uganda', name: 'Ugandan Shilling', code: 'UGX' },
+        { country: 'Tanzania', name: 'Tanzanian Shilling', code: 'TZS' },
+        { country: 'Togo', name: 'West African CFA franc', code: 'XOF' },
+        { country: 'Zambia', name: 'Rebased Zambian Kwacha', code: 'ZMW' },
+        { country: 'Zimbabwe', name: 'US Dollar', code: 'USD' },
       ],
     });
   }
@@ -379,37 +379,37 @@ class TinggService {
         statusDescription: 'Countries with dialing code fetched successfully',
       },
       results: [
-        {country: 'Burundi', code: '+257'},
-        {country: 'Cameroon', code: '+237'},
-        {country: 'Cape Verde', code: '+238'},
-        {country: 'Central Africa', code: '+236'},
-        {country: 'Chad', code: '+235'},
-        {country: 'Congo Brazzaville', code: '+242'},
-        {country: 'Congo DRC', code: '+243'},
-        {country: "Cote D'Ivoire", code: '+225'},
-        {country: 'Equatorial Guinea', code: '+240'},
-        {country: 'Gabon', code: '+241'},
-        {country: 'Gambia', code: '+220'},
-        {country: 'Ghana', code: '+233'},
-        {country: 'Guinea-Bissau', code: '+245'},
-        {country: 'Guinea Conakry', code: '+224'},
-        {country: 'Kenya', code: '+254'},
-        {country: 'Liberia', code: '+231'},
-        {country: 'Malawi', code: '+265'},
-        {country: 'Mali', code: '+223'},
-        {country: 'Mozambique', code: '+258'},
-        {country: 'Nigeria', code: '+234'},
-        {country: 'Niger', code: '+227'},
-        {country: 'Rwanda', code: '+250'},
-        {country: 'Sao Tome', code: '+239'},
-        {country: 'Senegal', code: '+221'},
-        {country: 'Sierra Leone', code: '+232'},
-        {country: 'South Sudan', code: '+249'},
-        {country: 'Uganda', code: '+256'},
-        {country: 'Tanzania', code: '+255'},
-        {country: 'Togo', code: '+228'},
-        {country: 'Zambia', code: '+260'},
-        {country: 'Zimbabwe', code: '+263'},
+        { country: 'Burundi', code: '+257' },
+        { country: 'Cameroon', code: '+237' },
+        { country: 'Cape Verde', code: '+238' },
+        { country: 'Central Africa', code: '+236' },
+        { country: 'Chad', code: '+235' },
+        { country: 'Congo Brazzaville', code: '+242' },
+        { country: 'Congo DRC', code: '+243' },
+        { country: "Cote D'Ivoire", code: '+225' },
+        { country: 'Equatorial Guinea', code: '+240' },
+        { country: 'Gabon', code: '+241' },
+        { country: 'Gambia', code: '+220' },
+        { country: 'Ghana', code: '+233' },
+        { country: 'Guinea-Bissau', code: '+245' },
+        { country: 'Guinea Conakry', code: '+224' },
+        { country: 'Kenya', code: '+254' },
+        { country: 'Liberia', code: '+231' },
+        { country: 'Malawi', code: '+265' },
+        { country: 'Mali', code: '+223' },
+        { country: 'Mozambique', code: '+258' },
+        { country: 'Nigeria', code: '+234' },
+        { country: 'Niger', code: '+227' },
+        { country: 'Rwanda', code: '+250' },
+        { country: 'Sao Tome', code: '+239' },
+        { country: 'Senegal', code: '+221' },
+        { country: 'Sierra Leone', code: '+232' },
+        { country: 'South Sudan', code: '+249' },
+        { country: 'Uganda', code: '+256' },
+        { country: 'Tanzania', code: '+255' },
+        { country: 'Togo', code: '+228' },
+        { country: 'Zambia', code: '+260' },
+        { country: 'Zimbabwe', code: '+263' },
       ],
     });
   }
@@ -434,7 +434,7 @@ class TinggService {
 
   async test(request, response) {
     // console.log(JSON.stringify(request.body))
-    await db.collection('test').add({testNumber: short.generate()});
+    await db.collection('test').add({ testNumber: short.generate() });
     return response.json(JSON.stringify(request.requestContext));
   }
 }

@@ -3,13 +3,13 @@ const uuid = require('uuid');
 
 const s3 = new AWS.S3();
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   if (!event.queryStringParameters) {
     // If queryStringParameters does not exist, use the old method
     return await getPresignedUrlForOldMethod();
   }
 
-  const {method, partNumber} = event.queryStringParameters;
+  const { method, partNumber } = event.queryStringParameters;
 
   if (method === 'initiate') {
     return await initiateMultipartUpload();
@@ -18,12 +18,12 @@ exports.handler = async event => {
     return await getPresignedUrlForPart(event, partNumber);
   }
   if (method === 'complete') {
-    const {uploadId, parts} = JSON.parse(event.body);
+    const { uploadId, parts } = JSON.parse(event.body);
     return await completeMultipartUpload(event, uploadId, parts);
   }
   return {
     statusCode: 400,
-    body: JSON.stringify({message: 'Invalid method provided.'}),
+    body: JSON.stringify({ message: 'Invalid method provided.' }),
   };
 };
 
@@ -58,7 +58,7 @@ async function initiateMultipartUpload() {
 }
 
 async function getPresignedUrlForPart(event, partNumber) {
-  const {fileName, uploadId} = event.queryStringParameters;
+  const { fileName, uploadId } = event.queryStringParameters;
 
   const params = {
     Bucket: 'videosrentit',
@@ -119,7 +119,7 @@ async function getPresignedUrlForOldMethod() {
 }
 
 async function completeMultipartUpload(event, uploadId, parts) {
-  const {fileName} = event.queryStringParameters;
+  const { fileName } = event.queryStringParameters;
 
   const params = {
     Bucket: 'videosrentit',

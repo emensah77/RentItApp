@@ -6,9 +6,9 @@ const apigwManagementApi = new AWS.ApiGatewayManagementApi({
   endpoint: 'https://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production',
 });
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   console.log('Event received:', JSON.stringify(event, null, 2));
-  const {routeKey} = event.requestContext;
+  const { routeKey } = event.requestContext;
 
   let action;
   if (routeKey === '$connect') {
@@ -29,50 +29,50 @@ exports.handler = async event => {
       return await handleDisconnect(event);
     default:
       console.error('No matching action found');
-      return {statusCode: 400};
+      return { statusCode: 400 };
   }
 };
 
 async function handleConnect(event) {
-  const {connectionId} = event.requestContext;
+  const { connectionId } = event.requestContext;
 
   const params = {
     TableName: 'WebSocketConnections',
-    Item: {connectionId},
+    Item: { connectionId },
   };
 
   try {
     await dynamodb.put(params).promise();
-    return {statusCode: 200};
+    return { statusCode: 200 };
   } catch (error) {
     console.error('Error storing connection:', error);
-    return {statusCode: 500};
+    return { statusCode: 500 };
   }
 }
 
 async function handleDisconnect(event) {
-  const {connectionId} = event.requestContext;
+  const { connectionId } = event.requestContext;
 
   const params = {
     TableName: 'WebSocketConnections',
-    Key: {connectionId},
+    Key: { connectionId },
   };
 
   try {
     await dynamodb.delete(params).promise();
-    return {statusCode: 200};
+    return { statusCode: 200 };
   } catch (error) {
     console.error('Error removing connection:', error);
-    return {statusCode: 500};
+    return { statusCode: 500 };
   }
 }
 
 async function handleLocationUpdate(event) {
   const body = JSON.parse(event.body);
-  const {marketerId} = body.data; // Extract marketerId from data
-  const {marketerStatus} = body.data; // Extract marketerStatus from data
-  const {location} = body.data; // Extract location from data
-  const {latitude, longitude} = location; // Extract latitude and longitude
+  const { marketerId } = body.data; // Extract marketerId from data
+  const { marketerStatus } = body.data; // Extract marketerStatus from data
+  const { location } = body.data; // Extract location from data
+  const { latitude, longitude } = location; // Extract latitude and longitude
 
   const params = {
     TableName: 'MarketerLocations',
@@ -92,15 +92,15 @@ async function handleLocationUpdate(event) {
 
     await broadcastUpdate(connections, body);
 
-    return {statusCode: 200, body: 'Location update successful'};
+    return { statusCode: 200, body: 'Location update successful' };
   } catch (error) {
     console.error('Error updating location:', error);
-    return {statusCode: 500, body: 'Error updating location'};
+    return { statusCode: 500, body: 'Error updating location' };
   }
 }
 
 async function broadcastUpdate(connections, data) {
-  const postCalls = connections.map(async ({connectionId}) => {
+  const postCalls = connections.map(async ({ connectionId }) => {
     try {
       await apigwManagementApi
         .postToConnection({
@@ -114,7 +114,7 @@ async function broadcastUpdate(connections, data) {
         await dynamodb
           .delete({
             TableName: 'WebSocketConnections',
-            Key: {connectionId},
+            Key: { connectionId },
           })
           .promise();
       } else {

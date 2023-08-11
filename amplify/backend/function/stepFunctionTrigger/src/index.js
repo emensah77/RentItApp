@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 
 const stepfunctions = new AWS.StepFunctions();
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   const params = {
     stateMachineArn: 'arn:aws:states:us-east-2:945426664553:stateMachine:stepFunctionProcessor', // replace with your state machine ARN
     input: JSON.stringify(event), // pass DynamoDB Stream event as input to the Step Function

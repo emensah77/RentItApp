@@ -1,5 +1,5 @@
-exports.handler = async event => {
-  const {typeName, args} = event;
+exports.handler = async (event) => {
+  const { typeName, args } = event;
 
   if (typeName !== 'Mutation') {
     throw new Error('Request is not a mutation');

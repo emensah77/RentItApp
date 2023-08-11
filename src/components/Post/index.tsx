@@ -1,4 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {useCallback, useMemo} from 'react';
 import {View, Platform, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -41,18 +40,19 @@ const Post = props => {
     handleChangeFavorite(post);
   }, [handleChangeFavorite, post]);
 
+  const source = useMemo(
+    () => ({
+      uri: post.image,
+      priority: FastImage.priority.high,
+    }),
+    [post],
+  );
+
   return (
     <Pressable onPress={goToPostPage} style={styles.container}>
       {/* Image */}
       <View>
-        <FastImage
-          fallback={Platform.OS === 'android'}
-          source={{
-            uri: post.image,
-            priority: FastImage.priority.high,
-          }}
-          style={styles.image}
-        />
+        <FastImage fallback={Platform.OS === 'android'} source={source} style={styles.image} />
 
         <Pressable style={styles.favorite} onPress={onChangeFavorite}>
           <Fontisto name="heart" size={15} color={checkIsFav(post.id) ? colorStyle : 'black'} />

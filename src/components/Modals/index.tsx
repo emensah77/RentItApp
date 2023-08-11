@@ -7,7 +7,7 @@ import Calendar from 'react-native-calendar-range-picker';
 import Video from 'react-native-video';
 import {colors} from '@assets/styles';
 import styles from './styles';
-import {getSubLocalities, default as localities} from '../../utils/localities';
+import localities, {getSubLocalities} from '../../utils/localities';
 
 interface ModalProps {
   show: boolean;
@@ -18,7 +18,7 @@ interface ModalProps {
   handleVideoPlaybackComplete?: any;
   videoUrl?: string;
   handleSubmit?: () => void;
-  onEmptySubmit?: (e?: string) => void;
+  onEmptySubmit?: () => void;
 }
 
 const CUSTOM_LOCALE = {
@@ -40,6 +40,8 @@ const CUSTOM_LOCALE = {
   today: '',
   year: '', // letter behind year number -> 2020{year}
 };
+
+const padding20 = {paddingBottom: 20};
 
 export const SearchModal = (props: ModalProps) => {
   const [subLocalities, setSubLocalities] = useState([]);
@@ -89,12 +91,47 @@ export const SearchModal = (props: ModalProps) => {
     [],
   );
 
+  const {
+    show,
+    onClose,
+    onComplete,
+    type,
+    onChange,
+    handleVideoPlaybackComplete,
+    videoUrl,
+    onEmptySubmit,
+  } = props;
+
   // Update this handler
-  const handleLocalityChange = selectedValue => {
-    setSubLocalities(getSubLocalities(selectedValue.value)); // Assuming getSubLocalities accepts the value and returns the corresponding sub-localities
-    onChange && onChange({name: 'localities', value: selectedValue}); // Assuming you still want to call onChange
-  };
-  const {show, onClose, onComplete, type, onChange, handleVideoPlaybackComplete, videoUrl} = props;
+  const handleLocalityChange = useCallback(
+    selectedValue => {
+      setSubLocalities(getSubLocalities(selectedValue.value)); // Assuming getSubLocalities accepts the value and returns the corresponding sub-localities
+      onChange && onChange({name: 'localities', value: selectedValue}); // Assuming you still want to call onChange
+    },
+    [onChange],
+  );
+
+  const onChangeCallback = useCallback(
+    _type => selectedValue => {
+      let value = selectedValue.name;
+
+      if (_type === 'locality') {
+        handleLocalityChange(selectedValue);
+        setSelectedLocality(value);
+      } else if (_type === 'sublocality') {
+        setSelectedSubLocality(value);
+      } else if (_type === 'type') {
+        value = selectedValue.value;
+        setSelectedMode(value);
+      } else if (_type === 'homeType') {
+        value = selectedValue.value;
+        setSelectedHomeType(value);
+      }
+      onChange(value, _type);
+    },
+    [handleLocalityChange, onChange],
+  );
+
   const renderRow = useCallback(
     item => (
       <View style={styles.headerContainer}>
@@ -130,7 +167,7 @@ export const SearchModal = (props: ModalProps) => {
               textInputProps={{
                 onSubmitEditing: event => {
                   const inputText = event.nativeEvent.text;
-                  props.onEmptySubmit(inputText);
+                  onEmptySubmit?.(inputText);
                 },
               }}
               // suppressDefaultStyles
@@ -164,9 +201,7 @@ export const SearchModal = (props: ModalProps) => {
                 style={styles.headerTitle}
               />
 
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{paddingBottom: 20}}>
+              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={padding20}>
                 <Input
                   label="Name"
                   name="name"
@@ -174,6 +209,7 @@ export const SearchModal = (props: ModalProps) => {
                   onChange={onChange}
                   placeholder="Enter your name"
                 />
+
                 <SizedBox height={20} />
                 <Input
                   label="Price"
@@ -182,7 +218,9 @@ export const SearchModal = (props: ModalProps) => {
                   type="numeric"
                   onChange={onChange}
                 />
+
                 <SizedBox height={20} />
+
                 <Input
                   label="Phone"
                   placeholder="Enter your phone number"
@@ -190,7 +228,9 @@ export const SearchModal = (props: ModalProps) => {
                   type="phone-pad"
                   onChange={onChange}
                 />
+
                 <SizedBox height={20} />
+
                 <Input
                   label="Description"
                   name="description"
@@ -199,7 +239,9 @@ export const SearchModal = (props: ModalProps) => {
                   multiLine={1}
                   onChange={onChange}
                 />
+
                 <SizedBox height={20} />
+
                 <Input
                   label="Neighborhood"
                   name="neighborhood"
@@ -207,28 +249,26 @@ export const SearchModal = (props: ModalProps) => {
                   onChange={onChange}
                   placeholder="Type the exact place you want"
                 />
+
                 <SizedBox height={20} />
+
                 <Dropdown
                   label="Select the home type you want"
                   data={hometypes}
                   name="homeType"
                   displayKey="value"
-                  onChange={selectedValue => {
-                    setSelectedHomeType(selectedValue.value);
-                    onChange(selectedValue.value, 'homeType');
-                  }}
+                  onChange={onChangeCallback('homeType')}
                   value={selectedHomeType} // To set the current value
                 />
+
                 <SizedBox height={20} />
+
                 <Dropdown
                   label="Select whether you want to rent or buy"
                   name="type"
                   data={modes}
                   displayKey="value"
-                  onChange={selectedValue => {
-                    setSelectedMode(selectedValue.value);
-                    onChange(selectedValue.value, 'type');
-                  }}
+                  onChange={onChangeCallback('type')}
                   value={selectedMode} // To set the current value
                 />
 
@@ -238,11 +278,7 @@ export const SearchModal = (props: ModalProps) => {
                   placholder="Select a locality"
                   data={localities}
                   displayKey="name"
-                  onChange={selectedValue => {
-                    handleLocalityChange(selectedValue);
-                    setSelectedLocality(selectedValue.name); // Set the selected value
-                    onChange(selectedValue.name, 'locality');
-                  }}
+                  onChange={onChangeCallback('locality')}
                   value={selectedLocality} // To set the current value
                 />
 
@@ -251,10 +287,7 @@ export const SearchModal = (props: ModalProps) => {
                   name="subLocalities"
                   data={subLocalities}
                   displayKey="name"
-                  onChange={selectedValue => {
-                    setSelectedSubLocality(selectedValue.name); // Set the selected value
-                    onChange(selectedValue.name, 'sublocality');
-                  }}
+                  onChange={onChangeCallback('sublocality')}
                   value={selectedSubLocality} // To set the current value
                 />
 

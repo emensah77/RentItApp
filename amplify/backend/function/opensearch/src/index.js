@@ -15,12 +15,11 @@ const tableName = 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev';
 const lambdaStateTableName = 'LambdaState';
 const stateId = 'LAST_EVALUATED_KEY';
 
-const opensearchDomain =
-  'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-east-2.es.amazonaws.com';
+const opensearchDomain = 'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-east-2.es.amazonaws.com';
 const index = 'rentit';
 const endpoint = new AWS.Endpoint(opensearchDomain);
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   console.log('Starting execution of Lambda function');
   console.log('Received a request', event);
 
@@ -33,7 +32,7 @@ exports.handler = async event => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'OPTIONS,POST',
       },
-      body: JSON.stringify({message: 'CORS headers sent successfully'}),
+      body: JSON.stringify({ message: 'CORS headers sent successfully' }),
     };
   }
 
@@ -106,7 +105,8 @@ exports.handler = async event => {
       };
     }
   } else if (event.httpMethod === 'POST' && event.path === '/unverifiedhomes') {
-    let userLocation, searchAfter;
+    let userLocation; let
+      searchAfter;
     try {
       // Parse the request body to get the userLocation and optionally searchAfter
       const requestBody = JSON.parse(event.body);
@@ -151,7 +151,8 @@ exports.handler = async event => {
       };
     }
   } else if (event.httpMethod === 'POST' && event.path === '/forsale') {
-    let userLocation, searchAfter;
+    let userLocation; let
+      searchAfter;
     try {
       // Parse the request body to get the userLocation and optionally searchAfter
       const requestBody = JSON.parse(event.body);
@@ -208,7 +209,7 @@ exports.handler = async event => {
       };
     }
 
-    const {indexName, dbtableName} = requestBody;
+    const { indexName, dbtableName } = requestBody;
 
     if (!indexName || !dbtableName) {
       return {
@@ -256,7 +257,8 @@ exports.handler = async event => {
       };
     }
   } else if (event.httpMethod === 'POST' && event.path === '/filter') {
-    let filterParams, userLocation, searchAfter;
+    let filterParams; let userLocation; let
+      searchAfter;
     try {
       // Parse the request body to get the filter parameters
       const requestBody = JSON.parse(event.body);
@@ -290,7 +292,8 @@ exports.handler = async event => {
       };
     }
   } else if (event.httpMethod === 'POST' && event.path === '/hometype') {
-    let typeParameter, userLocation, searchAfter;
+    let typeParameter; let userLocation; let
+      searchAfter;
     try {
       // Parse the request body to get the typeParameter and userLocation
       const requestBody = JSON.parse(event.body);
@@ -335,7 +338,7 @@ exports.handler = async event => {
 async function getLastEvaluatedKey() {
   const params = {
     TableName: lambdaStateTableName,
-    Key: {id: stateId},
+    Key: { id: stateId },
   };
   const data = await ddb.get(params).promise();
   return data.Item ? data.Item.lastEvaluatedKey : null;
@@ -344,7 +347,7 @@ async function getLastEvaluatedKey() {
 async function saveLastEvaluatedKey(lastEvaluatedKey) {
   const params = {
     TableName: lambdaStateTableName,
-    Item: {id: stateId, lastEvaluatedKey},
+    Item: { id: stateId, lastEvaluatedKey },
   };
   await ddb.put(params).promise();
 }
@@ -368,10 +371,10 @@ async function createIndexInOpenSearch(indexName) {
     send.handleRequest(
       req,
       null,
-      function (httpResp) {
+      (httpResp) => {
         resolve(httpResp.statusCode === 200);
       },
-      function (err) {
+      (err) => {
         console.log('Error while checking index existence:', err);
         reject(err);
       },
@@ -408,9 +411,9 @@ async function createIndexInOpenSearch(indexName) {
       send.handleRequest(
         putReq,
         null,
-        function (httpResp) {
+        (httpResp) => {
           let body = '';
-          httpResp.on('data', chunk => {
+          httpResp.on('data', (chunk) => {
             body += chunk;
           });
           httpResp.on('end', () => {
@@ -419,7 +422,7 @@ async function createIndexInOpenSearch(indexName) {
             resolve(body);
           });
         },
-        function (err) {
+        (err) => {
           console.log('Error while creating index:', err);
           reject(err);
         },
@@ -445,7 +448,7 @@ async function postDocumentToOpenSearch(doc, indexName) {
   postReq.headers['Content-Type'] = 'application/json';
   postReq.body = JSON.stringify({
     ...doc,
-    location: {lat: doc.latitude, lon: doc.longitude},
+    location: { lat: doc.latitude, lon: doc.longitude },
   });
 
   const postSigner = new AWS.Signers.V4(postReq, 'es');
@@ -456,12 +459,12 @@ async function postDocumentToOpenSearch(doc, indexName) {
     send.handleRequest(
       postReq,
       null,
-      function (httpResp) {
+      (httpResp) => {
         let body = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           body += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           console.log(`Response body: ${body}`);
           console.log(`Finished postdocument for doc: ${doc}`);
           resolve(body);
@@ -478,7 +481,9 @@ async function postDocumentToOpenSearch(doc, indexName) {
 async function search(params) {
   console.log(`Starting search in OpenSearch index: ${index}`);
 
-  const {region, userLocation = null, searchQuery = null, searchAfter = null} = params;
+  const {
+    region, userLocation = null, searchQuery = null, searchAfter = null,
+  } = params;
 
   console.log('Search Parameters:', params);
 
@@ -554,13 +559,13 @@ async function search(params) {
   }
 
   if (
-    region &&
-    region.northeast &&
-    region.northeast.lat !== null &&
-    region.northeast.lon !== null &&
-    region.southwest &&
-    region.southwest.lat !== null &&
-    region.southwest.lon !== null
+    region
+    && region.northeast
+    && region.northeast.lat !== null
+    && region.northeast.lon !== null
+    && region.southwest
+    && region.southwest.lat !== null
+    && region.southwest.lon !== null
   ) {
     searchQueryBody.query.bool = {
       filter: {
@@ -581,10 +586,10 @@ async function search(params) {
   } else if (searchQuery) {
     searchQueryBody.query.bool = {
       should: [
-        {match_phrase: {title: searchQuery}},
-        {match_phrase: {description: searchQuery}},
-        {match: {title: {query: searchQuery, operator: 'and'}}},
-        {match: {description: {query: searchQuery, operator: 'and'}}},
+        { match_phrase: { title: searchQuery } },
+        { match_phrase: { description: searchQuery } },
+        { match: { title: { query: searchQuery, operator: 'and' } } },
+        { match: { description: { query: searchQuery, operator: 'and' } } },
       ],
     };
   }
@@ -603,17 +608,17 @@ async function search(params) {
     send.handleRequest(
       searchReq,
       null,
-      httpResp => {
+      (httpResp) => {
         let responseBody = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           responseBody += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           const data = JSON.parse(responseBody);
 
           console.log(`Search results: ${JSON.stringify(data.hits.hits)}`);
 
-          const homesData = data.hits.hits.map(hit => hit._source);
+          const homesData = data.hits.hits.map((hit) => hit._source);
           const result = {
             homes: homesData,
             searchAfter:
@@ -651,18 +656,18 @@ async function getHome(id) {
     send.handleRequest(
       getReq,
       null,
-      function (httpResp) {
+      (httpResp) => {
         let body = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           body += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           console.log(`Response body: ${body}`);
           console.log(`Finished getHome for home id: ${id}`);
           resolve(JSON.parse(body)._source);
         });
       },
-      function (err) {
+      (err) => {
         console.log('Error while retrieving home:', err);
         reject(err);
       },
@@ -735,17 +740,17 @@ async function homeType(typeParameter, userLocation = null, searchAfter = null) 
     send.handleRequest(
       searchTypeReq,
       null,
-      httpResp => {
+      (httpResp) => {
         let responseBody = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           responseBody += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           const data = JSON.parse(responseBody);
 
           console.log(`Search results: ${JSON.stringify(data.hits.hits)}`);
 
-          const homesData = data.hits.hits.map(hit => hit._source);
+          const homesData = data.hits.hits.map((hit) => hit._source);
           const result = {
             homes: homesData,
             searchAfter:
@@ -825,45 +830,45 @@ async function filterHomes(filterParams, userLocation = null, searchAfter = null
 
   if (filterParams.type) {
     searchQueryBody.query.bool.filter.push({
-      term: {'type.keyword': filterParams.type},
+      term: { 'type.keyword': filterParams.type },
     });
   }
 
   if (filterParams.bedroom) {
     searchQueryBody.query.bool.filter.push({
-      term: {bedroom: filterParams.bedroom},
+      term: { bedroom: filterParams.bedroom },
     });
   }
 
   if (filterParams.newPrice) {
     searchQueryBody.query.bool.filter.push({
-      range: {newPrice: {gte: filterParams.newPrice.min, lte: filterParams.newPrice.max}},
+      range: { newPrice: { gte: filterParams.newPrice.min, lte: filterParams.newPrice.max } },
     });
   }
 
   if (filterParams.mode) {
     searchQueryBody.query.bool.filter.push({
-      term: {'mode.keyword': filterParams.mode},
+      term: { 'mode.keyword': filterParams.mode },
     });
   }
 
   if (filterParams.furnished) {
     searchQueryBody.query.bool.filter.push({
-      term: {'furnished.keyword': filterParams.furnished},
+      term: { 'furnished.keyword': filterParams.furnished },
     });
   }
 
   if (filterParams.negotiable) {
     searchQueryBody.query.bool.filter.push({
-      term: {'negotiable.keyword': filterParams.negotiable},
+      term: { 'negotiable.keyword': filterParams.negotiable },
     });
   }
 
   const amenities = ['wifi', 'aircondition', 'kitchen', 'water', 'toilet'];
-  amenities.forEach(amenity => {
+  amenities.forEach((amenity) => {
     if (filterParams[amenity]) {
       searchQueryBody.query.bool.filter.push({
-        term: {[`${amenity}.keyword`]: filterParams[amenity]},
+        term: { [`${amenity}.keyword`]: filterParams[amenity] },
       });
     }
   });
@@ -901,17 +906,17 @@ async function filterHomes(filterParams, userLocation = null, searchAfter = null
     send.handleRequest(
       searchReq,
       null,
-      httpResp => {
+      (httpResp) => {
         let responseBody = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           responseBody += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           const data = JSON.parse(responseBody);
 
           console.log(`Filter results: ${JSON.stringify(data.hits.hits)}`);
 
-          const homesData = data.hits.hits.map(hit => hit._source);
+          const homesData = data.hits.hits.map((hit) => hit._source);
           const result = {
             homes: homesData,
             searchAfter:
@@ -985,7 +990,7 @@ async function forSale(userLocation = null, searchAfter = null) {
       bool: {
         filter: [
           {
-            term: {'mode.keyword': 'For Sale'},
+            term: { 'mode.keyword': 'For Sale' },
           },
         ],
       },
@@ -1026,17 +1031,17 @@ async function forSale(userLocation = null, searchAfter = null) {
     send.handleRequest(
       searchReq,
       null,
-      httpResp => {
+      (httpResp) => {
         let responseBody = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           responseBody += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           const data = JSON.parse(responseBody);
 
           console.log(`Search results: ${JSON.stringify(data.hits.hits)}`);
 
-          const homesData = data.hits.hits.map(hit => hit._source);
+          const homesData = data.hits.hits.map((hit) => hit._source);
           const result = {
             homes: homesData,
             searchAfter:
@@ -1147,17 +1152,17 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
     send.handleRequest(
       searchReq,
       null,
-      httpResp => {
+      (httpResp) => {
         let responseBody = '';
-        httpResp.on('data', chunk => {
+        httpResp.on('data', (chunk) => {
           responseBody += chunk;
         });
-        httpResp.on('end', chunk => {
+        httpResp.on('end', (chunk) => {
           const data = JSON.parse(responseBody);
 
           console.log(`Search results: ${JSON.stringify(data.hits.hits)}`);
 
-          const homesData = data.hits.hits.map(hit => hit._source);
+          const homesData = data.hits.hits.map((hit) => hit._source);
           const result = {
             homes: homesData,
             searchAfter:

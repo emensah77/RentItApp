@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle} from 'react-native';
-import {colors, fontFamily} from '@theme';
+import {colors, fontFamily as fontFamilie} from '@theme';
 
 type Sizes = keyof typeof $sizeStyles;
 type Weights = keyof typeof fontFamily.manrope;
@@ -92,10 +92,12 @@ const $sizeStyles = {
   xxs: {fontSize: 12, lineHeight: 18} as TextStyle,
 };
 
-// eslint-disable-next-line no-shadow
-const $fontWeightStyles = Object.entries(fontFamily.manrope).reduce((acc, [weight, fontFamily]) => {
-  return {...acc, [weight]: {fontFamily}};
-}, {}) as Record<Weights, TextStyle>;
+const $fontWeightStyles = Object.entries(fontFamilie.manrope).reduce(
+  (acc, [weight, fontFamily]) => {
+    return {...acc, [weight]: {fontFamily}};
+  },
+  {},
+) as Record<Weights, TextStyle>;
 
 const $baseStyle: StyleProp<TextStyle> = [$sizeStyles.sm, {color: colors.text}];
 
