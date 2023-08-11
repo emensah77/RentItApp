@@ -159,7 +159,6 @@ const MarketerHome = props => {
   useEffect(() => {
     const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
     _ws.onopen = function () {
-
       setWS(_ws);
     };
     return () => {

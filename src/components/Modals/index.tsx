@@ -18,6 +18,7 @@ interface ModalProps {
   handleVideoPlaybackComplete?: any;
   videoUrl?: string;
   handleSubmit?: () => void;
+  onEmptySubmit?: (e?: string) => void;
 }
 
 const CUSTOM_LOCALE = {

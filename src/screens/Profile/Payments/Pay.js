@@ -7,6 +7,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {WebView} from 'react-native-webview';
 import auth from '@react-native-firebase/auth';
+
 import {deletePost} from '../../../graphql/mutations';
 import {AuthContext} from '../../../navigation/AuthProvider';
 
@@ -93,9 +94,13 @@ const PaymentScreen = () => {
       .catch(e => {
         console.error('Something went wrong adding to payments!', e);
       });
-  }, [amount, checkoutNumber, merchantTransactionID, selectedType, user.displayName, user.uid]);
+  }, [amount, checkoutNumber, marketerName, merchantTransactionID, selectedType, user]);
 
-  const isHomeIdValid = () => !(homeid === null || homeid === undefined || homeid === '');
+  const isHomeIdValid = useCallback(
+    () =>
+      !(homeid === null || homeid === undefined || typeof homeid === 'undefined' || homeid === ''),
+    [homeid],
+  );
 
   const addTransaction = useCallback(async () => {
     await firestore()
@@ -114,7 +119,7 @@ const PaymentScreen = () => {
       .catch(e => {
         console.error('Something went wrong adding to payments!', e);
       });
-  }, [amount, checkoutNumber, homeid, merchantTransactionID, user]);
+  }, [amount, checkoutNumber, isHomeIdValid, merchantTransactionID, user]);
 
   const addHomeOrder = useCallback(async () => {
     await firestore()
@@ -256,8 +261,6 @@ const PaymentScreen = () => {
   // });
 
   useEffect(() => {
-    console.log('marketerName', marketerName);
-
     (async () => {
       await generatePaymentUrl();
     })();
@@ -267,16 +270,13 @@ const PaymentScreen = () => {
     if (!paymentUrl) {
       return;
     }
-    console.log('HomeID', homeid);
-    console.log('MerchantID', merchantTransactionID);
 
     if (!isHomeIdValid()) {
       addPayment();
-      console.log('Added to payments');
     }
 
     addTransaction();
-  }, [addPayment, addTransaction, homeid, paymentUrl]);
+  }, [addPayment, addTransaction, homeid, isHomeIdValid, paymentUrl]);
 
   return (
     <View style={containerStyle}>
@@ -317,46 +317,42 @@ const PaymentScreen = () => {
         <ActivityIndicator size={55} color="blue" />
       )}
       {/* <Paystack
-            paystackKey="pk_live_6869737082c788c90a3ea0df0a62018c57fc6759"
-            paystackSecretKey="sk_live_3c4468c7af13179692b7103e785206b6faf70b09"
-            amount={amount}
-            currency="ghs"
-            channels={channel}
-            billingEmail={userEmail}
-            activityIndicatorColor="blue"
-            showCancelButton={false}
-            onCancel={(e) => {
-              // handle response here
-              if (route.name === "Address"){
-                Alert.alert("Payment cancelled", e.message)
-              navigation.goBack();
-              console.log(e);
-              }
-              else{
-                navigation.replace('Home')
-                Alert.alert("Payment cancelled", e.message)
-              }
-
-            }}
-            onSuccess={(res) => {
-              console.log(res);
-              if (route.name === "Address"){
-                Alert.alert("Payment successful. You will be redirected to your new home",);
-                addHomeOrder();
-              deleteHome(homeid);
-              deleteFromTrends(homeid);
-              deleteFromFavorites(homeid);
-              navigation.replace('House');
-              }
-              else{
-                Alert.alert("Payment successful. Enjoy using RentIt to find your next home",);
-                AsyncStorage.setItem('alreadyPaid', 'true');
-                navigation.replace('Home');
-              }
-
-            }}
-            autoStart={true}
-          /> */}
+        paystackKey="pk_live_6869737082c788c90a3ea0df0a62018c57fc6759"
+        paystackSecretKey="sk_live_3c4468c7af13179692b7103e785206b6faf70b09"
+        amount={amount}
+        currency="ghs"
+        channels={channel}
+        billingEmail={userEmail}
+        activityIndicatorColor="blue"
+        showCancelButton={false}
+        onCancel={e => {
+          // handle response here
+          if (route.name === 'Address') {
+            Alert.alert('Payment cancelled', e.message);
+            navigation.goBack();
+            console.log(e);
+          } else {
+            navigation.replace('Home');
+            Alert.alert('Payment cancelled', e.message);
+          }
+        }}
+        onSuccess={res => {
+          console.log(res);
+          if (route.name === 'Address') {
+            Alert.alert('Payment successful. You will be redirected to your new home');
+            addHomeOrder();
+            deleteHome(homeid);
+            deleteFromTrends(homeid);
+            deleteFromFavorites(homeid);
+            navigation.replace('House');
+          } else {
+            Alert.alert('Payment successful. Enjoy using RentIt to find your next home');
+            AsyncStorage.setItem('alreadyPaid', 'true');
+            navigation.replace('Home');
+          }
+        }}
+        autoStart={true}
+      /> */}
     </View>
   );
 };
