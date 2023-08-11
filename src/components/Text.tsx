@@ -3,7 +3,7 @@ import {StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle} from 're
 import {colors, fontFamily as fontFamilie} from '@theme';
 
 type Sizes = keyof typeof $sizeStyles;
-type Weights = keyof typeof fontFamily.manrope;
+type Weights = keyof typeof fontFamilie.manrope;
 type Presets = keyof typeof $presets;
 
 export interface TextProps extends RNTextProps {
@@ -66,7 +66,7 @@ export function Text(props: TextProps) {
   // @ts-ignore
   const $styles = useMemo(() => {
     return [
-      {fontFamily: fontFamily.manrope, fontWeight: weight},
+      {fontFamily: fontFamilie.manrope, fontWeight: weight},
       $presets[preset],
       // @ts-ignore
       $sizeStyles[size],
