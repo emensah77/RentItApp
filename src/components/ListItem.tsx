@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 import React, {ReactElement, useMemo} from 'react';
 import {
   StyleProp,
@@ -80,6 +79,8 @@ export interface ListItemProps extends TouchableOpacityProps {
    * Overrides `leftIcon`.
    */
   LeftComponent?: ReactElement;
+
+  textProps?: TextProps;
 }
 
 interface ListItemActionProps {
@@ -108,16 +109,16 @@ export function ListItem(props: ListItemProps) {
     rightIconColor,
     style,
     text,
-    TextProps,
+    textProps,
     topSeparator,
     textStyle: $textStyleOverride,
     containerStyle: $containerStyleOverride,
-    ...TouchableOpacityProps
+    // ...TouchableOpacityProps
   } = props;
 
   const $textStyles = useMemo(
-    () => [$textStyle, $textStyleOverride, TextProps?.style],
-    [$textStyleOverride, TextProps?.style],
+    () => [$textStyle, $textStyleOverride, textProps?.style],
+    [$textStyleOverride, textProps?.style],
   );
 
   const $containerStyles = useMemo(
@@ -145,7 +146,7 @@ export function ListItem(props: ListItemProps) {
           Component={LeftComponent}
         />
 
-        <Text {...TextProps} text={text} style={$textStyles}>
+        <Text {...textProps} text={text} style={$textStyles}>
           {children}
         </Text>
 

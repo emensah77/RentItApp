@@ -1,4 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {useCallback, useMemo, useState} from 'react';
 import {Modal, View, TouchableOpacity, ScrollView} from 'react-native';
 import {Icon, SizedBox, Text, Input, Dropdown, Button} from '@components';
@@ -18,7 +17,7 @@ interface ModalProps {
   handleVideoPlaybackComplete?: any;
   videoUrl?: string;
   handleSubmit?: () => void;
-  onEmptySubmit?: () => void;
+  onEmptySubmit?: (e?: string) => typeof e & void;
 }
 
 const CUSTOM_LOCALE = {
@@ -102,6 +101,35 @@ export const SearchModal = (props: ModalProps) => {
     onEmptySubmit,
   } = props;
 
+  const autoCompleteStyle = useMemo(
+    () => ({
+      textInput: styles.searchInput,
+    }),
+    [],
+  );
+
+  const query = useMemo(
+    () => ({
+      key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
+      language: 'en',
+
+      components: 'country:gh',
+    }),
+    [],
+  );
+
+  const textInputProps = useMemo(
+    () => ({
+      onSubmitEditing: event => {
+        const inputText = event.nativeEvent.text;
+        onEmptySubmit?.(inputText);
+      },
+    }),
+    [onEmptySubmit],
+  );
+
+  const source = useMemo(() => ({uri: videoUrl}), [videoUrl]);
+
   // Update this handler
   const handleLocalityChange = useCallback(
     selectedValue => {
@@ -154,22 +182,10 @@ export const SearchModal = (props: ModalProps) => {
             <GooglePlacesAutocomplete
               placeholder="Search destinations"
               fetchDetails
-              styles={{
-                textInput: styles.searchInput,
-              }}
+              styles={autoCompleteStyle}
               onPress={onComplete}
-              query={{
-                key: 'AIzaSyBbnGmg020XRNU_EKOTXpmeqbCUCsEK8Ys',
-                language: 'en',
-
-                components: 'country:gh',
-              }}
-              textInputProps={{
-                onSubmitEditing: event => {
-                  const inputText = event.nativeEvent.text;
-                  onEmptySubmit?.(inputText);
-                },
-              }}
+              query={query}
+              textInputProps={textInputProps}
               // suppressDefaultStyles
               renderRow={renderRow}
             />
@@ -187,7 +203,7 @@ export const SearchModal = (props: ModalProps) => {
             </View>
           ) : type === 'video' ? (
             <Video
-              source={{uri: videoUrl}}
+              source={source}
               resizeMode="cover"
               style={styles.video}
               onEnd={handleVideoPlaybackComplete}
