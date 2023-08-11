@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {View, Text, Button, Linking} from 'react-native';
+import {View, Text, Pressable, Linking} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import SkeletonContent from 'react-native-skeleton-content-nonexpo';
@@ -122,8 +122,25 @@ const PostScreen = ({route}) => {
         <DetailedPost post={newPost} />
       </View>
     );
+  } else {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{fontSize: 18, textAlign: 'center', margin: 20}}>
+          We couldn't find the home you were looking for. Sometimes it happens.
+        </Text>
+        <Pressable
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            backgroundColor: '#227C9D',
+            borderRadius: 5,
+          }}
+          onPress={() => navigation.goBack()}>
+          <Text style={{color: '#fff', fontSize: 16}}>Keep Searching</Text>
+        </Pressable>
+      </View>
+    );
   }
-  return null;
 };
 
 export default PostScreen;

@@ -262,7 +262,6 @@ const DetailedPost = props => {
         );
         const data = await response.json();
         setSimilarHomes(data);
-        
       } catch (error) {
         console.error(error);
       } finally {
@@ -384,8 +383,6 @@ const DetailedPost = props => {
     },
     [navigation],
   );
-  
-
 
   const onChangeFavorite = useCallback(
     _post => handleChangeFavorite(_post),
@@ -449,7 +446,6 @@ const DetailedPost = props => {
           </View>
         </Pressable>
       );
-      
     },
     [onPress],
   );

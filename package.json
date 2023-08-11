@@ -62,7 +62,7 @@
     "appcenter-analytics": "^4.4.5",
     "appcenter-crashes": "^4.4.5",
     "appium": "^1.22.3",
-    "aws-amplify": "^4.0.3",
+    "aws-amplify": "^4.3.46",
     "aws-amplify-react-native": "^5.0.1",
     "aws-sdk": "^2.1369.0",
     "axios": "0.21.2",

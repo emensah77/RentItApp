@@ -164,8 +164,6 @@ const ImageCarousel = ({images, postId, isFav, handleChangeFavorite}) => {
           {activeIndex + 1}/{images.length}
         </Text>
       </View>
-
-     
     </View>
   );
 };

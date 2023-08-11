@@ -22,10 +22,7 @@ import Email from '../screens/Authentication/Email';
 import PhoneNumber from '../screens/Authentication/PhoneNumber';
 import OTP from '../screens/Authentication/OTP';
 import Filter from '../screens/Explore/Filter';
-import DestinationSearchScreen from '../screens/DestinationSearch';
-import GuestsScreen from '../screens/GuestsScreen';
 import PostScreen from '../screens/PostScreen';
-import HouseTypeScreen from '../screens/HouseTypeScreen';
 import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
 import listAHome from '../screens/ListAHome';
@@ -63,12 +60,6 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreen
 >;
 
 const noHeader = {
-  headerShown: false,
-  lazy: true,
-};
-
-const noHeaderWithATitle = {
-  title: 'Search your destination',
   headerShown: false,
   lazy: true,
 };
@@ -128,16 +119,6 @@ const AppStack = () => {
       <Stack.Screen name="Filter" component={Filter} options={noHeader} />
 
       <Stack.Screen name="Home" component={HomeTabNavigator} options={noHeader} />
-
-      <Stack.Screen
-        name="Destination Search"
-        component={DestinationSearchScreen}
-        options={noHeaderWithATitle}
-      />
-
-      <Stack.Screen name="Number of Guests" component={GuestsScreen} options={noHeader} />
-
-      <Stack.Screen name="House Type" component={HouseTypeScreen} options={noHeader} />
 
       <Stack.Screen name="Post" component={PostScreen} options={noHeader} />
 

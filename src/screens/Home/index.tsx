@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import React, {FC, useCallback, useState, useEffect, useRef, useMemo} from 'react';
 import {
   ViewStyle,
@@ -36,7 +38,6 @@ import {pageInnerHorizontalPadding} from '@assets/styles/global';
 import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import {mapIcon} from '@assets/images';
-import Filter from '../Explore/Filter';
 import styles from './styles';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
@@ -79,7 +80,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   }, []);
 
   const fetchVideoWatchStatus = useCallback(async () => {
-    const userId = auth().currentUser.uid;
+    const userId = auth()?.currentUser.uid;
 
     try {
       const response = await fetch(
@@ -109,7 +110,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   }, []);
 
   const updateWatchVideoStatus = useCallback(async version => {
-    const userId = auth().currentUser.uid;
+    const userId = auth()?.currentUser.uid;
 
     try {
       const response = await fetch(
@@ -201,10 +202,6 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     },
     [posts],
   );
-
-  useEffect(() => {
-    console.log('formData', formData);
-  }, [formData]);
 
   useEffect(() => {
     fetchVideoWatchStatus();
@@ -446,8 +443,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       delete formattedFormData[key];
     });
 
-    formattedFormData.MarketerID = auth().currentUser.uid;
-    console.log('formattedFormData', formattedFormData);
+    formattedFormData.MarketerID = auth()?.currentUser.uid;
 
     // Validate formattedFormData
     if (

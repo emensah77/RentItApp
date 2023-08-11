@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
 
@@ -38,7 +39,6 @@ async function getHomesByOwner(homeownerName) {
 
   try {
     const data = await dynamodb.query(params).promise();
-    console.log(`Fetched homes for homeowner ${homeownerName}:`, data.Items);
     return data.Items;
   } catch (error) {
     console.error(`Error fetching homes for homeowner ${homeownerName}:`, error);

@@ -10,7 +10,7 @@ const s3 = new AWS.S3();
 
 const params = {
   Bucket: 'pics175634-dev',
-  Prefix: 'public/' // specify the "folder" where the images are stored
+  Prefix: 'public/', // specify the "folder" where the images are stored
 };
 
 async function getObject(params) {
@@ -28,41 +28,44 @@ async function listAllKeys(marker, keys, maxKeys) {
       resolve(keys);
       return;
     }
-    
-    s3.listObjectsV2({ Bucket: params.Bucket, Prefix: params.Prefix, ContinuationToken: marker }, async function(err, data){
-      if (err) {
-        console.log('Error listing S3 objects:', err);
-        reject(err);
-      } else {
-        keys = keys.concat(data.Contents.slice(0, maxKeys - keys.length));
 
-        console.log(`Fetched ${data.Contents.length} keys, ${keys.length} total`);
-
-        if (data.IsTruncated && keys.length < maxKeys) {
-          keys = await listAllKeys(data.NextContinuationToken, keys, maxKeys);
-          resolve(keys);
+    s3.listObjectsV2(
+      {Bucket: params.Bucket, Prefix: params.Prefix, ContinuationToken: marker},
+      async function (err, data) {
+        if (err) {
+          console.log('Error listing S3 objects:', err);
+          reject(err);
         } else {
-          resolve(keys);
+          keys = keys.concat(data.Contents.slice(0, maxKeys - keys.length));
+
+          console.log(`Fetched ${data.Contents.length} keys, ${keys.length} total`);
+
+          if (data.IsTruncated && keys.length < maxKeys) {
+            keys = await listAllKeys(data.NextContinuationToken, keys, maxKeys);
+            resolve(keys);
+          } else {
+            resolve(keys);
+          }
         }
-      }
-    });
+      },
+    );
   });
 }
 
-exports.handler = async (event) => {
+exports.handler = async event => {
   console.log('Starting function execution');
   let processedImages = 0;
 
   // Fetch all keys
-  let allKeys = await listAllKeys(null, [], 10);
+  const allKeys = await listAllKeys(null, [], 10);
 
   console.log(`Total keys to process: ${allKeys.length}`);
 
   // Iterate over each key:
-  for(let i = 0; i < allKeys.length; i++){
+  for (let i = 0; i < allKeys.length; i++) {
     const params = {
       Bucket: 'pics175634-dev',
-      Key: allKeys[i].Key
+      Key: allKeys[i].Key,
     };
 
     console.log(`Processing key: ${allKeys[i].Key}`);
@@ -74,7 +77,7 @@ exports.handler = async (event) => {
       const result = parser.parse();
       console.log(`EXIF data for ${allKeys[i].Key}:`, result);
       processedImages++; // Increment counter after successful processing
-    } catch(err) {
+    } catch (err) {
       console.log(`Error getting or processing object ${allKeys[i].Key}:`, err);
     }
   }

@@ -184,7 +184,7 @@ class TinggService {
       const transactionsRef = db.collection('transactions').doc(merchantTransactionID);
 
       const transactionDoc = await transactionsRef.get();
-      
+
       if (transactionDoc.exists) {
         const data = transactionDoc.data();
         console.log('transaction2 data', data);

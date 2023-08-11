@@ -44,8 +44,7 @@ async function saveProgress(userId, progress) {
     const updateParams = {
       TableName: 'homeUploadProgress',
       Key: {userId},
-      UpdateExpression:
-        'SET #screenName = :screenName, #progressData = :progressData',
+      UpdateExpression: 'SET #screenName = :screenName, #progressData = :progressData',
       ExpressionAttributeNames: {
         '#screenName': 'screenName',
         '#progressData': 'progressData',
