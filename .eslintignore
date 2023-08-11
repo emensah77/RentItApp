@@ -1,4 +1,4 @@
 reportWebVitals.js
 jest-setup.js
 node_modules
-amplify/backend
+amplify
