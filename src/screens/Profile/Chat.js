@@ -68,11 +68,14 @@ const Chat = props => {
 
     (async () => {
       setLoading(true);
-
+      console.log('fetching home', home_id);
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
-      const receiver_id = _home?.user?.id;
+      const receiver_id = _home?.userID;
+      console.log('home', _home);
+      console.log('receiver_id', receiver_id);
       if (!_home || !receiver_id) {
+        setLoading(false); 
         return;
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
@@ -80,12 +83,13 @@ const Chat = props => {
       const user = auth().currentUser;
       const _receiver = await firestore()
         .collection('users')
-        .doc(receiver_id)
+        .doc('UWHvpJ1XoObsFYTFR48zYe6jscJ2')
         .get()
         .catch(console.error);
       const recipient = _receiver?.data();
       if (!recipient) {
         console.error('User not found', _receiver, recipient);
+        setLoading(false); 
         return;
       }
       recipient.uid = receiver_id;
@@ -133,17 +137,29 @@ const Chat = props => {
         },
         [recipient, user],
       );
+      const {type, ...recipientWithoutType} = recipient;
+
+      console.log('recepient', recipient);
 
       const _channel = client.channel(
         'messaging',
         sha256(`${user.uid}-${home_id}-${recipient.uid}`),
         {
-          ...recipient,
+          ...recipientWithoutType,
           name: recipient.displayName,
           image: recipient.userImg,
           members: [user.uid, recipient.uid],
         },
       );
+      // Check if channel exists
+      const channelState = await _channel.query();
+
+      if (!channelState.channel.id) {
+        // If channel does not exist, create it
+        await _channel.create();
+      }
+
+      // Now update the channel
       await _channel.updatePartial({set: {home_id}});
 
       // TODO:
@@ -159,6 +175,10 @@ const Chat = props => {
       setHome(_home);
       setChannel(_channel);
       setLoading(false);
+      console.log('loading', loading);
+      console.log('channel', _channel);
+      console.log('result', result);
+      
 
       await _channel.watch();
       _channel.on('message.new', event => {
@@ -175,9 +195,9 @@ const Chat = props => {
 
   let currentDay, nextDay;
 
-  if (!receiver.displayName) {
-    return <PageSpinner />;
-  }
+  // if (!receiver.displayName) {
+  //   return <PageSpinner />;
+  // }
 
   return (
     <Page
@@ -352,96 +372,6 @@ const Chat = props => {
           <PageSpinner />
         </Container>
       )}
-      {/* <Typography type="levelOneThick" size={12} color="#717171">
-        Aug 23, 2022
-      </Typography>
-
-      <Whitespace marginTop={24} />
-
-      <Container row center type="chip">
-        <CardDisplay
-          leftImageWidth={16}
-          leftImageHeight={16}
-          leftImageSrc={logo}
-          numberOfLines={2}
-          description={
-            <Typography type="levelOneThick" size={12} color="#717171">
-              Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
-              <Typography type="link" color="#717171">
-                Show listing
-              </Typography>
-            </Typography>
-          }
-          center
-          bold
-        />
-      </Container>
-
-      <Whitespace marginTop={24} />
-
-      <CardDisplay
-        leftImageCircle={38}
-        leftImageSrc={moon}
-        name="Dolly 2"
-        location="4:26 PM"
-        description="Looking forward to staying"
-        bold={false}
-      />
-
-      <Whitespace marginTop={24} />
-
-      <Container row center type="chip">
-        <CardDisplay
-          leftImageWidth={16}
-          leftImageHeight={16}
-          leftImageSrc={logo}
-          numberOfLines={2}
-          description={
-            <Typography type="levelOneThick" size={12} color="#717171">
-              Your reservation is confirmed for 1 guest on Feb 13 - 14.{' '}
-              <Typography type="link" color="#717171">
-                Show reservation
-              </Typography>
-            </Typography>
-          }
-          center
-          bold
-        />
-      </Container>
-
-      <Whitespace marginTop={24} />
-
-      <CardDisplay
-        leftImageCircle={38}
-        leftImageSrc={moon}
-        name="Dolly"
-        location="4:26 PM"
-        description="Sorry I need to cancel"
-        bold={false}
-      />
-
-      <Whitespace marginTop={16} />
-
-      <Typography type="levelOneThick" size={12} color="#717171">
-        UNREAD
-      </Typography>
-
-      <Whitespace marginTop={24} />
-
-      <Container row center type="chip">
-        <CardDisplay
-          leftImageWidth={16}
-          leftImageHeight={16}
-          leftImageSrc={logo}
-          description={
-            <Typography type="levelOneThick" size={12} color="#717171">
-              Reservation cancelled by guest
-            </Typography>
-          }
-          center
-          bold
-        />
-      </Container> */}
     </Page>
   );
 };

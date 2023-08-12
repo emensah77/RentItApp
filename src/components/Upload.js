@@ -4,6 +4,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
 import uuid from 'react-native-uuid';
 import AWS from 'aws-sdk';
+import RNFS from 'react-native-fs';
 
 import Container from './Container';
 import CardDisplay from './CardDisplay';
@@ -99,11 +100,21 @@ const Upload = props => {
           });
           if (resizeImage && resizeImage.uri) {
             path = resizeImage.uri;
+            console.log('Resized Image Path:', path);
           }
-          const response = await fetch(path);
-          const rawFile = await response.blob();
+          console.log('Fetching File at Path:', path);
+          const rawFile = await RNFS.readFile(path, 'base64').then(data => {
+            return {
+              uri: path,
+              type: 'image/jpeg',
+              name: `${imageNamePrefix}-${uuid.v4()}.jpeg`,
+              data,
+            };
+          });
+          console.log('Raw File:', rawFile);
 
           const name = `${imageNamePrefix}-${uuid.v4()}`;
+          console.log('Uploading to S3 with name:', name);
           return new Promise(resolve => {
             s3.upload(
               {
@@ -127,6 +138,7 @@ const Upload = props => {
       );
 
       const validUrls = newUrls.filter(url => !!url).map(url => url);
+      console.log('Valid Image URLs:', validUrls);
       setUrls(validUrls);
       getImages(validUrls);
       setTimeout(() => setProgress(0), 3000);
@@ -135,6 +147,8 @@ const Upload = props => {
   );
 
   const openPicker = useCallback(() => {
+    console.log('Opening Picker...');
+
     setProgress(0);
 
     ImagePicker.openPicker({
@@ -154,6 +168,8 @@ const Upload = props => {
   }, [upload]);
 
   const openCamera = useCallback(() => {
+    console.log('Opening Camera...');
+
     setProgress(0);
 
     ImagePicker.openCamera({

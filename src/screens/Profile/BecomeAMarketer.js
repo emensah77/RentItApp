@@ -1,9 +1,9 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-import {Page, Typography, Button, Whitespace} from '../../components';
+import {Page, Typography, Button, Whitespace, Dropdown, CardDisplay} from '../../components';
 
 const BecomeAMarketer = () => {
   const [status, setStatus] = useState({
@@ -12,6 +12,32 @@ const BecomeAMarketer = () => {
       'You can request to admin to become a marketer, once the admin approves your request, enjoy the experience of being a marketer at Rentit.',
   });
   const [loading, setLoading] = useState(false);
+  const [supervisors, setSupervisors] = useState([]);
+  const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+
+  const assignSupervisor = useCallback(async supervisor => {
+    if (!supervisor) return; // guard clause to ensure supervisor is available
+
+    const {uid} = auth().currentUser;
+    const userDoc = firestore().collection('users').doc(uid);
+    try {
+      await userDoc.update({supervisor_id: supervisor.id});
+    } catch (error) {
+      console.error('Error updating supervisor:', error);
+    }
+  }, []);
+
+  const handleSupervisorSelection = useCallback(
+    supervisor => {
+      setSelectedSupervisor(supervisor);
+      assignSupervisor(supervisor); // pass supervisor directly
+    },
+    [assignSupervisor],
+  );
+  const leftImageUri = useMemo(
+    () => (selectedSupervisor ? {uri: selectedSupervisor.userImg} : null),
+    [selectedSupervisor],
+  );
 
   const request = useCallback(async () => {
     setLoading(true);
@@ -81,6 +107,22 @@ const BecomeAMarketer = () => {
       }
       setLoading(false);
     })();
+    const fetchSupervisors = async () => {
+      const snapshot = await firestore()
+        .collection('users')
+        .where('role', '==', 'SUPERVISOR')
+        .get();
+
+      if (!snapshot.empty) {
+        const supervisorData = snapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setSupervisors(supervisorData);
+      }
+    };
+
+    fetchSupervisors();
   }, []);
 
   return (
@@ -103,6 +145,37 @@ const BecomeAMarketer = () => {
       <Typography type="notice" width="100%" color={status.color}>
         {status.description}
       </Typography>
+
+      <Whitespace marginTop={36} />
+
+      {status.state === 'successful' && (
+        <Dropdown
+          data={supervisors}
+          displayKey="displayName"
+          imageKey="userImg"
+          value={selectedSupervisor?.displayName}
+          label="Select a Supervisor"
+          onChange={handleSupervisorSelection}
+        />
+      )}
+
+      <Whitespace marginTop={36} />
+      <Typography type="levelOneThick">Your Supervisor Details</Typography>
+      <Whitespace marginTop={36} />
+
+      {selectedSupervisor && (
+        <>
+          <CardDisplay
+            spaceBetween
+            prefix
+            leftImageSrc={leftImageUri}
+            name={selectedSupervisor.displayName}
+            description={`Contact: ${selectedSupervisor.phoneNumber}`}
+            leftImageWidth={50}
+            leftImageHeight={50}
+          />
+        </>
+      )}
 
       <Whitespace marginTop={36} />
 

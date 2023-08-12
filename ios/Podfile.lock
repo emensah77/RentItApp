@@ -1013,9 +1013,9 @@ PODS:
     - React-perflogger (= 0.68.1)
   - RNAppleAuthentication (2.2.2):
     - React-Core
-  - RNAWSCognito (5.2.12):
+  - RNAWSCognito (5.2.14):
     - React-Core
-  - RNBackgroundFetch (4.1.10):
+  - RNBackgroundFetch (4.2.0):
     - React-Core
   - RNBackgroundGeolocation (4.12.1):
     - CocoaLumberjack (~> 3.7.2)
@@ -1564,8 +1564,8 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7285b499d0339104b2813a1f58ad1ada4adbd6c0
   ReactCommon: bf2888a826ceedf54b99ad1b6182d1bc4a8a3984
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
-  RNAWSCognito: 8b90597e928a8e336af19c879aff0e9142afe9ff
-  RNBackgroundFetch: 9fcdeee8aa00e1e1b3895ff9bbaaf10275288a87
+  RNAWSCognito: bbfdc784e906e3837d4d996c17ffed19356afc19
+  RNBackgroundFetch: e073ad5c803e9f77970afd91fbce3df3a9d1d6c6
   RNBackgroundGeolocation: d79a73519802bb3a92ed82f5511aaa54546852ba
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNCCheckbox: 38989bbd3d7d536adf24ba26c6b3e6cefe0bea6f
