@@ -40,6 +40,7 @@ const Chat = props => {
 
   const [sender, setSender] = useState({});
   const [receiver, setReceiver] = useState({});
+  const [supervisor, setSupervisor] = useState({});
   const [home, setHome] = useState({});
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
@@ -63,36 +64,82 @@ const Chat = props => {
     });
   }, [channel, message, sender, receiver]);
 
+  const fetchRandomDefaultSupervisor = useCallback(async () => {
+    const defaultSupervisorsSnapshot = await firestore().collection('defaultSupervisors').get();
+    const defaultSupervisors = defaultSupervisorsSnapshot.docs.map(doc => ({
+      ...doc.data(),
+    }));
+    return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)];
+  }, []);
+
+  const fetchRandomDefaultMarketer = useCallback(async () => {
+    try {
+      const marketersSnapshot = await firestore()
+        .collection('users')
+        .where('marketer_status', '==', 'ACCEPTED')
+        .get();
+
+      const marketers = marketersSnapshot.docs.map(doc => ({
+        ...doc.data(),
+        uid: doc.id, // Assigning the document ID as uid for consistency
+      }));
+
+      if (marketers.length === 0) {
+        throw new Error('No marketers found with ACCEPTED status.');
+      }
+
+      return marketers[Math.floor(Math.random() * marketers.length)];
+    } catch (error) {
+      console.error('Error fetching default marketer:', error);
+      return null; // Return null or handle this case as you see fit
+    }
+  }, []);
+
   useEffect(() => {
     const client = StreamChat.getInstance(STREAM_CHAT_KEY);
 
     (async () => {
       setLoading(true);
-      console.log('fetching home', home_id);
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
-      const receiver_id = _home?.userID;
-      console.log('home', _home);
-      console.log('receiver_id', receiver_id);
+      let receiver_id = _home?.userID;
       if (!_home || !receiver_id) {
-        setLoading(false); 
-        return;
+        // Fetch a default marketer if there's no associated user
+        const defaultMarketer = await fetchRandomDefaultMarketer();
+        if (defaultMarketer) {
+          receiver_id = defaultMarketer.uid;
+        } else {
+          // If there's no marketer available, exit the function early
+          setLoading(false);
+          return;
+        }
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
 
       const user = auth().currentUser;
       const _receiver = await firestore()
         .collection('users')
-        .doc('UWHvpJ1XoObsFYTFR48zYe6jscJ2')
+        .doc(receiver_id)
         .get()
         .catch(console.error);
       const recipient = _receiver?.data();
       if (!recipient) {
         console.error('User not found', _receiver, recipient);
-        setLoading(false); 
+        setLoading(false);
         return;
       }
       recipient.uid = receiver_id;
+
+      // Fetching supervisor info
+      let _supervisor;
+      const supervisorDoc = await firestore()
+        .collection('users')
+        .doc(recipient.supervisor_id)
+        .get();
+      _supervisor = supervisorDoc?.data();
+      if (!_supervisor) {
+        _supervisor = await fetchRandomDefaultSupervisor();
+      }
 
       __DEV__ &&
         console.debug(
@@ -105,6 +152,7 @@ const Chat = props => {
         );
 
       await Utils.promiseAll(
+        // eslint-disable-next-line no-unused-vars
         async (item, i) => {
           const request = await fetch(
             'https://bnymw2nuxn6zstrhiiz4nibuum0zkovn.lambda-url.us-east-2.on.aws/',
@@ -120,6 +168,10 @@ const Chat = props => {
           );
           const response = await request.json();
 
+          // Disconnect the current user before connecting a new one
+          await client.disconnectUser();
+
+          // Now, connect the new user
           await client
             .connectUser(
               {
@@ -130,16 +182,12 @@ const Chat = props => {
               response.token,
             )
             .catch(console.error);
-
-          if (i === 0) {
-            await client.disconnectUser(1);
-          }
         },
-        [recipient, user],
+        [recipient, user, _supervisor],
       );
-      const {type, ...recipientWithoutType} = recipient;
 
-      console.log('recepient', recipient);
+      // eslint-disable-next-line no-unused-vars
+      const {type, ...recipientWithoutType} = recipient;
 
       const _channel = client.channel(
         'messaging',
@@ -148,7 +196,7 @@ const Chat = props => {
           ...recipientWithoutType,
           name: recipient.displayName,
           image: recipient.userImg,
-          members: [user.uid, recipient.uid],
+          members: [user.uid, recipient.uid, _supervisor.uid],
         },
       );
       // Check if channel exists
@@ -172,13 +220,10 @@ const Chat = props => {
       setMessages(result.messages.reverse());
       setSender(user);
       setReceiver(recipient);
+      setSupervisor(_supervisor);
       setHome(_home);
       setChannel(_channel);
       setLoading(false);
-      console.log('loading', loading);
-      console.log('channel', _channel);
-      console.log('result', result);
-      
 
       await _channel.watch();
       _channel.on('message.new', event => {
@@ -189,7 +234,7 @@ const Chat = props => {
     })().catch(e => console.error('There was an issue loading the chat', e));
 
     return () => client.disconnectUser(1);
-  }, [home_id]);
+  }, [fetchRandomDefaultMarketer, fetchRandomDefaultSupervisor, home_id]);
 
   const makeUri = useCallback(uri => ({uri}), []);
 
@@ -207,32 +252,17 @@ const Chat = props => {
       header={
         <Typography type="heading" left>
           {receiver.displayName}
-          {receiver.displayName ? (
-            <>
-              {'\n'}
-              <Typography type="regular" size={11} left color="#717171">
-                Response time: 1 hour
-              </Typography>
-            </>
-          ) : null}
+
+          <>
+            {'\n'}
+            <Typography type="regular" size={11} left color="#717171">
+              Chat supervised by: {supervisor.displayName}
+            </Typography>
+          </>
         </Typography>
       }
       footer={
         <>
-          {/* <CardDisplay
-            leftImageCircle={38}
-            leftImageSrc={moon}
-            description={
-              <Typography type="levelTwoThick" size={12} color="#959595">
-                It&apos;s<Typography color="#717171"> 4:32 AM </Typography>
-                for your Host. They will see your messages when they are back online
-              </Typography>
-            }
-            bold={false}
-          />
-
-          <Whitespace marginTop={8} /> */}
-
           <Input
             inline
             placeholder="Write a message"
@@ -319,27 +349,6 @@ const Chat = props => {
 
           return (
             <React.Fragment key={msg.id}>
-              {/* <Container row center type="chip">
-              <CardDisplay
-                leftImageWidth={16}
-                leftImageHeight={16}
-                leftImageSrc={logo}
-                numberOfLines={2}
-                description={
-                  <Typography type="levelOneThick" size={12} color="#717171">
-                    Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
-                    <Typography type="link" color="#717171">
-                      Show listing
-                    </Typography>
-                  </Typography>
-                }
-                center
-                bold
-              />
-            </Container>
-
-            <Whitespace marginTop={24} /> */}
-
               <CardDisplay
                 leftImageCircle={38}
                 leftImageSrc={user.image ? makeUri(user?.image) : moon}
