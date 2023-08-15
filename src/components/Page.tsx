@@ -78,6 +78,7 @@ const Page = (props: PageProps) => {
     return [
       global.page,
       hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding},
+      inline && {paddingHorizontal: 0},
       Platform.OS === 'ios' ? {paddingTop: 20} : {},
     ];
   }, [hasPadding, inline]);

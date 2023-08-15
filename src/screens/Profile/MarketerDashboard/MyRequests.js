@@ -4,15 +4,29 @@ import {useNavigation} from '@react-navigation/native';
 import {startCase, camelCase} from 'lodash';
 import auth from '@react-native-firebase/auth';
 
-import {Typography, Header, Container, Whitespace, CardDisplay, Loader} from '../../../components';
+import {
+  Typography,
+  Header,
+  Container,
+  Whitespace,
+  CardDisplay,
+  Loader,
+  Input,
+  Page,
+} from '../../../components';
 import hamburger from '../../../assets/images/hamburger.png';
+import arrowDown from '../../../assets/images/arrow-down.png';
+import {formatDate} from '../../../utils';
 
 const MyRequests = props => {
   const {
     route: {name},
   } = props;
 
+  const [start, setStart] = useState(formatDate(Date.now() - 24 * 3600 * 1000, 2));
+  const [end, setEnd] = useState(formatDate(new Date(), 2));
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -65,23 +79,26 @@ const MyRequests = props => {
   }, []);
 
   const load = useCallback(async () => {
+    setLoading(true);
+
     const response = await fetch(
-      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/claimedDemands?marketerId=${
+      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/marketerrequest?marketerID=${
         auth().currentUser.uid
-      }&pageSize=${30}`,
+      }&startDate=${formatDate(start, 3)}&endDate=${formatDate(end, 3)}&pageSize=30`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       },
-    ).catch(e => console.error('An error occurred while fetching demands', e));
+    ).catch(e => console.error('An error occurred while fetching requests', e));
     if (!response) {
       return;
     }
     const _data = await response.json();
     setData(_data.items);
-  }, []);
+    setLoading(false);
+  }, [start, end]);
 
   useEffect(() => {
     load();
@@ -93,27 +110,65 @@ const MyRequests = props => {
         {startCase(camelCase(name))}
       </Header>
 
-      <Container height="90%" color="#FFF">
-        <Whitespace paddingTop={10} />
+      <Page>
+        <Typography size={12} left width="100%">
+          Start Date
+        </Typography>
 
-        {data.length > 0 ? (
-          <Container type="row" width="90%" center>
-            <Whitespace width="1%" />
+        <Whitespace marginTop={-20} />
 
-            <FlatList
-              initialNumToRender={2}
-              maxToRenderPerBatch={2}
-              persistentScrollbar
-              showsVerticalScrollIndicator={false}
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-            />
-          </Container>
-        ) : (
-          <Loader />
-        )}
-      </Container>
+        <Input
+          placeholder="Start Date"
+          type="date"
+          name="start"
+          label="Start Date"
+          value={start}
+          onChange={setStart}
+          suffix={arrowDown}
+        />
+
+        <Whitespace marginTop={30} />
+
+        <Typography size={12} left width="100%">
+          End Date
+        </Typography>
+
+        <Whitespace marginTop={-20} />
+
+        <Input
+          placeholder="End Date"
+          type="date"
+          name="end"
+          label="End Date"
+          value={end}
+          onChange={setEnd}
+          suffix={arrowDown}
+        />
+
+        <Whitespace marginTop={30} />
+
+        <Container height="90%" color="#FFF">
+          <Whitespace paddingTop={10} />
+
+          {data.length > 0 ? (
+            <Container type="row" width="90%" center>
+              <Whitespace width="1%" />
+
+              <FlatList
+                initialNumToRender={2}
+                maxToRenderPerBatch={2}
+                persistentScrollbar
+                showsVerticalScrollIndicator={false}
+                data={data}
+                renderItem={renderItem}
+                keyExtractor={keyExtractor}
+              />
+            </Container>
+          ) : loading === true ? (
+            <Loader />
+          ) : null}
+        </Container>
+      </Page>
     </>
   );
 };
