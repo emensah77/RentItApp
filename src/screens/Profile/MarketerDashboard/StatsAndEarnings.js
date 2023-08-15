@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {Modal, FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {startCase, camelCase} from 'lodash';
 import auth from '@react-native-firebase/auth';
 
@@ -17,26 +16,19 @@ import {
   Image,
   Button,
 } from '../../../components';
-import hamburger from '../../../assets/images/hamburger.png';
 import arrowDown from '../../../assets/images/arrow-down.png';
 import pending from '../../../assets/images/markers/pending.png';
 import rejected from '../../../assets/images/markers/rejected.png';
 import approved from '../../../assets/images/markers/approved.png';
 import {formatDate} from '../../../utils';
 
-const StatsAndEarnings = props => {
-  const {
-    route: {name},
-  } = props;
-
+const StatsAndEarnings = () => {
   const [start, setStart] = useState(formatDate(Date.now() - 24 * 3600 * 1000, 2));
   const [end, setEnd] = useState(formatDate(new Date(), 2));
   const [data, setData] = useState({});
   const [open, setOpen] = useState('');
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const navigation = useNavigation();
 
   const onToggle = useCallback(
     item => () => {
@@ -145,123 +137,117 @@ const StatsAndEarnings = props => {
   }, [load]);
 
   return (
-    <>
-      <Header leftIcon={hamburger} onClose={navigation.toggleDrawer}>
-        {startCase(camelCase(name))}
-      </Header>
+    <Page type="drawer" header="Stats and Earnings">
+      <Typography size={12} left width="100%">
+        Start Date
+      </Typography>
 
-      <Page>
-        <Typography size={12} left width="100%">
-          Start Date
-        </Typography>
+      <Whitespace marginTop={-20} />
 
-        <Whitespace marginTop={-20} />
+      <Input
+        placeholder="Start Date"
+        type="date"
+        name="start"
+        label="Start Date"
+        value={start}
+        onChange={setStart}
+        suffix={arrowDown}
+      />
 
-        <Input
-          placeholder="Start Date"
-          type="date"
-          name="start"
-          label="Start Date"
-          value={start}
-          onChange={setStart}
-          suffix={arrowDown}
+      <Whitespace marginTop={30} />
+
+      <Typography size={12} left width="100%">
+        End Date
+      </Typography>
+
+      <Whitespace marginTop={-20} />
+
+      <Input
+        placeholder="End Date"
+        type="date"
+        name="end"
+        label="End Date"
+        value={end}
+        onChange={setEnd}
+        suffix={arrowDown}
+      />
+
+      <Whitespace marginTop={30} />
+
+      <Container
+        type="chipDeSelected"
+        color="#FFF"
+        height={100}
+        width="100%"
+        onPress={onToggle('pending')}>
+        <CardDisplay
+          name={<Image src={pending} width={20} height={20} />}
+          location={
+            <Typography left size={18} weight="700" width="100%">
+              Pending
+            </Typography>
+          }
+          status={
+            <Typography numberOfLines={1} left size={14} weight="500" width="200%">
+              {loading ? '...' : data?.pending?.count || 0} Homes
+            </Typography>
+          }
+          center
+          bold
         />
+      </Container>
 
-        <Whitespace marginTop={30} />
+      <Whitespace marginTop={30} />
 
-        <Typography size={12} left width="100%">
-          End Date
-        </Typography>
-
-        <Whitespace marginTop={-20} />
-
-        <Input
-          placeholder="End Date"
-          type="date"
-          name="end"
-          label="End Date"
-          value={end}
-          onChange={setEnd}
-          suffix={arrowDown}
+      <Container
+        type="chipDeSelected"
+        color="#FFF"
+        height={100}
+        width="100%"
+        onPress={onToggle('rejected')}>
+        <CardDisplay
+          name={<Image src={rejected} width={20} height={20} />}
+          location={
+            <Typography left size={18} weight="700" width="100%">
+              Rejected
+            </Typography>
+          }
+          status={
+            <Typography numberOfLines={1} left size={14} weight="500" width="200%">
+              {loading ? '...' : data?.rejected?.count || 0} Homes
+            </Typography>
+          }
+          center
+          bold
         />
+      </Container>
 
-        <Whitespace marginTop={30} />
+      <Whitespace marginTop={30} />
 
-        <Container
-          type="chipDeSelected"
-          color="#FFF"
-          height={100}
-          width="100%"
-          onPress={onToggle('pending')}>
-          <CardDisplay
-            name={<Image src={pending} width={20} height={20} />}
-            location={
-              <Typography left size={18} weight="700" width="100%">
-                Pending
-              </Typography>
-            }
-            status={
-              <Typography numberOfLines={1} left size={14} weight="500" width="200%">
-                {loading ? '...' : data?.pending?.count || 0} Homes
-              </Typography>
-            }
-            center
-            bold
-          />
-        </Container>
+      <Container
+        type="chipDeSelected"
+        color="#FFF"
+        height={100}
+        width="100%"
+        onPress={onToggle('approved')}>
+        <CardDisplay
+          name={<Image src={approved} width={20} height={20} />}
+          location={
+            <Typography left size={18} weight="700" width="100%">
+              Approved
+            </Typography>
+          }
+          status={
+            <Typography numberOfLines={1} left size={14} weight="500" width="200%">
+              {loading ? '...' : data?.approved?.count || 0} Homes
+            </Typography>
+          }
+          center
+          bold
+        />
+      </Container>
 
-        <Whitespace marginTop={30} />
-
-        <Container
-          type="chipDeSelected"
-          color="#FFF"
-          height={100}
-          width="100%"
-          onPress={onToggle('rejected')}>
-          <CardDisplay
-            name={<Image src={rejected} width={20} height={20} />}
-            location={
-              <Typography left size={18} weight="700" width="100%">
-                Rejected
-              </Typography>
-            }
-            status={
-              <Typography numberOfLines={1} left size={14} weight="500" width="200%">
-                {loading ? '...' : data?.rejected?.count || 0} Homes
-              </Typography>
-            }
-            center
-            bold
-          />
-        </Container>
-
-        <Whitespace marginTop={30} />
-
-        <Container
-          type="chipDeSelected"
-          color="#FFF"
-          height={100}
-          width="100%"
-          onPress={onToggle('approved')}>
-          <CardDisplay
-            name={<Image src={approved} width={20} height={20} />}
-            location={
-              <Typography left size={18} weight="700" width="100%">
-                Approved
-              </Typography>
-            }
-            status={
-              <Typography numberOfLines={1} left size={14} weight="500" width="200%">
-                {loading ? '...' : data?.approved?.count || 0} Homes
-              </Typography>
-            }
-            center
-            bold
-          />
-        </Container>
-
-        <Whitespace marginTop={30} />
-      </Page>
+      <Whitespace marginTop={30} />
 
       {!!open && (
         <Modal animationType="slide" visible>
@@ -292,7 +278,7 @@ const StatsAndEarnings = props => {
           </Page>
         </Modal>
       )}
-    </>
+    </Page>
   );
 };
 

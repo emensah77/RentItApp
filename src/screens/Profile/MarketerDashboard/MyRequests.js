@@ -1,12 +1,10 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {startCase, camelCase} from 'lodash';
 import auth from '@react-native-firebase/auth';
 
 import {
   Typography,
-  Header,
   Container,
   Whitespace,
   CardDisplay,
@@ -14,21 +12,14 @@ import {
   Input,
   Page,
 } from '../../../components';
-import hamburger from '../../../assets/images/hamburger.png';
 import arrowDown from '../../../assets/images/arrow-down.png';
 import {formatDate} from '../../../utils';
 
-const MyRequests = props => {
-  const {
-    route: {name},
-  } = props;
-
+const MyRequests = () => {
   const [start, setStart] = useState(formatDate(Date.now() - 24 * 3600 * 1000, 2));
   const [end, setEnd] = useState(formatDate(new Date(), 2));
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const navigation = useNavigation();
 
   const keyExtractor = useCallback(item => item.DemandID, []);
 
@@ -92,9 +83,11 @@ const MyRequests = props => {
         },
       },
     ).catch(e => console.error('An error occurred while fetching requests', e));
-    if (!response) {
+    if (!response || !response.ok) {
+      setLoading(false);
       return;
     }
+
     const _data = await response.json();
     setData(_data.items);
     setLoading(false);
@@ -105,71 +98,65 @@ const MyRequests = props => {
   }, [load]);
 
   return (
-    <>
-      <Header leftIcon={hamburger} onClose={navigation.toggleDrawer}>
-        {startCase(camelCase(name))}
-      </Header>
+    <Page type="drawer" header="My Requests">
+      <Typography size={12} left width="100%">
+        Start Date
+      </Typography>
 
-      <Page>
-        <Typography size={12} left width="100%">
-          Start Date
-        </Typography>
+      <Whitespace marginTop={-20} />
 
-        <Whitespace marginTop={-20} />
+      <Input
+        placeholder="Start Date"
+        type="date"
+        name="start"
+        label="Start Date"
+        value={start}
+        onChange={setStart}
+        suffix={arrowDown}
+      />
 
-        <Input
-          placeholder="Start Date"
-          type="date"
-          name="start"
-          label="Start Date"
-          value={start}
-          onChange={setStart}
-          suffix={arrowDown}
-        />
+      <Whitespace marginTop={30} />
 
-        <Whitespace marginTop={30} />
+      <Typography size={12} left width="100%">
+        End Date
+      </Typography>
 
-        <Typography size={12} left width="100%">
-          End Date
-        </Typography>
+      <Whitespace marginTop={-20} />
 
-        <Whitespace marginTop={-20} />
+      <Input
+        placeholder="End Date"
+        type="date"
+        name="end"
+        label="End Date"
+        value={end}
+        onChange={setEnd}
+        suffix={arrowDown}
+      />
 
-        <Input
-          placeholder="End Date"
-          type="date"
-          name="end"
-          label="End Date"
-          value={end}
-          onChange={setEnd}
-          suffix={arrowDown}
-        />
+      <Whitespace marginTop={30} />
 
-        <Whitespace marginTop={30} />
+      <Container height="90%" color="#FFF">
+        <Whitespace paddingTop={10} />
 
-        <Container height="90%" color="#FFF">
-          <Whitespace paddingTop={10} />
+        {data.length > 0 ? (
+          <Container type="row" width="90%" center>
+            <Whitespace width="1%" />
 
-          {data.length > 0 ? (
-            <Container type="row" width="90%" center>
-              <Whitespace width="1%" />
-
-              <FlatList
-                initialNumToRender={2}
-                maxToRenderPerBatch={2}
-                persistentScrollbar
-                showsVerticalScrollIndicator={false}
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-              />
-            </Container>
-          ) : loading === true ? (
-            <Loader />
-          ) : null}
-        </Container>
-      </Page>
-    </>
+            <FlatList
+              initialNumToRender={2}
+              maxToRenderPerBatch={2}
+              persistentScrollbar
+              showsVerticalScrollIndicator={false}
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+            />
+          </Container>
+        ) : loading === true ? (
+          <Loader />
+        ) : null}
+      </Container>
+    </Page>
   );
 };
 
