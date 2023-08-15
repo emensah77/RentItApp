@@ -26,7 +26,7 @@ const MarketerDashboard = () => {
 
         <Drawer.Screen name="MyRequests" component={MyRequests} options={noHeader} />
 
-        <Drawer.Screen name="AllDemands" component={AllDemands} options={noHeader} />
+        <Drawer.Screen name="All Demands" component={AllDemands} options={noHeader} />
 
         <Drawer.Screen name="My Claims" component={MyClaims} options={noHeader} />
 
