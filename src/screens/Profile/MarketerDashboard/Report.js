@@ -73,7 +73,8 @@ const Report = () => {
 
     const newData = {...data};
     if (newData.role.value.toLowerCase() === 'marketer') {
-      delete newData.supervisor;
+      delete newData.totalMarketers;
+      delete newData.activeMarketers;
     } else if (newData.role.value.toLowerCase() === 'supervisor') {
       delete newData.supervisor;
     }
