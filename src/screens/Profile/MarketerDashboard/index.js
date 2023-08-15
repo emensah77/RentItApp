@@ -21,12 +21,12 @@ const MarketerDashboard = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      <Drawer.Navigator initialRouteName="Report">
+      <Drawer.Navigator initialRouteName="MarketerHome">
         <Drawer.Screen name="MarketerHome" component={MarketerHome} options={noHeader} />
 
-        <Drawer.Screen name="My Requests" component={MyRequests} options={noHeader} />
+        <Drawer.Screen name="MyRequests" component={MyRequests} options={noHeader} />
 
-        <Drawer.Screen name="All Demands" component={AllDemands} options={noHeader} />
+        <Drawer.Screen name="AllDemands" component={AllDemands} options={noHeader} />
 
         <Drawer.Screen name="My Claims" component={MyClaims} options={noHeader} />
 
