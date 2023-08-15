@@ -7,6 +7,7 @@ import sha256 from 'sha256';
 import {STREAM_CHAT_KEY} from 'react-native-dotenv';
 
 import {getPost} from '../../graphql/queries';
+import {updatePost} from '../../graphql/mutations';
 
 import {
   Page,
@@ -33,35 +34,75 @@ const Chat = props => {
   const {
     route: {
       params: {home_id} = {
-        home_id: '', // 'ac1d2480-4b86-4d19-87bd-4674e433b179',
+        home_id: '',
+        // Regular: '7225607a-fd99-4f33-a32f-03de3dd04974'
+        // Home with no marketer ID: d556eed0-e704-47c8-9f5c-64da6447a186
+        // 'ac1d2480-4b86-4d19-87bd-4674e433b179',
       },
     },
   } = props;
 
   const [sender, setSender] = useState({});
   const [receiver, setReceiver] = useState({});
+  const [supervisorID, setSupervisorID] = useState('');
   const [home, setHome] = useState({});
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
 
+  const getRandomMarketer = useCallback(async () => {
+    try {
+      const marketersSnapshot = await firestore()
+        .collection('users')
+        .where('marketer_status', '==', 'ACCEPTED')
+        .get();
+
+      const marketers = marketersSnapshot.docs.map(doc => doc.data());
+      return marketers[Math.floor(Math.random() * marketers.length)];
+    } catch (e) {
+      console.error('Error fetching default marketer:', e);
+      return {};
+    }
+  }, []);
+
+  const getRandomDefaultSupervisor = useCallback(async () => {
+    try {
+      const defaultSupervisorsSnapshot = await firestore().collection('defaultSupervisors').get();
+
+      const defaultSupervisors = defaultSupervisorsSnapshot.docs.map(doc => ({
+        ...doc.data(),
+        uid: doc.id,
+      }));
+
+      return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)];
+    } catch (e) {
+      console.error('Error fetching default supervisor:', e);
+      return {};
+    }
+  }, []);
+
   const send = useCallback(async () => {
     if (!channel) {
       return;
     }
 
+    const timestamp = new Date().getTime();
+
     await channel.sendMessage({
       text: message,
-      timestamp: new Date().getTime(),
+      timestamp,
       sender_id: sender.uid,
       receiver_id: receiver.uid,
-      // Use this to create a thread, recall
-      // that the message will go into the
-      // parent message specified using `parent_id`
-      // parent_id: parent.message.id,
     });
-  }, [channel, message, sender, receiver]);
+
+    await channel.sendMessage({
+      text: message,
+      timestamp,
+      sender_id: sender.uid,
+      receiver_id: supervisorID,
+    });
+  }, [channel, message, sender, receiver, supervisorID]);
 
   useEffect(() => {
     const client = StreamChat.getInstance(STREAM_CHAT_KEY);
@@ -71,9 +112,12 @@ const Chat = props => {
 
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
-      const receiver_id = _home?.user?.id;
+      let receiver_id = _home?.userID;
+
       if (!_home || !receiver_id) {
-        return;
+        const marketer = await getRandomMarketer();
+        receiver_id = marketer.uid;
+        await API.graphql(graphqlOperation(updatePost, {user: {..._home, userID: receiver_id}}));
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
 
@@ -84,11 +128,23 @@ const Chat = props => {
         .get()
         .catch(console.error);
       const recipient = _receiver?.data();
-      if (!recipient) {
+      let supervisor_id = recipient?.supervisor_id;
+
+      if (!recipient || !supervisor_id) {
+        const supervisor = await getRandomDefaultSupervisor();
+        supervisor_id = supervisor.uid;
+        await firestore()
+          .collection('users')
+          .doc(receiver_id)
+          .set({
+            ...recipient,
+            supervisor_id,
+          })
+          .catch(e => console.error('Attempt to update supervisor ID failed', e));
         console.error('User not found', _receiver, recipient);
-        return;
       }
       recipient.uid = receiver_id;
+      setSupervisorID(supervisor_id);
 
       __DEV__ &&
         console.debug(
@@ -141,7 +197,7 @@ const Chat = props => {
           ...recipient,
           name: recipient.displayName,
           image: recipient.userImg,
-          members: [user.uid, recipient.uid],
+          members: [user.uid, recipient.uid, supervisor_id],
         },
       );
       await _channel.updatePartial({set: {home_id}});
@@ -166,10 +222,10 @@ const Chat = props => {
         setMessage('');
         setMessages(oldMessages => [event.message, ...oldMessages]);
       });
-    })().catch(e => console.error('There was an issue loading the chat', e));
+    })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => client.disconnectUser(1);
-  }, [home_id]);
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id]);
 
   const makeUri = useCallback(uri => ({uri}), []);
 
