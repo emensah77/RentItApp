@@ -43,7 +43,7 @@ const Page = (props: PageProps) => {
     accessibilityLabel,
     backgroundColor = colors.palette.textInverse,
     hasPadding = true,
-    statusBarStyle = 'dark',
+    statusBarStyle = 'dark-content',
     statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
