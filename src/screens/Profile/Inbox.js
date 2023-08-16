@@ -24,6 +24,7 @@ const Inbox = () => {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [notifications, setNotifications] = useState([
+    // Use for testing ONLY!
     // {
     //   postId: 3,
     //   title: 'Hi!',
@@ -50,36 +51,36 @@ const Inbox = () => {
 
   const content = useMemo(
     () => [
-      // {
-      //   title: `Messages${
-      //     messages.filter(item => item.read === false).length > 0
-      //       ? ` (${messages.filter(item => item.read === false).length})`
-      //       : ''
-      //   }`,
-      //   content: loading ? (
-      //     <PageSpinner />
-      //   ) : messages.length === 0 ? (
-      //     <Typography>No messages to see yet.</Typography>
-      //   ) : (
-      //     messages.map(({id, name, location, description, status, date, read, uri}, i) => (
-      //       <React.Fragment key={name}>
-      //         <CardDisplay
-      //           onPress={goToChat(id)}
-      //           leftImageCircle={30}
-      //           leftImageSrc={makeUri(uri)}
-      //           name={name}
-      //           location={location}
-      //           description={description}
-      //           status={status}
-      //           date={date}
-      //           bold={read}
-      //         />
+      {
+        title: `Messages${
+          messages.filter(item => item.read === false).length > 0
+            ? ` (${messages.filter(item => item.read === false).length})`
+            : ''
+        }`,
+        content: loading ? (
+          <PageSpinner />
+        ) : messages.length === 0 ? (
+          <Typography>No messages to see yet.</Typography>
+        ) : (
+          messages.map(({id, name, location, description, status, date, read, uri}, i) => (
+            <React.Fragment key={name}>
+              <CardDisplay
+                onPress={goToChat(id)}
+                leftImageCircle={30}
+                leftImageSrc={makeUri(uri)}
+                name={name}
+                location={location}
+                description={description}
+                status={status}
+                date={date}
+                bold={read}
+              />
 
-      //         {i !== messages.length - 1 ? <Divider small /> : null}
-      //       </React.Fragment>
-      //     ))
-      //   ),
-      // },
+              {i !== messages.length - 1 ? <Divider small /> : null}
+            </React.Fragment>
+          ))
+        ),
+      },
       {
         title: `Notifications${
           notifications.filter(item => item.read === false).length > 0

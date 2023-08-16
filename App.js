@@ -61,12 +61,10 @@ const App = () => {
   return (
     <>
       <Provider store={store}>
-        <ApplicationProvider {...eva} theme={eva.light}>
-          <WishListProvider>
-            <StatusBar barStyle={barStyle} />
-            <Providers />
-          </WishListProvider>
-        </ApplicationProvider>
+        <WishListProvider>
+          <StatusBar barStyle={barStyle} />
+          <Providers />
+        </WishListProvider>
       </Provider>
     </>
   );

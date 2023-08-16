@@ -4,10 +4,11 @@
  *
  * @format
  */
+const exclusionList = require('metro-config/src/defaults/exclusionList');
 
 module.exports = {
   resolver: {
-    blacklistRE: /#current-cloud-backend\/.*/,
+    blacklistRE: exclusionList([/#current-cloud-backend\/.*/]),
   },
 
   transformer: {

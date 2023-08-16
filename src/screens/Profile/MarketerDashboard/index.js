@@ -21,7 +21,7 @@ const MarketerDashboard = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      <Drawer.Navigator initialRouteName="MarketerHome">
+      <Drawer.Navigator initialRouteName="MyRequests">
         <Drawer.Screen name="MarketerHome" component={MarketerHome} options={noHeader} />
 
         <Drawer.Screen name="MyRequests" component={MyRequests} options={noHeader} />
