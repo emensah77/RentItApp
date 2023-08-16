@@ -254,7 +254,7 @@ const MarketerHome = () => {
       <Location noRender getPosition={getPosition} />
 
       <MapView
-        zoomEnabledshowsUserLocation
+        showsUserLocation
         followsUserLocation
         zoomEnabled
         onPress={collapse}

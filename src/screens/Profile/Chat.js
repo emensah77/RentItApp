@@ -191,7 +191,7 @@ const Chat = props => {
           members: [user.uid, recipient.uid, supervisor_id],
         },
       );
-      await _channel.updatePartial({set: {home_id}});
+      // await _channel.updatePartial({set: {home_id}});
 
       // TODO:
       // Forbid banned users from continuing?
@@ -238,7 +238,7 @@ const Chat = props => {
             <>
               {'\n'}
               <Typography type="regular" size={11} left color="#717171">
-                Response time: 1 hour
+                Chat supervised by {supervisorID}
               </Typography>
             </>
           ) : null}

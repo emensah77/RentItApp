@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useCallback, useState, useEffect, useMemo, useRef} from 'react';
 import {ViewStyle, View, ActivityIndicator, Text} from 'react-native';
 import {Page} from '@components';
@@ -121,15 +123,9 @@ export const SearchResultsScreen = _props => {
 
   const personalizedHomes = useCallback(
     async (_searchAfter: string | null) => {
-      const viewPort = {
-        northeast: {
-          lat: location?.viewPort?.northeast?.lat || null,
-          lon: location?.viewPort?.northeast?.lng || null,
-        },
-        southwest: {
-          lat: location?.viewPort?.southwest?.lat || null,
-          lon: location?.viewPort?.southwest?.lng || null,
-        },
+      const region = {
+        latitude: location?.searchRegion?.lat || null,
+        longitude: location?.searchRegion?.lng || null,
       };
 
       try {
@@ -141,7 +137,7 @@ export const SearchResultsScreen = _props => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              region: viewPort,
+              region,
               userLocation: {latitude, longitude},
               searchQuery: location?.viewport ? 'nice apartment' : searchText,
               searchAfter: _searchAfter,
@@ -231,11 +227,12 @@ export const SearchResultsScreen = _props => {
         setPostsLoaded(true);
       } else {
         setPosts([]);
+        setLoading(false);
       }
     };
     setLoading(false);
 
-    if (!isDataPreloaded && latitude && longitude) {
+    if (!isDataPreloaded && latitude && longitude && searchAfter === null) {
       fetchInitialData();
     } else {
       setPostsLoaded(true);
@@ -332,10 +329,6 @@ export const SearchResultsScreen = _props => {
 
   const onMapReady = useCallback(() => setMapReady(true), []);
 
-  if (loading) {
-    return renderLoader;
-  }
-
   return (
     <Page
       safeAreaEdges={memoizedSafeAreaEdges}
@@ -379,12 +372,17 @@ export const SearchResultsScreen = _props => {
         ))}
         {/* @ts-ignore */}
       </MapView.Animated>
+
       <BottomSheet
         ref={bottomSheetRef}
         index={1} // To make it initially snap to 50% of screen height
         snapPoints={snapPoints}>
         <View style={styles.homesCountContainer}>
-          <Text style={styles.homesCountText}>Over {homesCount} homes</Text>
+          {!homesCount ? (
+            <Text style={styles.homesCountText}>Loading...</Text>
+          ) : (
+            <Text style={styles.homesCountText}>Over {homesCount} homes</Text>
+          )}
         </View>
 
         <BottomSheetFlatList
