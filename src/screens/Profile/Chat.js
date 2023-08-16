@@ -7,6 +7,7 @@ import sha256 from 'sha256';
 import {STREAM_CHAT_KEY} from 'react-native-dotenv';
 
 import {getPost} from '../../graphql/queries';
+import {updatePost} from '../../graphql/mutations';
 
 import {
   Page,
@@ -33,86 +34,90 @@ const Chat = props => {
   const {
     route: {
       params: {home_id} = {
-        home_id: '', // 'ac1d2480-4b86-4d19-87bd-4674e433b179',
+        home_id: '',
+        // Regular: '7225607a-fd99-4f33-a32f-03de3dd04974'
+        // Home with no marketer ID: d556eed0-e704-47c8-9f5c-64da6447a186
+        // 'ac1d2480-4b86-4d19-87bd-4674e433b179',
       },
     },
   } = props;
 
   const [sender, setSender] = useState({});
   const [receiver, setReceiver] = useState({});
-  const [supervisor, setSupervisor] = useState({});
+  const [supervisorID, setSupervisorID] = useState('');
   const [home, setHome] = useState({});
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
 
-  const send = useCallback(async () => {
-    if (!channel) {
-      return;
-    }
-
-    await channel.sendMessage({
-      text: message,
-      timestamp: new Date().getTime(),
-      sender_id: sender.uid,
-      receiver_id: receiver.uid,
-      // Use this to create a thread, recall
-      // that the message will go into the
-      // parent message specified using `parent_id`
-      // parent_id: parent.message.id,
-    });
-  }, [channel, message, sender, receiver]);
-
-  const fetchRandomDefaultSupervisor = useCallback(async () => {
-    const defaultSupervisorsSnapshot = await firestore().collection('defaultSupervisors').get();
-    const defaultSupervisors = defaultSupervisorsSnapshot.docs.map(doc => ({
-      ...doc.data(),
-    }));
-    return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)];
-  }, []);
-
-  const fetchRandomDefaultMarketer = useCallback(async () => {
+  const getRandomMarketer = useCallback(async () => {
     try {
       const marketersSnapshot = await firestore()
         .collection('users')
         .where('marketer_status', '==', 'ACCEPTED')
         .get();
 
-      const marketers = marketersSnapshot.docs.map(doc => ({
-        ...doc.data(),
-        uid: doc.id, // Assigning the document ID as uid for consistency
-      }));
-
-      if (marketers.length === 0) {
-        throw new Error('No marketers found with ACCEPTED status.');
-      }
-
+      const marketers = marketersSnapshot.docs.map(doc => doc.data());
       return marketers[Math.floor(Math.random() * marketers.length)];
-    } catch (error) {
-      console.error('Error fetching default marketer:', error);
-      return null; // Return null or handle this case as you see fit
+    } catch (e) {
+      console.error('Error fetching default marketer:', e);
+      return {};
     }
   }, []);
+
+  const getRandomDefaultSupervisor = useCallback(async () => {
+    try {
+      const defaultSupervisorsSnapshot = await firestore().collection('defaultSupervisors').get();
+
+      const defaultSupervisors = defaultSupervisorsSnapshot.docs.map(doc => ({
+        ...doc.data(),
+        uid: doc.id,
+      }));
+
+      return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)];
+    } catch (e) {
+      console.error('Error fetching default supervisor:', e);
+      return {};
+    }
+  }, []);
+
+  const send = useCallback(async () => {
+    if (!channel) {
+      return;
+    }
+
+    const timestamp = new Date().getTime();
+
+    await channel.sendMessage({
+      text: message,
+      timestamp,
+      sender_id: sender.uid,
+      receiver_id: receiver.uid,
+    });
+
+    await channel.sendMessage({
+      text: message,
+      timestamp,
+      sender_id: sender.uid,
+      receiver_id: supervisorID,
+    });
+  }, [channel, message, sender, receiver, supervisorID]);
 
   useEffect(() => {
     const client = StreamChat.getInstance(STREAM_CHAT_KEY);
 
     (async () => {
       setLoading(true);
+
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
       let receiver_id = _home?.userID;
+
       if (!_home || !receiver_id) {
-        // Fetch a default marketer if there's no associated user
-        const defaultMarketer = await fetchRandomDefaultMarketer();
-        if (defaultMarketer) {
-          receiver_id = defaultMarketer.uid;
-        } else {
-          // If there's no marketer available, exit the function early
-          setLoading(false);
-          return;
-        }
+        const marketer = await getRandomMarketer();
+        receiver_id = marketer.uid;
+        await API.graphql(graphqlOperation(updatePost, {user: {..._home, userID: receiver_id}}));
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
 
@@ -123,23 +128,23 @@ const Chat = props => {
         .get()
         .catch(console.error);
       const recipient = _receiver?.data();
-      if (!recipient) {
+      let supervisor_id = recipient?.supervisor_id;
+
+      if (!recipient || !supervisor_id) {
+        const supervisor = await getRandomDefaultSupervisor();
+        supervisor_id = supervisor.uid;
+        await firestore()
+          .collection('users')
+          .doc(receiver_id)
+          .set({
+            ...recipient,
+            supervisor_id,
+          })
+          .catch(e => console.error('Attempt to update supervisor ID failed', e));
         console.error('User not found', _receiver, recipient);
-        setLoading(false);
-        return;
       }
       recipient.uid = receiver_id;
-
-      // Fetching supervisor info
-      let _supervisor;
-      const supervisorDoc = await firestore()
-        .collection('users')
-        .doc(recipient.supervisor_id)
-        .get();
-      _supervisor = supervisorDoc?.data();
-      if (!_supervisor) {
-        _supervisor = await fetchRandomDefaultSupervisor();
-      }
+      setSupervisorID(supervisor_id);
 
       __DEV__ &&
         console.debug(
@@ -152,7 +157,6 @@ const Chat = props => {
         );
 
       await Utils.promiseAll(
-        // eslint-disable-next-line no-unused-vars
         async (item, i) => {
           const request = await fetch(
             'https://bnymw2nuxn6zstrhiiz4nibuum0zkovn.lambda-url.us-east-2.on.aws/',
@@ -168,10 +172,6 @@ const Chat = props => {
           );
           const response = await request.json();
 
-          // Disconnect the current user before connecting a new one
-          await client.disconnectUser();
-
-          // Now, connect the new user
           await client
             .connectUser(
               {
@@ -182,32 +182,24 @@ const Chat = props => {
               response.token,
             )
             .catch(console.error);
-        },
-        [recipient, user, _supervisor],
-      );
 
-      // eslint-disable-next-line no-unused-vars
-      const {type, ...recipientWithoutType} = recipient;
+          if (i === 0) {
+            await client.disconnectUser(1);
+          }
+        },
+        [recipient, user],
+      );
 
       const _channel = client.channel(
         'messaging',
         sha256(`${user.uid}-${home_id}-${recipient.uid}`),
         {
-          ...recipientWithoutType,
+          ...recipient,
           name: recipient.displayName,
           image: recipient.userImg,
-          members: [user.uid, recipient.uid, _supervisor.uid],
+          members: [user.uid, recipient.uid, supervisor_id],
         },
       );
-      // Check if channel exists
-      const channelState = await _channel.query();
-
-      if (!channelState.channel.id) {
-        // If channel does not exist, create it
-        await _channel.create();
-      }
-
-      // Now update the channel
       await _channel.updatePartial({set: {home_id}});
 
       // TODO:
@@ -220,7 +212,6 @@ const Chat = props => {
       setMessages(result.messages.reverse());
       setSender(user);
       setReceiver(recipient);
-      setSupervisor(_supervisor);
       setHome(_home);
       setChannel(_channel);
       setLoading(false);
@@ -231,18 +222,18 @@ const Chat = props => {
         setMessage('');
         setMessages(oldMessages => [event.message, ...oldMessages]);
       });
-    })().catch(e => console.error('There was an issue loading the chat', e));
+    })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => client.disconnectUser(1);
-  }, [fetchRandomDefaultMarketer, fetchRandomDefaultSupervisor, home_id]);
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id]);
 
   const makeUri = useCallback(uri => ({uri}), []);
 
   let currentDay, nextDay;
 
-  // if (!receiver.displayName) {
-  //   return <PageSpinner />;
-  // }
+  if (!receiver.displayName) {
+    return <PageSpinner />;
+  }
 
   return (
     <Page
@@ -252,17 +243,32 @@ const Chat = props => {
       header={
         <Typography type="heading" left>
           {receiver.displayName}
-
-          <>
-            {'\n'}
-            <Typography type="regular" size={11} left color="#717171">
-              Chat supervised by: {supervisor.displayName}
-            </Typography>
-          </>
+          {receiver.displayName ? (
+            <>
+              {'\n'}
+              <Typography type="regular" size={11} left color="#717171">
+                Chat supervised by {supervisorID}
+              </Typography>
+            </>
+          ) : null}
         </Typography>
       }
       footer={
         <>
+          {/* <CardDisplay
+            leftImageCircle={38}
+            leftImageSrc={moon}
+            description={
+              <Typography type="levelTwoThick" size={12} color="#959595">
+                It&apos;s<Typography color="#717171"> 4:32 AM </Typography>
+                for your Host. They will see your messages when they are back online
+              </Typography>
+            }
+            bold={false}
+          />
+
+          <Whitespace marginTop={8} /> */}
+
           <Input
             inline
             placeholder="Write a message"
@@ -349,6 +355,27 @@ const Chat = props => {
 
           return (
             <React.Fragment key={msg.id}>
+              {/* <Container row center type="chip">
+              <CardDisplay
+                leftImageWidth={16}
+                leftImageHeight={16}
+                leftImageSrc={logo}
+                numberOfLines={2}
+                description={
+                  <Typography type="levelOneThick" size={12} color="#717171">
+                    Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
+                    <Typography type="link" color="#717171">
+                      Show listing
+                    </Typography>
+                  </Typography>
+                }
+                center
+                bold
+              />
+            </Container>
+
+            <Whitespace marginTop={24} /> */}
+
               <CardDisplay
                 leftImageCircle={38}
                 leftImageSrc={user.image ? makeUri(user?.image) : moon}
@@ -381,6 +408,96 @@ const Chat = props => {
           <PageSpinner />
         </Container>
       )}
+      {/* <Typography type="levelOneThick" size={12} color="#717171">
+        Aug 23, 2022
+      </Typography>
+
+      <Whitespace marginTop={24} />
+
+      <Container row center type="chip">
+        <CardDisplay
+          leftImageWidth={16}
+          leftImageHeight={16}
+          leftImageSrc={logo}
+          numberOfLines={2}
+          description={
+            <Typography type="levelOneThick" size={12} color="#717171">
+              Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
+              <Typography type="link" color="#717171">
+                Show listing
+              </Typography>
+            </Typography>
+          }
+          center
+          bold
+        />
+      </Container>
+
+      <Whitespace marginTop={24} />
+
+      <CardDisplay
+        leftImageCircle={38}
+        leftImageSrc={moon}
+        name="Dolly 2"
+        location="4:26 PM"
+        description="Looking forward to staying"
+        bold={false}
+      />
+
+      <Whitespace marginTop={24} />
+
+      <Container row center type="chip">
+        <CardDisplay
+          leftImageWidth={16}
+          leftImageHeight={16}
+          leftImageSrc={logo}
+          numberOfLines={2}
+          description={
+            <Typography type="levelOneThick" size={12} color="#717171">
+              Your reservation is confirmed for 1 guest on Feb 13 - 14.{' '}
+              <Typography type="link" color="#717171">
+                Show reservation
+              </Typography>
+            </Typography>
+          }
+          center
+          bold
+        />
+      </Container>
+
+      <Whitespace marginTop={24} />
+
+      <CardDisplay
+        leftImageCircle={38}
+        leftImageSrc={moon}
+        name="Dolly"
+        location="4:26 PM"
+        description="Sorry I need to cancel"
+        bold={false}
+      />
+
+      <Whitespace marginTop={16} />
+
+      <Typography type="levelOneThick" size={12} color="#717171">
+        UNREAD
+      </Typography>
+
+      <Whitespace marginTop={24} />
+
+      <Container row center type="chip">
+        <CardDisplay
+          leftImageWidth={16}
+          leftImageHeight={16}
+          leftImageSrc={logo}
+          description={
+            <Typography type="levelOneThick" size={12} color="#717171">
+              Reservation cancelled by guest
+            </Typography>
+          }
+          center
+          bold
+        />
+      </Container> */}
     </Page>
   );
 };

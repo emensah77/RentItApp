@@ -180,7 +180,7 @@ export const SearchModal = (props: ModalProps) => {
           <SizedBox height={20} />
           {type === 'location' ? (
             <GooglePlacesAutocomplete
-              placeholder="Search destinations"
+              placeholder="Type where or what you want"
               fetchDetails
               styles={autoCompleteStyle}
               onPress={onComplete}
@@ -191,7 +191,7 @@ export const SearchModal = (props: ModalProps) => {
             />
           ) : type === 'calender' ? (
             <View>
-              <Text text="When's your trip?" weight="bold" size="xl" />
+              <Text text="When are you moving in?" weight="bold" size="xl" />
               <Calendar
                 locale={CUSTOM_LOCALE}
                 isMonthFirst

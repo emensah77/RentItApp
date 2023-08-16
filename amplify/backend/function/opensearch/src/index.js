@@ -558,31 +558,28 @@ async function search(params) {
     });
   }
 
-  if (
-    region
-    && region.northeast
-    && region.northeast.lat !== null
-    && region.northeast.lon !== null
-    && region.southwest
-    && region.southwest.lat !== null
-    && region.southwest.lon !== null
-  ) {
+  if (region && region.latitude && region.longitude) {
     searchQueryBody.query.bool = {
       filter: {
-        geo_bounding_box: {
+        geo_distance: {
+          distance: '5km',
           location: {
-            top_left: {
-              lat: region.northeast.lat,
-              lon: region.northeast.lon,
-            },
-            bottom_right: {
-              lat: region.southwest.lat,
-              lon: region.southwest.lon,
-            },
+            lat: region.latitude,
+            lon: region.longitude,
           },
         },
       },
     };
+    searchQueryBody.sort.push({
+      _geo_distance: {
+        location: {
+          lat: region.latitude,
+          lon: region.longitude,
+        },
+        order: 'asc',
+        unit: 'km',
+      },
+    });
   } else if (searchQuery) {
     searchQueryBody.query.bool = {
       should: [

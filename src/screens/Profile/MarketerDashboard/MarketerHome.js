@@ -53,6 +53,7 @@ const MarketerHome = props => {
   const [searchAfter, setSearchAfter] = useState(null);
   const [markerData, setMarkerData] = useState();
   const [mode, setMode] = useState('default');
+  const [isMapReady, setMapReady] = useState(false);
 
   const top = useRef(new Animated.Value(0.65 * screen.height)).current;
   const navigation = useNavigation();
@@ -260,12 +261,12 @@ const MarketerHome = props => {
         {name}
       </Header>
 
-      {loading && <PageSpinner />}
+      {(loading || !isMapReady) && <PageSpinner />}
 
       <Location noRender getPosition={getPosition} />
 
       <MapView
-        zoomEnabledshowsUserLocation
+        showsUserLocation
         followsUserLocation
         zoomEnabled
         onPress={collapse}
@@ -273,6 +274,11 @@ const MarketerHome = props => {
         region={region || initialMarker(screen)}
         style={style}
         provider={PROVIDER_GOOGLE}
+        onMapReady={() => {
+          console.log('Map is ready before', isMapReady);
+          setMapReady(true);
+          console.log('Map is ready after', isMapReady);
+        }}
         minZoomLevel={12}>
         {markers.map(marker => (
           <Marker

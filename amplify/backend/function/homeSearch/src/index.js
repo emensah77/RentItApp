@@ -232,6 +232,104 @@ exports.handler = async (event) => {
     };
   }
 
+  if (httpMethod === 'POST' && path.endsWith('/reports')) {
+    const requestDetails = JSON.parse(event.body);
+    const requestDetail = await createEmployeeReport(requestDetails);
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers':
+          'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+      },
+      body: JSON.stringify(requestDetail),
+    };
+  }
+
+  if (httpMethod === 'GET' && path.endsWith('/marketerrequest')) {
+      // Extract query string parameters from the event
+      const marketerID = event.queryStringParameters.marketerID;
+      const startDate = event.queryStringParameters.startDate;
+      const endDate = event.queryStringParameters.endDate;
+
+      // Check if marketerID is provided, since it's mandatory
+      if (!marketerID) {
+          return {
+              statusCode: 400,
+              headers: {
+                  'Access-Control-Allow-Origin': '*'
+              },
+              body: JSON.stringify({ message: 'marketerID is required.' }),
+          };
+      }
+
+      try {
+          const requests = await retrieveMarketerRequests(marketerID, startDate, endDate);
+
+          return {
+              statusCode: 200,
+              headers: {
+                  'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                  'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Methods': 'OPTIONS,GET',
+              },
+              body: JSON.stringify(requests),
+          };
+      } catch (error) {
+          console.error('Error retrieving marketer requests:', error);
+          return {
+              statusCode: 500,
+              headers: {
+                  'Access-Control-Allow-Origin': '*'
+              },
+              body: JSON.stringify({ message: 'Failed to retrieve marketer requests.' }),
+          };
+      }
+  }
+
+  if (httpMethod === 'GET' && path.endsWith('/reports')) {
+      // Extract query string parameters from the event
+      const employeeID = event.queryStringParameters.marketerID;
+      const startDate = event.queryStringParameters.startDate;
+      const endDate = event.queryStringParameters.endDate;
+
+      // Check if marketerID is provided, since it's mandatory
+      if (!employeeID) {
+          return {
+              statusCode: 400,
+              headers: {
+                  'Access-Control-Allow-Origin': '*'
+              },
+              body: JSON.stringify({ message: 'marketerID is required.' }),
+          };
+      }
+
+      try {
+          const requests = await retrieveEmployeeReports(employeeID, startDate, endDate);
+
+          return {
+              statusCode: 200,
+              headers: {
+                  'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                  'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Methods': 'OPTIONS,GET',
+              },
+              body: JSON.stringify(requests),
+          };
+      } catch (error) {
+          console.error('Error retrieving marketer requests:', error);
+          return {
+              statusCode: 500,
+              headers: {
+                  'Access-Control-Allow-Origin': '*'
+              },
+              body: JSON.stringify({ message: 'Failed to retrieve marketer requests.' }),
+          };
+      }
+    }
+
+
   if (httpMethod === 'GET' && path.endsWith('/demands')) {
     const { locality, sublocality, pageSize } = event.queryStringParameters;
 
@@ -541,20 +639,6 @@ async function createDemand(demand) {
   }
 }
 
-async function retrieveDemand(demandId) {
-  const params = {
-    TableName: 'Demand',
-    Key: { DemandID: demandId },
-  };
-
-  try {
-    const result = await dynamodb.get(params).promise();
-    return result.Item;
-  } catch (error) {
-    console.error('Error retrieving demand:', error);
-    throw error;
-  }
-}
 
 async function claimDemand(demandId, MarketerId) {
   console.log('claimDemand', demandId, MarketerId);
@@ -622,6 +706,9 @@ async function fetchClaimedDemandsByMarketer(marketerId, pageSize = 100, startKe
 }
 
 async function createMarketerRequest(requestDetails) {
+  requestDetails.requestID = uuid.v4();
+  requestDetails.createdTime = new Date().toISOString();
+
   const params = {
     TableName: 'MarketerRequests',
     Item: requestDetails,
@@ -636,3 +723,91 @@ async function createMarketerRequest(requestDetails) {
     throw error;
   }
 }
+
+async function retrieveMarketerRequests(marketerID, startDate = null, endDate = null) {
+  const params = {
+    TableName: 'MarketerRequests',
+    IndexName: 'marketerID-createdTime-index', // Replace with the actual name of your GSI
+    KeyConditionExpression: 'marketerID = :marketerId',
+    ExpressionAttributeValues: {
+      ':marketerId': marketerID
+    }
+  };
+
+  // If startDate is provided, add a condition for createdTime
+  if (startDate) {
+    params.KeyConditionExpression += ' and createdTime >= :startDate';
+    params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
+  }
+
+  // If endDate is provided, further narrow down the condition for createdTime
+  if (endDate) {
+    params.KeyConditionExpression += ' and createdTime <= :endDate';
+    params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+  }
+
+  try {
+    const result = await dynamodb.query(params).promise();
+    console.log('Successfully retrieved marketer requests', result.Items);
+    return result.Items;
+  } catch (error) {
+    console.error('Error retrieving marketer requests:', error);
+    throw error;
+  }
+}
+
+async function createEmployeeReport(reportDetails) {
+  // Add the current date and time to the report details
+  reportDetails.reportID = uuid.v4();
+  reportDetails.createdTime = new Date().toISOString();
+
+  // Define the parameters for the DynamoDB put operation
+  const params = {
+    TableName: 'EmployeeReports',
+    Item: reportDetails,
+  };
+
+  try {
+    // Attempt to write the report details to the EmployeeReports table
+    const result = await dynamodb.put(params).promise();
+    console.log('Successfully created employee report', result);
+    return result;
+  } catch (error) {
+    // Log any errors that occur and re-throw the error
+    console.error('Error creating employee report:', error);
+    throw error;
+  }
+}
+
+async function retrieveEmployeeReports(employeeID, startDate = null, endDate = null) {
+  const params = {
+    TableName: 'EmployeeReports',
+    IndexName: 'employeeID-createdTime-index', // Use the GSI for the query
+    KeyConditionExpression: 'employeeID = :employeeId',
+    ExpressionAttributeValues: {
+      ':employeeId': employeeID
+    }
+  };
+
+  // If startDate is provided, add a condition for createdTime
+  if (startDate) {
+    params.KeyConditionExpression += ' and createdTime >= :startDate';
+    params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
+  }
+
+  // If endDate is provided, further narrow down the condition for createdTime
+  if (endDate) {
+    params.KeyConditionExpression += ' and createdTime <= :endDate';
+    params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+  }
+
+  try {
+    const result = await dynamodb.query(params).promise();
+    console.log('Successfully retrieved employee reports', result.Items);
+    return result.Items;
+  } catch (error) {
+    console.error('Error retrieving employee reports:', error);
+    throw error;
+  }
+}
+
