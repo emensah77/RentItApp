@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useCallback, useState, useEffect, useMemo, useRef} from 'react';
 import {ViewStyle, View, ActivityIndicator, Text} from 'react-native';
 import {Page} from '@components';
@@ -43,7 +41,7 @@ export const SearchResultsScreen = _props => {
   const snapPoints = useMemo(() => ['10%', '50%', '100%'], []);
   const [homesCount, setHomesCount] = useState<number>(prehomesCount || 0);
   const [searchAfter, setSearchAfter] = useState<string | null>(presearchAfter || null);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [visibleHomes, setVisibleHomes] = useState([]);
   const [isMapReady, setMapReady] = useState(false);
