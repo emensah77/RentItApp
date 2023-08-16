@@ -16,6 +16,7 @@ export {default as Typography} from './Typography';
 export {default as Whitespace} from './Whitespace';
 export {default as Upload} from './Upload';
 export {default as PlusMinus} from './PlusMinus';
+export {default as GenericList} from './GenericList';
 
 // components without default exports
 export * from './Icon';
