@@ -156,51 +156,38 @@ const Chat = props => {
           `(uid: ${recipient.uid})`,
         );
 
-      await Utils.promiseAll(
-        async (item, i) => {
-          const request = await fetch(
-            'https://bnymw2nuxn6zstrhiiz4nibuum0zkovn.lambda-url.us-east-2.on.aws/',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                user_id: item.uid,
-              }),
-            },
-          );
-          const response = await request.json();
-
-          await client
-            .connectUser(
-              {
-                id: item.uid,
-                name: item.displayName,
-                image: item.userImg,
-              },
-              response.token,
-            )
-            .catch(console.error);
-
-          if (i === 0) {
-            await client.disconnectUser(1);
-          }
+      const request = await fetch(
+        'https://bnymw2nuxn6zstrhiiz4nibuum0zkovn.lambda-url.us-east-2.on.aws/',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: user.uid,
+          }),
         },
-        [recipient, user],
       );
+      const response = await request.json();
 
+      await client
+        .connectUser(
+          {
+            id: user.uid,
+            name: user.displayName,
+            image: user.userImg,
+          },
+          response.token,
+        )
+        .catch(console.error);
       const _channel = client.channel(
         'messaging',
         sha256(`${user.uid}-${home_id}-${recipient.uid}`),
         {
-          ...recipient,
-          name: recipient.displayName,
-          image: recipient.userImg,
           members: [user.uid, recipient.uid, supervisor_id],
         },
       );
-      await _channel.updatePartial({set: {home_id}});
+      // await _channel.updatePartial({set: {home_id}});
 
       // TODO:
       // Forbid banned users from continuing?

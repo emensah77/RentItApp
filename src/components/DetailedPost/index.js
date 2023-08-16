@@ -121,9 +121,9 @@ const DetailedPost = props => {
     setIsDetailsModalVisible(true);
   }, []);
 
-  const chatToRent = useCallback(() => {
-    navigation.navigate('Chat', {home_id: post?.id});
-  }, [navigation, post?.id]);
+  // const chatToRent = useCallback(() => {
+  //   navigation.navigate('Chat', {home_id: post?.id});
+  // }, [navigation, post?.id]);
 
   const hideDetailsModal = useCallback(() => {
     setIsDetailsModalVisible(false);
@@ -545,10 +545,10 @@ const DetailedPost = props => {
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
                   <Text style={styles.viewingText}>Schedule Viewing</Text>
                 </Pressable>
-                <Pressable onPress={chatToRent} style={styles.scheduleButton}>
+                {/* <Pressable onPress={chatToRent} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
                   <Text style={styles.viewingText}>Chat to Rent</Text>
-                </Pressable>
+                </Pressable> */}
 
                 <Modal
                   visible={isDetailsModalVisible}

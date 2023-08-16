@@ -75,7 +75,7 @@ const BecomeAMarketer = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
+    const fetchData = async () => {
       setLoading(true);
 
       const {uid} = auth().currentUser;
@@ -105,8 +105,20 @@ const BecomeAMarketer = () => {
             'You can request to admin to become a marketer, once the admin approves your request, enjoy the experience of being a marketer at Rentit.',
         });
       }
+      if (user.supervisor_id) {
+        const supervisorDoc = await firestore().collection('users').doc(user.supervisor_id).get();
+        if (supervisorDoc.exists) {
+          setSelectedSupervisor({
+            ...supervisorDoc.data(),
+            id: supervisorDoc.id,
+          });
+        }
+      }
       setLoading(false);
-    })();
+    };
+
+    fetchData();
+
     const fetchSupervisors = async () => {
       const snapshot = await firestore()
         .collection('users')
