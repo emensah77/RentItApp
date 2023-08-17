@@ -56,17 +56,19 @@ const HomeForm = props => {
 
   const onChangeData = useCallback(
     which => async value => {
-      const _data = {...data, [which]: value};
-      setData({..._data});
+      let parsedValue = value;
+
+      // Convert to number if specific fields are updated
+      if (['newPrice', 'maxGuests', 'bathroomNumber', 'bed', 'bedroom'].includes(which)) {
+        parsedValue = parseInt(value, 10);
+      }
+
+      const _data = {...data, [which]: parsedValue};
+      setData(_data);
     },
     [data],
   );
 
-  useEffect(() => {
-    console.log('prefilldata', preFillData);
-    console.log('oldData', oldData);
-    console.log('newData', data);
-  }, [data, preFillData]);
   const submit = useCallback(async () => {
     setLoading(true);
 
@@ -105,7 +107,6 @@ const HomeForm = props => {
       if (!preFillData[dataKey]) {
         return;
       }
-      console.log('newdatakey', dataKey);
       newData[dataKey] =
         oldData[dataKey] && typeof oldData[dataKey].value !== 'undefined'
           ? {value: preFillData[dataKey]}
@@ -267,7 +268,7 @@ const HomeForm = props => {
         type="numeric"
         name="newPrice"
         label="Price"
-        value={data.newPrice}
+        value={data.newPrice.toString()}
         onChange={onChangeData('newPrice')}
       />
 
@@ -318,7 +319,7 @@ const HomeForm = props => {
         type="numeric"
         name="bathroom"
         label="Bathroom"
-        value={data.bathroomNumber}
+        value={data.bathroomNumber.toString()}
         onChange={onChangeData('bathroomNumber')}
       />
 
@@ -329,7 +330,7 @@ const HomeForm = props => {
         type="numeric"
         name="bed"
         label="Bed"
-        value={data.bed}
+        value={data.bed.toString()}
         onChange={onChangeData('bed')}
       />
 
@@ -340,7 +341,7 @@ const HomeForm = props => {
         type="numeric"
         name="bedroom"
         label="Bedroom"
-        value={data.bedroom}
+        value={data.bedroom.toString()}
         onChange={onChangeData('bedroom')}
       />
 

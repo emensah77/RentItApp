@@ -39,8 +39,8 @@ const AllDemands = props => {
 
     const response = await fetch(
       `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands?locality=${encodeURIComponent(
-        locality.value || null,
-      )}&sublocality=${encodeURIComponent(subLocality.value || null)}&pageSize=${30}`,
+        locality.value,
+      )}&sublocality=${encodeURIComponent(subLocality.value)}&pageSize=${30}`,
       {
         method: 'GET',
         headers: {
@@ -191,7 +191,7 @@ const AllDemands = props => {
         </Page>
 
         {data.length === 0 && loading === -1 ? (
-          <Typography>There are no homes to show</Typography>
+          <Typography>There are no demands to show</Typography>
         ) : data.length > 0 ? (
           <Container type="row" width="90%" height="60%" center>
             <Whitespace width="1%" />
