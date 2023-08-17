@@ -216,7 +216,7 @@ const Inbox = () => {
             channel_id,
             members: Object.keys(state.members || {}),
             messaging_id: state?.messageSets?.[0]?.messages[0].id,
-            name: data?.displayName || data?.fname || data.lname,
+            name: data?.displayName || data?.fname || data?.lname,
             uri: data?.image,
             description: state?.messageSets?.[0]?.messages?.[0]?.text,
             date: Utils.formatDate(state?.messageSets?.[0]?.messages?.[0]?.updated_at),
