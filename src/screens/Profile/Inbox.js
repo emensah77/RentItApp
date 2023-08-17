@@ -214,7 +214,7 @@ const Inbox = () => {
           .map(({id: channel_id, data, state}) => ({
             home_id: data?.home_id,
             channel_id,
-            members: Object.keys(state.members),
+            members: Object.keys(state.members || {}),
             messaging_id: state?.messageSets?.[0]?.messages[0].id,
             name: data?.displayName,
             uri: data?.image,
