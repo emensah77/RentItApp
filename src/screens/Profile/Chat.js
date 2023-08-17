@@ -34,7 +34,7 @@ import * as Utils from '../../utils';
 const Chat = props => {
   const {
     route: {
-      params: {home_id, channel_id} = {
+      params: {home_id, channel_id, members} = {
         home_id: '',
         // Regular: '7225607a-fd99-4f33-a32f-03de3dd04974', 'ac1d2480-4b86-4d19-87bd-4674e433b179'
         // Home with no marketer ID: d556eed0-e704-47c8-9f5c-64da6447a186
@@ -208,7 +208,7 @@ const Chat = props => {
           ..._receiver,
           name: _receiver.displayName || _receiver.fname || _receiver.lname,
           image: _receiver.userImg || _receiver.photoUrl,
-          members: Array.from(new Set([user.uid, _receiver.uid, _supervisor.uid])),
+          members: members || [user.uid, _receiver.uid, _supervisor.uid],
         },
       );
       await _channel.updatePartial({set: {home_id}});
@@ -237,7 +237,7 @@ const Chat = props => {
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => client.disconnectUser(1);
-  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id]);
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id, members]);
 
   const makeUri = useCallback(uri => ({uri}), []);
 

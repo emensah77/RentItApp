@@ -42,9 +42,9 @@ const Inbox = () => {
   const navigation = useNavigation();
 
   const goToChat = useCallback(
-    (home_id, channel_id) => async () => {
+    (home_id, channel_id, members) => async () => {
       await client.disconnectUser(1);
-      navigation.push('Chat', {home_id, channel_id});
+      navigation.push('Chat', {home_id, channel_id, members});
     },
     [navigation, client],
   );
@@ -65,10 +65,13 @@ const Inbox = () => {
           <Typography>No messages to see yet.</Typography>
         ) : (
           messages.map(
-            ({channel_id, home_id, name, location, description, status, date, read, uri}, i) => (
+            (
+              {channel_id, home_id, members, name, location, description, status, date, read, uri},
+              i,
+            ) => (
               <React.Fragment key={channel_id}>
                 <CardDisplay
-                  onPress={goToChat(home_id, channel_id)}
+                  onPress={goToChat(home_id, channel_id, members)}
                   leftImageCircle={30}
                   leftImageSrc={makeUri(uri)}
                   name={name}
@@ -211,6 +214,7 @@ const Inbox = () => {
           .map(({id: channel_id, data, state}) => ({
             home_id: data?.home_id,
             channel_id,
+            members: Object.keys(state.members),
             messaging_id: state?.messageSets?.[0]?.messages[0].id,
             name: data?.displayName,
             uri: data?.image,
