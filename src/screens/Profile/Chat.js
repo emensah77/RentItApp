@@ -306,10 +306,6 @@ const Chat = props => {
             const date = new Date(msg.created_at);
             const {user} = msg;
 
-            if (user.id !== sender.uid && user.id !== receiver.uid) {
-              return null;
-            }
-
             return (
               <React.Fragment key={msg.id}>
                 {/* <Container row center type="chip">
