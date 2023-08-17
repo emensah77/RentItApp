@@ -274,29 +274,35 @@ const MarketerHome = props => {
         style={style}
         provider={PROVIDER_GOOGLE}
         minZoomLevel={12}>
-        {markers.map(marker => (
-          <Marker
-            key={marker.id}
-            identifier={marker.id}
-            coordinate={marker}
-            title={
-              marker.title === 'defaultTitle'
-                ? `${marker.sublocality}, ${marker.locality}`
-                : marker.title
-            }
-            description={marker.description}
-            image={
-              marker.status === 'PENDING'
-                ? pending
-                : marker.status === 'APPROVED'
-                ? approved
-                : marker.status === 'REJECTED'
-                ? rejected
-                : neutral
-            }
-            onPress={changeMode('home')}
-          />
-        ))}
+        {markers
+          .filter(marker => marker.status !== 'defaultStatus')
+          .map(marker => {
+            //console.log('Marker ID:', marker.id, 'Status:', marker);
+
+            return (
+              <Marker
+                key={marker.id}
+                identifier={marker.id}
+                coordinate={marker}
+                title={
+                  marker.title === 'defaultTitle'
+                    ? `${marker.sublocality}, ${marker.locality}`
+                    : marker.title
+                }
+                description={marker.description}
+                image={
+                  marker.status === 'pending'
+                    ? pending
+                    : marker.status === 'approved'
+                    ? approved
+                    : marker.status === 'rejected'
+                    ? rejected
+                    : neutral
+                }
+                onPress={changeMode('home')}
+              />
+            );
+          })}
       </MapView>
 
       {searchAfter && (

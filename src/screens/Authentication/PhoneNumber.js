@@ -71,6 +71,11 @@ const PhoneNumber = props => {
     [],
   );
 
+  useEffect(() => {
+    setPhoneNumber(initialPhoneNumber);
+    setCountry(initialCountryCode);
+  }, [initialCountryCode, initialPhoneNumber]);
+
   const onPhoneNumberChange = useCallback(
     async (_phoneNumber, _country) => {
       setPhoneNumber(_phoneNumber);

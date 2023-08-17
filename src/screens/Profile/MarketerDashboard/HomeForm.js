@@ -20,24 +20,25 @@ const oldData = {
   id: '',
   mode: {value: 'For Rent'},
   images: [],
-  ownerName: '',
   title: '',
   description: '',
-  phoneNumber: '',
-  marketerNumber: '',
+  phoneNumbers: [],
+  marketerNumber: [],
+  homeownerName: '',
   currency: {value: ''},
-  price: '0',
+  newPrice: 0,
   availabilityDate: '04/01/2023',
-  maxGuests: '0',
-  neighbourhood: '',
-  bathroomNumber: '0',
-  bed: '0',
-  bedroom: '0',
+  maxGuests: 0,
+  neighborhood: '',
+  bathroomNumber: 0,
+  bed: 0,
+  bedroom: 0,
   loyaltyProgram: {value: 'No'},
   negotiable: {value: 'No'},
   available: {value: 'No'},
+  verified: {value: 'No'},
   furnished: {value: 'No'},
-  homeType: {value: ''},
+  type: {value: ''},
   status: {value: ''},
   ...TYPES.AMENITIES.map(item => ({[item.value]: {value: 'No'}})).reduce(
     (a, b) => ({...a, ...b}),
@@ -61,6 +62,11 @@ const HomeForm = props => {
     [data],
   );
 
+  useEffect(() => {
+    console.log('prefilldata', preFillData);
+    console.log('oldData', oldData);
+    console.log('newData', data);
+  }, [data, preFillData]);
   const submit = useCallback(async () => {
     setLoading(true);
 
@@ -99,7 +105,7 @@ const HomeForm = props => {
       if (!preFillData[dataKey]) {
         return;
       }
-
+      console.log('newdatakey', dataKey);
       newData[dataKey] =
         oldData[dataKey] && typeof oldData[dataKey].value !== 'undefined'
           ? {value: preFillData[dataKey]}
@@ -159,6 +165,7 @@ const HomeForm = props => {
         camera={false}
         imageNamePrefix="home-marketer"
         noFlatlist
+        initialImages={data.images}
         getImages={onChangeData('images')}
       />
 
@@ -171,8 +178,8 @@ const HomeForm = props => {
       <Whitespace marginTop={-20} />
 
       <Dropdown
-        onChange={onChangeData('homeType')}
-        value={data.homeType.value}
+        onChange={onChangeData('type')}
+        value={data.type.value}
         data={TYPES.HOME_TYPES}
         displayKey="value"
         label="Home Type"
@@ -186,7 +193,7 @@ const HomeForm = props => {
         type="text"
         name="ownerName"
         label="Owner name"
-        value={data.ownerName}
+        value={data.homeownerName}
         onChange={onChangeData('ownerName')}
       />
 
@@ -217,14 +224,24 @@ const HomeForm = props => {
       <Typography type="label" width="100%">
         Home owner phone number.
       </Typography>
-      <PhoneNumber inline onChangeData={onChangeData('phoneNumber')} />
+      <PhoneNumber
+        initialPhoneNumber={data.phoneNumbers[0]}
+        initialCountryCode="233"
+        inline
+        onChangeData={onChangeData('phoneNumbers')}
+      />
 
       <Whitespace marginTop={30} />
 
       <Typography type="label" width="100%">
         Marketer phone number.
       </Typography>
-      <PhoneNumber inline onChangeData={onChangeData('marketerNumber')} />
+      <PhoneNumber
+        initialPhoneNumber={data.marketerNumber[0]}
+        initialCountryCode="233"
+        inline
+        onChangeData={onChangeData('marketerNumber')}
+      />
 
       <Whitespace marginTop={30} />
 
@@ -248,10 +265,10 @@ const HomeForm = props => {
       <Input
         placeholder="0"
         type="numeric"
-        name="price"
+        name="newPrice"
         label="Price"
-        value={data.price}
-        onChange={onChangeData('price')}
+        value={data.newPrice}
+        onChange={onChangeData('newPrice')}
       />
 
       <Whitespace marginTop={30} />
@@ -290,7 +307,7 @@ const HomeForm = props => {
         type="text"
         name="neighbourhood"
         label="Neighbourhood"
-        value={data.neighbourhood}
+        value={data.neighborhood}
         onChange={onChangeData('neighbourhood')}
       />
 
@@ -358,6 +375,23 @@ const HomeForm = props => {
         data={TYPES.YES_OR_NO}
         displayKey="value"
         label="Negotiable"
+        suffix={arrowDown}
+      />
+
+      <Whitespace marginTop={20} />
+
+      <Typography size={12} left width="100%">
+        Verified
+      </Typography>
+
+      <Whitespace marginTop={-20} />
+
+      <Dropdown
+        onChange={onChangeData('verified')}
+        value={data.verified.value}
+        data={TYPES.YES_OR_NO}
+        displayKey="value"
+        label="Verified"
         suffix={arrowDown}
       />
 
