@@ -256,6 +256,7 @@ const Chat = props => {
       <Page
         leftIcon={arrowLeft}
         rightIcon={menu}
+        scrollToBottom
         reverse
         header={
           <Typography type="heading" left>

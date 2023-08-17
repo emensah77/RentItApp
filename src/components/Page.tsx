@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback, useMemo, useRef} from 'react';
 import {SafeAreaView, ScrollView, View, StatusBar, StatusBarProps, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
@@ -43,14 +43,23 @@ const Page = (props: PageProps) => {
     accessibilityLabel,
     backgroundColor = colors.palette.textInverse,
     hasPadding = true,
+    scrollToBottom,
     statusBarStyle = 'dark-content',
     statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
+  const scrollViewRef = useRef<typeof ScrollView>();
+
   const Display = useMemo(() => (inline ? View : ScrollView), [inline]);
 
   const navigation = useNavigation();
+
+  const onContentSizeChange = useCallback(() => {
+    if (scrollToBottom) {
+      scrollViewRef.current.scrollToEnd?.({animated: true});
+    }
+  }, [scrollToBottom]);
 
   const onFooterLayout = useCallback(e => {
     const {
@@ -107,6 +116,8 @@ const Page = (props: PageProps) => {
         style={displayStyles}
         contentContainerStyle={displayContentStyles}
         keyboardShouldPersistTaps="handled"
+        ref={scrollViewRef}
+        onContentSizeChange={onContentSizeChange}
         bounces={false}>
         {type === 'large' && header && !inline ? (
           <>
