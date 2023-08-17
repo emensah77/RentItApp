@@ -51,23 +51,27 @@ const Chat = props => {
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
 
-  const getRandomMarketer = useCallback(async () => {
+  const getRandomMarketer = useCallback(async (bannedIds = []) => {
     const marketersSnapshot = await firestore()
       .collection('users')
       .where('marketer_status', '==', 'ACCEPTED')
       .get();
 
-    const marketers = marketersSnapshot.docs.map(doc => ({...doc.data(), uid: doc.id}));
+    const marketers = marketersSnapshot.docs
+      .filter(item => bannedIds.includes(item.id))
+      .map(doc => ({...doc.data(), uid: doc.id}));
     return marketers[Math.floor(Math.random() * marketers.length)];
   }, []);
 
-  const getRandomDefaultSupervisor = useCallback(async () => {
+  const getRandomDefaultSupervisor = useCallback(async (bannedIds = []) => {
     const defaultSupervisorsSnapshot = await firestore().collection('defaultSupervisors').get();
 
-    const defaultSupervisors = defaultSupervisorsSnapshot.docs.map(doc => ({
-      ...doc.data(),
-      uid: doc.id,
-    }));
+    const defaultSupervisors = defaultSupervisorsSnapshot.docs
+      .filter(item => bannedIds.includes(item.id))
+      .map(doc => ({
+        ...doc.data(),
+        uid: doc.id,
+      }));
 
     return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)];
   }, []);
@@ -90,12 +94,13 @@ const Chat = props => {
     (async () => {
       setLoading(true);
 
+      const user = auth().currentUser;
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
       let receiver_id = _home?.userID;
 
       if (!_home || !receiver_id) {
-        const marketer = await getRandomMarketer().catch(e =>
+        const marketer = await getRandomMarketer([user.uid]).catch(e =>
           console.error('An error occurred while fetching a random marketer:', e),
         );
         receiver_id = marketer?.uid;
@@ -110,7 +115,6 @@ const Chat = props => {
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
 
-      const user = auth().currentUser;
       const _receiver = await firestore()
         .collection('users')
         .doc(receiver_id)
@@ -129,7 +133,7 @@ const Chat = props => {
         _supervisor = __supervisor?.data();
         _supervisor.uid = recipient?.supervisor_id;
       } else {
-        _supervisor = await getRandomDefaultSupervisor().catch(e =>
+        _supervisor = await getRandomDefaultSupervisor([user.uid, recipient.uid]).catch(e =>
           console.error('An error occurred while fetching a random default supervisor:', e),
         );
         if (!_supervisor.uid) {
