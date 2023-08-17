@@ -41,8 +41,8 @@ const Inbox = () => {
   const navigation = useNavigation();
 
   const goToChat = useCallback(
-    home_id => () => {
-      navigation.push('Chat', {home_id});
+    (home_id, channel_id) => () => {
+      navigation.push('Chat', {home_id, channel_id});
     },
     [navigation],
   );
@@ -62,23 +62,25 @@ const Inbox = () => {
         ) : messages.length === 0 ? (
           <Typography>No messages to see yet.</Typography>
         ) : (
-          messages.map(({id, name, location, description, status, date, read, uri}, i) => (
-            <React.Fragment key={name}>
-              <CardDisplay
-                onPress={goToChat(id)}
-                leftImageCircle={30}
-                leftImageSrc={makeUri(uri)}
-                name={name}
-                location={location}
-                description={description}
-                status={status}
-                date={date}
-                bold={read}
-              />
+          messages.map(
+            ({messaging_id, home_id, name, location, description, status, date, read, uri}, i) => (
+              <React.Fragment key={name}>
+                <CardDisplay
+                  onPress={goToChat(home_id, messaging_id)}
+                  leftImageCircle={30}
+                  leftImageSrc={makeUri(uri)}
+                  name={name}
+                  location={location}
+                  description={description}
+                  status={status}
+                  date={date}
+                  bold={read}
+                />
 
-              {i !== messages.length - 1 ? <Divider small /> : null}
-            </React.Fragment>
-          ))
+                {i !== messages.length - 1 ? <Divider small /> : null}
+              </React.Fragment>
+            ),
+          )
         ),
       },
       {
@@ -204,7 +206,9 @@ const Inbox = () => {
         _channels
           .filter(({state}) => !!state?.messageSets?.[0]?.messages?.reverse()?.[0]?.text)
           .map(({data, state}) => ({
-            id: data?.home_id,
+            home_id: data?.home_id,
+            channel_id: state?.messageSets?.[0]?.messages[0].cid,
+            messaging_id: state?.messageSets?.[0]?.messages[0].id,
             name: data?.displayName,
             uri: data?.image,
             description: state?.messageSets?.[0]?.messages?.reverse()?.[0]?.text,

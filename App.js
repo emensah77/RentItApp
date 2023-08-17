@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo} from 'react';
 import {StatusBar, useColorScheme, AppState} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import {ApplicationProvider} from '@ui-kitten/components';
-import * as eva from '@eva-design/eva';
+// import {ApplicationProvider} from '@ui-kitten/components';
+// import * as eva from '@eva-design/eva';
 import Crashes, {ErrorAttachmentLog} from 'appcenter-crashes';
 import {Provider} from 'react-redux';
 import {store} from './src/redux/store';
@@ -61,12 +61,12 @@ const App = () => {
   return (
     <>
       <Provider store={store}>
-        <ApplicationProvider {...eva} theme={eva.light}>
+        {/* <ApplicationProvider {...eva} theme={eva.light}> */}
           <WishListProvider>
             <StatusBar barStyle={barStyle} />
             <Providers />
           </WishListProvider>
-        </ApplicationProvider>
+        {/* </ApplicationProvider> */}
       </Provider>
     </>
   );

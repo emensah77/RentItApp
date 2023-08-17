@@ -34,8 +34,8 @@ import * as Utils from '../../utils';
 const Chat = props => {
   const {
     route: {
-      params: {home_id} = {
-        home_id: 'd556eed0-e704-47c8-9f5c-64da6447a186',
+      params: {home_id, channel_id} = {
+        home_id: '',
         // Regular: '7225607a-fd99-4f33-a32f-03de3dd04974', 'ac1d2480-4b86-4d19-87bd-4674e433b179'
         // Home with no marketer ID: d556eed0-e704-47c8-9f5c-64da6447a186
       },
@@ -137,7 +137,7 @@ const Chat = props => {
           console.error('An error occurred while fetching a random default supervisor:', e),
         );
         if (!_supervisor.uid) {
-          console.error('There was no _supervisor id');
+          console.error('There was no supervisor id');
           return;
         }
 
@@ -198,7 +198,7 @@ const Chat = props => {
       delete _receiver.type;
       const _channel = client.channel(
         'messaging',
-        sha256(`${user.uid}-${home_id}-${_receiver.uid}`),
+        channel_id || sha256(`${user.uid}-${home_id}-${_receiver.uid}`),
         {
           ..._receiver,
           name: _receiver.displayName || _receiver.fname || _receiver.lname,
@@ -232,7 +232,7 @@ const Chat = props => {
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => client.disconnectUser(1);
-  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id]);
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id]);
 
   const makeUri = useCallback(uri => ({uri}), []);
 
