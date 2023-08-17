@@ -58,7 +58,7 @@ const Chat = props => {
       .get();
 
     const marketers = marketersSnapshot.docs
-      .filter(item => bannedIds.includes(item.id))
+      .filter(item => !bannedIds.includes(item.id))
       .map(doc => ({...doc.data(), uid: doc.id}));
     return marketers[Math.floor(Math.random() * marketers.length)] || {};
   }, []);
@@ -67,7 +67,7 @@ const Chat = props => {
     const defaultSupervisorsSnapshot = await firestore().collection('defaultSupervisors').get();
 
     const defaultSupervisors = defaultSupervisorsSnapshot.docs
-      .filter(item => bannedIds.includes(item.id))
+      .filter(item => !bannedIds.includes(item.id))
       .map(doc => ({
         ...doc.data(),
         uid: doc.id,
