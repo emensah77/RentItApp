@@ -115,25 +115,25 @@ const Chat = props => {
       }
       _home.formattedDate = Utils.formatDate(_home.createdAt);
 
-      const _receiver = await firestore()
+      const __receiver = await firestore()
         .collection('users')
         .doc(receiver_id)
         .get()
         .catch(console.error);
-      const recipient = _receiver?.data();
-      recipient.uid = receiver_id;
+      const _receiver = __receiver?.data();
+      _receiver.uid = receiver_id;
       let _supervisor;
 
-      if (recipient?.supervisor_id) {
+      if (_receiver?.supervisor_id) {
         const __supervisor = await firestore()
           .collection('users')
-          .doc(recipient?.supervisor_id)
+          .doc(_receiver?.supervisor_id)
           .get()
           .catch(console.error);
         _supervisor = __supervisor?.data();
-        _supervisor.uid = recipient?.supervisor_id;
+        _supervisor.uid = _receiver?.supervisor_id;
       } else {
-        _supervisor = await getRandomDefaultSupervisor([user.uid, recipient.uid]).catch(e =>
+        _supervisor = await getRandomDefaultSupervisor([user.uid, _receiver.uid]).catch(e =>
           console.error('An error occurred while fetching a random default supervisor:', e),
         );
         if (!_supervisor.uid) {
@@ -145,7 +145,7 @@ const Chat = props => {
           .collection('users')
           .doc(receiver_id)
           .set({
-            ...recipient,
+            ..._receiver,
             supervisor_id: _supervisor.uid,
           })
           .catch(e => console.error('Attempt to update supervisor ID failed', e));
@@ -157,8 +157,8 @@ const Chat = props => {
           user.displayName,
           `(uid: ${user.uid})`,
           'and',
-          recipient.displayName || recipient.fname || recipient.lname,
-          `(uid: ${recipient.uid})`,
+          _receiver.displayName || _receiver.fname || _receiver.lname,
+          `(uid: ${_receiver.uid})`,
         );
 
       await Utils.promiseAll(
@@ -192,18 +192,18 @@ const Chat = props => {
             await client.disconnectUser(1);
           }
         },
-        [recipient, _supervisor, user],
+        [_receiver, _supervisor, user],
       );
 
-      delete recipient.type;
+      delete _receiver.type;
       const _channel = client.channel(
         'messaging',
-        sha256(`${user.uid}-${home_id}-${recipient.uid}`),
+        sha256(`${user.uid}-${home_id}-${_receiver.uid}`),
         {
-          ...recipient,
-          name: recipient.displayName || recipient.fname || recipient.lname,
-          image: recipient.userImg || recipient.photoUrl,
-          members: [user.uid, recipient.uid, _supervisor.uid],
+          ..._receiver,
+          name: _receiver.displayName || _receiver.fname || _receiver.lname,
+          image: _receiver.userImg || _receiver.photoUrl,
+          members: [user.uid, _receiver.uid, _supervisor.uid],
         },
       );
       await _channel.updatePartial({set: {home_id}});
@@ -217,7 +217,7 @@ const Chat = props => {
       });
       setMessages(result.messages.reverse());
       setSender(user);
-      setReceiver(recipient);
+      setReceiver(_receiver);
       setSupervisor(_supervisor);
       setHome(_home);
       setChannel(_channel);
