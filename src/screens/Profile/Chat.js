@@ -60,7 +60,7 @@ const Chat = props => {
     const marketers = marketersSnapshot.docs
       .filter(item => bannedIds.includes(item.id))
       .map(doc => ({...doc.data(), uid: doc.id}));
-    return marketers[Math.floor(Math.random() * marketers.length)];
+    return marketers[Math.floor(Math.random() * marketers.length)] || {};
   }, []);
 
   const getRandomDefaultSupervisor = useCallback(async (bannedIds = []) => {
@@ -73,7 +73,7 @@ const Chat = props => {
         uid: doc.id,
       }));
 
-    return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)];
+    return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)] || {};
   }, []);
 
   const send = useCallback(async () => {
