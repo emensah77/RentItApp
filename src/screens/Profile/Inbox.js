@@ -23,6 +23,7 @@ const Inbox = () => {
 
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [client, setClient] = useState({});
   const [notifications, setNotifications] = useState([
     // Use for testing ONLY!
     // {
@@ -41,10 +42,11 @@ const Inbox = () => {
   const navigation = useNavigation();
 
   const goToChat = useCallback(
-    (home_id, channel_id) => () => {
+    (home_id, channel_id) => async () => {
+      await client.disconnectUser(1);
       navigation.push('Chat', {home_id, channel_id});
     },
-    [navigation],
+    [navigation, client],
   );
 
   const makeUri = useCallback(uri => ({uri}), []);
@@ -63,10 +65,10 @@ const Inbox = () => {
           <Typography>No messages to see yet.</Typography>
         ) : (
           messages.map(
-            ({messaging_id, home_id, name, location, description, status, date, read, uri}, i) => (
-              <React.Fragment key={name}>
+            ({channel_id, home_id, name, location, description, status, date, read, uri}, i) => (
+              <React.Fragment key={channel_id}>
                 <CardDisplay
-                  onPress={goToChat(home_id, messaging_id)}
+                  onPress={goToChat(home_id, channel_id)}
                   leftImageCircle={30}
                   leftImageSrc={makeUri(uri)}
                   name={name}
@@ -163,7 +165,7 @@ const Inbox = () => {
   }, [loadNotifications]);
 
   useEffect(() => {
-    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
+    const _client = StreamChat.getInstance(STREAM_CHAT_KEY);
 
     (async () => {
       const request = await fetch(
@@ -180,7 +182,7 @@ const Inbox = () => {
       );
       const response = await request.json();
 
-      await client
+      await _client
         .connectUser(
           {
             id: user.uid,
@@ -191,7 +193,7 @@ const Inbox = () => {
         )
         .catch(console.error);
 
-      const _channels = await client.queryChannels(
+      const _channels = await _client.queryChannels(
         {type: 'messaging', members: {$in: [user.uid]}},
         [{last_message_at: -1}],
         {
@@ -202,12 +204,13 @@ const Inbox = () => {
         },
       );
 
+      setClient(_client);
       setMessages(
         _channels
           .filter(({state}) => !!state?.messageSets?.[0]?.messages?.reverse()?.[0]?.text)
-          .map(({data, state}) => ({
+          .map(({id: channel_id, data, state}) => ({
             home_id: data?.home_id,
-            channel_id: state?.messageSets?.[0]?.messages[0].cid,
+            channel_id,
             messaging_id: state?.messageSets?.[0]?.messages[0].id,
             name: data?.displayName,
             uri: data?.image,
@@ -220,7 +223,7 @@ const Inbox = () => {
       );
     })().catch(e => console.error('There was an issue loading the chat', e));
 
-    return () => client.disconnectUser(1);
+    return () => _client.disconnectUser(1);
   }, [user]);
 
   return (

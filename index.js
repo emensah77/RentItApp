@@ -24,7 +24,7 @@ import awsmobile from './src/aws-exports';
 
 Amplify.configure(awsmobile);
 if (REACT_NATIVE_APP_ENV === 'development') {
-  Amplify.Logger.LOG_LEVEL = 'DEBUG';
+  // Amplify.Logger.LOG_LEVEL = 'DEBUG';
 }
 AWS.config.update({
   region: 'us-east-2',

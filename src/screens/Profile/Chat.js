@@ -94,6 +94,11 @@ const Chat = props => {
     (async () => {
       setLoading(true);
 
+      if (!home_id) {
+        console.debug('Home ID is required.');
+        return;
+      }
+
       const user = auth().currentUser;
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
       const _home = homeResult.data.getPost;
