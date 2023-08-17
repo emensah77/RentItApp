@@ -208,7 +208,7 @@ const Chat = props => {
           ..._receiver,
           name: _receiver.displayName || _receiver.fname || _receiver.lname,
           image: _receiver.userImg || _receiver.photoUrl,
-          members: [user.uid, _receiver.uid, _supervisor.uid],
+          members: Array.from(new Set([user.uid, _receiver.uid, _supervisor.uid])),
         },
       );
       await _channel.updatePartial({set: {home_id}});
@@ -244,7 +244,7 @@ const Chat = props => {
   let currentDay, nextDay;
 
   if (!receiver.displayName && (receiver.fname || receiver.lname)) {
-    receiver.displayName = `${receiver.fname || receiver.lname || ''}`;
+    receiver.displayName = receiver.fname || receiver.lname || '';
   }
 
   if (!receiver.displayName) {
