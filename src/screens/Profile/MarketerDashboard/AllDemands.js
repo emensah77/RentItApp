@@ -28,34 +28,72 @@ const AllDemands = props => {
   const [subLocality, setSubLocality] = useState({value: ''});
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(-1);
+  const [nextKey, setNextKey] = useState(null);
+  const [count, setCount] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const navigation = useNavigation();
 
   const keyExtractor = useCallback(item => item.DemandID, []);
 
-  const load = useCallback(async () => {
-    setData([]);
-    setLoading(0);
-
-    const response = await fetch(
-      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands?locality=${encodeURIComponent(
+  const fetchData = useCallback(
+    async startKey => {
+      const url = `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands?locality=${encodeURIComponent(
         locality.value,
-      )}&sublocality=${encodeURIComponent(subLocality.value)}&pageSize=${30}`,
-      {
+      )}&sublocality=${encodeURIComponent(subLocality.value)}&pageSize=${30}${
+        startKey ? `&startKey=${startKey}` : ''
+      }`;
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-      },
-    ).catch(e => console.error('An error occurred while fetching demands', e));
-    if (!response) {
-      return;
+      });
+
+      if (!response) return null;
+
+      return response.json();
+    },
+    [locality.value, subLocality.value],
+  );
+
+  const load = useCallback(async () => {
+    setData([]);
+    setLoading(0);
+
+    const _data = await fetchData();
+    if (_data) {
+      setData(_data.items);
+      setCount(_data.count);
+      setNextKey(_data.nextKey || null);
     }
-    const _data = await response.json();
-    setData(_data.items);
 
     setLoading(-1);
-  }, [locality.value, subLocality.value]);
+  }, [fetchData]);
+
+  const loadMore = useCallback(async () => {
+    if (!nextKey) return;
+    setLoadingMore(true);
+    const _data = await fetchData(nextKey.DemandID);
+    if (_data) {
+      // Skip the first item (which is the last item of the previous set) using slice
+      const newData = _data.items.slice(1);
+      console.log('prevData', data);
+      setData(prevData => [...prevData, ...newData]);
+      console.log('newData', newData);
+      setCount(prevCount => prevCount + _data.count);
+      setNextKey(_data.nextKey || null);
+    }
+
+    setLoadingMore(false);
+  }, [fetchData, nextKey]);
+
+  const handleEndReached = useCallback(() => {
+    if (nextKey) {
+      loadMore();
+    }
+  }, [nextKey, loadMore]);
 
   const claim = useCallback(
     (DemandId, i) => async () => {
@@ -204,6 +242,9 @@ const AllDemands = props => {
               data={data}
               renderItem={renderItem}
               keyExtractor={keyExtractor}
+              onEndReached={handleEndReached}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={loadingMore ? <Loader /> : null}
             />
           </Container>
         ) : (

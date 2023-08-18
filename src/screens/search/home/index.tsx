@@ -219,7 +219,11 @@ export const SearchHome = props => {
                 <TouchableOpacity style={styles.search} onPress={handleModal('location')}>
                   <Icon icon="searchMini" size={20} />
                   <SizedBox width={10} />
-                  <Text text="Search destination" size="xs" color={colors.palette.textInverse300} />
+                  <Text
+                    text="Type what or where you want to rent"
+                    size="xs"
+                    color={colors.palette.textInverse300}
+                  />
                 </TouchableOpacity>
                 <SizedBox height={20} />
                 <ScrollArea horizontal>
