@@ -169,6 +169,18 @@ const MarketerHome = props => {
       setWS(_ws);
     };
     return () => {
+      // Send the 'offline' status to the server before closing the WebSocket connection
+      if (_ws.readyState === _ws.OPEN) {
+        _ws.send(
+          JSON.stringify({
+            action: 'locationUpdate',
+            data: {
+              marketerId: auth().currentUser.uid,
+              marketerStatus: 'offline',
+            },
+          }),
+        );
+      }
       _ws.close(undefined, 'Unmount');
     };
   }, []);
