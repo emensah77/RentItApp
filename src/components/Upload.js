@@ -75,9 +75,23 @@ const Upload = props => {
     [deleteImage, getURL],
   );
 
+  const getBlob = useCallback(filePath => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new Error('XMLHttpRequest failed.'));
+      };
+      xhr.responseType = 'blob';
+      xhr.open('GET', filePath, true);
+      xhr.send(null);
+    });
+  }, []);
+
   const upload = useCallback(
     async images => {
-      setUrls([]);
       setTotal(images.length);
 
       const s3 = new AWS.S3();
@@ -100,8 +114,7 @@ const Upload = props => {
           if (resizeImage && resizeImage.uri) {
             path = resizeImage.uri;
           }
-          const response = await fetch(path);
-          const rawFile = await response.blob();
+          const rawFile = await getBlob(path);
 
           const name = `${imageNamePrefix}-${uuid.v4()}`;
           return new Promise(resolve => {
@@ -126,17 +139,16 @@ const Upload = props => {
         }),
       );
 
-      const validUrls = newUrls.filter(url => !!url).map(url => url);
+      const validUrls = [...urls, ...newUrls.filter(url => !!url)];
       setUrls(validUrls);
       getImages(validUrls);
       setTimeout(() => setProgress(0), 3000);
     },
-    [imageNamePrefix, getImages],
+    [imageNamePrefix, getImages, urls, getBlob],
   );
 
   const openPicker = useCallback(() => {
     setProgress(0);
-
     ImagePicker.openPicker({
       width: 1024,
       height: 683,
@@ -144,7 +156,9 @@ const Upload = props => {
       maxFiles: 5,
       mediaType: 'photo',
     })
-      .then(upload)
+      .then(selectedImages => {
+        upload(selectedImages);
+      })
       .catch(e =>
         console.error(
           'An error occurred within the open picker function while attempting to upload',
@@ -172,7 +186,7 @@ const Upload = props => {
 
   return (
     <>
-      {picker && (
+      {urls.length > 0 ? (
         <>
           <Container center type="chipSmall" color="#FFF" height={50} onPress={openPicker}>
             <CardDisplay
@@ -181,7 +195,7 @@ const Upload = props => {
               leftImageSrc={add}
               name={
                 <Typography type="notice" left width="100%">
-                  Upload photos
+                  Add more photos
                 </Typography>
               }
               center
@@ -191,63 +205,86 @@ const Upload = props => {
           </Container>
 
           <Whitespace marginTop={22} />
-        </>
-      )}
 
-      {camera && (
-        <>
-          <Container center type="chipSmall" color="#FFF" height={50} onPress={openCamera}>
-            <CardDisplay
-              leftImageWidth={20}
-              leftImageHeight={20}
-              leftImageSrc={cameraIcon}
-              name={
-                <Typography type="notice" left width="100%">
-                  Take a photo
-                </Typography>
-              }
-              center
-              bold
-              onPress={openCamera}
+          {noFlatlist ? (
+            <Container type="rowWrap" width="100%">
+              {urls.map(item => renderItem({item}))}
+            </Container>
+          ) : (
+            <FlatList
+              persistentScrollbar
+              data={urls}
+              style={flatListStyle}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              numColumns={2}
             />
-          </Container>
+          )}
+        </>
+      ) : (
+        <>
+          {picker && (
+            <>
+              <Container center type="chipSmall" color="#FFF" height={50} onPress={openPicker}>
+                <CardDisplay
+                  leftImageWidth={20}
+                  leftImageHeight={20}
+                  leftImageSrc={add}
+                  name={
+                    <Typography type="notice" left width="100%">
+                      Upload photos
+                    </Typography>
+                  }
+                  center
+                  bold
+                  onPress={openPicker}
+                />
+              </Container>
 
-          <Whitespace marginTop={22} />
+              <Whitespace marginTop={22} />
+            </>
+          )}
+
+          {camera && (
+            <>
+              <Container center type="chipSmall" color="#FFF" height={50} onPress={openCamera}>
+                <CardDisplay
+                  leftImageWidth={20}
+                  leftImageHeight={20}
+                  leftImageSrc={cameraIcon}
+                  name={
+                    <Typography type="notice" left width="100%">
+                      Take a photo
+                    </Typography>
+                  }
+                  center
+                  bold
+                  onPress={openCamera}
+                />
+              </Container>
+
+              <Whitespace marginTop={22} />
+            </>
+          )}
+
+          {progress ? (
+            <>
+              <Whitespace marginTop={20} />
+
+              <Typography center height={30} width="100%" color="#1F2D3D" size={22} weight="700">
+                Uploading your photos of your ID
+              </Typography>
+
+              <Whitespace marginTop={27} />
+
+              <Typography center width="90%" color="#727272" size={14} weight="700">
+                {progress} of {total} uploaded
+              </Typography>
+            </>
+          ) : null}
         </>
       )}
-
-      {urls.length > 0 ? (
-        noFlatlist ? (
-          <Container type="rowWrap" width="100%">
-            {urls.map(item => renderItem({item}))}
-          </Container>
-        ) : (
-          <FlatList
-            persistentScrollbar
-            data={urls}
-            style={flatListStyle}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            numColumns={2}
-          />
-        )
-      ) : progress ? (
-        <>
-          <Whitespace marginTop={20} />
-
-          <Typography center height={30} width="100%" color="#1F2D3D" size={22} weight="700">
-            Uploading your photos of your ID
-          </Typography>
-
-          <Whitespace marginTop={27} />
-
-          <Typography center width="90%" color="#727272" size={14} weight="700">
-            {progress} of {total} uploaded
-          </Typography>
-        </>
-      ) : null}
     </>
   );
 };
-
 export default Upload;

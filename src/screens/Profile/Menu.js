@@ -174,6 +174,15 @@ const Menu = () => {
           markerterDashboard,
         ].filter(item => !!item),
       },
+      {
+        heading: 'Log out',
+        items: [
+          {
+            description: 'Log out',
+            onPress: () => auth().signOut(),
+          },
+        ],
+      },
       // {
       //   heading: 'Support',
       //   items: [
