@@ -72,6 +72,30 @@ const HomeForm = props => {
   const submit = useCallback(async () => {
     setLoading(true);
 
+    if (data.status.value === 'approved') {
+      const isInComplete = Object.keys(data).some(item => {
+        if (!data[item] || data[item] === '0') {
+          return true;
+        }
+
+        if (typeof data[item] === 'object' && !data[item].value) {
+          return true;
+        }
+
+        if (Array.isArray(data[item]) && data[item].length === 0) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (isInComplete) {
+        setError('Please complete all fields before approving.');
+        setLoading(false);
+        return; // Exit out of the submit function
+      }
+    }
+
     const itemId = data.id;
     delete data.id;
 
@@ -95,6 +119,7 @@ const HomeForm = props => {
 
     if (!data || !response || !response.ok) {
       setError('An error occurred, while trying to save the form.');
+      console.log('An error occurred, while trying to save the form.', _data);
     } else {
       onSuccess(_data);
     }
@@ -116,28 +141,7 @@ const HomeForm = props => {
     // setData({homeType: {value: 'Mansion'},"aircondition": {"value": "Yes"}, "availabilityDate": "04/30/2023", "available": {"value": "Yes"}, "bathroom": {"value": "Yes"}, "bathroomNumber": "2", "bed": "2", "bedroom": "2", "currency": {"value": "USD"}, "description": "OPPOSITE ROMAN RIDGE SHOPPING CENTER NORTEI ABABIO STREET AIRPORT AIRPORT RESIDENTIAL defined", "furnished": {"value": "Yes"}, "homeType": "", "id": "ef0327b9-f2b0-4779-bcd6-749b9563694f", "kitchen": {"value": "Yes"}, "loyaltyProgram": {"value": "Yes"}, "marketerNumber": "+2348179222327", "maxGuests": "20", "mode": {"value": "For Sale"}, "negotiable": {"value": "Yes"}, "neighbourhood": "23rfg", "ownerName": "own", "phoneNumber": "+2348179222327", "price": "10", "title": "title", "toilet": {"value": "Yes"}, "water": {"value": "Yes"}, "wifi": {"value": "Yes"}});
   }, [preFillData]);
 
-  useEffect(() => {
-    const isInComplete = Object.keys(data).some(item => {
-      if (!data[item] || data[item] === '0') {
-        return true;
-      }
-
-      if (typeof data[item] === 'object' && !data[item].value) {
-        return true;
-      }
-
-      if (Array.isArray(data[item]) && data[item].length === 0) {
-        return true;
-      }
-
-      return false;
-    });
-
-    if (isInComplete) {
-      return setDisabled(true);
-    }
-    setDisabled(false);
-  }, [data]);
+ 
 
   return (
     <>
@@ -192,10 +196,10 @@ const HomeForm = props => {
       <Input
         placeholder="Owner name"
         type="text"
-        name="ownerName"
-        label="Owner name"
+        name="Homeowner Name"
+        label="Homeowner Name"
         value={data.homeownerName}
-        onChange={onChangeData('ownerName')}
+        onChange={onChangeData('homeownerName')}
       />
 
       <Whitespace marginTop={30} />
@@ -492,7 +496,7 @@ const HomeForm = props => {
 
       {/* <Whitespace marginBottom={-20} /> */}
 
-      <Button type="standard" loading={loading} disabled={disabled} onPress={submit}>
+      <Button type="standard" loading={loading} onPress={submit}>
         Save
       </Button>
 
