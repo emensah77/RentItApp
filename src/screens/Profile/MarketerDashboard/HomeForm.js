@@ -51,7 +51,6 @@ const HomeForm = props => {
 
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
-  const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const onChangeData = useCallback(
@@ -62,35 +61,54 @@ const HomeForm = props => {
       if (['newPrice', 'maxGuests', 'bathroomNumber', 'bed', 'bedroom'].includes(which)) {
         parsedValue = parseInt(value, 10);
       }
-
       const _data = {...data, [which]: parsedValue};
       setData(_data);
     },
     [data],
   );
 
+  const transformData = useCallback(dataa => {
+    return Object.keys(dataa).reduce((acc, key) => {
+      if (typeof dataa[key].value !== 'undefined') {
+        acc[key] = dataa[key].value;
+      } else {
+        acc[key] = dataa[key];
+      }
+      return acc;
+    }, {});
+  }, []);
+
   const submit = useCallback(async () => {
     setLoading(true);
 
-    if (data.status.value === 'approved') {
-      const isInComplete = Object.keys(data).some(item => {
+    if (data.status.value === 'APPROVED') {
+      const isInComplete = Object.keys(data).filter(item => {
         if (!data[item] || data[item] === '0') {
-          return true;
-        }
-
-        if (typeof data[item] === 'object' && !data[item].value) {
-          return true;
+          if (item !== 'bathroomNumber' || data[item] !== 0) {
+            return true;
+          }
         }
 
         if (Array.isArray(data[item]) && data[item].length === 0) {
           return true;
         }
 
+        if (
+          typeof data[item] === 'object' &&
+          !Array.isArray(data[item]) &&
+          !data[item].value &&
+          data[item].value !== 0
+        ) {
+          return true;
+        }
+
         return false;
       });
 
-      if (isInComplete) {
-        setError('Please complete all fields before approving.');
+      if (isInComplete.length) {
+        setError(
+          `Please complete the following fields before approving: ${isInComplete.join(', ')}`,
+        );
         setLoading(false);
         return; // Exit out of the submit function
       }
@@ -98,33 +116,33 @@ const HomeForm = props => {
 
     const itemId = data.id;
     delete data.id;
-
-    const response = await fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const updateValues = transformData(data);
+    if (updateValues.status) {
+      updateValues.status = updateValues.status.toLowerCase();
+    }
+    const response = await fetch(
+      'https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/homes',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemId,
+          userId: auth().currentUser.uid,
+          updateValues,
+        }),
       },
-      body: JSON.stringify({
-        itemId,
-        userId: auth().currentUser.uid,
-        updateValues: Object.keys(data)
-          .map(item => ({
-            [item]: typeof data[item].value !== 'undefined' ? data[item].value : data[item],
-          }))
-          .reduce((a, b) => ({...a, ...b}), {}),
-      }),
-    }).catch(setError);
+    ).catch(setError);
     const _data = await response.json();
-    // console.log('RES', _data);
 
     if (!data || !response || !response.ok) {
       setError('An error occurred, while trying to save the form.');
-      console.log('An error occurred, while trying to save the form.', _data);
     } else {
       onSuccess(_data);
     }
     setLoading(false);
-  }, [data, onSuccess]);
+  }, [data, onSuccess, transformData]);
 
   useEffect(() => {
     const newData = {};
@@ -140,8 +158,6 @@ const HomeForm = props => {
     setData({...oldData, ...newData});
     // setData({homeType: {value: 'Mansion'},"aircondition": {"value": "Yes"}, "availabilityDate": "04/30/2023", "available": {"value": "Yes"}, "bathroom": {"value": "Yes"}, "bathroomNumber": "2", "bed": "2", "bedroom": "2", "currency": {"value": "USD"}, "description": "OPPOSITE ROMAN RIDGE SHOPPING CENTER NORTEI ABABIO STREET AIRPORT AIRPORT RESIDENTIAL defined", "furnished": {"value": "Yes"}, "homeType": "", "id": "ef0327b9-f2b0-4779-bcd6-749b9563694f", "kitchen": {"value": "Yes"}, "loyaltyProgram": {"value": "Yes"}, "marketerNumber": "+2348179222327", "maxGuests": "20", "mode": {"value": "For Sale"}, "negotiable": {"value": "Yes"}, "neighbourhood": "23rfg", "ownerName": "own", "phoneNumber": "+2348179222327", "price": "10", "title": "title", "toilet": {"value": "Yes"}, "water": {"value": "Yes"}, "wifi": {"value": "Yes"}});
   }, [preFillData]);
-
- 
 
   return (
     <>
@@ -242,7 +258,7 @@ const HomeForm = props => {
         Marketer phone number.
       </Typography>
       <PhoneNumber
-        initialPhoneNumber={data.marketerNumber[0]}
+        initialPhoneNumber={data.marketerNumber}
         initialCountryCode="233"
         inline
         onChangeData={onChangeData('marketerNumber')}

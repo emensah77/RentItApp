@@ -124,6 +124,11 @@ const PhoneNumber = props => {
     },
     [onPhoneNumberChange, phoneNumber],
   );
+  useEffect(() => {
+    if (!phoneNumber) {
+      setPhoneNumber(initialPhoneNumber);
+    }
+  }, [initialPhoneNumber, phoneNumber]);
 
   useEffect(() => {
     (async () => {

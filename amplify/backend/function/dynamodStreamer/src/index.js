@@ -10,8 +10,27 @@ AWS.config.update({
 });
 
 const opensearchDomain = 'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-east-2.es.amazonaws.com';
-const index = 'rentit';
 const endpoint = new AWS.Endpoint(opensearchDomain);
+
+function getOpenSearchIndex(eventSourceARN) {
+  // Extract the table name from the ARN
+  console.log('Event Source ARN:', eventSourceARN);
+  const parts = eventSourceARN.split(":table/");
+  const tableName = parts[1].split("/")[0];
+  console.log('Table Name:', tableName);
+
+  // Determine the OpenSearch index based on the table name
+  switch (tableName) {
+    case 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev':
+      return 'rentit';
+    case 'UnverifiedHomes':
+      return 'rentitnew';
+    default:
+      throw new Error(`Unsupported table: ${tableName}`);
+  }
+}
+
+
 
 exports.handler = async (record) => {
   console.log('Processing record:', JSON.stringify(record, null, 2));
@@ -20,11 +39,13 @@ exports.handler = async (record) => {
   const doc = record.dynamodb.NewImage ? unmarshall(record.dynamodb.NewImage) : null;
   const oldDoc = record.dynamodb.OldImage ? unmarshall(record.dynamodb.OldImage) : null;
 
+  const index = getOpenSearchIndex(record.eventSourceARN);
+
   switch (record.eventName) {
     case 'INSERT':
       console.log(`Posting document to OpenSearch: ${JSON.stringify(doc)}`);
       try {
-        await postDocumentToOpenSearch(doc);
+        await postDocumentToOpenSearch(doc, index);
         console.log(`Finished posting document to OpenSearch: ${JSON.stringify(doc)}`);
       } catch (error) {
         console.error(`Error posting document to OpenSearch: ${error}`);
@@ -33,7 +54,7 @@ exports.handler = async (record) => {
     case 'MODIFY':
       console.log(`Modifying document in OpenSearch: ${JSON.stringify(doc)}`);
       try {
-        await modifyDocumentInOpenSearch(doc);
+        await modifyDocumentInOpenSearch(doc, index);
         console.log(`Finished modifying document in OpenSearch: ${JSON.stringify(doc)}`);
       } catch (error) {
         console.error(`Error modifying document in OpenSearch: ${error}`);
@@ -42,7 +63,7 @@ exports.handler = async (record) => {
     case 'REMOVE':
       console.log(`Deleting document from OpenSearch: ${JSON.stringify(oldDoc)}`);
       try {
-        await deleteDocumentFromOpenSearch(oldDoc.id);
+        await deleteDocumentFromOpenSearch(oldDoc.id, index);
         console.log(`Finished deleting document from OpenSearch: ${oldDoc.id}`);
       } catch (error) {
         console.error(`Error deleting document from OpenSearch: ${error}`);
@@ -52,7 +73,7 @@ exports.handler = async (record) => {
       console.log(`Ignoring event type: ${record.eventName}`);
   }
 };
-async function postDocumentToOpenSearch(doc) {
+async function postDocumentToOpenSearch(doc, index) {
   console.log(`Starting postDocumentToOpenSearch for document: ${JSON.stringify(doc)}`);
 
   const postReq = new AWS.HttpRequest(endpoint);
@@ -95,11 +116,11 @@ async function postDocumentToOpenSearch(doc) {
   });
 }
 
-async function modifyDocumentInOpenSearch(doc) {
+async function modifyDocumentInOpenSearch(doc, index) {
   console.log(`Starting modifyDocumentInOpenSearch for document: ${JSON.stringify(doc)}`);
 
   const modifyReq = new AWS.HttpRequest(endpoint);
-
+ 
   modifyReq.method = 'PUT'; // Use PUT for modifying existing documents
   modifyReq.path = path.join('/', index, '_doc', doc.id); // Use the document ID in the path
   modifyReq.region = 'us-east-2';
@@ -138,7 +159,7 @@ async function modifyDocumentInOpenSearch(doc) {
   });
 }
 
-async function deleteDocumentFromOpenSearch(docId) {
+async function deleteDocumentFromOpenSearch(docId, index) {
   console.log(`Starting deleteDocumentFromOpenSearch for document ID: ${docId}`);
 
   const deleteReq = new AWS.HttpRequest(endpoint);
