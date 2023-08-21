@@ -124,6 +124,11 @@ const PhoneNumber = props => {
     },
     [onPhoneNumberChange, phoneNumber],
   );
+  useEffect(() => {
+    if (!phoneNumber) {
+      setPhoneNumber(initialPhoneNumber);
+    }
+  }, [initialPhoneNumber, phoneNumber]);
 
   useEffect(() => {
     (async () => {
@@ -131,14 +136,16 @@ const PhoneNumber = props => {
       try {
         const response = await fetch('https://restcountries.com/v2/all');
         const data = await response.json();
-        const code = data?.[0]?.callingCodes?.[0];
+        const defaultCountry =
+          data.find(country => country.callingCodes?.[0] === initialCountryCode) || data?.[0];
+        const code = defaultCountry?.callingCodes?.[0];
         setCountry({
-          ...data?.[0],
+          ...defaultCountry,
           code,
           name:
-            code.length + data?.[0]?.name.length > 30
-              ? `${data?.[0]?.name.substring(0, 25)}...`
-              : data?.[0]?.name,
+            code.length + defaultCountry?.name.length > 30
+              ? `${defaultCountry?.name.substring(0, 25)}...`
+              : defaultCountry?.name,
         });
         setCountries(data);
       } catch (e) {
@@ -149,7 +156,7 @@ const PhoneNumber = props => {
       }
       setLoading(false);
     })();
-  }, []);
+  }, [initialCountryCode]);
 
   return (
     <Page header={startCase(camelCase(returnTo)) || 'Sign up'} inline={inline}>

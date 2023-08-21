@@ -121,6 +121,10 @@ const DetailedPost = props => {
     setIsDetailsModalVisible(true);
   }, []);
 
+  const goToChat = useCallback(() => {
+    navigation.navigate('Chat', {home_id: post.id});
+  }, [post, navigation]);
+
   const hideDetailsModal = useCallback(() => {
     setIsDetailsModalVisible(false);
   }, []);
@@ -540,6 +544,10 @@ const DetailedPost = props => {
                 <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
                   <Text style={styles.viewingText}>Schedule Viewing</Text>
+                </Pressable>
+                <Pressable onPress={goToChat} style={styles.scheduleButton}>
+                  <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
+                  <Text style={styles.viewingText}>CHat to Rent</Text>
                 </Pressable>
 
                 <Modal

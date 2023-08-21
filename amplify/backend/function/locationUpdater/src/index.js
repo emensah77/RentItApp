@@ -27,6 +27,8 @@ exports.handler = async (event) => {
       return await handleConnect(event);
     case 'disconnect':
       return await handleDisconnect(event);
+    case 'homeUpdate':
+      return await handleHomeUpdate(event);
     default:
       console.error('No matching action found');
       return { statusCode: 400 };
@@ -50,6 +52,18 @@ async function handleConnect(event) {
   }
 }
 
+async function handleHomeUpdate(event) {
+  const body = JSON.parse(event.body);
+
+  try {
+    const connections = await getAllConnections();
+    await broadcastUpdate(connections, body);
+    return { statusCode: 200, body: 'Home update broadcasted successfully' };
+  } catch (error) {
+    console.error('Error broadcasting home update:', error);
+    return { statusCode: 500, body: 'Error broadcasting home update' };
+  }
+}
 async function handleDisconnect(event) {
   const { connectionId } = event.requestContext;
 

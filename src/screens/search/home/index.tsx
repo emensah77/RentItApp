@@ -18,6 +18,7 @@ export const SearchHome = props => {
   const [childrenCount, setChildrenCount] = useState(0);
   const [infantsCount, setInfantsCount] = useState(0);
   const [petsCount, setPetsCount] = useState(0);
+  const [searchRegion, setSearchRegion] = useState(null);
 
   const [modalType, setModalType] = useState<'location' | 'calender'>('location');
 
@@ -48,6 +49,7 @@ export const SearchHome = props => {
   const autoComplete = useCallback(
     async (_, details: any = null) => {
       setViewPort(details.geometry.viewport);
+      setSearchRegion(details.geometry.location);
       setLocality(details.address_components[0].short_name);
       setAddress(details.address_components[0].long_name);
       if (details.address_components?.[1]) {
@@ -91,22 +93,24 @@ export const SearchHome = props => {
       location: {
         viewPort,
         locality,
+        searchRegion,
         sublocality,
         address: viewPort ? address : searchText,
       },
       searchText,
     });
   }, [
-    address,
+    navigation,
     adultsCount,
     childrenCount,
-    dates,
     infantsCount,
-    locality,
-    navigation,
     petsCount,
-    sublocality,
+    dates,
     viewPort,
+    locality,
+    searchRegion,
+    sublocality,
+    address,
     searchText,
   ]);
 
@@ -215,7 +219,11 @@ export const SearchHome = props => {
                 <TouchableOpacity style={styles.search} onPress={handleModal('location')}>
                   <Icon icon="searchMini" size={20} />
                   <SizedBox width={10} />
-                  <Text text="Search destination" size="xs" color={colors.palette.textInverse300} />
+                  <Text
+                    text="Type what or where you want to rent"
+                    size="xs"
+                    color={colors.palette.textInverse300}
+                  />
                 </TouchableOpacity>
                 <SizedBox height={20} />
                 <ScrollArea horizontal>

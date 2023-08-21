@@ -27,7 +27,7 @@ const OnboardingScreen10 = props => {
     <Base
       index={10}
       total={12}
-      isComplete={data.imageUrls && data.imageUrls.length > 0}
+      isComplete={data.imageUrls && data.imageUrls.length >= 5}
       data={data}
       inline>
       <View style={containerStyle}>
