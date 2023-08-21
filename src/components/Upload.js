@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {Platform, FlatList} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
@@ -18,13 +18,20 @@ import add from '../assets/images/add.png';
 const flatListStyle = {height: 200, flexGrow: 0};
 
 const Upload = props => {
-  const {picker = true, camera = true, imageNamePrefix, getImages, noFlatlist} = props;
+  const {
+    picker = true,
+    camera = true,
+    imageNamePrefix,
+    getImages,
+    noFlatlist,
+    initialImages = [],
+  } = props;
 
   if (!imageNamePrefix) {
     throw new Error('<Upload /> cannot be used without the `imageNamePrefix` prop.');
   }
 
-  const [urls, setUrls] = useState([]);
+  const [urls, setUrls] = useState(initialImages);
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -183,6 +190,10 @@ const Upload = props => {
         ),
       );
   }, [upload]);
+
+  useEffect(() => {
+    setUrls(initialImages);
+  }, [initialImages]);
 
   return (
     <>

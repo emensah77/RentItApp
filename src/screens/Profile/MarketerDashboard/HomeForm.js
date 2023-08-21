@@ -20,24 +20,25 @@ const oldData = {
   id: '',
   mode: {value: 'For Rent'},
   images: [],
-  ownerName: '',
   title: '',
   description: '',
-  phoneNumber: '',
-  marketerNumber: '',
+  phoneNumbers: [],
+  marketerNumber: [],
+  homeownerName: '',
   currency: {value: ''},
-  price: '0',
+  newPrice: 0,
   availabilityDate: '04/01/2023',
-  maxGuests: '0',
-  neighbourhood: '',
-  bathroomNumber: '0',
-  bed: '0',
-  bedroom: '0',
+  maxGuests: 0,
+  neighborhood: '',
+  bathroomNumber: 0,
+  bed: 0,
+  bedroom: 0,
   loyaltyProgram: {value: 'No'},
   negotiable: {value: 'No'},
   available: {value: 'No'},
+  verified: {value: 'No'},
   furnished: {value: 'No'},
-  homeType: {value: ''},
+  type: {value: ''},
   status: {value: ''},
   ...TYPES.AMENITIES.map(item => ({[item.value]: {value: 'No'}})).reduce(
     (a, b) => ({...a, ...b}),
@@ -50,40 +51,90 @@ const HomeForm = props => {
 
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
-  const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const onChangeData = useCallback(
     which => async value => {
-      const _data = {...data, [which]: value};
-      setData({..._data});
+      let parsedValue = value;
+
+      // Convert to number if specific fields are updated
+      if (['newPrice', 'maxGuests', 'bathroomNumber', 'bed', 'bedroom'].includes(which)) {
+        parsedValue = parseInt(value, 10);
+      }
+      const _data = {...data, [which]: parsedValue};
+      setData(_data);
     },
     [data],
   );
 
+  const transformData = useCallback(dataa => {
+    return Object.keys(dataa).reduce((acc, key) => {
+      if (typeof dataa[key].value !== 'undefined') {
+        acc[key] = dataa[key].value;
+      } else {
+        acc[key] = dataa[key];
+      }
+      return acc;
+    }, {});
+  }, []);
+
   const submit = useCallback(async () => {
     setLoading(true);
 
+    if (data.status.value === 'APPROVED') {
+      const isInComplete = Object.keys(data).filter(item => {
+        if (!data[item] || data[item] === '0') {
+          if (item !== 'bathroomNumber' || data[item] !== 0) {
+            return true;
+          }
+        }
+
+        if (Array.isArray(data[item]) && data[item].length === 0) {
+          return true;
+        }
+
+        if (
+          typeof data[item] === 'object' &&
+          !Array.isArray(data[item]) &&
+          !data[item].value &&
+          data[item].value !== 0
+        ) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (isInComplete.length) {
+        setError(
+          `Please complete the following fields before approving: ${isInComplete.join(', ')}`,
+        );
+        setLoading(false);
+        return; // Exit out of the submit function
+      }
+    }
+
     const itemId = data.id;
     delete data.id;
-
-    const response = await fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const updateValues = transformData(data);
+    if (updateValues.status) {
+      updateValues.status = updateValues.status.toLowerCase();
+    }
+    const response = await fetch(
+      'https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/homes',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemId,
+          userId: auth().currentUser.uid,
+          updateValues,
+        }),
       },
-      body: JSON.stringify({
-        itemId,
-        userId: auth().currentUser.uid,
-        updateValues: Object.keys(data)
-          .map(item => ({
-            [item]: typeof data[item].value !== 'undefined' ? data[item].value : data[item],
-          }))
-          .reduce((a, b) => ({...a, ...b}), {}),
-      }),
-    }).catch(setError);
+    ).catch(setError);
     const _data = await response.json();
-    // console.log('RES', _data);
 
     if (!data || !response || !response.ok) {
       setError('An error occurred, while trying to save the form.');
@@ -91,7 +142,7 @@ const HomeForm = props => {
       onSuccess(_data);
     }
     setLoading(false);
-  }, [data, onSuccess]);
+  }, [data, onSuccess, transformData]);
 
   useEffect(() => {
     const newData = {};
@@ -99,7 +150,6 @@ const HomeForm = props => {
       if (!preFillData[dataKey]) {
         return;
       }
-
       newData[dataKey] =
         oldData[dataKey] && typeof oldData[dataKey].value !== 'undefined'
           ? {value: preFillData[dataKey]}
@@ -108,29 +158,6 @@ const HomeForm = props => {
     setData({...oldData, ...newData});
     // setData({homeType: {value: 'Mansion'},"aircondition": {"value": "Yes"}, "availabilityDate": "04/30/2023", "available": {"value": "Yes"}, "bathroom": {"value": "Yes"}, "bathroomNumber": "2", "bed": "2", "bedroom": "2", "currency": {"value": "USD"}, "description": "OPPOSITE ROMAN RIDGE SHOPPING CENTER NORTEI ABABIO STREET AIRPORT AIRPORT RESIDENTIAL defined", "furnished": {"value": "Yes"}, "homeType": "", "id": "ef0327b9-f2b0-4779-bcd6-749b9563694f", "kitchen": {"value": "Yes"}, "loyaltyProgram": {"value": "Yes"}, "marketerNumber": "+2348179222327", "maxGuests": "20", "mode": {"value": "For Sale"}, "negotiable": {"value": "Yes"}, "neighbourhood": "23rfg", "ownerName": "own", "phoneNumber": "+2348179222327", "price": "10", "title": "title", "toilet": {"value": "Yes"}, "water": {"value": "Yes"}, "wifi": {"value": "Yes"}});
   }, [preFillData]);
-
-  useEffect(() => {
-    const isInComplete = Object.keys(data).some(item => {
-      if (!data[item] || data[item] === '0') {
-        return true;
-      }
-
-      if (typeof data[item] === 'object' && !data[item].value) {
-        return true;
-      }
-
-      if (Array.isArray(data[item]) && data[item].length === 0) {
-        return true;
-      }
-
-      return false;
-    });
-
-    if (isInComplete) {
-      return setDisabled(true);
-    }
-    setDisabled(false);
-  }, [data]);
 
   return (
     <>
@@ -159,6 +186,7 @@ const HomeForm = props => {
         camera={false}
         imageNamePrefix="home-marketer"
         noFlatlist
+        initialImages={data.images}
         getImages={onChangeData('images')}
       />
 
@@ -171,8 +199,8 @@ const HomeForm = props => {
       <Whitespace marginTop={-20} />
 
       <Dropdown
-        onChange={onChangeData('homeType')}
-        value={data.homeType.value}
+        onChange={onChangeData('type')}
+        value={data.type.value}
         data={TYPES.HOME_TYPES}
         displayKey="value"
         label="Home Type"
@@ -184,10 +212,10 @@ const HomeForm = props => {
       <Input
         placeholder="Owner name"
         type="text"
-        name="ownerName"
-        label="Owner name"
-        value={data.ownerName}
-        onChange={onChangeData('ownerName')}
+        name="Homeowner Name"
+        label="Homeowner Name"
+        value={data.homeownerName}
+        onChange={onChangeData('homeownerName')}
       />
 
       <Whitespace marginTop={30} />
@@ -217,14 +245,24 @@ const HomeForm = props => {
       <Typography type="label" width="100%">
         Home owner phone number.
       </Typography>
-      <PhoneNumber inline onChangeData={onChangeData('phoneNumber')} />
+      <PhoneNumber
+        initialPhoneNumber={data.phoneNumbers[0]}
+        initialCountryCode="233"
+        inline
+        onChangeData={onChangeData('phoneNumbers')}
+      />
 
       <Whitespace marginTop={30} />
 
       <Typography type="label" width="100%">
         Marketer phone number.
       </Typography>
-      <PhoneNumber inline onChangeData={onChangeData('marketerNumber')} />
+      <PhoneNumber
+        initialPhoneNumber={data.marketerNumber}
+        initialCountryCode="233"
+        inline
+        onChangeData={onChangeData('marketerNumber')}
+      />
 
       <Whitespace marginTop={30} />
 
@@ -248,10 +286,10 @@ const HomeForm = props => {
       <Input
         placeholder="0"
         type="numeric"
-        name="price"
+        name="newPrice"
         label="Price"
-        value={data.price}
-        onChange={onChangeData('price')}
+        value={data.newPrice.toString()}
+        onChange={onChangeData('newPrice')}
       />
 
       <Whitespace marginTop={30} />
@@ -290,7 +328,7 @@ const HomeForm = props => {
         type="text"
         name="neighbourhood"
         label="Neighbourhood"
-        value={data.neighbourhood}
+        value={data.neighborhood}
         onChange={onChangeData('neighbourhood')}
       />
 
@@ -301,7 +339,7 @@ const HomeForm = props => {
         type="numeric"
         name="bathroom"
         label="Bathroom"
-        value={data.bathroomNumber}
+        value={data.bathroomNumber.toString()}
         onChange={onChangeData('bathroomNumber')}
       />
 
@@ -312,7 +350,7 @@ const HomeForm = props => {
         type="numeric"
         name="bed"
         label="Bed"
-        value={data.bed}
+        value={data.bed.toString()}
         onChange={onChangeData('bed')}
       />
 
@@ -323,7 +361,7 @@ const HomeForm = props => {
         type="numeric"
         name="bedroom"
         label="Bedroom"
-        value={data.bedroom}
+        value={data.bedroom.toString()}
         onChange={onChangeData('bedroom')}
       />
 
@@ -358,6 +396,23 @@ const HomeForm = props => {
         data={TYPES.YES_OR_NO}
         displayKey="value"
         label="Negotiable"
+        suffix={arrowDown}
+      />
+
+      <Whitespace marginTop={20} />
+
+      <Typography size={12} left width="100%">
+        Verified
+      </Typography>
+
+      <Whitespace marginTop={-20} />
+
+      <Dropdown
+        onChange={onChangeData('verified')}
+        value={data.verified.value}
+        data={TYPES.YES_OR_NO}
+        displayKey="value"
+        label="Verified"
         suffix={arrowDown}
       />
 
@@ -457,7 +512,7 @@ const HomeForm = props => {
 
       {/* <Whitespace marginBottom={-20} /> */}
 
-      <Button type="standard" loading={loading} disabled={disabled} onPress={submit}>
+      <Button type="standard" loading={loading} onPress={submit}>
         Save
       </Button>
 

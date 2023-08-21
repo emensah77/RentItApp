@@ -91,10 +91,35 @@ const MarketerHome = () => {
     setRegion(_region);
   }, []);
 
+  const sendUpdatedHomeData = useCallback(
+    updatedHome => {
+      const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
+
+      _ws.onopen = function () {
+        setWS(_ws);
+      };
+
+      if (ws && ws.readyState === ws.OPEN) {
+        ws.send(
+          JSON.stringify({
+            action: 'homeUpdate',
+            data: updatedHome,
+          }),
+        );
+      } else {
+        console.error('WebSocket connection is not open');
+      }
+    },
+    [ws],
+  );
+
   const changeMode = useCallback(
     (_mode, success) => e => {
       if (success) {
         Alert.alert('Successfully saved the data.');
+        if (success && _mode === 'default') {
+          sendUpdatedHomeData(e);
+        }
       }
       if (_mode === 'home') {
         setMarkerData(markers.find(item => item.id === e.nativeEvent.id));
@@ -102,7 +127,7 @@ const MarketerHome = () => {
       setMode(_mode);
       expand(_mode);
     },
-    [markers, expand],
+    [expand, markers, sendUpdatedHomeData],
   );
 
   const makeANewRequest = useCallback(clearSearchAfter => {
@@ -112,6 +137,77 @@ const MarketerHome = () => {
 
     setRanOnce(false);
   }, []);
+
+  const fetchUnverifiedHomes = useCallback(
+    async (searchAfterValue = searchAfter) => {
+      setLoading(true);
+
+      try {
+        const response = await fetch(
+          'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/unverifiedhomes',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userLocation: {
+                latitude: `${position.coords.latitude}`,
+                longitude: `${position.coords.longitude}`,
+                // Use for testing ONLY!
+                // latitude: 5.60589164450265,
+                // longitude: -0.1883120435406709,
+              },
+              searchAfter: searchAfterValue,
+            }),
+          },
+        );
+
+        if (!response) {
+          console.error('No response received');
+          return;
+        }
+
+        const _markers = await response.json();
+
+        if (Array.isArray(_markers.searchAfter) && _markers.searchAfter.length > 0) {
+          setSearchAfter(_markers.searchAfter);
+        }
+
+        if (_markers && _markers.homes && _markers.homes.length > 0) {
+          // Keep the markers from the current state that are not present in the fetched data
+          const oldMarkers = markers.filter(
+            oldMarker => !_markers.homes.some(newMarker => newMarker.id === oldMarker.id),
+          );
+
+          // Merge the fetched data and the kept markers from the current state
+          setMarkers([..._markers.homes, ...oldMarkers]);
+
+          setRegion({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0922 * (screen.width / screen.height),
+          });
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching markers', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [position, searchAfter, markers],
+  );
+
+  useEffect(() => {
+    if (!position || ranOnce) {
+      return;
+    }
+
+    setRanOnce(true);
+    setCurrentPosition(position);
+    fetchUnverifiedHomes();
+  }, [position, ranOnce, fetchUnverifiedHomes]);
 
   const degreesToRadians = useCallback(degrees => {
     return (degrees * Math.PI) / 180;
@@ -161,10 +257,40 @@ const MarketerHome = () => {
     _ws.onopen = function () {
       setWS(_ws);
     };
+    _ws.onmessage = function (event) {
+      const message = JSON.parse(event.data);
+      // Handle the message based on its content
+      if (message.action === 'homeUpdate') {
+        // 1. Find the marker in the markers state that matches the received update
+        const updatedMarkerIndex = markers.findIndex(marker => marker.id === message.data.id);
+
+        if (updatedMarkerIndex !== -1) {
+          // 2. Update that marker's data with the new data from the homeUpdate
+          const updatedMarkers = [...markers];
+          updatedMarkers[updatedMarkerIndex] = message.data;
+
+          // 3. Set the updated list of markers back to the state
+          setMarkers(updatedMarkers);
+        }
+      }
+      // Add other message handling logic as needed
+    };
     return () => {
+      // Send the 'offline' status to the server before closing the WebSocket connection
+      if (_ws.readyState === _ws.OPEN) {
+        _ws.send(
+          JSON.stringify({
+            action: 'locationUpdate',
+            data: {
+              marketerId: auth().currentUser.uid,
+              marketerStatus: 'offline',
+            },
+          }),
+        );
+      }
       _ws.close(undefined, 'Unmount');
     };
-  }, []);
+  }, [markers]);
 
   useEffect(() => {
     if (ws && position) {
@@ -195,57 +321,14 @@ const MarketerHome = () => {
   }, [ws, position]);
 
   useEffect(() => {
-    (async () => {
-      if (!position || ranOnce) {
-        return;
-      }
+    if (!position || ranOnce) {
+      return;
+    }
 
-      setLoading(true);
-      setRanOnce(true);
-      setCurrentPosition(position);
-
-      const response = await fetch(
-        'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/unverifiedhomes',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userLocation: {
-              latitude: `${position.coords.latitude}`,
-              longitude: `${position.coords.longitude}`,
-              // Use for testing ONLY!
-              // latitude: 5.60589164450265,
-              // longitude: -0.1883120435406709,
-            },
-            searchAfter,
-          }),
-        },
-      ).catch(e => console.error('An error occurred while fetching markers', e));
-      if (!response) {
-        return;
-      }
-      const _markers = await response.json();
-
-      if (Array.isArray(_markers.searchAfter) && _markers.searchAfter.length > 0) {
-        setSearchAfter(_markers.searchAfter);
-      }
-
-      if (_markers && _markers.homes && _markers.homes.length > 0) {
-        setRegion({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0922 * (screen.width / screen.height),
-          // Use for testing ONLY!
-          // ..._markers.homes[0],
-        });
-        setMarkers(__markers => _markers.homes.concat(__markers));
-      }
-      setLoading(false);
-    })();
-  }, [position, ranOnce, searchAfter]);
+    setCurrentPosition(position);
+    fetchUnverifiedHomes();
+    setRanOnce(true);
+  }, [fetchUnverifiedHomes, position, ranOnce, searchAfter]);
 
   return (
     <Page inline type="drawer" header="Marketer Home">
@@ -263,29 +346,31 @@ const MarketerHome = () => {
         style={style}
         provider={PROVIDER_GOOGLE}
         minZoomLevel={12}>
-        {markers.map(marker => (
-          <Marker
-            key={marker.id}
-            identifier={marker.id}
-            coordinate={marker}
-            title={
-              marker.title === 'defaultTitle'
-                ? `${marker.sublocality}, ${marker.locality}`
-                : marker.title
-            }
-            description={marker.description}
-            image={
-              marker.status === 'PENDING'
-                ? pending
-                : marker.status === 'APPROVED'
-                ? approved
-                : marker.status === 'REJECTED'
-                ? rejected
-                : neutral
-            }
-            onPress={changeMode('home')}
-          />
-        ))}
+        {markers.map(marker => {
+          return (
+            <Marker
+              key={marker.id}
+              identifier={marker.id}
+              coordinate={marker}
+              title={
+                marker.title === 'defaultTitle'
+                  ? `${marker.sublocality}, ${marker.locality}`
+                  : marker.title
+              }
+              description={marker.description}
+              image={
+                marker.status === 'pending'
+                  ? pending
+                  : marker.status === 'approved'
+                  ? approved
+                  : marker.status === 'rejected'
+                  ? rejected
+                  : neutral
+              }
+              onPress={changeMode('home')}
+            />
+          );
+        })}
       </MapView>
 
       {searchAfter && (

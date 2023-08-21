@@ -73,18 +73,18 @@ const MODES = [
 
 const AMENITIES = [
   {title: 'Wifi', value: 'wifi'},
-  {title: 'Free Parking', value: 'free-parking'},
+  {title: 'Free Parking', value: 'freeparking'},
   {title: 'Kitchen', value: 'kitchen'},
-  {title: 'Hot tub', value: 'hot-tub'},
+  {title: 'Hot tub', value: 'hottub'},
   {title: 'Toilet', value: 'toilet'},
-  {title: 'Washing machine', value: 'washing-machine'},
+  {title: 'Washing machine', value: 'washingmachine'},
   {title: 'Pool', value: 'pool'},
   {title: 'Essentials', value: 'essentials'},
   {title: 'Dryer', value: 'dryer'},
   {title: 'Air conditioning', value: 'aircondition'},
   {title: 'Heating', value: 'heating'},
   {title: 'Water', value: 'water'},
-  {title: 'Dedicated Workspace', value: 'dedicated-workspace'},
+  {title: 'Dedicated Workspace', value: 'dedicatedworkspace'},
 ];
 
 const GENDERS = [{value: 'Male'}, {value: 'Female'}];

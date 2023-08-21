@@ -1107,6 +1107,11 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
       'title',
       'type',
       'location',
+      'availabilityDate',
+      'available',
+      'homeownerName',
+      'neighborhood',
+      'verified'
     ],
     sort: [
       {
