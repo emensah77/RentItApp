@@ -192,7 +192,9 @@ const Upload = props => {
   }, [upload]);
 
   useEffect(() => {
-    setUrls(initialImages);
+    if (initialImages.length > 0) {
+      setUrls(initialImages);
+    }
   }, [initialImages]);
 
   return (

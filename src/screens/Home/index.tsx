@@ -147,6 +147,9 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   );
 
   const fetchPosts = useCallback(async () => {
+    // Check if latitude and longitude are both available
+    const userLocation = latitude !== null && longitude !== null ? {latitude, longitude} : null;
+
     const response = await fetch(
       'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
       {
@@ -155,10 +158,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userLocation: {
-            latitude,
-            longitude,
-          },
+          userLocation, // Use the conditionally set value here
           typeParameter: status,
           searchAfter: searchAfter.current,
         }),

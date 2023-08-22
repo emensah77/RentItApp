@@ -24,6 +24,7 @@ const Base = props => {
   const {inline, isComplete, isFinal, data, index, total = 7, title, children, label} = props;
 
   const [progressData, setProgressData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const userId = auth().currentUser.uid;
 
@@ -113,6 +114,52 @@ const Base = props => {
     __DEV__ && console.debug('Response for Progress Update', await response.json());
   }, [data, isComplete, route.name, userId]);
 
+  const transformDataForAPI = useCallback(data => {
+    // Basic transformations
+    const transformedData = {
+      newPrice: data.price,
+      type: data.homeType,
+      currency: [data.currency],
+      bed: data.bedCount,
+      maxGuests: data.bedRoomCount,
+      bedroom: data.bedRoomCount,
+      bathroomNumber: data.bathRoomsCount,
+      images: data.imageUrls,
+      phoneNumbers: [data.phoneNumber],
+      marketerNumber: [data.marketerNumber],
+      status: 'PENDING',
+      image: data.imageUrls[0],
+      userID: auth().currentUser.uid,
+      amenities: data.amenities,
+      ...data, // Add all other fields from the original data
+    };
+
+    // Amenities transformations
+    const amenitiesMapping = {
+      wifi: 'Wifi',
+      kitchen: 'Kitchen',
+      bathroom: 'Bathroom',
+      water: 'Water',
+      toilet: 'Toilet',
+      aircondition: 'Aircondition',
+    };
+
+    Object.keys(amenitiesMapping).forEach(key => {
+      transformedData[key] = data.amenities.includes(amenitiesMapping[key]) ? 'Yes' : 'No';
+    });
+
+    // Remove old keys
+    delete transformedData.price;
+    delete transformedData.homeType;
+    delete transformedData.bedCount;
+    delete transformedData.bedRoomCount;
+    delete transformedData.bathRoomsCount;
+    delete transformedData.imageUrls;
+    delete transformedData.phoneNumber;
+
+    return transformedData;
+  }, []);
+
   const clear = useCallback(async () => {
     // Clear progress data
     const response = await fetch(
@@ -140,21 +187,27 @@ const Base = props => {
   }, [next, userId]);
 
   const finish = useCallback(async () => {
+    setIsLoading(true);
+
     if (!isFinal || !isComplete) {
       return;
     }
+    const mergedData = {...oldData, ...data}; // Merge the old data with the new data
+    const transformedData = transformDataForAPI(mergedData); // Transform the data for the API
 
     const uploadedHome = await API.graphql(
       graphqlOperation(
         createPost,
         {
-          input: {...oldData, ...data},
+          input: transformedData,
         },
         {
           id: undefined,
         },
       ),
     );
+
+    alert('Your home has been submitted successfully! We will review and approve it if '); // Simple alert to notify the user
 
     // Sync with past searched
     const {address: a, title: t, description: d} = oldData;
@@ -171,6 +224,9 @@ const Base = props => {
     ).catch(e => console.error('An error occurred while trying to sync with past searches', e));
 
     clear();
+    setIsLoading(false);
+
+    navigation.navigate('Home');
   }, [data, isFinal, isComplete, clear]);
 
   const back = useCallback(async () => {
@@ -191,9 +247,8 @@ const Base = props => {
     (async () => {
       await load();
       await save();
-      await finish();
     })();
-  }, [load, save, finish, data]);
+  }, [load, save, data]);
 
   return (
     <Page
@@ -235,6 +290,29 @@ const Base = props => {
                   Get Started
                 </Button>
               )}
+            </>
+          ) : index === 16 ? ( // Check if we are on OnboardingScreen16
+            <>
+              <Progress total={total} progress={index} />
+
+              <Divider top={25} bottom={15} />
+
+              <Container row type="spaceBetween">
+                <Button accessibilityLabel="Back" type="plain" onPress={back}>
+                  Back
+                </Button>
+
+                <Button
+                  accessibilityLabel="Finish"
+                  type="standard"
+                  disabled={!isComplete}
+                  loading={isLoading}
+                  onPress={finish}>
+                  {' '}
+                  {/* Call the finish function */}
+                  Finish
+                </Button>
+              </Container>
             </>
           ) : (
             <>

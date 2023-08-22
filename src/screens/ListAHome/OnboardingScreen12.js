@@ -63,6 +63,7 @@ const OnboardingScreen11 = props => {
   const [permissionRequest, setPermissionRequest] = useState(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [hasReverseGeocoded, setHasReverseGeocoded] = useState(false);
 
   const ref = useRef();
 
@@ -83,7 +84,7 @@ const OnboardingScreen11 = props => {
         component =>
           component.types.includes('sublocality') || component.types.includes('neighborhood'),
       )?.short_name;
-      const _address = ref.current.getAddressText() || details.formatted_address;
+      const _address = ref.current?.getAddressText() || details.formatted_address;
 
       setData({
         latitude: details.geometry.location.lat,
@@ -108,31 +109,33 @@ const OnboardingScreen11 = props => {
     // Reverse geocoding to get the address details
     Geocoder.from(location.latitude, location.longitude)
       .then(json => {
-        setLoading(false);
         onPress(undefined, json.results[0], true);
+        setHasReverseGeocoded(true); // Set here
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        setLoading(false);
+        setOpen(false);
+      });
   }, [location, onPress]);
 
   const requestLocation = useCallback(() => {
-    // When requesting times other than the first time, then permission
-    // was already granted, so geolocate the user immediately
-    if (permissionRequest) {
-      reverseGeolocate();
-    } else {
+    // We only set the permission request to true if location data isn't already available
+    if (!location.latitude && !location.longitude) {
       setPermissionRequest(true);
     }
-  }, [permissionRequest, reverseGeolocate]);
+  }, [location]);
 
   const getPosition = useCallback(
     ({coords}) => {
       setLocation({latitude: coords.latitude, longitude: coords.longitude});
 
-      if (loading) {
+      // Only reverse geocode if we aren't currently loading and haven't already reverse geocoded
+      if (!loading && !hasReverseGeocoded) {
         reverseGeolocate();
       }
     },
-    [loading, reverseGeolocate],
+    [loading, reverseGeolocate, hasReverseGeocoded],
   );
 
   const renderRow = useCallback(
@@ -195,7 +198,7 @@ const OnboardingScreen11 = props => {
 
   return (
     <Base index={12} total={12} isComplete={!!data.latitude} data={data} inline>
-      {permissionRequest && <Location interval={1000} noRender getPosition={getPosition} />}
+      {permissionRequest && <Location singleRequest noRender getPosition={getPosition} />}
 
       <Whitespace marginTop={30} />
 
