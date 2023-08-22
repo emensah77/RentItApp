@@ -222,10 +222,13 @@ const Inbox = () => {
             date: Utils.formatDate(state?.messageSets?.[0]?.messages?.[0]?.updated_at),
             location: '',
             status: '',
-            read: false,
+            read: state.read,
           })),
       );
     })().catch(e => console.error('There was an issue loading the chat', e));
+
+    // channel.countUnread();
+    // channel.countUnreadMentions();
 
     return () => _client.disconnectUser(1);
   }, [user]);

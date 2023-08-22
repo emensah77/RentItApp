@@ -223,7 +223,7 @@ const Chat = props => {
     }
 
     await stop();
-
+    await channel.markRead();
     await channel.sendMessage({
       text,
       timestamp: new Date().getTime(),
