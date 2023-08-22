@@ -15,6 +15,8 @@ import deleteIcon from '../assets/images/delete.png';
 import cameraIcon from '../assets/images/camera.png';
 import add from '../assets/images/add.png';
 
+import * as Utils from '../utils';
+
 const flatListStyle = {height: 200, flexGrow: 0};
 
 const Upload = props => {
@@ -82,21 +84,6 @@ const Upload = props => {
     [deleteImage, getURL],
   );
 
-  const getBlob = useCallback(filePath => {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        resolve(xhr.response);
-      };
-      xhr.onerror = function () {
-        reject(new Error('XMLHttpRequest failed.'));
-      };
-      xhr.responseType = 'blob';
-      xhr.open('GET', filePath, true);
-      xhr.send(null);
-    });
-  }, []);
-
   const upload = useCallback(
     async images => {
       setTotal(images.length);
@@ -121,7 +108,7 @@ const Upload = props => {
           if (resizeImage && resizeImage.uri) {
             path = resizeImage.uri;
           }
-          const rawFile = await getBlob(path);
+          const rawFile = await Utils.getBlob(path);
 
           const name = `${imageNamePrefix}-${uuid.v4()}`;
           return new Promise(resolve => {
@@ -151,7 +138,7 @@ const Upload = props => {
       getImages(validUrls);
       setTimeout(() => setProgress(0), 3000);
     },
-    [imageNamePrefix, getImages, urls, getBlob],
+    [imageNamePrefix, getImages, urls],
   );
 
   const openPicker = useCallback(() => {

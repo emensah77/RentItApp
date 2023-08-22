@@ -17,8 +17,8 @@ const GenericList = props => {
       const keys = Object.keys(item);
 
       return (
-        <>
-          <Container type="chipDeSelected" height="auto" width="100%" key={item[id]}>
+        <React.Fragment key={item[id]}>
+          <Container type="chipDeSelected" height="auto" width="100%">
             <CardDisplay
               numberOfLines={keys.length}
               name={
@@ -54,7 +54,7 @@ const GenericList = props => {
           </Container>
 
           <Whitespace marginTop={33} />
-        </>
+        </React.Fragment>
       );
     },
     [id],

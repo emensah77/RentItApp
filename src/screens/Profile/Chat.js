@@ -1,10 +1,13 @@
 import React, {useState, useEffect, useCallback} from 'react';
+import {Platform, PermissionsAndroid, Linking, Alert} from 'react-native';
+import Permissions, {PERMISSIONS} from 'react-native-permissions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {StreamChat} from 'stream-chat';
 import {API, graphqlOperation} from 'aws-amplify';
 import sha256 from 'sha256';
+import {Player, Recorder} from '@react-native-community/audio-toolkit';
 import {STREAM_CHAT_KEY} from 'react-native-dotenv';
+import {StreamChat} from 'stream-chat';
 
 import {getPost} from '../../graphql/queries';
 import {updatePost} from '../../graphql/mutations';
@@ -19,23 +22,29 @@ import {
   Typography,
   PageSpinner,
   Loader,
+  Image,
 } from '../../components';
 
 import arrowLeft from '../../assets/images/arrow-left.png';
 import menu from '../../assets/images/menu.png';
 // import logo from '../../assets/images/logo.png';
+// import microphone from '../../assets/images/microphone.png';
 import moon from '../../assets/images/moon.png';
 import listing from '../../assets/images/listing.png';
 import share from '../../assets/images/share.png';
+import stopImg from '../../assets/images/stop.png';
+import sendImg from '../../assets/images/send.png';
 import {global} from '../../assets/styles';
 
 import * as Utils from '../../utils';
+
+const path = 'test.mp4';
 
 const Chat = props => {
   const {
     route: {
       params: {home_id, channel_id, members} = {
-        home_id: '',
+        home_id: '7225607a-fd99-4f33-a32f-03de3dd04974',
         // Regular: '7225607a-fd99-4f33-a32f-03de3dd04974', 'ac1d2480-4b86-4d19-87bd-4674e433b179'
         // Home with no marketer ID: d556eed0-e704-47c8-9f5c-64da6447a186
       },
@@ -50,6 +59,11 @@ const Chat = props => {
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
+  const [recorder, setRecorder] = useState(null);
+  const [player, setPlayer] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
+  const [isRecording, setIsRecording] = useState(null);
 
   const getRandomMarketer = useCallback(async (bannedIds = []) => {
     const marketersSnapshot = await firestore()
@@ -76,26 +90,159 @@ const Chat = props => {
     return defaultSupervisors[Math.floor(Math.random() * defaultSupervisors.length)] || {};
   }, []);
 
+  const makeUri = useCallback(uri => ({uri}), []);
+
+  const load = useCallback(() => {
+    setPlayer(
+      new Player(path, {
+        autoDestroy: false,
+        continuesToPlayInBackground: true,
+        mixWithOthers: true,
+      }).prepare(),
+    );
+
+    setRecorder(
+      new Recorder(path, {
+        bitrate: 256000,
+        channels: 2,
+        sampleRate: 44100,
+        quality: 'max',
+      }).prepare(),
+    );
+  }, []);
+
+  const record = useCallback(async () => {
+    setIsRecording(null);
+
+    const options = {
+      title: 'Microphone Permission',
+      message: 'Rentit needs access to your microphone.',
+      buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK',
+    };
+
+    (Platform.OS === 'ios'
+      ? Permissions.request(PERMISSIONS.IOS.MICROPHONE)
+      : PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, options)
+    )
+      .then(async grant => {
+        if (grant === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+          return Linking.openSettings();
+        }
+
+        if (grant === PermissionsAndroid.RESULTS.GRANTED) {
+          recorder.toggleRecord(e => {
+            if (e) {
+              console.error('An error occurred while attempting to start recording, Retrying.', e);
+              return setTimeout(record, 2000);
+            }
+
+            const startTime = new Date().getTime();
+            const id = setInterval(() => {
+              setIsRecording(recorder.isRecording);
+
+              if (recorder.isRecording) {
+                const _s = (new Date().getTime() - startTime) / 1000;
+                const s = Math.floor(_s);
+                const min = Math.floor(_s / 60);
+                const sec = s % 60 < 10 ? `0${s % 60}` : s % 60;
+                setCountdown(`${min}:${sec}`);
+              }
+            }, 1000);
+            setIntervalId(id);
+          });
+        }
+      })
+      .catch(console.error);
+  }, [recorder]);
+
+  const stop = useCallback(async () => {
+    if (typeof recorder?.stop !== 'function') {
+      return true;
+    }
+
+    return new Promise(resolve => {
+      recorder.toggleRecord(e => {
+        if (e) {
+          console.error('An error occurred while attempting to stop recording, Retrying.', e);
+          return setTimeout(async () => {
+            resolve(await stop());
+          }, 2000);
+        }
+
+        setIsRecording(false);
+
+        if (__DEV__) {
+          setTimeout(() => {
+            player.playPause((err, paused) => {
+              if (err) {
+                console.error('An error occurred while attempting to playback the audio:', err);
+              }
+              console.debug('Now Playing', paused);
+            });
+          }, 2000);
+        }
+
+        if (recorder) {
+          recorder.destroy();
+        }
+
+        if (player) {
+          player.destroy();
+        }
+
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+
+        load();
+
+        resolve(true);
+      });
+    });
+  }, [intervalId, recorder, player, load]);
+
   const send = useCallback(async () => {
     if (!channel || /^\s{0,}$/.test(message)) {
       return;
     }
 
+    let text = message;
+    let attachments;
+    const voiceRecording = recorder?.fsPath;
+    // console.log('Get Blob', await Utils.getBlob(path).catch(console.error));
+    if (voiceRecording) {
+      text = `Voice message: ${Utils.randomInt(999999999)}.mp3`;
+      attachments = [
+        {
+          type: 'voiceRecording',
+          asset_url: voiceRecording,
+        },
+      ];
+    }
+
+    await stop();
+
     await channel.sendMessage({
-      text: message,
+      text,
       timestamp: new Date().getTime(),
       sender_id: sender.uid,
+      attachments,
     });
-  }, [channel, message, sender]);
+  }, [channel, message, recorder, stop, sender]);
 
   useEffect(() => {
+    load();
+
     const client = StreamChat.getInstance(STREAM_CHAT_KEY);
+    let _channel;
 
     (async () => {
       setLoading(true);
 
       if (!home_id) {
-        console.debug('Home ID is required.');
+        console.error('Home ID is required.');
         return;
       }
 
@@ -201,7 +348,7 @@ const Chat = props => {
       );
 
       delete _receiver.type;
-      const _channel = client.channel(
+      _channel = client.channel(
         'messaging',
         channel_id || sha256(`${user.uid}-${home_id}-${_receiver.uid}`),
         {
@@ -230,16 +377,29 @@ const Chat = props => {
 
       await _channel.watch();
       _channel.on('message.new', event => {
-        console.debug('You have a new message:', event);
+        console.debug('You have a new message:', JSON.stringify(event));
         setMessage('');
         setMessages(oldMessages => [event.message, ...oldMessages]);
       });
+
+      client.on('notification.message_new', event => {
+        if (event.total_unread_count !== undefined) {
+          Alert.alert(`You have ${event.total_unread_count} unread messages.`);
+        }
+
+        if (event.unread_channels !== undefined) {
+          Alert.alert(`You have ${event.unread_channels} new messages`);
+        }
+      });
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
-    return () => client.disconnectUser(1);
-  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id, members]);
-
-  const makeUri = useCallback(uri => ({uri}), []);
+    return () => {
+      client.disconnectUser(1);
+      if (_channel) {
+        _channel.markRead();
+      }
+    };
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id, members, load]);
 
   let currentDay, nextDay;
 
@@ -288,15 +448,47 @@ const Chat = props => {
 
             <Whitespace marginTop={8} /> */}
 
-            <Input
-              inline
-              placeholder="Write a message"
-              type="text"
-              onSubmitEditing={send}
-              value={message}
-              onChange={setMessage}
-              trim={false}
-            />
+            <Container row center type="spaceBetween" width="100%" height={50}>
+              {isRecording ? (
+                <Container row type="spaceBetween" width="50%">
+                  <Container center onPress={stop} width={35} height={25}>
+                    <Image src={stopImg} width={25} height={25} />
+                  </Container>
+
+                  <Typography size={20} height={25} weight="900">
+                    {countdown}
+                  </Typography>
+
+                  <Container center onPress={send} width={35} height={25}>
+                    <Image src={sendImg} width={25} height={25} />
+                  </Container>
+                </Container>
+              ) : (
+                <>
+                  <Container center width="100%">
+                    <Input
+                      inline
+                      placeholder="Write a message"
+                      type="text"
+                      onSubmitEditing={send}
+                      value={message}
+                      onChange={setMessage}
+                      trim={false}
+                    />
+                  </Container>
+
+                  {/* <Container
+                    center
+                    type="right-5"
+                    onPress={record}
+                    color="#fff"
+                    width={35}
+                    height={25}>
+                    <Image src={microphone} width={25} height={25} />
+                  </Container> */}
+                </>
+              )}
+            </Container>
           </>
         }>
         {!loading ? (

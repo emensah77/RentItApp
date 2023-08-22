@@ -88,6 +88,8 @@
 			</dict>
 		</dict>
 	</dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Rentit would like to access your microphone</string>
 	<key>NSCameraUsageDescription</key>
 	<string>RentIt would like to access camera</string>
 	<key>NSMicrophoneUsageDescription</key>
