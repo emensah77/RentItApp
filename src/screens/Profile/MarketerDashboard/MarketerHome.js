@@ -374,7 +374,7 @@ const MarketerHome = () => {
       </MapView>
 
       {searchAfter && (
-        <Container type="top-75" width="100%" onPress={makeANewRequest}>
+        <Container type="top-25" width="100%" onPress={makeANewRequest}>
           <Container row type="chipSmall" color="#194CC3" width={110}>
             <Typography size={13} width="100%" color="#FFF" center>
               {loading ? 'Loading' : 'Load more'}

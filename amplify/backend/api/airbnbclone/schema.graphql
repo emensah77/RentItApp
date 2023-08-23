@@ -79,6 +79,8 @@ type Post
   currency: [String]
 
   status: String
+  idUrls: [String]
+  amenities: [String]
   availabilityDate: String
   homeownerName: String
   negotiable: String
@@ -104,6 +106,7 @@ type Post
   dataAccuracy: Float
   responsiveness: Float
   rentersFeedback: Float
+  address: String
 
   oldPrice: Float
   newPrice: Float

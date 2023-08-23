@@ -29,6 +29,7 @@ const OnboardingScreen16 = props => {
       total={17}
       isComplete={data.idUrls && data.idUrls.length > 0}
       data={data}
+      isFinal={true}
       inline>
       <View style={containerStyle}>
         <Typography height={30} type="heading" size={26} color="#1F2D3D" width="100%">
