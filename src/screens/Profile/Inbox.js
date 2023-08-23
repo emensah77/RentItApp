@@ -168,7 +168,7 @@ const Inbox = () => {
   }, [loadNotifications]);
 
   useEffect(() => {
-    const _client = StreamChat.getInstance(STREAM_CHAT_KEY);
+    const _client = StreamChat.getInstance(STREAM_CHAT_KEY || '');
 
     (async () => {
       const request = await fetch(

@@ -235,7 +235,7 @@ const Chat = props => {
   useEffect(() => {
     load();
 
-    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
+    const client = StreamChat.getInstance(STREAM_CHAT_KEY || '');
     let _channel;
 
     (async () => {
