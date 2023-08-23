@@ -2,7 +2,6 @@ import React, {useEffect, useState, useMemo, useCallback, useRef} from 'react';
 import {Dimensions, Animated, Alert} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import auth from '@react-native-firebase/auth';
-import {useNavigation} from '@react-navigation/native';
 
 import HomeForm from './HomeForm';
 import DemandForm from './DemandForm';
@@ -11,16 +10,15 @@ import RequestForm from './RequestForm';
 import Location from '../../Authentication/Location';
 
 import {
+  Page,
   PageSpinner,
   Container,
   Button,
   Typography,
   Whitespace,
   Divider,
-  Header,
 } from '../../../components';
 
-import hamburger from '../../../assets/images/hamburger.png';
 import neutral from '../../../assets/images/markers/neutral.png';
 import pending from '../../../assets/images/markers/pending.png';
 import rejected from '../../../assets/images/markers/rejected.png';
@@ -38,11 +36,7 @@ const initialMarker = screen => ({
 
 const screen = Dimensions.get('window');
 
-const MarketerHome = props => {
-  const {
-    route: {name},
-  } = props;
-
+const MarketerHome = () => {
   const [ranOnce, setRanOnce] = useState(false);
   const [loading, setLoading] = useState(true);
   const [region, setRegion] = useState();
@@ -54,8 +48,7 @@ const MarketerHome = props => {
   const [markerData, setMarkerData] = useState();
   const [mode, setMode] = useState('default');
 
-  const top = useRef(new Animated.Value(0.65 * screen.height)).current;
-  const navigation = useNavigation();
+  const top = useRef(new Animated.Value(0.5 * screen.height)).current;
 
   const animatedStyle = useMemo(
     () => [
@@ -73,7 +66,7 @@ const MarketerHome = props => {
     setMode('default');
 
     Animated.timing(top, {
-      toValue: 0.65 * screen.height,
+      toValue: 0.45 * screen.height,
       duration: 400,
       useNativeDriver: false,
     }).start();
@@ -338,11 +331,7 @@ const MarketerHome = props => {
   }, [fetchUnverifiedHomes, position, ranOnce, searchAfter]);
 
   return (
-    <>
-      <Header leftIcon={hamburger} onClose={navigation.toggleDrawer}>
-        {name}
-      </Header>
-
+    <Page inline type="drawer" header="Marketer Home">
       {loading && <PageSpinner />}
 
       <Location noRender getPosition={getPosition} />
@@ -385,7 +374,7 @@ const MarketerHome = props => {
       </MapView>
 
       {searchAfter && (
-        <Container type="top-75" width="100%" onPress={makeANewRequest}>
+        <Container type="top-25" width="100%" onPress={makeANewRequest}>
           <Container row type="chipSmall" color="#194CC3" width={110}>
             <Typography size={13} width="100%" color="#FFF" center>
               {loading ? 'Loading' : 'Load more'}
@@ -447,7 +436,7 @@ const MarketerHome = props => {
           />
         ) : null}
       </Animated.ScrollView>
-    </>
+    </Page>
   );
 };
 

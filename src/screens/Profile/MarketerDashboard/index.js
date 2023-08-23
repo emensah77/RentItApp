@@ -7,6 +7,7 @@ import MyRequests from './MyRequests';
 import AllDemands from './AllDemands';
 import MyClaims from './MyClaims';
 import StatsAndEarnings from './StatsAndEarnings';
+import Report from './Report';
 
 const noHeader = {
   headerShown: false,
@@ -20,16 +21,18 @@ const MarketerDashboard = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      <Drawer.Navigator initialRouteName="Marketer Home">
-        <Drawer.Screen name="Marketer Home" component={MarketerHome} options={noHeader} />
+      <Drawer.Navigator initialRouteName="MarketerHome">
+        <Drawer.Screen name="MarketerHome" component={MarketerHome} options={noHeader} />
 
-        <Drawer.Screen name="My Requests" component={MyRequests} options={noHeader} />
+        <Drawer.Screen name="MyRequests" component={MyRequests} options={noHeader} />
 
         <Drawer.Screen name="All Demands" component={AllDemands} options={noHeader} />
 
         <Drawer.Screen name="My Claims" component={MyClaims} options={noHeader} />
 
         <Drawer.Screen name="Stats And Earnings" component={StatsAndEarnings} options={noHeader} />
+
+        <Drawer.Screen name="Report" component={Report} options={noHeader} />
       </Drawer.Navigator>
     </>
   );

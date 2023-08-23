@@ -9,7 +9,7 @@ import {global} from '../../assets/styles';
 import locationPermission from '../../assets/images/location-permission.png';
 
 const Location = props => {
-  const {noRender, interval, getPosition} = props;
+  const {noRender, interval, getPosition, singleRequest} = props;
 
   const [enabled, setEnabled] = useState(null);
   const [count, setCount] = useState(1);
@@ -88,6 +88,9 @@ const Location = props => {
 
                 if (getPosition && typeof getPosition === 'function') {
                   getPosition(position);
+                  if (singleRequest) {
+                    BackgroundGeolocation.stopWatchPosition(); // Stop after the first position fetch
+                  }
                 }
               },
               e => console.error('[watchPosition] ERROR -', e),
@@ -103,7 +106,7 @@ const Location = props => {
         },
       );
     });
-  }, [getPosition, interval]);
+  }, [getPosition, interval, singleRequest]);
 
   const request = useCallback(async () => {
     const location = await init();

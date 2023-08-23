@@ -1,3 +1,4 @@
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const getReview = /* GraphQL */ `
@@ -30,6 +31,8 @@ export const getReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -50,6 +53,12 @@ export const getReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -82,7 +91,11 @@ export const getReview = /* GraphQL */ `
   }
 `;
 export const listReviews = /* GraphQL */ `
-  query ListReviews($filter: ModelReviewFilterInput, $limit: Int, $nextToken: String) {
+  query ListReviews(
+    $filter: ModelReviewFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
     listReviews(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -101,6 +114,8 @@ export const listReviews = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -121,6 +136,12 @@ export const listReviews = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -162,14 +183,28 @@ export const getViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
   }
 `;
 export const listViewings = /* GraphQL */ `
-  query ListViewings($filter: ModelViewingFilterInput, $limit: Int, $nextToken: String) {
+  query ListViewings(
+    $filter: ModelViewingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
     listViewings(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -183,9 +218,75 @@ export const listViewings = /* GraphQL */ `
         userId
         status
         assignedRep
-        comments
+        comments {
+          nextToken
+        }
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getComment = /* GraphQL */ `
+  query GetComment($id: ID!) {
+    getComment(id: $id) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
+    }
+  }
+`;
+export const listComments = /* GraphQL */ `
+  query ListComments(
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        content
+        author
+        createdAt
+        updatedAt
+        viewing {
+          id
+          postId
+          username
+          viewingDate
+          viewingTime
+          usercontact
+          userlocation
+          viewingDateTime
+          userId
+          status
+          assignedRep
+          createdAt
+          updatedAt
+        }
+        viewingId
       }
       nextToken
     }
@@ -214,6 +315,8 @@ export const getUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -234,6 +337,12 @@ export const getUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -262,7 +371,11 @@ export const getUser = /* GraphQL */ `
   }
 `;
 export const listUsers = /* GraphQL */ `
-  query ListUsers($filter: ModelUserFilterInput, $limit: Int, $nextToken: String) {
+  query ListUsers(
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -326,6 +439,8 @@ export const getPost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -346,6 +461,12 @@ export const getPost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude
@@ -356,7 +477,11 @@ export const getPost = /* GraphQL */ `
   }
 `;
 export const listPosts = /* GraphQL */ `
-  query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
+  query ListPosts(
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
     listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -384,6 +509,8 @@ export const listPosts = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -404,6 +531,12 @@ export const listPosts = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -541,6 +674,8 @@ export const listPostsSortedByCreatedTime = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -561,6 +696,12 @@ export const listPostsSortedByCreatedTime = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude

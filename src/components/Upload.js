@@ -82,7 +82,7 @@ const Upload = props => {
     [deleteImage, getURL],
   );
 
-  const getBlob = filePath => {
+  const getBlob = useCallback(filePath => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -95,11 +95,8 @@ const Upload = props => {
       xhr.open('GET', filePath, true);
       xhr.send(null);
     });
-  };
-  useEffect(() => {
-    setUrls(initialImages);
- }, [initialImages]);
- 
+  }, []);
+
   const upload = useCallback(
     async images => {
       setTotal(images.length);
@@ -154,7 +151,7 @@ const Upload = props => {
       getImages(validUrls);
       setTimeout(() => setProgress(0), 3000);
     },
-    [imageNamePrefix, getImages, urls],
+    [imageNamePrefix, getImages, urls, getBlob],
   );
 
   const openPicker = useCallback(() => {
@@ -193,6 +190,12 @@ const Upload = props => {
         ),
       );
   }, [upload]);
+
+  useEffect(() => {
+    if (initialImages.length > 0) {
+      setUrls(initialImages);
+    }
+  }, [initialImages]);
 
   return (
     <>

@@ -34,8 +34,8 @@ import * as Utils from '../../utils';
 const Chat = props => {
   const {
     route: {
-      params: {home_id} = {
-        home_id: 'd556eed0-e704-47c8-9f5c-64da6447a186',
+      params: {home_id, channel_id, members} = {
+        home_id: '',
         // Regular: '7225607a-fd99-4f33-a32f-03de3dd04974', 'ac1d2480-4b86-4d19-87bd-4674e433b179'
         // Home with no marketer ID: d556eed0-e704-47c8-9f5c-64da6447a186
       },
@@ -89,10 +89,15 @@ const Chat = props => {
   }, [channel, message, sender]);
 
   useEffect(() => {
-    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
+    const client = StreamChat.getInstance(STREAM_CHAT_KEY || '');
 
     (async () => {
       setLoading(true);
+
+      if (!home_id) {
+        console.debug('Home ID is required.');
+        return;
+      }
 
       const user = auth().currentUser;
       const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
@@ -137,7 +142,7 @@ const Chat = props => {
           console.error('An error occurred while fetching a random default supervisor:', e),
         );
         if (!_supervisor.uid) {
-          console.error('There was no _supervisor id');
+          console.error('There was no supervisor id');
           return;
         }
 
@@ -198,12 +203,12 @@ const Chat = props => {
       delete _receiver.type;
       const _channel = client.channel(
         'messaging',
-        sha256(`${user.uid}-${home_id}-${_receiver.uid}`),
+        channel_id || sha256(`${user.uid}-${home_id}-${_receiver.uid}`),
         {
           ..._receiver,
           name: _receiver.displayName || _receiver.fname || _receiver.lname,
           image: _receiver.userImg || _receiver.photoUrl,
-          members: [user.uid, _receiver.uid, _supervisor.uid],
+          members: members || [user.uid, _receiver.uid, _supervisor.uid],
         },
       );
       await _channel.updatePartial({set: {home_id}});
@@ -232,14 +237,14 @@ const Chat = props => {
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => client.disconnectUser(1);
-  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id]);
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id, members]);
 
   const makeUri = useCallback(uri => ({uri}), []);
 
   let currentDay, nextDay;
 
   if (!receiver.displayName && (receiver.fname || receiver.lname)) {
-    receiver.displayName = `${receiver.fname || receiver.lname || ''}`;
+    receiver.displayName = receiver.fname || receiver.lname || '';
   }
 
   if (!receiver.displayName) {
@@ -251,6 +256,7 @@ const Chat = props => {
       <Page
         leftIcon={arrowLeft}
         rightIcon={menu}
+        scrollToBottom
         reverse
         header={
           <Typography type="heading" left>
@@ -299,10 +305,6 @@ const Chat = props => {
             currentDay = Utils.formatDate(msg.created_at);
             const date = new Date(msg.created_at);
             const {user} = msg;
-
-            if (user.id !== sender.uid && user.id !== receiver.uid) {
-              return null;
-            }
 
             return (
               <React.Fragment key={msg.id}>
@@ -363,6 +365,97 @@ const Chat = props => {
         )}
 
         <Whitespace marginTop={global.header.height} />
+
+        {/* <Typography type="levelOneThick" size={12} color="#717171">
+          Aug 23, 2022
+        </Typography>
+
+        <Whitespace marginTop={24} />
+
+        <Container row center type="chip">
+          <CardDisplay
+            leftImageWidth={16}
+            leftImageHeight={16}
+            leftImageSrc={logo}
+            numberOfLines={2}
+            description={
+              <Typography type="levelOneThick" size={12} color="#717171">
+                Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
+                <Typography type="link" color="#717171">
+                  Show listing
+                </Typography>
+              </Typography>
+            }
+            center
+            bold
+          />
+        </Container>
+
+        <Whitespace marginTop={24} />
+
+        <CardDisplay
+          leftImageCircle={38}
+          leftImageSrc={moon}
+          name="Dolly 2"
+          location="4:26 PM"
+          description="Looking forward to staying"
+          bold={false}
+        />
+
+        <Whitespace marginTop={24} />
+
+        <Container row center type="chip">
+          <CardDisplay
+            leftImageWidth={16}
+            leftImageHeight={16}
+            leftImageSrc={logo}
+            numberOfLines={2}
+            description={
+              <Typography type="levelOneThick" size={12} color="#717171">
+                Your reservation is confirmed for 1 guest on Feb 13 - 14.{' '}
+                <Typography type="link" color="#717171">
+                  Show reservation
+                </Typography>
+              </Typography>
+            }
+            center
+            bold
+          />
+        </Container>
+
+        <Whitespace marginTop={24} />
+
+        <CardDisplay
+          leftImageCircle={38}
+          leftImageSrc={moon}
+          name="Dolly"
+          location="4:26 PM"
+          description="Sorry I need to cancel"
+          bold={false}
+        />
+
+        <Whitespace marginTop={16} />
+
+        <Typography type="levelOneThick" size={12} color="#717171">
+          UNREAD
+        </Typography>
+
+        <Whitespace marginTop={24} />
+
+        <Container row center type="chip">
+          <CardDisplay
+            leftImageWidth={16}
+            leftImageHeight={16}
+            leftImageSrc={logo}
+            description={
+              <Typography type="levelOneThick" size={12} color="#717171">
+                Reservation cancelled by guest
+              </Typography>
+            }
+            center
+            bold
+          />
+        </Container> */}
       </Page>
 
       <Container width="90%" height={100} type={`top-${global.header.height}-center`} color="#FFF">

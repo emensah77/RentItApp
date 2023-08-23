@@ -1,3 +1,4 @@
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const createPaymentIntent = /* GraphQL */ `
@@ -8,7 +9,10 @@ export const createPaymentIntent = /* GraphQL */ `
   }
 `;
 export const createReview = /* GraphQL */ `
-  mutation CreateReview($input: CreateReviewInput!, $condition: ModelReviewConditionInput) {
+  mutation CreateReview(
+    $input: CreateReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
     createReview(input: $input, condition: $condition) {
       id
       post {
@@ -37,6 +41,8 @@ export const createReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -57,6 +63,12 @@ export const createReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -89,7 +101,10 @@ export const createReview = /* GraphQL */ `
   }
 `;
 export const updateReview = /* GraphQL */ `
-  mutation UpdateReview($input: UpdateReviewInput!, $condition: ModelReviewConditionInput) {
+  mutation UpdateReview(
+    $input: UpdateReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
     updateReview(input: $input, condition: $condition) {
       id
       post {
@@ -118,6 +133,8 @@ export const updateReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -138,6 +155,12 @@ export const updateReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -170,7 +193,10 @@ export const updateReview = /* GraphQL */ `
   }
 `;
 export const deleteReview = /* GraphQL */ `
-  mutation DeleteReview($input: DeleteReviewInput!, $condition: ModelReviewConditionInput) {
+  mutation DeleteReview(
+    $input: DeleteReviewInput!
+    $condition: ModelReviewConditionInput
+  ) {
     deleteReview(input: $input, condition: $condition) {
       id
       post {
@@ -199,6 +225,8 @@ export const deleteReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -219,6 +247,12 @@ export const deleteReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -251,7 +285,10 @@ export const deleteReview = /* GraphQL */ `
   }
 `;
 export const createViewing = /* GraphQL */ `
-  mutation CreateViewing($input: CreateViewingInput!, $condition: ModelViewingConditionInput) {
+  mutation CreateViewing(
+    $input: CreateViewingInput!
+    $condition: ModelViewingConditionInput
+  ) {
     createViewing(input: $input, condition: $condition) {
       id
       postId
@@ -264,14 +301,27 @@ export const createViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
   }
 `;
 export const updateViewing = /* GraphQL */ `
-  mutation UpdateViewing($input: UpdateViewingInput!, $condition: ModelViewingConditionInput) {
+  mutation UpdateViewing(
+    $input: UpdateViewingInput!
+    $condition: ModelViewingConditionInput
+  ) {
     updateViewing(input: $input, condition: $condition) {
       id
       postId
@@ -284,14 +334,27 @@ export const updateViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
   }
 `;
 export const deleteViewing = /* GraphQL */ `
-  mutation DeleteViewing($input: DeleteViewingInput!, $condition: ModelViewingConditionInput) {
+  mutation DeleteViewing(
+    $input: DeleteViewingInput!
+    $condition: ModelViewingConditionInput
+  ) {
     deleteViewing(input: $input, condition: $condition) {
       id
       postId
@@ -304,14 +367,126 @@ export const deleteViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
   }
 `;
+export const createComment = /* GraphQL */ `
+  mutation CreateComment(
+    $input: CreateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    createComment(input: $input, condition: $condition) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
+    }
+  }
+`;
+export const updateComment = /* GraphQL */ `
+  mutation UpdateComment(
+    $input: UpdateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    updateComment(input: $input, condition: $condition) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
+    }
+  }
+`;
+export const deleteComment = /* GraphQL */ `
+  mutation DeleteComment(
+    $input: DeleteCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    deleteComment(input: $input, condition: $condition) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
+    }
+  }
+`;
 export const createUser = /* GraphQL */ `
-  mutation CreateUser($input: CreateUserInput!, $condition: ModelUserConditionInput) {
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
     createUser(input: $input, condition: $condition) {
       id
       username
@@ -333,6 +508,8 @@ export const createUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -353,6 +530,12 @@ export const createUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -381,7 +564,10 @@ export const createUser = /* GraphQL */ `
   }
 `;
 export const updateUser = /* GraphQL */ `
-  mutation UpdateUser($input: UpdateUserInput!, $condition: ModelUserConditionInput) {
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
     updateUser(input: $input, condition: $condition) {
       id
       username
@@ -403,6 +589,8 @@ export const updateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -423,6 +611,12 @@ export const updateUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -451,7 +645,10 @@ export const updateUser = /* GraphQL */ `
   }
 `;
 export const deleteUser = /* GraphQL */ `
-  mutation DeleteUser($input: DeleteUserInput!, $condition: ModelUserConditionInput) {
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
     deleteUser(input: $input, condition: $condition) {
       id
       username
@@ -473,6 +670,8 @@ export const deleteUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -493,6 +692,12 @@ export const deleteUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -521,7 +726,10 @@ export const deleteUser = /* GraphQL */ `
   }
 `;
 export const createPost = /* GraphQL */ `
-  mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
+  mutation CreatePost(
+    $input: CreatePostInput!
+    $condition: ModelPostConditionInput
+  ) {
     createPost(input: $input, condition: $condition) {
       id
       createdTime
@@ -564,6 +772,8 @@ export const createPost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -584,6 +794,12 @@ export const createPost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude
@@ -594,7 +810,10 @@ export const createPost = /* GraphQL */ `
   }
 `;
 export const updatePost = /* GraphQL */ `
-  mutation UpdatePost($input: UpdatePostInput!, $condition: ModelPostConditionInput) {
+  mutation UpdatePost(
+    $input: UpdatePostInput!
+    $condition: ModelPostConditionInput
+  ) {
     updatePost(input: $input, condition: $condition) {
       id
       createdTime
@@ -637,6 +856,8 @@ export const updatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -657,6 +878,12 @@ export const updatePost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude
@@ -667,7 +894,10 @@ export const updatePost = /* GraphQL */ `
   }
 `;
 export const deletePost = /* GraphQL */ `
-  mutation DeletePost($input: DeletePostInput!, $condition: ModelPostConditionInput) {
+  mutation DeletePost(
+    $input: DeletePostInput!
+    $condition: ModelPostConditionInput
+  ) {
     deletePost(input: $input, condition: $condition) {
       id
       createdTime
@@ -710,6 +940,8 @@ export const deletePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -730,6 +962,12 @@ export const deletePost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude
@@ -740,7 +978,10 @@ export const deletePost = /* GraphQL */ `
   }
 `;
 export const createPostNew = /* GraphQL */ `
-  mutation CreatePostNew($input: CreatePostNewInput!, $condition: ModelPostNewConditionInput) {
+  mutation CreatePostNew(
+    $input: CreatePostNewInput!
+    $condition: ModelPostNewConditionInput
+  ) {
     createPostNew(input: $input, condition: $condition) {
       id
       image
@@ -772,7 +1013,10 @@ export const createPostNew = /* GraphQL */ `
   }
 `;
 export const updatePostNew = /* GraphQL */ `
-  mutation UpdatePostNew($input: UpdatePostNewInput!, $condition: ModelPostNewConditionInput) {
+  mutation UpdatePostNew(
+    $input: UpdatePostNewInput!
+    $condition: ModelPostNewConditionInput
+  ) {
     updatePostNew(input: $input, condition: $condition) {
       id
       image
@@ -804,7 +1048,10 @@ export const updatePostNew = /* GraphQL */ `
   }
 `;
 export const deletePostNew = /* GraphQL */ `
-  mutation DeletePostNew($input: DeletePostNewInput!, $condition: ModelPostNewConditionInput) {
+  mutation DeletePostNew(
+    $input: DeletePostNewInput!
+    $condition: ModelPostNewConditionInput
+  ) {
     deletePostNew(input: $input, condition: $condition) {
       id
       image

@@ -1,20 +1,16 @@
-import React, {useState, useCallback, useMemo} from 'react';
-import {ScrollView, View, ViewStyle, StatusBar, StatusBarProps, Platform} from 'react-native';
+import React, {useState, useCallback, useMemo, useRef} from 'react';
+import {SafeAreaView, ScrollView, View, StatusBar, StatusBarProps, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import {ExtendedEdge, useSafeAreaInsetsStyle} from '@utils/useSafeAreaInsetsStyle';
 import Header from './Header';
 import Whitespace from './Whitespace';
 import Typography from './Typography';
 
 import {colors, global} from '../assets/styles';
 import {pageInnerHorizontalPadding} from '../assets/styles/global';
+import hamburger from '../assets/images/hamburger.png';
 
 interface PageProps {
-  /**
-   * Override the default edges for the safe area.
-   */
-  safeAreaEdges?: ExtendedEdge[];
   /**
    * Background color
    */
@@ -22,7 +18,7 @@ interface PageProps {
   /**
    * Status bar setting. Defaults to dark.
    */
-  statusBarStyle?: 'light' | 'dark';
+  statusBarStyle?: 'default' | 'light-content' | 'dark-content';
   /**
    * Pass any additional props directly to the StatusBar component.
    */
@@ -32,10 +28,6 @@ interface PageProps {
   // wildcard
   [x: string]: any;
 }
-
-const containerStyle: ViewStyle = {
-  flex: 1,
-};
 
 const Page = (props: PageProps) => {
   const {
@@ -50,16 +42,24 @@ const Page = (props: PageProps) => {
     onLeftIconPress,
     accessibilityLabel,
     backgroundColor = colors.palette.textInverse,
-    safeAreaEdges = ['top'],
     hasPadding = true,
-    statusBarStyle,
+    scrollToBottom,
+    statusBarStyle = 'dark-content',
     statusBarProps,
   } = props;
   const [footerTop, setFooterTop] = useState(0);
 
+  const scrollViewRef = useRef<typeof ScrollView>();
+
   const Display = useMemo(() => (inline ? View : ScrollView), [inline]);
 
   const navigation = useNavigation();
+
+  const onContentSizeChange = useCallback(() => {
+    if (scrollToBottom) {
+      scrollViewRef.current.scrollToEnd?.({animated: true});
+    }
+  }, [scrollToBottom]);
 
   const onFooterLayout = useCallback(e => {
     const {
@@ -68,16 +68,15 @@ const Page = (props: PageProps) => {
     setFooterTop(height);
   }, []);
 
-  const containerInsets = useSafeAreaInsetsStyle(safeAreaEdges);
-
   const wrapperStyle = useMemo(() => {
-    return [containerStyle, {backgroundColor}, containerInsets];
-  }, [containerInsets, backgroundColor]);
+    return [global.flex, {backgroundColor}];
+  }, [backgroundColor]);
 
   const displayStyles = useMemo(() => {
     return [
       global.page,
       hasPadding && inline && {paddingHorizontal: pageInnerHorizontalPadding},
+      inline && {paddingHorizontal: 0},
       Platform.OS === 'ios' ? {paddingTop: 20} : {},
     ];
   }, [hasPadding, inline]);
@@ -91,8 +90,15 @@ const Page = (props: PageProps) => {
   }, [hasPadding, reverse]);
 
   return (
-    <View style={wrapperStyle}>
-      <StatusBar style={statusBarStyle} {...statusBarProps} />
+    <SafeAreaView style={wrapperStyle}>
+      <StatusBar backgroundColor={backgroundColor} barStyle={statusBarStyle} {...statusBarProps} />
+
+      {type === 'drawer' && header ? (
+        // @ts-ignore
+        <Header leftIcon={hamburger} onClose={navigation.toggleDrawer}>
+          {header}
+        </Header>
+      ) : null}
 
       {type === 'small' && header && !inline ? (
         <Header
@@ -110,6 +116,8 @@ const Page = (props: PageProps) => {
         style={displayStyles}
         contentContainerStyle={displayContentStyles}
         keyboardShouldPersistTaps="handled"
+        ref={scrollViewRef}
+        onContentSizeChange={onContentSizeChange}
         bounces={false}>
         {type === 'large' && header && !inline ? (
           <>
@@ -131,7 +139,7 @@ const Page = (props: PageProps) => {
           </View>
         </>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -29,7 +29,7 @@ const AllDemands = props => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(-1);
   const [nextKey, setNextKey] = useState(null);
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const navigation = useNavigation();
@@ -65,7 +65,7 @@ const AllDemands = props => {
     const _data = await fetchData();
     if (_data) {
       setData(_data.items);
-      setCount(_data.count);
+      // setCount(_data.count);
       setNextKey(_data.nextKey || null);
     }
 
@@ -79,10 +79,8 @@ const AllDemands = props => {
     if (_data) {
       // Skip the first item (which is the last item of the previous set) using slice
       const newData = _data.items.slice(1);
-      console.log('prevData', data);
       setData(prevData => [...prevData, ...newData]);
-      console.log('newData', newData);
-      setCount(prevCount => prevCount + _data.count);
+      // setCount(prevCount => prevCount + _data.count);
       setNextKey(_data.nextKey || null);
     }
 

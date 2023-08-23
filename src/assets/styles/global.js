@@ -545,6 +545,9 @@ const global = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#B0B0B0',
   },
+  'zIndex-0': {
+    zIndex: 0,
+  },
   ...Array.from(new Array(101)).reduce(
     (p, _, i) => ({
       ...p,
