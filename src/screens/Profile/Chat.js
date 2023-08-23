@@ -89,7 +89,7 @@ const Chat = props => {
   }, [channel, message, sender]);
 
   useEffect(() => {
-    const client = StreamChat.getInstance(STREAM_CHAT_KEY);
+    const client = StreamChat.getInstance(STREAM_CHAT_KEY || '');
 
     (async () => {
       setLoading(true);
