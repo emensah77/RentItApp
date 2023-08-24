@@ -8,6 +8,7 @@ import sha256 from 'sha256';
 import {Player, Recorder} from '@react-native-community/audio-toolkit';
 import {STREAM_CHAT_KEY} from 'react-native-dotenv';
 import {StreamChat} from 'stream-chat';
+import AWS from 'aws-sdk';
 
 import {getPost} from '../../graphql/queries';
 import {updatePost} from '../../graphql/mutations';
@@ -98,6 +99,7 @@ const Chat = props => {
         autoDestroy: false,
         continuesToPlayInBackground: true,
         mixWithOthers: true,
+        format: 'aac',
       }).prepare(),
     );
 
@@ -210,10 +212,35 @@ const Chat = props => {
 
     let text = message;
     let attachments;
-    const voiceRecording = recorder?.fsPath;
-    // console.log('Get Blob', await Utils.getBlob(path).catch(console.error));
-    if (voiceRecording) {
-      text = `Voice message: ${Utils.randomInt(999999999)}.mp3`;
+    if (recorder?.fsPath) {
+      // const path = `${RNFS.DocumentDirectoryPath}/${i}.aac`;
+      // RNFS.writeFile(path, question.file, 'base64').then(() => startPlayer(path))
+
+      const s3 = new AWS.S3();
+      const name = Utils.randomInt(999999999);
+      // Run a loop altering path, by prepending - file:// and /data/user/0/<package_name>/files/
+      // to see which works
+      const rawFile = await Utils.getBlob(path).catch(console.error);
+      const voiceRecording = await new Promise(resolve => {
+        s3.upload(
+          {
+            Bucket: 'pics175634-dev',
+            Key: `public/${name}`,
+            Body: rawFile,
+            ContentType: 'audio/mpeg',
+          },
+          (e, data) => {
+            if (e) {
+              console.error('An error occurred with the upload.', e);
+              return resolve('');
+            }
+
+            resolve(data.Location || '');
+          },
+        );
+      });
+
+      text = `Voice message: ${name}.mp3`;
       attachments = [
         {
           type: 'voiceRecording',
@@ -226,9 +253,9 @@ const Chat = props => {
     await channel.markRead();
     await channel.sendMessage({
       text,
+      attachments,
       timestamp: new Date().getTime(),
       sender_id: sender.uid,
-      attachments,
     });
   }, [channel, message, recorder, stop, sender]);
 
