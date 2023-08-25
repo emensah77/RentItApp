@@ -41,6 +41,13 @@ const Inbox = () => {
 
   const navigation = useNavigation();
 
+  const goToPost = useCallback(
+    postId => {
+      navigation.navigate('Post', {postId});
+    },
+    [navigation],
+  );
+
   const goToChat = useCallback(
     (home_id, channel_id, members) => async () => {
       await client.disconnectUser(1);
@@ -104,6 +111,7 @@ const Inbox = () => {
               !!(image && description && title) && (
                 <React.Fragment key={`${noticeId}${postId}`}>
                   <CardDisplay
+                    onPress={() => goToPost(postId)}
                     leftImageCircle={40}
                     leftImageSrc={makeUri(image)}
                     name={title}

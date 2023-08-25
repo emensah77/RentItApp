@@ -28,12 +28,12 @@ const Welcome = () => {
 
   return (
     <Container type="flex" width="100%" height="100%">
-      <Container row center type="top-80">
+      <Container row center type="top-80" zIndex={1000}>
         <Image src={logoWhite} width={35} height={56} />
 
         <Whitespace marginLeft={14} />
 
-        <Typography size={21} height={26} weight="200" color="#FFFFFF">
+        <Typography size={25} height={26} weight="bold" color="#FFFFFF" type="levelTwoThick">
           Find your next home
         </Typography>
       </Container>
