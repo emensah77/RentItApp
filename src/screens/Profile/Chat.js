@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Platform, PermissionsAndroid, Linking, Alert} from 'react-native';
+import {Platform, PermissionsAndroid, Linking} from 'react-native';
 import Permissions, {PERMISSIONS} from 'react-native-permissions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -9,6 +9,8 @@ import {Player, Recorder} from '@react-native-community/audio-toolkit';
 import {STREAM_CHAT_KEY} from 'react-native-dotenv';
 import {StreamChat} from 'stream-chat';
 import AWS from 'aws-sdk';
+import RNFS from 'react-native-fs';
+import base64 from 'base-64';
 
 import {getPost} from '../../graphql/queries';
 import {updatePost} from '../../graphql/mutations';
@@ -29,7 +31,7 @@ import {
 import arrowLeft from '../../assets/images/arrow-left.png';
 import menu from '../../assets/images/menu.png';
 // import logo from '../../assets/images/logo.png';
-// import microphone from '../../assets/images/microphone.png';
+import microphone from '../../assets/images/microphone.png';
 import moon from '../../assets/images/moon.png';
 import listing from '../../assets/images/listing.png';
 import share from '../../assets/images/share.png';
@@ -39,7 +41,7 @@ import {global} from '../../assets/styles';
 
 import * as Utils from '../../utils';
 
-const path = 'test.mp4';
+const file = 'test.mp4';
 
 const Chat = props => {
   const {
@@ -60,11 +62,13 @@ const Chat = props => {
   const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
-  const [recorder, setRecorder] = useState(null);
-  const [player, setPlayer] = useState(null);
   const [countdown, setCountdown] = useState(0);
   const [intervalId, setIntervalId] = useState(null);
   const [isRecording, setIsRecording] = useState(null);
+  const [recorder, setRecorder] = useState(null);
+  const [player, setPlayer] = useState(null);
+  const [unread, setUnread] = useState(0);
+  // const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(null);
 
   const getRandomMarketer = useCallback(async (bannedIds = []) => {
     const marketersSnapshot = await firestore()
@@ -93,25 +97,54 @@ const Chat = props => {
 
   const makeUri = useCallback(uri => ({uri}), []);
 
-  const load = useCallback(() => {
-    setPlayer(
-      new Player(path, {
+  const load = useCallback(
+    url => {
+      if (player) player.destroy();
+      if (recorder) recorder.destroy();
+
+      const _player = new Player(url || file, {
         autoDestroy: false,
         continuesToPlayInBackground: true,
         mixWithOthers: true,
         format: 'aac',
-      }).prepare(),
-    );
+      }).prepare();
 
-    setRecorder(
-      new Recorder(path, {
+      const _recorder = new Recorder(file, {
         bitrate: 256000,
         channels: 2,
         sampleRate: 44100,
         quality: 'max',
-      }).prepare(),
-    );
-  }, []);
+      }).prepare();
+
+      setPlayer(_player);
+      setRecorder(_recorder);
+
+      // setAudioRecorderPlayer(new AudioRecorderPlayer());
+      return {player: _player, recorder: _recorder};
+    },
+    [player, recorder],
+  );
+
+  const play = useCallback(
+    url => async () => {
+      const {player: _player} = await load(url);
+
+      if (typeof _player?.playPause !== 'function') {
+        return;
+      }
+
+      return new Promise(resolve => {
+        _player.playPause((err, paused) => {
+          resolve();
+          if (err) {
+            console.error('An error occurred while attempting to playback the audio:', err);
+          }
+          console.debug('Now Playing', paused);
+        });
+      });
+    },
+    [load],
+  );
 
   const record = useCallback(async () => {
     setIsRecording(null);
@@ -134,17 +167,21 @@ const Chat = props => {
         }
 
         if (grant === PermissionsAndroid.RESULTS.GRANTED) {
-          recorder.toggleRecord(e => {
+          const {recorder: _recorder} = load();
+
+          _recorder.toggleRecord(e => {
             if (e) {
-              console.error('An error occurred while attempting to start recording, Retrying.', e);
-              return setTimeout(record, 2000);
+              return console.error(
+                'An error occurred while attempting to start recording, Retrying.',
+                e,
+              );
             }
 
             const startTime = new Date().getTime();
             const id = setInterval(() => {
-              setIsRecording(recorder.isRecording);
+              setIsRecording(_recorder.isRecording);
 
-              if (recorder.isRecording) {
+              if (_recorder.isRecording) {
                 const _s = (new Date().getTime() - startTime) / 1000;
                 const s = Math.floor(_s);
                 const min = Math.floor(_s / 60);
@@ -157,76 +194,83 @@ const Chat = props => {
         }
       })
       .catch(console.error);
-  }, [recorder]);
+  }, [load]);
 
-  const stop = useCallback(async () => {
-    if (typeof recorder?.stop !== 'function') {
-      return true;
-    }
+  const stop = useCallback(
+    async (clear = true) => {
+      if (typeof recorder?.toggleRecord !== 'function') {
+        return true;
+      }
 
-    return new Promise(resolve => {
-      recorder.toggleRecord(e => {
-        if (e) {
-          console.error('An error occurred while attempting to stop recording, Retrying.', e);
-          return setTimeout(async () => {
-            resolve(await stop());
-          }, 2000);
-        }
+      return new Promise(resolve => {
+        recorder?.toggleRecord(e => {
+          if (e) {
+            return console.error(
+              'An error occurred while attempting to stop recording, Retrying.',
+              e,
+            );
+          }
 
-        setIsRecording(false);
+          setIsRecording(false);
 
-        if (__DEV__) {
-          setTimeout(() => {
-            player.playPause((err, paused) => {
-              if (err) {
-                console.error('An error occurred while attempting to playback the audio:', err);
-              }
-              console.debug('Now Playing', paused);
-            });
-          }, 2000);
-        }
+          if (clear) {
+            if (recorder) {
+              recorder.destroy();
+            }
 
-        if (recorder) {
-          recorder.destroy();
-        }
+            if (player) {
+              player.destroy();
+            }
 
-        if (player) {
-          player.destroy();
-        }
+            load();
+          }
 
-        if (intervalId) {
-          clearInterval(intervalId);
-        }
+          if (intervalId) {
+            clearInterval(intervalId);
+          }
 
-        load();
-
-        resolve(true);
+          if (__DEV__) {
+            setTimeout(() => {
+              player.playPause((err, paused) => {
+                resolve(true);
+                if (err) {
+                  console.error('An error occurred while attempting to playback the audio:', err);
+                }
+                console.debug('Now Playing', paused);
+              });
+            }, 400);
+          } else {
+            resolve(true);
+          }
+        });
       });
-    });
-  }, [intervalId, recorder, player, load]);
+    },
+    [recorder, intervalId, player, load],
+  );
 
   const send = useCallback(async () => {
-    if (!channel || /^\s{0,}$/.test(message)) {
+    console.debug('Sending...');
+    if (loading === 2 || !channel || /^\s{0,}$/.test(message)) {
       return;
     }
+    setLoading(2);
+    await stop(false);
+    await channel.markRead();
 
     let text = message;
     let attachments;
     if (recorder?.fsPath) {
-      // const path = `${RNFS.DocumentDirectoryPath}/${i}.aac`;
-      // RNFS.writeFile(path, question.file, 'base64').then(() => startPlayer(path))
-
+      const rawFile = await RNFS.readFile(`${RNFS.DocumentDirectoryPath}/${file}`, 'base64').catch(
+        e => console.error('An error occurred while reading the file', e),
+      );
+      const name = `${Utils.randomInt(999999999)}.mp3`;
       const s3 = new AWS.S3();
-      const name = Utils.randomInt(999999999);
-      // Run a loop altering path, by prepending - file:// and /data/user/0/<package_name>/files/
-      // to see which works
-      const rawFile = await Utils.getBlob(path).catch(console.error);
       const voiceRecording = await new Promise(resolve => {
         s3.upload(
           {
             Bucket: 'pics175634-dev',
             Key: `public/${name}`,
-            Body: rawFile,
+            Body: base64.decode(rawFile),
             ContentType: 'audio/mpeg',
           },
           (e, data) => {
@@ -240,7 +284,12 @@ const Chat = props => {
         );
       });
 
-      text = `Voice message: ${name}.mp3`;
+      if (!voiceRecording) {
+        setLoading(0);
+        return console.error('The attempt to send the audio failed');
+      }
+
+      text = `Voice message: ${name}`;
       attachments = [
         {
           type: 'voiceRecording',
@@ -249,24 +298,21 @@ const Chat = props => {
       ];
     }
 
-    await stop();
-    await channel.markRead();
     await channel.sendMessage({
       text,
       attachments,
       timestamp: new Date().getTime(),
       sender_id: sender.uid,
     });
-  }, [channel, message, recorder, stop, sender]);
+    setLoading(0);
+  }, [channel, loading, message, recorder, stop, sender]);
 
   useEffect(() => {
-    load();
-
     const client = StreamChat.getInstance(STREAM_CHAT_KEY || '');
     let _channel;
 
     (async () => {
-      setLoading(true);
+      setLoading(1);
 
       if (!home_id) {
         console.error('Home ID is required.');
@@ -338,6 +384,7 @@ const Chat = props => {
           'and',
           _receiver.displayName || _receiver.fname || _receiver.lname,
           `(uid: ${_receiver.uid})`,
+          `with ${unread} unread messages.`,
         );
 
       await Utils.promiseAll(
@@ -385,12 +432,7 @@ const Chat = props => {
           members: members || [user.uid, _receiver.uid, _supervisor.uid],
         },
       );
-      await _channel.updatePartial({set: {home_id}});
 
-      // TODO:
-      // Forbid banned users from continuing?
-      // const member = await _channel.queryMembers({user_id: user.uid});
-      // const {user:{banned, online, last_active}} = member[0];
       const result = await _channel.query({
         messages: {limit: 30, offset: 0},
       });
@@ -400,7 +442,8 @@ const Chat = props => {
       setSupervisor(_supervisor);
       setHome(_home);
       setChannel(_channel);
-      setLoading(false);
+      setUnread(_channel.state.read[user.uid].unread_messages);
+      setLoading(0);
 
       await _channel.watch();
       _channel.on('message.new', event => {
@@ -409,15 +452,16 @@ const Chat = props => {
         setMessages(oldMessages => [event.message, ...oldMessages]);
       });
 
-      client.on('notification.message_new', event => {
-        if (event.total_unread_count !== undefined) {
-          Alert.alert(`You have ${event.total_unread_count} unread messages.`);
-        }
+      // client.on('notification.message_new', event => {
+      //   console.debug('You have a new notification:', JSON.stringify(event));
+      //   if (event.total_unread_count !== undefined) {
+      //     Alert.alert(`You have ${event.total_unread_count} unread messages.`);
+      //   }
 
-        if (event.unread_channels !== undefined) {
-          Alert.alert(`You have ${event.unread_channels} new messages`);
-        }
-      });
+      //   if (event.unread_channels !== undefined) {
+      //     Alert.alert(`You have ${event.unread_channels} new messages`);
+      //   }
+      // });
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => {
@@ -426,7 +470,7 @@ const Chat = props => {
         _channel.markRead();
       }
     };
-  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id, members, load]);
+  }, [getRandomDefaultSupervisor, getRandomMarketer, home_id, channel_id, members, load, unread]);
 
   let currentDay, nextDay;
 
@@ -478,6 +522,10 @@ const Chat = props => {
             <Container row center type="spaceBetween" width="100%" height={50}>
               {isRecording ? (
                 <Container row type="spaceBetween" width="50%">
+                  <Container center height={25}>
+                    {loading === 2 && <Loader />}
+                  </Container>
+
                   <Container center onPress={stop} width={35} height={25}>
                     <Image src={stopImg} width={25} height={25} />
                   </Container>
@@ -504,7 +552,7 @@ const Chat = props => {
                     />
                   </Container>
 
-                  {/* <Container
+                  <Container
                     center
                     type="right-5"
                     onPress={record}
@@ -512,21 +560,21 @@ const Chat = props => {
                     width={35}
                     height={25}>
                     <Image src={microphone} width={25} height={25} />
-                  </Container> */}
+                  </Container>
                 </>
               )}
             </Container>
           </>
         }>
-        {!loading ? (
+        {loading !== 1 ? (
           messages.map((msg, i) => {
             nextDay = Utils.formatDate((messages[i + 1] || msg).created_at);
             currentDay = Utils.formatDate(msg.created_at);
             const date = new Date(msg.created_at);
-            const {user} = msg;
+            const {user, id, html, pending, attachments} = msg;
 
             return (
-              <React.Fragment key={msg.id}>
+              <React.Fragment key={id}>
                 {/* <Container row center type="chip">
                   <CardDisplay
                     leftImageWidth={16}
@@ -551,27 +599,30 @@ const Chat = props => {
                 <CardDisplay
                   leftImageCircle={38}
                   leftImageSrc={user.image ? makeUri(user?.image) : moon}
+                  rightImageWidth={25}
+                  rightImageHeight={25}
+                  rightImageSrc={attachments.length > 0 ? microphone : undefined}
                   name={user.name}
                   location={`${
                     date.getHours() > 12 ? date.getHours() - 12 : date.getHours()
                   }:${date.getMinutes()} ${date.getHours() > 12 ? 'PM' : 'AM'}`}
-                  description={msg.html.replace(/<\/?[^>]+(>|$)/g, '')}
+                  description={html.replace(/<\/?[^>]+(>|$)/g, '')}
                   reverse={user.id === sender.uid}
                   bold={false}
+                  onPress={attachments.length > 0 ? play(attachments[0].asset_url) : undefined}
                 />
 
                 {i === messages.length - 1 || nextDay !== currentDay ? (
                   <>
                     <Whitespace marginTop={24} />
 
-                    <Typography
-                      type="levelOneThick"
-                      size={12}
-                      color={msg.pending ? '#555' : '#717171'}>
+                    <Typography type="levelOneThick" size={12} color={pending ? '#555' : '#717171'}>
                       {currentDay}
                     </Typography>
                   </>
                 ) : null}
+
+                {i !== 0 && i === unread - 1 ? <Divider /> : null}
 
                 <Whitespace marginTop={20} />
               </React.Fragment>
@@ -734,7 +785,7 @@ const Chat = props => {
 
             <Divider />
           </>
-        ) : loading ? (
+        ) : loading === 1 ? (
           <Loader spinner />
         ) : null}
       </Container>

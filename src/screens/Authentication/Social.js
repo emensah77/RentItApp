@@ -101,13 +101,13 @@ const Social = props => {
           redirectUri: 'https://example.com/auth/callback',
           responseType: appleAuthAndroid.ResponseType.ALL,
           scope: appleAuthAndroid.Scope.ALL,
-          nonce: new Date().getTime(),
+          nonce: `${new Date().getTime()}`,
+          nonceEnabled: true,
           state: undefined,
         });
 
         // Open the browser window for user sign in
         const response = await appleAuthAndroid.signIn();
-        // console.log('res', response);
         const {email, fullName} = response;
         return {
           email,
@@ -120,7 +120,7 @@ const Social = props => {
       } else if (Platform.OS === 'ios') {
         const appleAuthRequestResponse = await appleAuth.performRequest({
           requestedOperation: appleAuth.Operation.LOGIN,
-          requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+          requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
         });
 
         // Ensure Apple returned a user identityToken
@@ -255,7 +255,7 @@ const Social = props => {
 
       if (response?.error) {
         console.error('3rd Party Auth Error:', response);
-        setError(response.error);
+        setError('An error occurred while attempting to authenticate you.');
       } else if (response) {
         setDataFromProvider(provider, response);
       }
@@ -273,7 +273,7 @@ const Social = props => {
         </Button>
       )}
 
-      {Platform.OS === 'ios' && appleAuthAndroid.isSupported && (
+      {Platform.OS === 'ios' && appleAuth.isSupported && (
         <Button type="primary" prefix={appleImg} onPress={authenticate('apple')}>
           Continue with Apple
         </Button>

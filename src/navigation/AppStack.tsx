@@ -77,7 +77,7 @@ const AppStack = () => {
 
   return (
     // @ts-ignore
-    <Stack.Navigator initialRouteName="Home" onStateChange={onNavigationStateChange}>
+    <Stack.Navigator initialRouteName="Inbox" onStateChange={onNavigationStateChange}>
       {listAHome.map(({Component, title}) => (
         <Stack.Screen key={title} name={title} component={Component} options={noHeader} />
       ))}

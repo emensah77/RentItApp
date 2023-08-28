@@ -67,6 +67,7 @@
     "aws-amplify-react-native": "^5.0.1",
     "aws-sdk": "^2.1369.0",
     "axios": "0.21.2",
+    "base-64": "^1.0.0",
     "base64-js": "^1.5.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.1.4",

@@ -222,7 +222,7 @@ const Inbox = () => {
             date: Utils.formatDate(state?.messageSets?.[0]?.messages?.[0]?.updated_at),
             location: '',
             status: '',
-            read: state.read,
+            read: state.read[user.uid].unread_messages > 0,
           })),
       );
     })().catch(e => console.error('There was an issue loading the chat', e));

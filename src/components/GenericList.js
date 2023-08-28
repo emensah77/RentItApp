@@ -6,9 +6,26 @@ import Typography from './Typography';
 import Whitespace from './Whitespace';
 import Container from './Container';
 import CardDisplay from './CardDisplay';
+import Loader from './Loader';
+import Button from './Button';
 
 const GenericList = props => {
-  const {list, id, flatten} = props;
+  const {
+    list,
+    id,
+    flatten,
+    loading,
+    buttons = [
+      /* {text: '', condition: () => true, action: () => void 0} */
+    ],
+  } = props;
+
+  const action = useCallback(
+    (callback, item, index) => () => {
+      callback(item, index);
+    },
+    [],
+  );
 
   const keyExtractor = useCallback(item => item[id], [id]);
 
@@ -18,12 +35,14 @@ const GenericList = props => {
 
       return (
         <React.Fragment key={item[id]}>
+          {index === 0 && <Whitespace paddingTop={10} />}
+
           <Container type="chipDeSelected" height="auto" width="100%">
             <CardDisplay
               numberOfLines={keys.length}
               name={
                 <Typography type="notice" size={18} weight="700">
-                  Role: {item.role}
+                  {id}: {item[id]}
                 </Typography>
               }
               description={keys.sort().map(dataKey => (
@@ -33,7 +52,7 @@ const GenericList = props => {
                       ? JSON.stringify(item[dataKey])
                       : item[dataKey]
                   }`}>
-                  {dataKey !== 'employeeID' && dataKey !== 'role' ? (
+                  {dataKey !== 'employeeID' && dataKey !== id ? (
                     <>
                       <Typography type="notice" color="#4D4D4D" size={14} weight="500" width="90%">
                         {startCase(camelCase(dataKey))}
@@ -51,14 +70,37 @@ const GenericList = props => {
               center
               bold
             />
+
+            <Container width="100%" type="spaceBetween">
+              {buttons.map(
+                button =>
+                  button.condition(item, index) && (
+                    <Button
+                      key={button.text}
+                      loading={loading === index}
+                      type="standard"
+                      onPress={action(button.action, item, index)}>
+                      {button.text}
+                    </Button>
+                  ),
+              )}
+            </Container>
           </Container>
 
           <Whitespace marginTop={33} />
         </React.Fragment>
       );
     },
-    [id],
+    [id, loading, buttons, action],
   );
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (list.length === 0 && !loading) {
+    return <Typography>No data to show</Typography>;
+  }
 
   if (flatten) {
     return (
