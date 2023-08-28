@@ -366,6 +366,21 @@ exports.handler = async (event) => {
     };
   }
 
+  if (httpMethod === 'POST' && path.endsWith('/claimedDemands')) {
+    const { updaterId, demandId, details } = JSON.parse(event.body); // Note the changed variable names
+    const updatedDemand = await updateDemand(demandId, details, updaterId);
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Headers':
+          'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+      },
+      body: JSON.stringify(updatedDemand),
+    };
+  }
+
   if (httpMethod === 'POST' && path.endsWith('/comments')) {
     const commentDetails = JSON.parse(event.body);
     const newComment = await addComment(commentDetails);
@@ -670,6 +685,52 @@ async function claimDemand(demandId, MarketerId) {
     throw error;
   }
 }
+
+async function updateDemand(demandId, details, updaterId) {
+  console.log('updateDemand', demandId, details, updaterId);
+
+  const ExpressionAttributeNames = {
+    '#LastUpdatedBy': 'LastUpdatedBy', // New attribute to track the updater
+    '#LastUpdatedAt': 'LastUpdatedAt'  // New attribute to track when the update was made
+  };
+  const ExpressionAttributeValues = {
+    ':lastUpdatedBy': updaterId,
+    ':lastUpdatedAt': new Date().toISOString()
+  };
+  let UpdateExpression = 'SET #LastUpdatedBy = :lastUpdatedBy, #LastUpdatedAt = :lastUpdatedAt';
+
+  // Loop through the details object to create the update expression
+  Object.keys(details).forEach((key, index) => {
+    // Create placeholder names and values for the update expression
+    const attributeName = `#attr${index}`;
+    const attributeValue = `:val${index}`;
+
+    ExpressionAttributeNames[attributeName] = key;
+    ExpressionAttributeValues[attributeValue] = details[key];
+
+    // Add to the update expression
+    UpdateExpression += `, ${attributeName} = ${attributeValue}`;
+  });
+
+  const params = {
+    TableName: 'Demand',
+    Key: { DemandID: demandId },
+    ExpressionAttributeNames,
+    ExpressionAttributeValues,
+    UpdateExpression,
+    ConditionExpression: 'attribute_exists(DemandID)', // Check if the item exists
+    ReturnValues: 'ALL_NEW',
+  };
+
+  try {
+    const result = await dynamodb.update(params).promise();
+    return result.Attributes;
+  } catch (error) {
+    console.error('Error updating demand:', error);
+    throw error;
+  }
+}
+
 
 async function fetchClaimedDemandsByMarketer(marketerId, pageSize = 100, startKey) {
   const params = {

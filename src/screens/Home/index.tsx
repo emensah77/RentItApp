@@ -211,6 +211,17 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   );
 
   useEffect(() => {
+    // Initial fetch when the component mounts
+    (async () => {
+      const data = await fetchPosts();
+      if (data && data.homes) {
+        setPosts(data.homes);
+        searchAfter.current = data.searchAfter;
+      }
+    })();
+  }, [fetchPosts]);
+
+  useEffect(() => {
     fetchVideoWatchStatus();
   }, [fetchVideoWatchStatus]);
 
