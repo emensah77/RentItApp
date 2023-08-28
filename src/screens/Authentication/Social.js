@@ -273,7 +273,7 @@ const Social = props => {
         </Button>
       )}
 
-      {Platform.OS === 'ios' && appleAuth.isSupported && (
+      {Platform.OS === 'ios' && (
         <Button type="primary" prefix={appleImg} onPress={authenticate('apple')}>
           Continue with Apple
         </Button>
