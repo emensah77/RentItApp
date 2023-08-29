@@ -57,7 +57,7 @@ jobs:
           EOF
 
       - name: Install node dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn cache clean && yarn install --frozen-lockfile
 
       - run: pod install --repo-update
         working-directory: ios
@@ -125,7 +125,7 @@ jobs:
           EOF
 
       - name: Install node dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn cache clean && yarn install --frozen-lockfile
 
       - name: Bundle App
         run: yarn bundle
