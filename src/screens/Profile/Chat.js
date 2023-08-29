@@ -146,6 +146,7 @@ const Chat = props => {
     [load],
   );
 
+  // eslint-disable-next-line no-unused-vars
   const record = useCallback(async () => {
     setIsRecording(null);
 
@@ -552,7 +553,7 @@ const Chat = props => {
                     />
                   </Container>
 
-                  <Container
+                  {/* <Container
                     center
                     type="right-5"
                     onPress={record}
@@ -560,7 +561,7 @@ const Chat = props => {
                     width={35}
                     height={25}>
                     <Image src={microphone} width={25} height={25} />
-                  </Container>
+                  </Container> */}
                 </>
               )}
             </Container>
