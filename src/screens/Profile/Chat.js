@@ -606,10 +606,11 @@ const Chat = props => {
         }>
         {loading !== 1 ? (
           messages.map((msg, i) => {
+            const {user, id, html, pending, attachments, created_at} = msg;
+
             nextDay = Utils.formatDate((messages[i + 1] || msg).created_at);
-            currentDay = Utils.formatDate(msg.created_at);
-            const date = new Date(msg.created_at);
-            const {user, id, html, pending, attachments} = msg;
+            currentDay = Utils.formatDate(created_at);
+            const date = new Date(created_at);
             const text = html.replace(/<\/?[^>]+(>|$)/g, '');
             const reverse = user.id === sender.uid;
             const isLastUnread = i !== 0 && i === unread - 1;
