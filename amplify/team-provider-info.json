@@ -90,7 +90,7 @@
         },
         "homeSearch": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/homeSearch-764c6e45555154773462-build.zip"
+          "s3Key": "amplify-builds/homeSearch-4b78366a52536b45316a-build.zip"
         },
         "jwtgenerator": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",

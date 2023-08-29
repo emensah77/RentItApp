@@ -745,7 +745,6 @@ async function fetchClaimedDemandsByMarketer(marketerId, pageSize = 100, startKe
       ':m': marketerId,
       ':s': 'Claimed',
     },
-    Limit: pageSize,
   };
 
   if (startKey) {
@@ -795,14 +794,15 @@ async function retrieveMarketerRequests(marketerID, startDate = null, endDate = 
     }
   };
 
-  // If startDate is provided, add a condition for createdTime
-  if (startDate) {
+  if (startDate && endDate) {
+    // Use BETWEEN for a range query
+    params.KeyConditionExpression += ' and createdTime BETWEEN :startDate AND :endDate';
+    params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
+    params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+  } else if (startDate) {
     params.KeyConditionExpression += ' and createdTime >= :startDate';
     params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
-  }
-
-  // If endDate is provided, further narrow down the condition for createdTime
-  if (endDate) {
+  } else if (endDate) {
     params.KeyConditionExpression += ' and createdTime <= :endDate';
     params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
   }

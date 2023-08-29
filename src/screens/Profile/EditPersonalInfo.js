@@ -2,7 +2,6 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   Page,
@@ -48,54 +47,41 @@ const EditPersonalInfo = () => {
     if (disabled) {
       return;
     }
-
     setLoading(true);
-    const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
-    await AsyncStorage.setItem(
-      'authentication::data',
-      JSON.stringify({...authData, gender: data.gender.value}),
-    );
 
-    currentUser
-      .updateProfile({
-        displayName: `${data.firstname} ${data.lastname}`,
-        gender: data.gender.value,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-      })
-      .then(async () => {
-        const user = await firestore().collection('users').doc(auth().currentUser.uid).get();
-        return firestore()
-          .collection('users')
-          .doc(auth().currentUser.uid)
-          .set({
-            ...user.data(),
-            fname: data.firstname,
-            lname: data.lastname,
-            gender: data.gender.value,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-          })
-          .then(() => {
-            setLoading(false);
-          })
-          .catch(e => {
-            setLoading(false);
-            console.error(
-              'Something went wrong with updating (set) the user in firestore: ',
-              e,
-              JSON.stringify(e),
-            );
-          });
+    const userRef = firestore().collection('users').doc(auth().currentUser.uid);
+    userRef
+      .set(
+        {
+          fname: data.firstname,
+          lname: data.lastname,
+          gender: data.gender.value,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+        },
+        {merge: true},
+      )
+      .then(() => {
+        setLoading(false);
+        getUserDetails();
       })
       .catch(e => {
+        setLoading(false);
         console.error(
-          'Something went wrong with updating (updateProfile) the user in firestore: ',
+          'Something went wrong with updating the user in firestore: ',
           e,
           JSON.stringify(e),
         );
       });
-  }, [currentUser, data, disabled]);
+  }, [
+    data.email,
+    data.firstname,
+    data.gender.value,
+    data.lastname,
+    data.phoneNumber,
+    disabled,
+    getUserDetails,
+  ]);
 
   const change = useCallback(
     which => value => {
@@ -112,19 +98,39 @@ const EditPersonalInfo = () => {
       return;
     }
 
-    const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
-    if (authData) {
-      setData({...authData, gender: {value: authData.gender || ''}});
+    firestore()
+      .collection('users')
+      .doc(auth().currentUser.uid)
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          const userData = doc.data();
+          setData({
+            firstname: userData.fname,
+            lastname: userData.lname,
+            gender: {value: userData.gender},
+            email: userData.email,
+            phoneNumber: userData.phoneNumber,
+          });
 
-      setHidden({
-        email: `${authData.email.substring(0, 1)}${new Array(
-          authData.email.length - authData.email.substring(authData.email.indexOf('@')).length,
-        ).join('*')}${authData.email.substring(authData.email.indexOf('@'))}`,
-        phoneNumber: `${authData.phoneNumber.substring(0, 4)}${new Array(
-          authData.phoneNumber.length - 7,
-        ).join('*')}${authData.phoneNumber.substr(-3)}`,
+          setHidden({
+            email: `${userData.email.substring(0, 1)}${new Array(
+              userData.email.length - userData.email.substring(userData.email.indexOf('@')).length,
+            ).join('*')}${userData.email.substring(userData.email.indexOf('@'))}`,
+            phoneNumber: `${userData.phoneNumber.substring(0, 4)}${new Array(
+              userData.phoneNumber.length - 7,
+            ).join('*')}${userData.phoneNumber.substr(-3)}`,
+          });
+        } else {
+        }
+      })
+      .catch(e => {
+        console.error(
+          'Something went wrong with fetching the user from firestore: ',
+          e,
+          JSON.stringify(e),
+        );
       });
-    }
   }, [currentUser]);
 
   useEffect(() => {
