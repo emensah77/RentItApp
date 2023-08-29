@@ -107,6 +107,15 @@ const typography = StyleSheet.create({
     textAlign: 'left',
     opacity: 0.6,
   },
+  errorButton: {
+    ...fontType,
+    fontWeight: '500',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#FFFFFF',
+    textAlign: 'left',
+    opacity: 0.6,
+  },
   fitWidth: {
     width: 'auto',
   },

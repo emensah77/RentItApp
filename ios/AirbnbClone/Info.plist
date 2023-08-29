@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>6.6.5</string>
+	<string>6.6.6</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -48,7 +48,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>132</string>
+	<string>133</string>
 	<key>FacebookAppID</key>
 	<string>238888164818214</string>
 	<key>FacebookClientToken</key>
@@ -88,10 +88,10 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>RentIt would like to access camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>RentIt would like to access your microphone for recording video</string>
+	<key>NSCameraUsageDescription</key>
+	<string>RentIt would like to access camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSLocationAlwaysUsageDescription</key>
