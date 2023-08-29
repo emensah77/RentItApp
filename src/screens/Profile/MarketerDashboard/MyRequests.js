@@ -21,7 +21,7 @@ const MyRequests = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const keyExtractor = useCallback(item => item.DemandID, []);
+  const keyExtractor = useCallback(item => item.requestID, []);
 
   const renderItem = useCallback(({item, index}) => {
     const keys = Object.keys(item);
@@ -34,7 +34,7 @@ const MyRequests = () => {
             numberOfLines={keys.length}
             name={
               <Typography type="notice" size={18} weight="700">
-                Demand ID: {item.DemandID}
+                Status: {item.status}
               </Typography>
             }
             description={keys.sort().map(dataKey => (
@@ -89,7 +89,7 @@ const MyRequests = () => {
     }
 
     const _data = await response.json();
-    setData(_data.items);
+    setData(_data);
     setLoading(false);
   }, [start, end]);
 
@@ -138,7 +138,7 @@ const MyRequests = () => {
       <Container height="90%" color="#FFF">
         <Whitespace paddingTop={10} />
 
-        {data.length > 0 ? (
+        {data && data.length > 0 ? (
           <Container type="row" width="90%" center>
             <Whitespace width="1%" />
 

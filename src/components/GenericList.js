@@ -15,6 +15,7 @@ const GenericList = props => {
     id,
     flatten,
     loading,
+    onEndReached,
     buttons = [
       /* {text: '', condition: () => true, action: () => void 0} */
     ],
@@ -76,11 +77,11 @@ const GenericList = props => {
                 button =>
                   button.condition(item, index) && (
                     <Button
-                      key={button.text}
+                      key={typeof button.text === 'function' ? button.text(item) : button.text}
                       loading={loading === index}
                       type="standard"
                       onPress={action(button.action, item, index)}>
-                      {button.text}
+                      {typeof button.text === 'function' ? button.text(item) : button.text}
                     </Button>
                   ),
               )}
@@ -112,6 +113,8 @@ const GenericList = props => {
         data={list}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
       />
     );
   }

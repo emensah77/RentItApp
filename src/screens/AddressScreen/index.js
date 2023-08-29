@@ -24,7 +24,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import firestore from '@react-native-firebase/firestore';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {RangeCalendar} from '@ui-kitten/components';
+import { RangeCalendar } from '@ui-kitten/components';
 import {createPaymentIntent} from '../../graphql/mutations';
 import {AuthContext} from '../../navigation/AuthProvider';
 import {convertDays, fCurrency} from '../../variables';
@@ -471,7 +471,7 @@ const AddressScreen = props => {
 
             </View> */}
 
-      <RangeCalendar range={range} onSelect={nextRange => setRange(nextRange)} />
+      {/* <RangeCalendar range={range} onSelect={nextRange => setRange(nextRange)} /> */}
       {/* <View style={styles.row}>
                 <View style={{flex:1, justifyContent:'space-between'}}>
                     <Text style={{fontWeight: 'bold'}}>Months</Text>
