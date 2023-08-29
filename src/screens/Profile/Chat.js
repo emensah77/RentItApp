@@ -32,6 +32,7 @@ import arrowLeft from '../../assets/images/arrow-left.png';
 import menu from '../../assets/images/menu.png';
 // import logo from '../../assets/images/logo.png';
 import microphone from '../../assets/images/microphone.png';
+import seen from '../../assets/images/seen.png';
 import moon from '../../assets/images/moon.png';
 import listing from '../../assets/images/listing.png';
 import share from '../../assets/images/share.png';
@@ -59,7 +60,43 @@ const Chat = props => {
   const [supervisor, setSupervisor] = useState({});
   const [home, setHome] = useState({});
   const [message, setMessage] = useState();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    // Use for testing ONLY!
+    // {
+    //   attachments: [],
+    //   cid: 'messaging:999e997b36777a3be1ca016ffc96607e4cb888a7189a5b388340263a1b93f56d',
+    //   created_at: '2023-08-17T10:39:29.812898Z',
+    //   html: '<p>Ok cool</p>',
+    //   id: 'ab1ae434-ce5b-4b48-b5c9-c10d5df70d7b',
+    //   latest_reactions: [],
+    //   mentioned_users: [],
+    //   own_reactions: [],
+    //   pin_expires: null,
+    //   pinned: false,
+    //   pinned_at: null,
+    //   pinned_by: null,
+    //   reaction_counts: {},
+    //   reaction_scores: {},
+    //   reply_count: 0,
+    //   sender_id: '9BXcEnla6WNrPXmKudvwjFyGhU33',
+    //   shadowed: false,
+    //   silent: false,
+    //   text: 'Ok cool',
+    //   timestamp: 1692268759840,
+    //   type: 'regular',
+    //   updated_at: '2023-08-17T10:39:29.812898Z',
+    //   user: {
+    //     banned: false,
+    //     created_at: '2023-06-02T18:35:32.415216Z',
+    //     id: '9BXcEnla6WNrPXmKudvwjFyGhU33',
+    //     last_active: '2023-08-29T08:30:23.176852815Z',
+    //     name: 'Chijioke Nna',
+    //     online: true,
+    //     role: 'user',
+    //     updated_at: '2023-06-02T18:35:32.417607Z',
+    //   },
+    // },
+  ]);
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
@@ -572,6 +609,10 @@ const Chat = props => {
             currentDay = Utils.formatDate(msg.created_at);
             const date = new Date(msg.created_at);
             const {user, id, html, pending, attachments} = msg;
+            const text = html.replace(/<\/?[^>]+(>|$)/g, '');
+            const reverse = user.id === sender.uid;
+            const isLastUnread = i !== 0 && i === unread - 1;
+            const isUnread = i > unread - 1;
 
             return (
               <React.Fragment key={id}>
@@ -596,6 +637,16 @@ const Chat = props => {
 
                 <Whitespace marginTop={24} /> */}
 
+                {isUnread && reverse ? (
+                  <Container>
+                    {!text ? <Whitespace marginTop={10} /> : null}
+
+                    <Container row width="92%" type="flexEnd">
+                      <Image src={seen} width={15} height={15} />
+                    </Container>
+                  </Container>
+                ) : null}
+
                 <CardDisplay
                   leftImageCircle={38}
                   leftImageSrc={user.image ? makeUri(user?.image) : moon}
@@ -606,7 +657,7 @@ const Chat = props => {
                   location={`${
                     date.getHours() > 12 ? date.getHours() - 12 : date.getHours()
                   }:${date.getMinutes()} ${date.getHours() > 12 ? 'PM' : 'AM'}`}
-                  description={html.replace(/<\/?[^>]+(>|$)/g, '')}
+                  description={text}
                   reverse={user.id === sender.uid}
                   bold={false}
                   onPress={attachments.length > 0 ? play(attachments[0].asset_url) : undefined}
@@ -622,7 +673,7 @@ const Chat = props => {
                   </>
                 ) : null}
 
-                {i !== 0 && i === unread - 1 ? <Divider /> : null}
+                {isLastUnread ? <Divider /> : null}
 
                 <Whitespace marginTop={20} />
               </React.Fragment>
