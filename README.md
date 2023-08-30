@@ -25,7 +25,7 @@ Production:
 # App Center Test - Xamarin-UiTests
 
 appcenter test run uitest --app "Photizo/Rentit-Android-Production" --devices "Photizo/device-mix-1"
---app-path ".~\RentItApp\android\app\build\outputs\apk\release\app-release.apk" --test-series 
+--app-path ".~\RentItApp\android\app\build\outputs\apk\release\app-release.apk" --test-series
 "launch-tests" --locale "en_US" --build-dir
 "~\GeneratedCSharpApp\RentitApp.XamarinUITests\bin\Release\net7.0" --uitest-tools-dir
 "~\.nuget\packages\xamarin.uitest\4.1.4\tools"

@@ -53,7 +53,7 @@ jobs:
           GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
           STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
           EOF
-  
+
       - name: Inject environment variables
         run: |
           cat << EOF > .env.test
