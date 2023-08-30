@@ -19,9 +19,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 
 async function findSimilarHomes(home, N) {
   // Get all homes from DynamoDB
-  const allHomes = await ddb
-    .scan({TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev'})
-    .promise();
+  const allHomes = await ddb.scan({ TableName: 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev' }).promise();
 
   // Define weights for each feature (higher weight = more important)
   const weights = {
@@ -78,8 +76,7 @@ async function findSimilarHomes(home, N) {
     let weightedScore = 0;
     for (let j = 0; j < featureVector1.length; j++) {
       const weight = weights[Object.keys(weights)[j]];
-      weightedScore +=
-        weight * (featureVector1[j] === featureVector2[j] ? 1 : 0);
+      weightedScore += weight * (featureVector1[j] === featureVector2[j] ? 1 : 0);
     }
     const distance = haversineDistance(
       home.latitude,
@@ -87,10 +84,9 @@ async function findSimilarHomes(home, N) {
       allHomes.Items[i].latitude,
       allHomes.Items[i].longitude,
     );
-    const score =
-      0.7 * (1 - distance / maxDistance) + 0.3 * (weightedScore / totalWeight);
+    const score = 0.7 * (1 - distance / maxDistance) + 0.3 * (weightedScore / totalWeight);
 
-    similarities.push({home: allHomes.Items[i], score, distance});
+    similarities.push({ home: allHomes.Items[i], score, distance });
   }
 
   // Sort the list of similar homes by score and distance
@@ -104,22 +100,21 @@ async function findSimilarHomes(home, N) {
   // Filter out the input home
   // Filter out homes that are too far, too expensive, or have status of PENDING or REJECTED
   const filteredHomes = similarities.filter(
-    item =>
-      item.home.id !== home.id &&
-      item.distance <= maxDistance &&
-      item.home.newPrice <= home.newPrice * 3 &&
-      item.home.status !== 'PENDING' &&
-      item.home.status !== 'REJECTED',
+    (item) => item.home.id !== home.id
+      && item.distance <= maxDistance
+      && item.home.newPrice <= home.newPrice * 3
+      && item.home.status !== 'PENDING'
+      && item.home.status !== 'REJECTED',
   );
 
   // Return the top N most similar homes
-  return filteredHomes.slice(0, N).map(item => item.home);
+  return filteredHomes.slice(0, N).map((item) => item.home);
 }
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-exports.handler = async event => {
+exports.handler = async (event) => {
   const home = JSON.parse(event.body);
   try {
     const similarHomes = await findSimilarHomes(home, 10);
@@ -135,7 +130,7 @@ exports.handler = async event => {
     console.error(err);
     return {
       statusCode: 500,
-      body: JSON.stringify({error: 'Failed to find similar homes'}),
+      body: JSON.stringify({ error: 'Failed to find similar homes' }),
     };
   }
 };

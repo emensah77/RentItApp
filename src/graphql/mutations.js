@@ -1,3 +1,4 @@
+/* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
 export const createPaymentIntent = /* GraphQL */ `
@@ -40,6 +41,8 @@ export const createReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -60,6 +63,12 @@ export const createReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -124,6 +133,8 @@ export const updateReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -144,6 +155,12 @@ export const updateReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -208,6 +225,8 @@ export const deleteReview = /* GraphQL */ `
         marketerNumber
         currency
         status
+        idUrls
+        amenities
         availabilityDate
         homeownerName
         negotiable
@@ -228,6 +247,12 @@ export const deleteReview = /* GraphQL */ `
         locality
         sublocality
         videoUrl
+        qualityScore
+        qualityListing
+        dataAccuracy
+        responsiveness
+        rentersFeedback
+        address
         oldPrice
         newPrice
         latitude
@@ -276,7 +301,17 @@ export const createViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -299,7 +334,17 @@ export const updateViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -322,9 +367,118 @@ export const deleteViewing = /* GraphQL */ `
       userId
       status
       assignedRep
-      comments
+      comments {
+        items {
+          id
+          content
+          author
+          createdAt
+          updatedAt
+          viewingId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
+    }
+  }
+`;
+export const createComment = /* GraphQL */ `
+  mutation CreateComment(
+    $input: CreateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    createComment(input: $input, condition: $condition) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
+    }
+  }
+`;
+export const updateComment = /* GraphQL */ `
+  mutation UpdateComment(
+    $input: UpdateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    updateComment(input: $input, condition: $condition) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
+    }
+  }
+`;
+export const deleteComment = /* GraphQL */ `
+  mutation DeleteComment(
+    $input: DeleteCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    deleteComment(input: $input, condition: $condition) {
+      id
+      content
+      author
+      createdAt
+      updatedAt
+      viewing {
+        id
+        postId
+        username
+        viewingDate
+        viewingTime
+        usercontact
+        userlocation
+        viewingDateTime
+        userId
+        status
+        assignedRep
+        comments {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      viewingId
     }
   }
 `;
@@ -354,6 +508,8 @@ export const createUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -374,6 +530,12 @@ export const createUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -427,6 +589,8 @@ export const updateUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -447,6 +611,12 @@ export const updateUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -500,6 +670,8 @@ export const deleteUser = /* GraphQL */ `
           marketerNumber
           currency
           status
+          idUrls
+          amenities
           availabilityDate
           homeownerName
           negotiable
@@ -520,6 +692,12 @@ export const deleteUser = /* GraphQL */ `
           locality
           sublocality
           videoUrl
+          qualityScore
+          qualityListing
+          dataAccuracy
+          responsiveness
+          rentersFeedback
+          address
           oldPrice
           newPrice
           latitude
@@ -594,6 +772,8 @@ export const createPost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -614,6 +794,12 @@ export const createPost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude
@@ -670,6 +856,8 @@ export const updatePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -690,6 +878,12 @@ export const updatePost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude
@@ -746,6 +940,8 @@ export const deletePost = /* GraphQL */ `
       marketerNumber
       currency
       status
+      idUrls
+      amenities
       availabilityDate
       homeownerName
       negotiable
@@ -766,6 +962,12 @@ export const deletePost = /* GraphQL */ `
       locality
       sublocality
       videoUrl
+      qualityScore
+      qualityListing
+      dataAccuracy
+      responsiveness
+      rentersFeedback
+      address
       oldPrice
       newPrice
       latitude

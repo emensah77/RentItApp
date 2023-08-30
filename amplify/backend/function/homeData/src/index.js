@@ -1,11 +1,8 @@
 const AWS = require('aws-sdk');
 
-const s3 = new AWS.S3();
+const ddb = new AWS.DynamoDB.DocumentClient();
 
-const BUCKET_NAME = 'pics175634-dev';
-const GEOJSON_FILE = 'export.geojson';
-
-const toRadians = degrees => degrees * (Math.PI / 180);
+const toRadians = (degrees) => degrees * (Math.PI / 180);
 
 const haversineDistance = (location1, location2) => {
   const earthRadius = 6371e3; // Earth's radius in meters
@@ -17,64 +14,51 @@ const haversineDistance = (location1, location2) => {
   const deltaLatitude = latitude2 - latitude1;
   const deltaLongitude = longitude2 - longitude1;
 
-  const a = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2);
-  Math.cos(latitude1) *
-    Math.cos(latitude2) *
-    Math.sin(deltaLongitude / 2) *
-    Math.sin(deltaLongitude / 2);
+  const a = Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2)
+    + Math.cos(latitude1)
+      * Math.cos(latitude2)
+      * Math.sin(deltaLongitude / 2)
+      * Math.sin(deltaLongitude / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return earthRadius * c;
 };
 
-const getNearbyBuildings = (
-  userLocation,
-  buildingLocations,
-  radiusInMeters = 500,
-) =>
-  buildingLocations.filter(building => {
-    const distance = haversineDistance(userLocation, building);
-    return distance <= radiusInMeters;
-  });
-
-const getGeoJSONData = async () => {
+const getUnverifiedHomes = async () => {
   const params = {
-    Bucket: BUCKET_NAME,
-    Key: GEOJSON_FILE,
+    TableName: 'UnverifiedHomes',
   };
 
   try {
-    const data = await s3.getObject(params).promise();
-    return JSON.parse(data.Body.toString());
+    const data = await ddb.scan(params).promise();
+    return data.Items;
   } catch (error) {
-    console.error('Error fetching GeoJSON data:', error);
+    console.error('Error fetching UnverifiedHomes:', error);
     throw error;
   }
 };
 
-exports.handler = async event => {
-  const userLocation = {
-    latitude: event.latitude,
-    longitude: event.longitude,
-  };
+exports.handler = async (event) => {
+  const userLocation = JSON.parse(event.body);
 
   try {
-    const geoJSONData = await getGeoJSONData();
-    const buildingLocations = geoJSONData.features
-      .filter(feature => feature.properties.building)
-      .map(feature => ({
-        latitude: feature.geometry.coordinates[1],
-        longitude: feature.geometry.coordinates[0],
-      }));
+    const homesData = await getUnverifiedHomes();
+    const homeLocations = homesData.map((home) => ({
+      latitude: home.latitude,
+      longitude: home.longitude,
+    }));
 
-    const nearbyBuildings = getNearbyBuildings(userLocation, buildingLocations);
+    const nearbyHomes = homeLocations.filter((home) => {
+      const distance = haversineDistance(userLocation, home);
+      return distance <= 10000; // Homes within 500 meters
+    });
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         message: 'Success',
-        nearbyBuildings,
+        nearbyHomes,
       }),
     };
   } catch (error) {

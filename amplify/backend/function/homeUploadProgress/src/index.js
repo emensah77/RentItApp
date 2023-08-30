@@ -2,13 +2,13 @@ const AWS = require('aws-sdk');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   const httpMethod = event.requestContext.http.method;
   const queryStringParameters = event.queryStringParameters || {};
   const body = JSON.parse(event.body || '{}');
 
   const userId = queryStringParameters.userId || body.userId;
-  const {progress} = body;
+  const { progress } = body;
   const action = queryStringParameters.action || body.action;
 
   if (httpMethod === 'POST') {
@@ -23,14 +23,14 @@ exports.handler = async event => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({message: 'Success'}),
+    body: JSON.stringify({ message: 'Success' }),
   };
 };
 
 async function saveProgress(userId, progress) {
   const getItemParams = {
     TableName: 'homeUploadProgress',
-    Key: {userId},
+    Key: { userId },
   };
 
   const item = await dynamoDb.get(getItemParams).promise();
@@ -43,9 +43,8 @@ async function saveProgress(userId, progress) {
 
     const updateParams = {
       TableName: 'homeUploadProgress',
-      Key: {userId},
-      UpdateExpression:
-        'SET #screenName = :screenName, #progressData = :progressData',
+      Key: { userId },
+      UpdateExpression: 'SET #screenName = :screenName, #progressData = :progressData',
       ExpressionAttributeNames: {
         '#screenName': 'screenName',
         '#progressData': 'progressData',
@@ -74,7 +73,7 @@ async function saveProgress(userId, progress) {
 async function clearProgressData(userId) {
   const params = {
     TableName: 'homeUploadProgress',
-    Key: {userId},
+    Key: { userId },
   };
 
   try {
@@ -93,7 +92,7 @@ async function clearProgressData(userId) {
 async function loadProgress(userId) {
   const params = {
     TableName: 'homeUploadProgress',
-    Key: {userId},
+    Key: { userId },
   };
 
   const result = await dynamoDb.get(params).promise();

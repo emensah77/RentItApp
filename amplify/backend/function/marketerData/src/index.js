@@ -8,7 +8,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-const storeLocationData = async locationData => {
+const storeLocationData = async (locationData) => {
   const db = admin.firestore();
 
   // Get the user document from the "users" collection
@@ -16,9 +16,7 @@ const storeLocationData = async locationData => {
   const userDoc = await userDocRef.get();
 
   // Check if the user document exists and retrieve the phoneNumber, otherwise use the default value "not available"
-  const phoneNumber = userDoc.exists
-    ? userDoc.data().phoneNumber
-    : 'not available';
+  const phoneNumber = userDoc.exists ? userDoc.data().phoneNumber : 'not available';
 
   // Store location data in the "marketerData" collection, using the user's uid as the document ID
   const docRef = db.collection('marketerData').doc(locationData.userID);
@@ -67,7 +65,7 @@ const getLocationDataByDateRange = async (userID, startDate, endDate) => {
     const locationData = doc.data().locations;
 
     // Filter location data by the given date range
-    const filteredLocationData = locationData.filter(location => {
+    const filteredLocationData = locationData.filter((location) => {
       const locationDate = new Date(location.timestamp);
       return locationDate >= startDate && locationDate <= endDate;
     });
@@ -77,7 +75,7 @@ const getLocationDataByDateRange = async (userID, startDate, endDate) => {
   throw new Error('User not found');
 };
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   try {
     console.log('Lambda function started');
     console.log('Lambda function started');
@@ -100,23 +98,19 @@ exports.handler = async event => {
 
       return {
         statusCode: 200,
-        body: JSON.stringify({message: 'Location data stored successfully'}),
+        body: JSON.stringify({ message: 'Location data stored successfully' }),
       };
     }
     if (requestData.action === 'getLocationDataByDateRange') {
-      const {userID} = requestData;
+      const { userID } = requestData;
       const startDate = new Date(requestData.startDate);
       const endDate = new Date(requestData.endDate);
 
-      const locationData = await getLocationDataByDateRange(
-        userID,
-        startDate,
-        endDate,
-      );
+      const locationData = await getLocationDataByDateRange(userID, startDate, endDate);
 
       return {
         statusCode: 200,
-        body: JSON.stringify({locationData}),
+        body: JSON.stringify({ locationData }),
       };
     }
     throw new Error('Invalid action');
@@ -124,7 +118,7 @@ exports.handler = async event => {
     console.error('Error in Lambda function:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({error: 'An internal server error occurred'}),
+      body: JSON.stringify({ error: 'An internal server error occurred' }),
     };
   }
 };

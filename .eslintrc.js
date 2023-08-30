@@ -3,11 +3,22 @@ module.exports = {
   extends: [
     'airbnb',
     'plugin:react/recommended',
+    'plugin:react-perf/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     '@react-native-community',
   ],
-  plugins: ['react', 'prettier', 'sort-keys-fix', 'jsx-a11y', '@babel', 'react-hooks'],
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    'react',
+    'prettier',
+    'sort-keys-fix',
+    'jsx-a11y',
+    '@babel',
+    'react-hooks',
+    '@typescript-eslint',
+    'react-perf',
+  ],
   rules: {
     indent: [
       'error',
@@ -15,6 +26,7 @@ module.exports = {
       {
         SwitchCase: 1,
         ignoredNodes: [
+          'TemplateLiteral',
           'JSXElement',
           'JSXElement > *',
           'JSXAttribute',
@@ -28,6 +40,7 @@ module.exports = {
           'JSXText',
           'JSXEmptyExpression',
           'JSXSpreadChild',
+          'ConditionalExpression',
         ],
       },
     ],
@@ -51,5 +64,10 @@ module.exports = {
     'react/no-did-update-set-state': [0],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'import/no-unresolved': [0],
+    'import/extensions': [0],
+    'import/prefer-default-export': [0],
+    'react/require-default-props': [0],
+    'react/destructuring-assignment': [0],
   },
 };

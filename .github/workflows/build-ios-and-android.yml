@@ -8,18 +8,21 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/cache@v2
         with:
           path: node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       - uses: actions/cache@v2
         with:
           path: ~/Library/Caches/CocoaPods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
+
       - uses: actions/cache@v2
         with:
           path: ~/.cocoapods
@@ -27,15 +30,45 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-
 
-      - run: yarn install --frozen-lockfile
+      - name: Inject environment variables
+        run: |
+          cat << EOF > .env
+          REACT_NATIVE_APP_ENV=development
+          REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          EOF
 
-      - run: pod install
+      - name: Inject test environment variables
+        run: |
+          cat << EOF > .env.test
+          REACT_NATIVE_APP_ENV=test
+          REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          EOF
+
+      - name: Install node dependencies
+        run: yarn cache clean && yarn install --frozen-lockfile
+
+      - run: pod install --repo-update
         working-directory: ios
 
+      - name: Bundle App
+        run: yarn bundle
+
       - run:
-          xcodebuild clean archive -workspace testCiCdReactNative.xcworkspace
-          -scheme testCiCdReactNative -archivePath testCiCdReactNative.xcarchive
-          CODE_SIGNING_ALLOWED=NO | xcpretty
+          xcodebuild clean archive -workspace testCiCdReactNative.xcworkspace -scheme
+          testCiCdReactNative -archivePath testCiCdReactNative.xcarchive CODE_SIGNING_ALLOWED=NO |
+          xcpretty
         working-directory: ios
 
   build-android:
@@ -56,6 +89,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - uses: actions/cache@v2
         id: yarn-cache
         with:
@@ -64,20 +98,52 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Inject environment variables
+        run: |
+          cat << EOF > .env
+          REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          EOF
+
+      - name: Inject test environment variables
+        run: |
+          cat << EOF > .env.test
+          REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          EOF
+
       - name: Install node dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn cache clean && yarn install --frozen-lockfile
+
+      - name: Bundle App
+        run: yarn bundle
 
       - name: Bundle & *.apk
         run: cd android && ./gradlew bundleRelease assembleRelease
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+      - name: Check existence
+        run: ls android/app/build/outputs/apk/release
+
+      - name: Upload Artifact (APK)
+        uses: actions/upload-artifact@v3
         with:
           name: Apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: android/app/build/outputs/apk/release/*.apk
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+      - name: Upload Artifact (AAB)
+        uses: actions/upload-artifact@v3
         with:
           name: Aab
-          path: android/app/build/outputs/bundle/release/app-release.aab
+          path: android/app/build/outputs/bundle/release/*.aab

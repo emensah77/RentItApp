@@ -158,9 +158,7 @@ const MyHomes = () => {
             </View>
           ) : (
             <View style={{marginVertical: 100, alignItems: 'center'}}>
-              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>
-                No Homes Found
-              </Text>
+              <Text style={{fontSize: 18, color: 'blue', fontWeight: 'bold'}}>No Homes Found</Text>
             </View>
           )}
         </View>

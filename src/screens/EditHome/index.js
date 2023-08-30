@@ -115,9 +115,7 @@ const EditHome = () => {
         flex: 1,
       }}>
       <ImageCarousel postId={homeInfo.id} images={homeInfo.images} />
-      <ScrollView
-        contentContainerStyle={{paddingBottom: 150}}
-        showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{paddingBottom: 150}} showsVerticalScrollIndicator={false}>
         <View style={{paddingHorizontal: 20}}>
           <Text style={{...styles.label, marginTop: 10}}>Title</Text>
           <TextInput
@@ -217,13 +215,7 @@ const EditHome = () => {
           )}
           <TouchableOpacity
             onPress={submitHandler}
-            disabled={
-              !title ||
-              !description ||
-              !maxGuests ||
-              !price ||
-              selectedItems?.length === 0
-            }
+            disabled={!title || !description || !maxGuests || !price || selectedItems?.length === 0}
             style={{
               borderWidth: 7,
               borderColor: 'blue',

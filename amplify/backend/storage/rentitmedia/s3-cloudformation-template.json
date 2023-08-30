@@ -96,40 +96,28 @@
     "CreateAuthPublic": {
       "Fn::Not": [
         {
-          "Fn::Equals": [
-            {"Ref": "s3PermissionsAuthenticatedPublic"},
-            "DISALLOW"
-          ]
+          "Fn::Equals": [{"Ref": "s3PermissionsAuthenticatedPublic"}, "DISALLOW"]
         }
       ]
     },
     "CreateAuthProtected": {
       "Fn::Not": [
         {
-          "Fn::Equals": [
-            {"Ref": "s3PermissionsAuthenticatedProtected"},
-            "DISALLOW"
-          ]
+          "Fn::Equals": [{"Ref": "s3PermissionsAuthenticatedProtected"}, "DISALLOW"]
         }
       ]
     },
     "CreateAuthPrivate": {
       "Fn::Not": [
         {
-          "Fn::Equals": [
-            {"Ref": "s3PermissionsAuthenticatedPrivate"},
-            "DISALLOW"
-          ]
+          "Fn::Equals": [{"Ref": "s3PermissionsAuthenticatedPrivate"}, "DISALLOW"]
         }
       ]
     },
     "CreateAuthUploads": {
       "Fn::Not": [
         {
-          "Fn::Equals": [
-            {"Ref": "s3PermissionsAuthenticatedUploads"},
-            "DISALLOW"
-          ]
+          "Fn::Equals": [{"Ref": "s3PermissionsAuthenticatedUploads"}, "DISALLOW"]
         }
       ]
     },
@@ -613,12 +601,7 @@
               ],
               "Condition": {
                 "StringLike": {
-                  "s3:prefix": [
-                    "public/",
-                    "public/*",
-                    "protected/",
-                    "protected/*"
-                  ]
+                  "s3:prefix": ["public/", "public/*", "protected/", "protected/*"]
                 }
               }
             }

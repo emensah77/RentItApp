@@ -1,4 +1,5 @@
 import {StyleSheet, Dimensions, Platform} from 'react-native';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   container: {backgroundColor: 'white', flex: 1},
@@ -82,18 +83,9 @@ const styles = StyleSheet.create({
   },
   showHomesText: {alignSelf: 'center', color: 'white'},
   filterPressable: {
-    flexDirection: 'column',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 8,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    height: 40,
-    shadowColor: 'white',
-    shadowOffset: {width: 10, height: 10},
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 30,
+
     alignItems: 'center',
     borderWidth: 0.8,
     borderColor: 'black',
@@ -138,7 +130,8 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     borderRadius: 30,
     borderWidth: 2,
-    borderColor: 'white',
+    borderColor: 'black',
+    backgroundColor: 'white',
   },
   forSale: {flexDirection: 'column'},
   forSaleText: {fontSize: 15, fontWeight: '600'},
@@ -249,27 +242,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
   },
   button1: {
-    flexDirection: 'column',
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 8,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    height: 40,
-    shadowColor: 'white',
-    shadowOffset: {width: 10, height: 10},
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 30,
+    marginRight: 20,
     alignItems: 'center',
+    height: 70,
     borderWidth: 0.1,
-    borderColor: 'white',
-    justifyContent: 'space-evenly',
   },
 
-  btnTabActive: {
-    backgroundColor: 'black',
-  },
   textTab: {
     fontSize: 11,
     color: 'black',
@@ -279,5 +257,71 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
   },
+
+  mapContent: {
+    alignItems: 'center',
+    backgroundColor: '#0047B3',
+    width: wp(22),
+    left: wp(39),
+    borderRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    padding: 12,
+    position: 'absolute',
+    bottom: wp(10),
+  },
+  cardContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '90%', // Adjust the width to account for the margin
+    flexDirection: 'row',
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    margin: 20, // Add equal margin on all sides
+    elevation: 5, // Add elevation for Android
+    shadowColor: '#000', // shadow properties for iOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+
+  cardImage: {
+    width: '30%',
+    aspectRatio: 1,
+    borderTopLeftRadius: 20,
+  },
+  cardDetails: {
+    width: '70%',
+    padding: 10,
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  locality: {
+    alignSelf: 'flex-start',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  detailsContainer: {
+    flexDirection: 'row', // To place bedrooms and bathrooms text side by side
+    justifyContent: 'space-between', // To put space between them
+    marginVertical: 10, // To provide vertical spacing
+  },
+
+  detailsText: {
+    color: '#555', // Or any other color of your choice
+    fontSize: 16, // Or any other size of your choice
+  },
+
+  price: {
+    alignSelf: 'flex-start', // Aligns price to the bottom-right
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+
+  map: {width: '100%', height: '100%', backgroundColor: 'white'},
+  loaderContainer: {paddingBottom: 0, marginHorizontal: 20},
 });
 export default styles;

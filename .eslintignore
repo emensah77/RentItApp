@@ -1,3 +1,5 @@
 reportWebVitals.js
-setupTests.js
+jest-setup.js
 node_modules
+amplify
+amplify-codegen-temp/models

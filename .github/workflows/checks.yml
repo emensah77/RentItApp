@@ -35,17 +35,37 @@ jobs:
 
       - name: Lintable Files
         run: |
-          git diff --diff-filter=RM --name-only origin/main..$(git log -n 1 --pretty=format:%h -- . | xargs)
+          git diff --diff-filter=RMA --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs)
 
       - name: Lint
         run: |
-          npx eslint --no-inline-config --fix-dry-run $(git diff --diff-filter=RM --name-only origin/main..$(git log -n 1 --pretty=format:%h -- . | xargs) '**/*.js')
+          npx eslint --no-inline-config --fix-dry-run $(git diff --diff-filter=RMA --name-only origin/development..$(git log -n 1 --pretty=format:%h -- . | xargs) "*.jsx" "*.tsx" "*.js" "*.ts")
 
       - name: Inject environment variables
         run: |
           cat << EOF > .env
+          REACT_NATIVE_APP_ENV=development
           REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          EOF
+  
+      - name: Inject environment variables
+        run: |
+          cat << EOF > .env.test
+          REACT_NATIVE_APP_ENV=test
+          REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
           EOF
 
-      # - name: Run tests
-      #   run: npm run test
+      - name: Run tests
+        run: yarn test

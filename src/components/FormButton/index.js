@@ -1,7 +1,6 @@
 import React from 'react';
 import {Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 
-const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const FormButton = ({buttonTitle, ...rest}) => (

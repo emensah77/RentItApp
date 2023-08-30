@@ -52,10 +52,7 @@ const House = props => {
         paddingBottom: 20,
         justifyContent: 'flex-start',
       }}>
-      <Image
-        source={{uri: item.image}}
-        style={{width: 150, height: 150, borderRadius: 15}}
-      />
+      <Image source={{uri: item.image}} style={{width: 150, height: 150, borderRadius: 15}} />
       <View style={{flex: 1, marginHorizontal: 15}}>
         <Text
           style={{
@@ -110,10 +107,7 @@ const House = props => {
                 latitude,
                 longitude,
               } = doc.data();
-              if (
-                user.uid === userId &&
-                !orders.some(e => e.homeid === homeid)
-              ) {
+              if (user.uid === userId && !orders.some(e => e.homeid === homeid)) {
                 orders.push({
                   userId,
                   userName,
@@ -238,9 +232,8 @@ const House = props => {
           </Text>
           <View style={{padding: 10}}>
             <Text style={{fontSize: 16, fontFamily: 'Montserrat-Regular'}}>
-              You have not rented a house yet. If you rent a house, you should
-              check here to receive details about the address of the house, when
-              to move in, and other details here.
+              You have not rented a house yet. If you rent a house, you should check here to receive
+              details about the address of the house, when to move in, and other details here.
             </Text>
           </View>
 

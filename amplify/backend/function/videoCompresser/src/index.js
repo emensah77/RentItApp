@@ -9,28 +9,28 @@ ffmpeg.setFfmpegPath('/opt/bin/ffmpeg');
 const INPUT_BUCKET = 'videosrentit';
 const OUTPUT_BUCKET = 'pics175634-dev';
 
-const {Readable} = require('stream');
+const { Readable } = require('stream');
 
 async function downloadFile(bucket, key) {
   return new Promise((resolve, reject) => {
-    const params = {Bucket: bucket, Key: key};
+    const params = { Bucket: bucket, Key: key };
     const chunks = [];
 
     s3.getObject(params)
       .createReadStream()
-      .on('data', chunk => {
+      .on('data', (chunk) => {
         chunks.push(chunk);
       })
       .on('end', () => {
         resolve(Buffer.concat(chunks));
       })
-      .on('error', err => {
+      .on('error', (err) => {
         reject(err);
       });
   });
 }
 
-exports.handler = async event => {
+exports.handler = async (event) => {
   console.log('Event:', JSON.stringify(event, null, 2));
 
   const s3Event = event.Records[0].s3;
@@ -74,17 +74,12 @@ async function compressVideo(buffer) {
 
     ffmpeg(inputFile)
       .inputOptions('-f mp4')
-      .outputOptions([
-        '-c:v libx264',
-        '-preset veryfast',
-        '-crf 28',
-        '-movflags +faststart',
-      ])
+      .outputOptions(['-c:v libx264', '-preset veryfast', '-crf 28', '-movflags +faststart'])
       .output(outputFile)
       .on('end', () => {
         resolve(fs.readFileSync(outputFile));
       })
-      .on('error', err => {
+      .on('error', (err) => {
         reject(err);
       })
       .run();

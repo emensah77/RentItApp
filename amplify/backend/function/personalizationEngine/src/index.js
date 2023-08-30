@@ -31,19 +31,19 @@ async function personalizationEngine(userLocation, homeType, nextToken) {
   const allHomes = await ddb.scan(scanParams).promise();
 
   // Filter homes by the specified homeType
-  const filteredHomes = allHomes.Items.filter(home => home.type === homeType);
+  const filteredHomes = allHomes.Items.filter((home) => home.type === homeType);
 
   // Calculate the distance between the user location and filtered homes
-  const distances = filteredHomes.map(home => {
+  const distances = filteredHomes.map((home) => {
     const distance = userLocation
       ? haversineDistance(
-          userLocation.latitude,
-          userLocation.longitude,
-          home.latitude,
-          home.longitude,
-        )
+        userLocation.latitude,
+        userLocation.longitude,
+        home.latitude,
+        home.longitude,
+      )
       : 0;
-    return {home, distance: distance !== 0 ? 1 / distance : Number.MAX_VALUE}; // Inverse of distance or a very large value if distance is 0
+    return { home, distance: distance !== 0 ? 1 / distance : Number.MAX_VALUE }; // Inverse of distance or a very large value if distance is 0
   });
 
   // Define weights for distance, price, and created time
@@ -54,22 +54,21 @@ async function personalizationEngine(userLocation, homeType, nextToken) {
   // Get the current timestamp
   const currentTime = new Date().getTime();
   // Calculate the similarity score for each home
-  distances.forEach(item => {
-    item.score =
-      distanceWeight * item.distance + // Use the inverse distance directly, as it was already calculated in the previous step
-      priceWeight * item.home.newPrice +
-      timeWeight * (currentTime - new Date(item.home.createdAt).getTime());
+  distances.forEach((item) => {
+    item.score = distanceWeight * item.distance // Use the inverse distance directly, as it was already calculated in the previous step
+      + priceWeight * item.home.newPrice
+      + timeWeight * (currentTime - new Date(item.home.createdAt).getTime());
   });
 
   // Sort the homes by similarity score (lower score = better match)
   distances.sort((a, b) => a.score - b.score);
 
   const personalizedHomes = distances.filter(
-    item => item.home.status !== 'PENDING' && item.home.status !== 'REJECTED',
+    (item) => item.home.status !== 'PENDING' && item.home.status !== 'REJECTED',
   );
 
   return {
-    personalizedHomes: personalizedHomes.map(item => item.home),
+    personalizedHomes: personalizedHomes.map((item) => item.home),
     newNextToken: allHomes.LastEvaluatedKey, // Assuming LastEvaluatedKey is your nextToken value
   };
 }
@@ -77,14 +76,14 @@ async function personalizationEngine(userLocation, homeType, nextToken) {
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-exports.handler = async event => {
+exports.handler = async (event) => {
   const requestData = JSON.parse(event.body);
-  const {userLocation} = requestData;
-  const {homeType} = requestData;
-  const {nextToken} = requestData;
+  const { userLocation } = requestData;
+  const { homeType } = requestData;
+  const { nextToken } = requestData;
 
   try {
-    const {personalizedHomes, newNextToken} = await personalizationEngine(
+    const { personalizedHomes, newNextToken } = await personalizationEngine(
       userLocation,
       homeType,
       nextToken,
@@ -98,13 +97,13 @@ exports.handler = async event => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': '*',
       },
-      body: JSON.stringify({homes: personalizedHomes, nextToken: newNextToken}),
+      body: JSON.stringify({ homes: personalizedHomes, nextToken: newNextToken }),
     };
   } catch (err) {
     console.error(err);
     return {
       statusCode: 500,
-      body: JSON.stringify({error: 'Failed to find personalized homes'}),
+      body: JSON.stringify({ error: 'Failed to find personalized homes' }),
     };
   }
 };
