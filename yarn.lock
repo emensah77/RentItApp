@@ -3222,7 +3222,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@eva-design/dss@^2.2.0":
+"@eva-design/dss@^2.0.0":
   version "2.2.0"
   resolved "https://registry.npmjs.org/@eva-design/dss/-/dss-2.2.0.tgz#1eb765e480b3b140386a3a105374435c0c927616"
   integrity sha512-ip+iLpe8WFR1IyPGR9puJtXhkZQrWV9p+Xgg3u/3ruDNaObh/YlnfZdS0i29m6YZduW3I+lLuXSXwq5f4pAbRA==
@@ -3232,7 +3232,7 @@
   resolved "https://registry.npmjs.org/@eva-design/eva/-/eva-2.2.0.tgz#59da30f650992a066df090e4aa6a3b2201762fe7"
   integrity sha512-Wh98ex5cCK+YYSQNpthX1bT4CA3zDRR1WnJv0YlyvULAkmjaEvqtoGMCXzu5DH8v1fGIggu/OpAokLS7UVPe+A==
 
-"@eva-design/processor@^2.2.0":
+"@eva-design/processor@^2.0.0":
   version "2.2.0"
   resolved "https://registry.npmjs.org/@eva-design/processor/-/processor-2.2.0.tgz#038c20f682bc71fe0c7e17e06372416c88d023be"
   integrity sha512-fEvjvilmF/R9dqXDiMoaoXxrPIb5s1APVXbacXKAxjlWl231rzOxc5sdTtJPoFTTEon5KeaKwLHtbQvz5eVvIA==
@@ -5892,13 +5892,13 @@
     "@typescript-eslint/types" "5.62.0"
     eslint-visitor-keys "^3.3.0"
 
-"@ui-kitten/components@^5.1.2":
-  version "5.3.1"
-  resolved "https://registry.npmjs.org/@ui-kitten/components/-/components-5.3.1.tgz#259bbedcb7a29df026982064823a50cc30b8eaad"
-  integrity sha512-Oj1WePUQtpNfH7ftXGdkkFVmJI+JcR3cBryPJV0E+JAUdH2dbJ0oG/VA+UAgk27/u0K0OZSUkdMFuGnkDAVuYA==
+"@ui-kitten/components@5.1.2":
+  version "5.1.2"
+  resolved "https://registry.npmjs.org/@ui-kitten/components/-/components-5.1.2.tgz#18b6aba8ed67b0b893f0ec3f40daf5e698676811"
+  integrity sha512-J1Gd53+2qngktLSKot9aT+LGhUt05uGE3ouEiY6FsxUZdexlzcQVhp5rRasExUSAYNcN5J7/XSNEPNB9qX0v1g==
   dependencies:
-    "@eva-design/dss" "^2.2.0"
-    "@eva-design/processor" "^2.2.0"
+    "@eva-design/dss" "^2.0.0"
+    "@eva-design/processor" "^2.0.0"
     fecha "3.0.3"
     hoist-non-react-statics "^3.2.1"
     lodash.merge "^4.6.1"
