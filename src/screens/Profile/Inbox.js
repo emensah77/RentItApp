@@ -41,6 +41,13 @@ const Inbox = () => {
 
   const navigation = useNavigation();
 
+  const goToPost = useCallback(
+    postId => {
+      navigation.navigate('Post', {postId});
+    },
+    [navigation],
+  );
+
   const goToChat = useCallback(
     (home_id, channel_id, members) => async () => {
       await client.disconnectUser(1);
@@ -53,41 +60,41 @@ const Inbox = () => {
 
   const content = useMemo(
     () => [
-      // {
-      //   title: `Messages${
-      //     messages.filter(item => item.read === false).length > 0
-      //       ? ` (${messages.filter(item => item.read === false).length})`
-      //       : ''
-      //   }`,
-      //   content: loading ? (
-      //     <PageSpinner />
-      //   ) : messages.length === 0 ? (
-      //     <Typography>No messages to see yet.</Typography>
-      //   ) : (
-      //     messages.map(
-      //       (
-      //         {channel_id, home_id, members, name, location, description, status, date, read, uri},
-      //         i,
-      //       ) => (
-      //         <React.Fragment key={channel_id}>
-      //           <CardDisplay
-      //             onPress={goToChat(home_id, channel_id, members)}
-      //             leftImageCircle={30}
-      //             leftImageSrc={makeUri(uri)}
-      //             name={name}
-      //             location={location}
-      //             description={description}
-      //             status={status}
-      //             date={date}
-      //             bold={read}
-      //           />
+      {
+        title: `Messages${
+          messages.filter(item => item.read === false).length > 0
+            ? ` (${messages.filter(item => item.read === false).length})`
+            : ''
+        }`,
+        content: loading ? (
+          <PageSpinner />
+        ) : messages.length === 0 ? (
+          <Typography>No messages to see yet.</Typography>
+        ) : (
+          messages.map(
+            (
+              {channel_id, home_id, members, name, location, description, status, date, read, uri},
+              i,
+            ) => (
+              <React.Fragment key={channel_id}>
+                <CardDisplay
+                  onPress={goToChat(home_id, channel_id, members)}
+                  leftImageCircle={30}
+                  leftImageSrc={makeUri(uri)}
+                  name={name}
+                  location={location}
+                  description={description}
+                  status={status}
+                  date={date}
+                  bold={read}
+                />
 
-      //           {i !== messages.length - 1 ? <Divider small /> : null}
-      //         </React.Fragment>
-      //       ),
-      //     )
-      //   ),
-      // },
+                {i !== messages.length - 1 ? <Divider small /> : null}
+              </React.Fragment>
+            ),
+          )
+        ),
+      },
       {
         title: `Notifications${
           notifications.filter(item => item.read === false).length > 0
@@ -104,6 +111,7 @@ const Inbox = () => {
               !!(image && description && title) && (
                 <React.Fragment key={`${noticeId}${postId}`}>
                   <CardDisplay
+                    onPress={() => goToPost(postId)}
                     leftImageCircle={40}
                     leftImageSrc={makeUri(image)}
                     name={title}
@@ -222,10 +230,13 @@ const Inbox = () => {
             date: Utils.formatDate(state?.messageSets?.[0]?.messages?.[0]?.updated_at),
             location: '',
             status: '',
-            read: false,
+            read: state.read[user.uid].unread_messages > 0,
           })),
       );
     })().catch(e => console.error('There was an issue loading the chat', e));
+
+    // channel.countUnread();
+    // channel.countUnreadMentions();
 
     return () => _client.disconnectUser(1);
   }, [user]);

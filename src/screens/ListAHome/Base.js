@@ -114,24 +114,24 @@ const Base = props => {
     __DEV__ && console.debug('Response for Progress Update', await response.json());
   }, [data, isComplete, route.name, userId]);
 
-  const transformDataForAPI = useCallback(data => {
+  const transformDataForAPI = useCallback(_data => {
     // Basic transformations
     const transformedData = {
-      newPrice: data.price,
-      type: data.homeType,
-      currency: [data.currency],
-      bed: data.bedCount,
-      maxGuests: data.bedRoomCount,
-      bedroom: data.bedRoomCount,
-      bathroomNumber: data.bathRoomsCount,
-      images: data.imageUrls,
-      phoneNumbers: [data.phoneNumber],
-      marketerNumber: [data.marketerNumber],
+      newPrice: _data.price,
+      type: _data.homeType,
+      currency: [_data.currency],
+      bed: _data.bedCount,
+      maxGuests: _data.bedRoomCount,
+      bedroom: _data.bedRoomCount,
+      bathroomNumber: _data.bathRoomsCount,
+      images: _data.imageUrls,
+      phoneNumbers: [_data.phoneNumber],
+      marketerNumber: [_data.marketerNumber],
       status: 'PENDING',
-      image: data.imageUrls[0],
+      image: _data.imageUrls[0],
       userID: auth().currentUser.uid,
-      amenities: data.amenities,
-      ...data, // Add all other fields from the original data
+      amenities: _data.amenities,
+      ..._data, // Add all other fields from the original data
     };
 
     // Amenities transformations
@@ -145,7 +145,7 @@ const Base = props => {
     };
 
     Object.keys(amenitiesMapping).forEach(key => {
-      transformedData[key] = data.amenities.includes(amenitiesMapping[key]) ? 'Yes' : 'No';
+      transformedData[key] = _data.amenities.includes(amenitiesMapping[key]) ? 'Yes' : 'No';
     });
 
     // Remove old keys
@@ -227,7 +227,7 @@ const Base = props => {
     setIsLoading(false);
 
     navigation.navigate('Home');
-  }, [data, isFinal, isComplete, clear]);
+  }, [isFinal, isComplete, data, transformDataForAPI, clear, navigation]);
 
   const back = useCallback(async () => {
     if (index - 1 <= 0) {

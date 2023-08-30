@@ -44,10 +44,22 @@ jobs:
       - name: Inject environment variables
         run: |
           cat << EOF > .env
+          REACT_NATIVE_APP_ENV=development
           REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
           CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
-          REACT_NATIVE_APP_ENV=${{ secrets.REACT_NATIVE_APP_ENV }}
-          STREAM_CHAT_APP_KEY=${{ secrets.STREAM_CHAT_APP_KEY }}
+          AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+          GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
+          STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          EOF
+  
+      - name: Inject environment variables
+        run: |
+          cat << EOF > .env.test
+          REACT_NATIVE_APP_ENV=test
+          REACT_APP_BASE_URL=${{ secrets.REACT_APP_BASE_URL }}
+          CODE_PUSH_DEPLOYMENT_KEY=${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}
           AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}

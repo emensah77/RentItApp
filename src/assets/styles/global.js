@@ -545,6 +545,17 @@ const global = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#B0B0B0',
   },
+  modal: {
+    position: 'absolute',
+    width: '80%',
+    left: '10%',
+    top: '25%',
+    backgroundColor: '#999',
+    borderRadius: 25,
+    padding: 10,
+    elevation: 3,
+    shadowColor: '#000',
+  },
   'zIndex-0': {
     zIndex: 0,
   },

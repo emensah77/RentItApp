@@ -1,127 +1,133 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {startCase, camelCase} from 'lodash';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
 import auth from '@react-native-firebase/auth';
+import {Page, GenericList} from '../../../components';
+import Dropdown from '../../../components/Dropdown';
+import {statusOptions} from '../../../utils/claimStatus';
 
-import {Typography, Header, Container, Whitespace, CardDisplay, Loader} from '../../../components';
-import hamburger from '../../../assets/images/hamburger.png';
-
-const MyClaims = props => {
-  const {
-    route: {name},
-  } = props;
-
+const MyClaims = () => {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(-1);
+  const [loading, setLoading] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedClaim, setSelectedClaim] = useState(null);
+  const [nextKey, setNextKey] = useState(null); // Add this state to track the next key
 
-  const navigation = useNavigation();
+  const updateStatus = useCallback(
+    async item => {
+      if (selectedStatus) {
+        const details = {Status: selectedStatus};
 
-  const keyExtractor = useCallback(item => item.DemandID, []);
+        const requestBody = {
+          updaterId: auth().currentUser.uid,
+          demandId: item.DemandID,
+          details,
+        };
 
-  const renderItem = useCallback(({item, index}) => {
-    const keys = Object.keys(item);
-    // Sample data rendered
-    // {"Claimed": true, "ClientNumber": "233208667241", "DateClaimed": "2023-08-02T10:46:01.157Z", "DateCreated": "2023-07-15T12:13:16.216Z", "DemandID": "5751750e-43ea-4c18-b480-8563c07350b4", "Description": "Single room self contain ", "HomeType": "self Contained", "Locality": "Upper West", "MarketerID": "9BXcEnla6WNrPXmKudvwjFyGhU33", "Name": "Fredrick ", "Neighborhood": "Bamahu ", "Price": "142", "Status": "Claimed", "Sublocality": "WA MUNICIPAL", "Type": "for rent"}
-    return (
-      <>
-        <Container type="chipDeSelected" height="auto" width="100%">
-          <CardDisplay
-            numberOfLines={keys.length}
-            name={
-              <Typography type="notice" size={18} weight="700">
-                Demand ID: {item.DemandID}
-              </Typography>
+        await fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/claimedDemands', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        })
+          .then(response => {
+            if (!response.ok) {
+              return response.text().then(text => {
+                throw new Error(`Failed to update status: ${text}`);
+              });
             }
-            description={keys.sort().map(dataKey => (
-              <React.Fragment
-                key={`${index},${dataKey},${
-                  typeof item[dataKey] === 'object' ? JSON.stringify(item[dataKey]) : item[dataKey]
-                }`}>
-                {dataKey !== 'MarketerID' &&
-                dataKey !== 'ClientNumber' &&
-                dataKey !== 'DemandID' ? (
-                  <>
-                    <Typography type="notice" color="#4D4D4D" size={14} weight="500" width="90%">
-                      {startCase(camelCase(dataKey))}
-                      {': '}
-                      {typeof item[dataKey] === 'object'
-                        ? JSON.stringify(item[dataKey])
-                        : item[dataKey]}
-                    </Typography>
+            return response.json(); // Parse the response body as JSON
+          })
+          .then(() => {
+            load(); // Refresh the claims after updating the status
+            setSelectedStatus(null); // Reset the selected status
+            setSelectedClaim(null); // Reset selected claim after updating
+          })
+          .catch(e => console.error('An error occurred while updating claims', e));
+      } else {
+        setSelectedClaim(item);
+      }
+    },
+    [selectedStatus, load],
+  );
 
-                    {'\n'}
-                  </>
-                ) : null}
-              </React.Fragment>
-            ))}
-            center
-            bold
-          />
-        </Container>
+  const buttons = useMemo(
+    () => [
+      {
+        text: item =>
+          selectedClaim && selectedClaim.DemandID === item.DemandID ? 'Confirm' : 'Update',
+        action: item => updateStatus(item),
+        condition: () => true,
+      },
+    ],
+    [updateStatus, selectedClaim],
+  );
 
-        <Whitespace marginTop={33} />
-      </>
-    );
-  }, []);
-
-  const load = useCallback(async () => {
+  const load = useCallback(async (startKey = null) => {
     setLoading(true);
-
     const response = await fetch(
       `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/claimedDemands?marketerId=${
         auth().currentUser.uid
-      }&pageSize=${30}`,
+      }&pageSize=30${startKey ? `&startKey=${startKey}` : ''}`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       },
-    ).catch(e => console.error('An error occurred while fetching demands', e));
+    ).catch(e => console.error('An error occurred while fetching claims', e));
+
     if (!response) {
       return;
     }
     const _data = await response.json();
-    setData(_data.items);
+    setData(prevData => {
+      // Check if the first item of the new data matches the last item of the old data
+      const newItems =
+        prevData[prevData.length - 1]?.DemandID === _data.items[0]?.DemandID
+          ? _data.items.slice(1)
+          : _data.items;
 
+      return [...prevData, ...newItems];
+    });
+    setNextKey(_data.nextKey); // Set the next key from the response
     setLoading(false);
   }, []);
+  const handleChange = useCallback(
+    item => {
+      setSelectedStatus(item.value);
+    },
+    [setSelectedStatus],
+  );
+  const handleEndReached = useCallback(() => {
+    if (nextKey) {
+      // Only fetch the next set if a next key is present
+      load(nextKey);
+    }
+  }, [nextKey, load]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   return (
-    <>
-      <Header leftIcon={hamburger} onClose={navigation.toggleDrawer}>
-        {startCase(camelCase(name))}
-      </Header>
-
-      <Container height="90%" color="#FFF">
-        <Whitespace paddingTop={10} />
-
-        {data.length === 0 && !loading ? (
-          <Typography>There are no homes to show</Typography>
-        ) : data.length > 0 ? (
-          <Container type="row" width="90%" height="100%" center>
-            <Whitespace width="1%" />
-
-            <FlatList
-              initialNumToRender={2}
-              maxToRenderPerBatch={2}
-              persistentScrollbar
-              showsVerticalScrollIndicator={false}
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-            />
-          </Container>
-        ) : (
-          <Loader />
-        )}
-      </Container>
-    </>
+    <Page type="drawer" header="My Claims">
+      {selectedClaim && (
+        <Dropdown
+          data={statusOptions}
+          displayKey="label"
+          value={selectedStatus}
+          onChange={handleChange}
+          label="Select Status"
+        />
+      )}
+      <GenericList
+        list={data}
+        id="DemandID"
+        loading={loading}
+        buttons={buttons}
+        onEndReached={handleEndReached}
+      />
+    </Page>
   );
 };
 
