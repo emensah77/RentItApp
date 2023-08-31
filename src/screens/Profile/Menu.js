@@ -126,7 +126,7 @@ const Menu = () => {
             image: notifications,
             width: 19.7,
             height: 22.7,
-            onPress: goTo('Inbox', {show: 'Notifications'}),
+            onPress: goTo('Inbox', {tab: 'Notifications'}),
           },
           {
             description: 'Privacy and sharing',
