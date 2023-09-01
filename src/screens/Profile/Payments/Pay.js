@@ -293,6 +293,10 @@ const PaymentScreen = () => {
   // });
 
   useEffect(() => {
+    setStartTime(new Date().getTime());
+  }, [generatePaymentUrl]);
+
+  useEffect(() => {
     mixpanel.track('payment-start', {
       amount,
       merchantTransactionID,
@@ -300,7 +304,6 @@ const PaymentScreen = () => {
       user_id: user.uid,
       route: route.params,
     });
-    setStartTime(new Date().getTime());
   }, [amount, merchantTransactionID, route.params, selectedType, user.uid]);
 
   useEffect(() => {
