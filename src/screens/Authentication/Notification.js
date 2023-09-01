@@ -59,12 +59,7 @@ const Notification = () => {
         createdAt: firestore.Timestamp.fromDate(new Date()),
       };
       if (provider && providerCredential) {
-        const userCredential = await auth()
-          .signInWithCredential(providerCredential)
-          .catch(console.error);
-        if (!userCredential) {
-          return setError('An unknown error occurred. Try again');
-        }
+        await auth().signInWithCredential(providerCredential).catch(console.error);
         await firestore()
           .collection('users')
           .doc(auth().currentUser.uid)

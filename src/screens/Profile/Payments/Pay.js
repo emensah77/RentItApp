@@ -10,6 +10,7 @@ import auth from '@react-native-firebase/auth';
 
 import {deletePost} from '../../../graphql/mutations';
 import {AuthContext} from '../../../navigation/AuthProvider';
+import mixpanel from '../../../MixpanelConfig';
 
 const containerStyle = {
   alignItems: 'center',
@@ -44,6 +45,7 @@ const PaymentScreen = () => {
 
   const [paymentUrl, setPaymentUrl] = useState(null);
   const [merchantTransactionID, setMerchantTransactionID] = useState(null);
+  const [startTime, setStartTime] = useState(0);
 
   const deleteFromFavorites = async id => {
     const ref = firestore().collection('posts');
@@ -212,7 +214,26 @@ const PaymentScreen = () => {
 
       const {url} = event.nativeEvent;
       const words = url.split('type=');
-      if (words[1] === 'success') {
+      const isSuccess = words[1] === 'success';
+      const timestamp = new Date().getTime();
+      const logData = {
+        event,
+        amount,
+        timestamp,
+        merchantTransactionID,
+        type: selectedType,
+        user_id: user.uid,
+        duration: timestamp - startTime,
+        route: route.params,
+      };
+
+      if (isSuccess) {
+        mixpanel.track('payment-success', logData);
+      } else {
+        mixpanel.track('payment-failure', logData);
+      }
+
+      if (isSuccess) {
         if (navigation.canGoBack()) {
           if (homeid === null || homeid === undefined || homeid === '') {
             Alert.alert(
@@ -245,7 +266,18 @@ const PaymentScreen = () => {
         navigation.replace('Home');
       }
     },
-    [_storeData, addHomeOrder, homeid, merchantTransactionID, navigation, route.name],
+    [
+      _storeData,
+      addHomeOrder,
+      amount,
+      homeid,
+      merchantTransactionID,
+      navigation,
+      route,
+      selectedType,
+      startTime,
+      user,
+    ],
   );
 
   const paymentSource = useMemo(() => ({uri: paymentUrl}), [paymentUrl]);
@@ -259,6 +291,20 @@ const PaymentScreen = () => {
   //   hometitle,
   //   homelongitude,
   // });
+
+  useEffect(() => {
+    setStartTime(new Date().getTime());
+  }, []);
+
+  useEffect(() => {
+    mixpanel.track('payment-start', {
+      amount,
+      merchantTransactionID,
+      type: selectedType,
+      user_id: user.uid,
+      route: route.params,
+    });
+  }, [amount, merchantTransactionID, route.params, selectedType, user.uid]);
 
   useEffect(() => {
     (async () => {
