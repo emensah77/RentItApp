@@ -8,8 +8,8 @@ import Whitespace from './Whitespace';
 import {global} from '../assets/styles';
 
 const Tabs = props => {
-  const {content} = props;
-  const [active, setActive] = useState(0);
+  const {initial, content} = props;
+  const [active, setActive] = useState(initial || 0);
 
   const change = useCallback(
     i => () => {

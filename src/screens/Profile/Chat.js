@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Platform, PermissionsAndroid, Linking} from 'react-native';
+import {Platform, PermissionsAndroid, Linking, Alert} from 'react-native';
 import Permissions, {PERMISSIONS} from 'react-native-permissions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -486,20 +486,22 @@ const Chat = props => {
       await _channel.watch();
       _channel.on('message.new', event => {
         console.debug('You have a new message:', JSON.stringify(event));
+
         setMessage('');
         setMessages(oldMessages => [event.message, ...oldMessages]);
       });
 
-      // client.on('notification.message_new', event => {
-      //   console.debug('You have a new notification:', JSON.stringify(event));
-      //   if (event.total_unread_count !== undefined) {
-      //     Alert.alert(`You have ${event.total_unread_count} unread messages.`);
-      //   }
+      client.on('notification.message_new', event => {
+        console.debug('You have a new notification:', JSON.stringify(event));
 
-      //   if (event.unread_channels !== undefined) {
-      //     Alert.alert(`You have ${event.unread_channels} new messages`);
-      //   }
-      // });
+        if (event.total_unread_count !== undefined) {
+          Alert.alert(`You have ${event.total_unread_count} unread messages.`);
+        }
+
+        if (event.unread_channels !== undefined) {
+          Alert.alert(`You have ${event.unread_channels} new messages`);
+        }
+      });
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => {
