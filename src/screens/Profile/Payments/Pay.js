@@ -294,7 +294,7 @@ const PaymentScreen = () => {
 
   useEffect(() => {
     setStartTime(new Date().getTime());
-  }, [generatePaymentUrl]);
+  }, []);
 
   useEffect(() => {
     mixpanel.track('payment-start', {
