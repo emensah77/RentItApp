@@ -1,5 +1,5 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {Modal, FlatList} from 'react-native';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import {Modal} from 'react-native';
 import {startCase, camelCase} from 'lodash';
 import auth from '@react-native-firebase/auth';
 
@@ -14,7 +14,7 @@ import {
   CardDisplay,
   Input,
   Image,
-  Button,
+  GenericList,
 } from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
 import pending from '../../../assets/images/markers/pending.png';
@@ -45,62 +45,14 @@ const StatsAndEarnings = () => {
     [onToggle],
   );
 
-  const keyExtractor = useCallback(item => item.id, []);
-
-  const renderItem = useCallback(
-    ({item, index}) => {
-      const keys = Object.keys(item);
-      // Sample data rendered
-      // {"aircondition": "", "availabilityDate": "2023-08-07", "available": "", "bathroom": "", "bathroomNumber": 0, "bed": 0, "bedroom": 0, "createdTime": "2023-06-09T12:46:19.840Z", "currency": [], "description": "OPPOSITE BREAD BAKERY PEREGRRINO BRIAMAH ROAD ACCRA NEWTOWN RAACO", "furnished": "", "homeownerName": "NANA IDAN", "id": "7cd196cc-ef32-4dba-8dad-0c747e1cb2c5", "image": "", "images": [], "kitchen": "", "latitude": 5.5880209, "locality": "Greater Accra", "longitude": -0.2090894, "loyaltyProgram": "", "marketerNumber": ["233597285099"], "maxGuests": 0, "mode": "", "negotiable": "", "neighborhood": "RAACO", "newPrice": 0, "oldPrice": 0, "phoneNumbers": ["0553587515"], "reviews": [], "status": "pending", "sublocality": "AYAWASO CENTRAL MUNICIPAL", "title": "default Title", "toilet": "", "type": "defaultType", "updatedBy": "r3G0H4PGxFfqniM4iozlMPOHert2", "updatedTime": "2023-08-07T08:53:44.984Z", "userID": "", "verified": "", "videoUrl": "", "water": "", "wifi": ""}
-      return (
-        <>
-          <Container type="chipDeSelected" height="auto" width="100%">
-            <CardDisplay
-              numberOfLines={keys.length}
-              name={
-                <Typography type="notice" size={18} weight="700">
-                  ID: {item.id}
-                </Typography>
-              }
-              description={keys.sort().map(dataKey => (
-                <React.Fragment
-                  key={`${index},${dataKey},${
-                    typeof item[dataKey] === 'object'
-                      ? JSON.stringify(item[dataKey])
-                      : item[dataKey]
-                  }`}>
-                  {dataKey !== 'id' ? (
-                    <>
-                      <Typography type="notice" color="#4D4D4D" size={14} weight="500" width="90%">
-                        {startCase(camelCase(dataKey))}
-                        {': '}
-                        {typeof item[dataKey] === 'object'
-                          ? JSON.stringify(item[dataKey])
-                          : item[dataKey]}
-                      </Typography>
-
-                      {'\n'}
-                    </>
-                  ) : null}
-                </React.Fragment>
-              ))}
-              center
-              bold
-            />
-
-            {open === 'pending' && (
-              <Container width="100%" type="spaceBetween">
-                <Button type="standard" onPress={setCurrentEditId(index)}>
-                  Edit
-                </Button>
-              </Container>
-            )}
-          </Container>
-
-          <Whitespace marginTop={33} />
-        </>
-      );
-    },
+  const buttons = useMemo(
+    () => [
+      {
+        text: 'Edit',
+        action: (_, index) => setCurrentEditId(index)(),
+        condition: () => open === 'pending',
+      },
+    ],
     [open, setCurrentEditId],
   );
 
@@ -253,17 +205,13 @@ const StatsAndEarnings = () => {
         <Modal animationType="slide" visible>
           <Header onClose={onToggle('')}>{startCase(camelCase(`${open} Homes`))}</Header>
 
-          <Container type="row" width="90%" height="100%" center>
-            <FlatList
-              initialNumToRender={2}
-              maxToRenderPerBatch={2}
-              persistentScrollbar
-              showsVerticalScrollIndicator={false}
-              data={data?.[open]?.homes}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-            />
-          </Container>
+          <GenericList
+            flatten
+            list={data?.[open]?.homes}
+            id="id"
+            loading={loading}
+            buttons={buttons}
+          />
         </Modal>
       )}
 
@@ -271,9 +219,9 @@ const StatsAndEarnings = () => {
         <Modal animationType="slide" visible>
           <Page>
             <HomeForm
-              onLeftIconPress={setCurrentEditId(null)}
               data={data?.pending?.homes?.[editId]}
               onSuccess={setCurrentEditId(null)}
+              onClose={setCurrentEditId(null)}
             />
           </Page>
         </Modal>

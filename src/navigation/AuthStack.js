@@ -21,6 +21,7 @@ const Stack = createStackNavigator();
 
 // AsyncStorage.removeItem('authentication::data');
 // auth().signOut();
+// Test: UWHvpJ1XoObsFYTFR48zYe6jscJ2
 const date = new Date();
 
 const AuthStack = () => {
