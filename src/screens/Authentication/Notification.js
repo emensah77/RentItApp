@@ -61,7 +61,7 @@ const Notification = () => {
       if (provider && providerCredential) {
         const userDetails = firestore()
           .collection('users')
-          .doc(auth().currentUser.uid)
+          .doc(auth().currentUser?.uid)
           .get()
           .then(doc => {
             if (doc.exists) {
@@ -81,7 +81,7 @@ const Notification = () => {
         await auth().signInWithCredential(providerCredential).catch(console.error);
         await firestore()
           .collection('users')
-          .doc(auth().currentUser.uid)
+          .doc(auth().currentUser?.uid)
           .set({...userDetails, ...newData, location: location || false})
           .catch(console.error);
         return setTimeout(() => navigation.replace('Home'), 1000);
@@ -92,8 +92,8 @@ const Notification = () => {
         .then(() => {
           return firestore()
             .collection('users')
-            .doc(auth().currentUser.uid)
-            .set({...newData, uid: auth().currentUser.uid})
+            .doc(auth().currentUser?.uid)
+            .set({...newData, uid: auth().currentUser?.uid})
             .catch(e => {
               console.error(
                 'Something went wrong with adding user to firestore: ',

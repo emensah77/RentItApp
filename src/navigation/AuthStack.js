@@ -41,7 +41,7 @@ const AuthStack = () => {
     const user = auth().currentUser;
     mixpanel.track('Screen Viewed', {
       screenName,
-      userId: user ? user.uid : 'guest',
+      userId: user ? user?.uid : 'guest',
     });
   }, []);
 
