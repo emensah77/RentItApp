@@ -145,17 +145,23 @@ const PhoneNumber = props => {
         try {
           phoneNumberLib = phoneUtil.parse(`+${initialCountryCode}${initialPhoneNumber}`);
         } catch (err) {
-          console.error(
-            'An error occured while parsing the initial phone number:',
-            initialCountryCode,
-            initialPhoneNumber,
-            e,
-            err,
-          );
+          if (!(phoneNumberLib && phoneNumberLib.getCountryCode())) {
+            console.error(
+              'An error occured while parsing the initial phone number:',
+              initialCountryCode,
+              initialPhoneNumber,
+              e,
+              err,
+            );
+          }
         }
       }
 
-      if (!phoneNumberLib || (phoneNumberLib && !phoneNumberLib.getCountryCode() && phoneNumberLib.getCountryCode() !== '+')) {
+      if (
+        !phoneNumberLib ||
+        (phoneNumberLib && !phoneNumberLib.getCountryCode()) ||
+        (phoneNumberLib && phoneNumberLib.getCountryCode() === '+')
+      ) {
         return;
       }
       setCountry({code: phoneNumberLib.getCountryCode()});
