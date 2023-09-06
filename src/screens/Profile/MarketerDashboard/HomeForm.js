@@ -150,13 +150,19 @@ const HomeForm = props => {
       if (!preFillData[dataKey]) {
         return;
       }
-      newData[dataKey] =
-        oldData[dataKey] && typeof oldData[dataKey].value !== 'undefined'
-          ? {value: preFillData[dataKey]}
-          : preFillData[dataKey];
+
+      if (dataKey === 'phoneNumbers' && typeof preFillData[dataKey] === 'string') {
+        newData[dataKey] = [preFillData[dataKey]];
+      } else if (dataKey === 'marketerNumber' && typeof preFillData[dataKey] === 'string') {
+        newData[dataKey] = [preFillData[dataKey]];
+      } else {
+        newData[dataKey] =
+          oldData[dataKey] && typeof oldData[dataKey].value !== 'undefined'
+            ? {value: preFillData[dataKey]}
+            : preFillData[dataKey];
+      }
     });
     setData({...oldData, ...newData});
-    // setData({homeType: {value: 'Mansion'},"aircondition": {"value": "Yes"}, "availabilityDate": "04/30/2023", "available": {"value": "Yes"}, "bathroom": {"value": "Yes"}, "bathroomNumber": "2", "bed": "2", "bedroom": "2", "currency": {"value": "USD"}, "description": "OPPOSITE ROMAN RIDGE SHOPPING CENTER NORTEI ABABIO STREET AIRPORT AIRPORT RESIDENTIAL defined", "furnished": {"value": "Yes"}, "homeType": "", "id": "ef0327b9-f2b0-4779-bcd6-749b9563694f", "kitchen": {"value": "Yes"}, "loyaltyProgram": {"value": "Yes"}, "marketerNumber": "+2348179222327", "maxGuests": "20", "mode": {"value": "For Sale"}, "negotiable": {"value": "Yes"}, "neighbourhood": "23rfg", "ownerName": "own", "phoneNumber": "+2348179222327", "price": "10", "title": "title", "toilet": {"value": "Yes"}, "water": {"value": "Yes"}, "wifi": {"value": "Yes"}});
   }, [preFillData]);
 
   return (
@@ -245,6 +251,7 @@ const HomeForm = props => {
       <Typography type="label" width="100%">
         Home owner phone number.
       </Typography>
+
       <PhoneNumber
         initialPhoneNumber={data.phoneNumbers?.length > 0 ? data.phoneNumbers[0] : ''}
         initialCountryCode="233"
