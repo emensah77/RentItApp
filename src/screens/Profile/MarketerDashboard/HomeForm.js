@@ -29,7 +29,7 @@ const oldData = {
   newPrice: 0,
   availabilityDate: '04/01/2023',
   maxGuests: 0,
-  neighborhood: '',
+  neighbourhood: '',
   bathroomNumber: 0,
   bed: 0,
   bedroom: 0,
@@ -328,7 +328,7 @@ const HomeForm = props => {
         type="text"
         name="neighbourhood"
         label="Neighbourhood"
-        value={data.neighborhood}
+        value={data.neighbourhood}
         onChange={onChangeData('neighbourhood')}
       />
 
