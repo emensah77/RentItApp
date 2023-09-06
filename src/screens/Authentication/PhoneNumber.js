@@ -155,7 +155,7 @@ const PhoneNumber = props => {
         }
       }
 
-      if (!phoneNumberLib || (phoneNumberLib && !phoneNumberLib.getCountryCode())) {
+      if (!phoneNumberLib || (phoneNumberLib && !phoneNumberLib.getCountryCode() && phoneNumberLib.getCountryCode() !== '+')) {
         return;
       }
       setCountry({code: phoneNumberLib.getCountryCode()});
