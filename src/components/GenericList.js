@@ -43,7 +43,7 @@ const GenericList = props => {
               numberOfLines={keys.length}
               name={
                 <Typography type="notice" size={18} weight="700">
-                  {id}: {item[id]}
+                  {id.toUpperCase()}: {item[id]}
                 </Typography>
               }
               description={keys.sort().map(dataKey => (

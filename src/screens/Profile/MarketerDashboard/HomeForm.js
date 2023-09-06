@@ -246,7 +246,7 @@ const HomeForm = props => {
         Home owner phone number.
       </Typography>
       <PhoneNumber
-        initialPhoneNumber={data.phoneNumbers[0]}
+        initialPhoneNumber={data.phoneNumbers?.length > 0 ? data.phoneNumbers[0] : ''}
         initialCountryCode="233"
         inline
         onChangeData={onChangeData('phoneNumbers')}
@@ -258,7 +258,7 @@ const HomeForm = props => {
         Marketer phone number.
       </Typography>
       <PhoneNumber
-        initialPhoneNumber={data.marketerNumber}
+        initialPhoneNumber={data.marketerNumber?.length > 0 ? data.marketerNumber[0] : ''}
         initialCountryCode="233"
         inline
         onChangeData={onChangeData('marketerNumber')}
@@ -515,8 +515,6 @@ const HomeForm = props => {
       <Button type="standard" loading={loading} onPress={submit}>
         Save
       </Button>
-
-      <Whitespace marginBottom={200} />
     </>
   );
 };

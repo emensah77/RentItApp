@@ -1,4 +1,5 @@
 import React, {useMemo, useCallback, useEffect, useState} from 'react';
+import {Linking} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -45,8 +46,11 @@ const Menu = () => {
   const [isMarketer, setIsMarketer] = useState(false);
 
   const goTo = useCallback(
-    route => () => {
-      navigation.push(route);
+    (route, params) => () => {
+      if (route === 'PrivacyAndSharing') {
+        return Linking.openURL('https://www.rentit.homes/privacy');
+      }
+      navigation.push(route, params);
     },
     [navigation],
   );
@@ -122,12 +126,14 @@ const Menu = () => {
             image: notifications,
             width: 19.7,
             height: 22.7,
+            onPress: goTo('Inbox', {tab: 'Notifications'}),
           },
           {
             description: 'Privacy and sharing',
             image: privacy,
             width: 19,
             height: 22,
+            onPress: goTo('PrivacyAndSharing'),
           },
         ],
       },

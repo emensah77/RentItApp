@@ -31,6 +31,7 @@ import {
   faCouch,
   faShieldAlt,
   faPlusCircle,
+  faInbox,
 } from '@fortawesome/free-solid-svg-icons';
 import firebase from '@react-native-firebase/app';
 import analytics from '@react-native-firebase/analytics';
@@ -121,9 +122,9 @@ const DetailedPost = props => {
     setIsDetailsModalVisible(true);
   }, []);
 
-  // const goToChat = useCallback(() => {
-  //   navigation.navigate('Chat', {home_id: post.id});
-  // }, [post, navigation]);
+  const goToChat = useCallback(() => {
+    navigation.navigate('Chat', {home_id: post.id});
+  }, [post, navigation]);
 
   const hideDetailsModal = useCallback(() => {
     setIsDetailsModalVisible(false);
@@ -543,12 +544,12 @@ const DetailedPost = props => {
               <View style={styles.container1}>
                 <Pressable onPress={showDetailsModal} style={styles.scheduleButton}>
                   <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
-                  <Text style={styles.viewingText}>Schedule Viewing</Text>
+                  <Text style={styles.viewingText}> Schedule Viewing</Text>
                 </Pressable>
-                {/* <Pressable onPress={goToChat} style={styles.scheduleButton}>
-                  <FontAwesomeIcon icon={faCalendar} size={20} color="white" />
-                  <Text style={styles.viewingText}>CHat to Rent</Text>
-                </Pressable> */}
+                <Pressable onPress={goToChat} style={styles.scheduleButton}>
+                  <FontAwesomeIcon icon={faInbox} size={20} color="white" />
+                  <Text style={styles.viewingText}> Chat to Rent</Text>
+                </Pressable>
 
                 <Modal
                   visible={isDetailsModalVisible}

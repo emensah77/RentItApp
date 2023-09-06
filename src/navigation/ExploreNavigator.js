@@ -32,7 +32,7 @@ const headerShown = title => ({
 });
 
 const ExplorerNavigator = () => (
-  <Stack.Navigator screenOptions={screenOptions}>
+  <Stack.Navigator initialRouteName="MarketerDashboard" screenOptions={screenOptions}>
     <Stack.Screen name="Welcome" component={HomeScreen} options={noHeaderShown} />
 
     <Stack.Screen

@@ -66,12 +66,12 @@ const PaymentsAndPayouts = () => {
             width: 23.99,
             height: 29.53,
           },
-          {
-            description: 'Donations: Get started',
-            image: donation,
-            width: 30,
-            height: 30,
-          },
+          // {
+          //   description: 'Donations: Get started',
+          //   image: donation,
+          //   width: 30,
+          //   height: 30,
+          // },
           {
             description: 'Transaction history',
             image: transactionHistory,

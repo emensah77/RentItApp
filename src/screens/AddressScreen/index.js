@@ -24,7 +24,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import firestore from '@react-native-firebase/firestore';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import { RangeCalendar } from '@ui-kitten/components';
+import {RangeCalendar} from '@ui-kitten/components';
 import {createPaymentIntent} from '../../graphql/mutations';
 import {AuthContext} from '../../navigation/AuthProvider';
 import {convertDays, fCurrency} from '../../variables';
