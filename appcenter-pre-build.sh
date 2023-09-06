@@ -8,6 +8,12 @@ if [ -f "$APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle" ]; then
     echo "Incrementing versionName for Android..."
     # This assumes a versioning style of x.x.x - adjust if necessary
     awk -F'"' '/versionName/ {split($2, a, "."); a[3]++; $2=a[1]"."a[2]"."a[3]; print $0; next}1' $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle > tmpfile && mv tmpfile $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
+
+    # Log the content of build.gradle after changes
+    echo "Content of build.gradle after incrementing:"
+    cat $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
+    echo "End of build.gradle content."
+
 fi
 
 # For iOS
