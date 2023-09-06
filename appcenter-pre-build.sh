@@ -7,9 +7,8 @@ if [ -f "$APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle" ]; then
     rm $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle.bak
     echo "Incrementing versionName for Android..."
     # This assumes a versioning style of x.x.x - adjust if necessary
-    awk -F. -v OFS=. '/versionName/ {$NF++; print}' $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle > tmpfile && mv tmpfile $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
+    awk -F'"' '/versionName/ {split($2, a, "."); a[3]++; $2=a[1]"."a[2]"."a[3]; print $0; next}1' $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle > tmpfile && mv tmpfile $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
 fi
-
 
 # For iOS
 if [ -f "$APPCENTER_SOURCE_DIRECTORY/ios/AirbnbClone/Info.plist" ]; then
