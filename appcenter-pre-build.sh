@@ -3,11 +3,13 @@
 # For Android
 if [ -f "$APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle" ]; then
     echo "Incrementing versionCode for Android..."
-    sed -i '/versionCode/s/[0-9]\+/&+1/' $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
+    sed -i.bak '/versionCode/s/[0-9]\+/&+1/' $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
+    rm $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle.bak
     echo "Incrementing versionName for Android..."
     # This assumes a versioning style of x.x.x - adjust if necessary
     awk -F. -v OFS=. '/versionName/ {$NF++; print}' $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle > tmpfile && mv tmpfile $APPCENTER_SOURCE_DIRECTORY/android/app/build.gradle
 fi
+
 
 # For iOS
 if [ -f "$APPCENTER_SOURCE_DIRECTORY/ios/AirbnbClone/Info.plist" ]; then
