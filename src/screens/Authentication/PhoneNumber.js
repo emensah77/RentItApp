@@ -158,7 +158,7 @@ const PhoneNumber = props => {
       if (
         !phoneNumberLib ||
         (phoneNumberLib && !phoneNumberLib.getCountryCode()) ||
-        (phoneNumberLib && phoneNumberLib.getCountryCode() !== '+')
+        (phoneNumberLib && phoneNumberLib.getCountryCode() === '+')
       ) {
         return;
       }
