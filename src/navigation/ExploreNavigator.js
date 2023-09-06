@@ -40,6 +40,7 @@ const ExplorerNavigator = () => (
       component={AddressScreen}
       options={headerShown('Confirm and Pay')}
     />
+
     <Stack.Screen name="Payment" component={Pay} options={headerShown('Confirm and Pay')} />
 
     <Stack.Screen name="House" component={House} options={noHeaderShown} />

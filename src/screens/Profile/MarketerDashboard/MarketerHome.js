@@ -115,7 +115,7 @@ const MarketerHome = () => {
   );
 
   const changeMode = useCallback(
-    (_mode, success, _marker) => e => {
+    (_mode, success) => e => {
       if (success) {
         Alert.alert('Successfully saved the data.');
         if (success && _mode === 'default') {
@@ -123,7 +123,7 @@ const MarketerHome = () => {
         }
       }
       if (_mode === 'home') {
-        setMarkerData(markers.find(item => item.id === _marker.id || e.nativeEvent.id));
+        setMarkerData(markers.find(item => item.id === e.nativeEvent.id));
       }
       setMode(_mode);
       expand(_mode);
