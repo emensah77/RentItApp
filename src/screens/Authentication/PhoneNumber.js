@@ -132,29 +132,35 @@ const PhoneNumber = props => {
 
   useEffect(() => {
     // Run once if the previous value of the initial phone number was falsy
-    // but it's current value is truthsy
+    // but its current value is truthsy
     if (!ranOnce && !prevInitialPhoneNumber && !!initialPhoneNumber) {
       setRanOnce(true);
-      setPhoneNumber(initialPhoneNumber);
+
+      // Log initial values
+
+      // Strip the country code from the phone number if it's included
+      const strippedPhoneNumber = initialPhoneNumber.replace(`+${initialCountryCode}`, '');
+
+      // Log the stripped phone number
+
+      if (!strippedPhoneNumber) {
+        console.error('The phone number without the country code is empty.');
+        return;
+      }
+
+      setPhoneNumber(strippedPhoneNumber);
 
       const phoneUtil = PhoneNumberUtil.getInstance();
       let phoneNumberLib;
       try {
-        phoneNumberLib = phoneUtil.parse(initialPhoneNumber);
+        phoneNumberLib = phoneUtil.parse(`+${initialCountryCode}${strippedPhoneNumber}`);
       } catch (e) {
-        try {
-          phoneNumberLib = phoneUtil.parse(`+${initialCountryCode}${initialPhoneNumber}`);
-        } catch (err) {
-          if (!(phoneNumberLib && phoneNumberLib.getCountryCode())) {
-            console.error(
-              'An error occured while parsing the initial phone number:',
-              initialCountryCode,
-              initialPhoneNumber,
-              e,
-              err,
-            );
-          }
-        }
+        console.error(
+          'An error occurred while parsing the initial phone number:',
+          initialCountryCode,
+          strippedPhoneNumber,
+          e,
+        );
       }
 
       if (

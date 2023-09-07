@@ -1017,9 +1017,9 @@ PODS:
     - React-Core
   - RNAWSCognito (5.2.14):
     - React-Core
-  - RNBackgroundFetch (4.2.0):
+  - RNBackgroundFetch (4.2.1):
     - React-Core
-  - RNBackgroundGeolocation (4.12.1):
+  - RNBackgroundGeolocation (4.13.2):
     - CocoaLumberjack (~> 3.7.2)
     - React-Core
   - RNCAsyncStorage (1.19.2):
@@ -1571,8 +1571,8 @@ SPEC CHECKSUMS:
   ReactNativeAudioToolkit: de9610f323e855ac6574be8c99621f3d57c5df06
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   RNAWSCognito: bbfdc784e906e3837d4d996c17ffed19356afc19
-  RNBackgroundFetch: e073ad5c803e9f77970afd91fbce3df3a9d1d6c6
-  RNBackgroundGeolocation: d79a73519802bb3a92ed82f5511aaa54546852ba
+  RNBackgroundFetch: 501c34ad6e880818ba17e7840b23f20a2d112923
+  RNBackgroundGeolocation: 40f627f972a696942ce8a511f75d6b7c8b600f5a
   RNCAsyncStorage: f57e929cd7757f2cb3dd8186d123c09e8281a1ad
   RNCCheckbox: 75255b03e604bbcc26411eb31c4cbe3e3865f538
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
