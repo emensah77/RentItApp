@@ -352,8 +352,8 @@ const Chat = props => {
     (async () => {
       setLoading(1);
 
-      if (!home_id) {
-        console.error('Home ID is required.');
+      if (!home_id && !channel_id) {
+        console.error('Either of `Home ID` or `Channel ID` is required.');
         return;
       }
 
@@ -516,10 +516,6 @@ const Chat = props => {
 
   if (!receiver.displayName && (receiver.fname || receiver.lname)) {
     receiver.displayName = receiver.fname || receiver.lname || '';
-  }
-
-  if (!receiver.displayName) {
-    return <PageSpinner />;
   }
 
   return (
