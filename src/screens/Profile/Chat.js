@@ -358,10 +358,10 @@ const Chat = props => {
       }
 
       const user = auth().currentUser;
-      const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id})).catch(e =>
+      const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id || channel_id})).catch(e =>
         console.error('An error occurred while fetching the home:', e),
       );
-      const _home = homeResult.data.getPost;
+      const _home = homeResult?.data?.getPost;
       let receiver_id = _home?.userID;
 
       if (!_home || !receiver_id) {
