@@ -518,10 +518,6 @@ const Chat = props => {
     receiver.displayName = receiver.fname || receiver.lname || '';
   }
 
-  if (!receiver.displayName) {
-    return <PageSpinner />;
-  }
-
   return (
     <>
       <Page
