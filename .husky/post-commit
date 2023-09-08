@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+last_commit_message=$(git log -1 --pretty=%B)
+
+if [[ "$last_commit_message" != *"Bump version. v$LAST_VERSION"* ]]; 
+  then
+    npm run bump:version
+    LAST_VERSION=$(node -p -e "require('./package.json').version")
+    echo "Current version is: $LAST_VERSION"
+    git add android\\app\\build.gradle ios\\AirbnbClone\\Info.plist ios\\AirbnbCloneTests\\Info.plist
+    git commit -am "Bump version. v$LAST_VERSION"
+else
+    echo "Skipping automated commit to avoid infinite loop."
+fi

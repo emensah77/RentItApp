@@ -21,6 +21,7 @@ const Stack = createStackNavigator();
 
 // AsyncStorage.removeItem('authentication::data');
 // auth().signOut();
+// Test: UWHvpJ1XoObsFYTFR48zYe6jscJ2
 const date = new Date();
 
 const AuthStack = () => {
@@ -40,7 +41,7 @@ const AuthStack = () => {
     const user = auth().currentUser;
     mixpanel.track('Screen Viewed', {
       screenName,
-      userId: user ? user.uid : 'guest',
+      userId: user ? user?.uid : 'guest',
     });
   }, []);
 

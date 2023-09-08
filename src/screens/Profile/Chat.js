@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Platform, PermissionsAndroid, Linking} from 'react-native';
+import {Platform, PermissionsAndroid, Linking, Alert} from 'react-native';
 import Permissions, {PERMISSIONS} from 'react-native-permissions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -352,14 +352,16 @@ const Chat = props => {
     (async () => {
       setLoading(1);
 
-      if (!home_id) {
-        console.error('Home ID is required.');
+      if (!home_id && !channel_id) {
+        console.error('Either of `Home ID` or `Channel ID` is required.');
         return;
       }
 
       const user = auth().currentUser;
-      const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
-      const _home = homeResult.data.getPost;
+      const homeResult = await API.graphql(
+        graphqlOperation(getPost, {id: home_id || channel_id}),
+      ).catch(e => console.error('An error occurred while fetching the home:', e));
+      const _home = homeResult?.data?.getPost;
       let receiver_id = _home?.userID;
 
       if (!_home || !receiver_id) {
@@ -486,20 +488,22 @@ const Chat = props => {
       await _channel.watch();
       _channel.on('message.new', event => {
         console.debug('You have a new message:', JSON.stringify(event));
+
         setMessage('');
         setMessages(oldMessages => [event.message, ...oldMessages]);
       });
 
-      // client.on('notification.message_new', event => {
-      //   console.debug('You have a new notification:', JSON.stringify(event));
-      //   if (event.total_unread_count !== undefined) {
-      //     Alert.alert(`You have ${event.total_unread_count} unread messages.`);
-      //   }
+      client.on('notification.message_new', event => {
+        console.debug('You have a new notification:', JSON.stringify(event));
 
-      //   if (event.unread_channels !== undefined) {
-      //     Alert.alert(`You have ${event.unread_channels} new messages`);
-      //   }
-      // });
+        if (event.total_unread_count !== undefined) {
+          Alert.alert(`You have ${event.total_unread_count} unread messages.`);
+        }
+
+        if (event.unread_channels !== undefined) {
+          Alert.alert(`You have ${event.unread_channels} new messages`);
+        }
+      });
     })().catch(e => console.error('There was an issue loading the chat', e, JSON.stringify(e)));
 
     return () => {
@@ -514,10 +518,6 @@ const Chat = props => {
 
   if (!receiver.displayName && (receiver.fname || receiver.lname)) {
     receiver.displayName = receiver.fname || receiver.lname || '';
-  }
-
-  if (!receiver.displayName) {
-    return <PageSpinner />;
   }
 
   return (

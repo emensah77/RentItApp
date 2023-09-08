@@ -290,12 +290,12 @@ exports.handler = async (event) => {
 
   if (httpMethod === 'GET' && path.endsWith('/reports')) {
       // Extract query string parameters from the event
-      const employeeID = event.queryStringParameters.marketerID;
+      const employeeID = event?.queryStringParameters?.marketerID || null;
       const startDate = event.queryStringParameters.startDate;
       const endDate = event.queryStringParameters.endDate;
 
       // Check if marketerID is provided, since it's mandatory
-      if (!employeeID) {
+      if (!employeeID && !startDate && !endDate) {
           return {
               statusCode: 400,
               headers: {
@@ -330,26 +330,41 @@ exports.handler = async (event) => {
     }
 
 
-  if (httpMethod === 'GET' && path.endsWith('/demands')) {
-    const { locality, sublocality, pageSize } = event.queryStringParameters;
-
-    const demand = await fetchDemands(
-      locality,
-      sublocality,
-      pageSize ? parseInt(pageSize) : undefined,
-    );
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Headers':
-          'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,GET',
-      },
-      body: JSON.stringify(demand),
-    };
-  }
+    if (httpMethod === 'GET' && path.endsWith('/demands')) {
+      try {
+        const { locality, sublocality, startDate, endDate, pageSize, startKey } = event.queryStringParameters;
+    
+        const demand = await fetchDemands(
+          locality,
+          sublocality,
+          startDate,
+          endDate,
+          pageSize ? parseInt(pageSize) : undefined,
+          startKey,
+        );
+    
+        return {
+          statusCode: 200,
+          headers: {
+            'Access-Control-Allow-Headers':
+              'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,GET',
+          },
+          body: JSON.stringify(demand),
+        };
+      } catch (error) {
+        console.error('Error handling demands endpoint:', error);
+        return {
+          statusCode: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+          },
+          body: JSON.stringify({ message: "Internal Server Error" }),
+        };
+      }
+    }
+    
 
   if (httpMethod === 'POST' && path.endsWith('/claim')) {
     const { marketerId, DemandId } = JSON.parse(event.body); // Note the changed variable names
@@ -576,10 +591,14 @@ exports.handler = async (event) => {
 
 // ...
 
-async function fetchDemands(locality, sublocality, pageSize = 100, startKey) {
+async function fetchDemands(locality, sublocality, startDate, endDate, pageSize = 100, startKey) {
+  const baseParams = {
+    TableName: 'Demand',
+  };
+
   if (locality && sublocality) {
-    const params = {
-      TableName: 'Demand',
+    // Query by Locality and Sublocality
+    Object.assign(baseParams, {
       IndexName: 'Locality-Sublocality-index',
       KeyConditionExpression: '#L = :l AND #S = :s',
       ExpressionAttributeNames: {
@@ -589,51 +608,51 @@ async function fetchDemands(locality, sublocality, pageSize = 100, startKey) {
       ExpressionAttributeValues: {
         ':l': locality,
         ':s': sublocality,
+      }
+    });
+  } else if (startDate && endDate) {
+    // Scan GSI by Date Range using DemandID-DateCreated-index
+    Object.assign(baseParams, {
+      IndexName: 'DemandID-DateCreated-index',
+      FilterExpression: '#DateCreated BETWEEN :startDate AND :endDate',
+      ExpressionAttributeNames: {
+        '#DateCreated': 'DateCreated'
       },
-      Limit: pageSize,
-    };
-
-    if (startKey) {
-      params.ExclusiveStartKey = startKey;
-    }
-
-    try {
-      const result = await dynamodb.query(params).promise();
-
-      return {
-        items: result.Items,
-        nextKey: result.LastEvaluatedKey,
-        count: result.Count,
-      };
-    } catch (error) {
-      console.error('Error fetching demands:', error);
-      throw error;
-    }
+      ExpressionAttributeValues: {
+        ':startDate': startDate,
+        ':endDate': endDate
+      }
+    });
   } else {
-    // Fetch all items if locality and sublocality are not provided
-    const params = {
-      TableName: 'Demand',
-      Limit: pageSize,
+    // Default to fetching all demands using a scan operation
+    baseParams.ScanFilter = {};
+  }
+
+  if (startKey) {
+    baseParams.ExclusiveStartKey = startKey;
+  }
+
+  try {
+    const result = await dynamodb.query(baseParams).promise();
+
+    return {
+      items: result.Items.map(item => ({
+        demandId: item.DemandId,
+        dateCreated: item.DateCreated,
+        claimed: !!item.MarketerId,
+        marketerId: item.MarketerId || null,
+        dateClaimed: item.DateClaimed || null
+      })),
+      nextKey: result.LastEvaluatedKey,
+      count: result.Count,
     };
-
-    if (startKey) {
-      params.ExclusiveStartKey = startKey;
-    }
-
-    try {
-      const result = await dynamodb.scan(params).promise();
-
-      return {
-        items: result.Items,
-        nextKey: result.LastEvaluatedKey,
-        count: result.Count,
-      };
-    } catch (error) {
-      console.error('Error fetching demands:', error);
-      throw error;
-    }
+  } catch (error) {
+    console.error('Error fetching demands:', error);
+    throw error;
   }
 }
+
+
 
 async function createDemand(demand) {
   demand.DemandID = uuid.v4(); // Generate a unique UUID for the DemandID
@@ -840,26 +859,49 @@ async function createEmployeeReport(reportDetails) {
   }
 }
 
-async function retrieveEmployeeReports(employeeID, startDate = null, endDate = null) {
-  const params = {
-    TableName: 'EmployeeReports',
-    IndexName: 'employeeID-createdTime-index', // Use the GSI for the query
-    KeyConditionExpression: 'employeeID = :employeeId',
-    ExpressionAttributeValues: {
-      ':employeeId': employeeID
+async function retrieveEmployeeReports(employeeID = null, startDate = null, endDate = null) {
+  let params;
+
+  if (employeeID) {
+    // Build parameters for querying using the GSI when employeeID is provided
+    params = {
+      TableName: 'EmployeeReports',
+      IndexName: 'employeeID-createdTime-index',
+      KeyConditionExpression: 'employeeID = :employeeId',
+      ExpressionAttributeValues: {
+        ':employeeId': employeeID
+      }
+    };
+
+    if (startDate) {
+      params.KeyConditionExpression += ' and createdTime >= :startDate';
+      params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
     }
-  };
 
-  // If startDate is provided, add a condition for createdTime
-  if (startDate) {
-    params.KeyConditionExpression += ' and createdTime >= :startDate';
-    params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
-  }
+    if (endDate) {
+      params.KeyConditionExpression += ' and createdTime <= :endDate';
+      params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+    }
+  } else {
+    // Build parameters for querying based on createdTime GSI when no employeeID is provided
+    params = {
+      TableName: 'EmployeeReports',
+      IndexName: 'createdTime-index',  // Assuming you have a GSI on createdTime
+      KeyConditionExpression: '',
+      ExpressionAttributeValues: {}
+    };
 
-  // If endDate is provided, further narrow down the condition for createdTime
-  if (endDate) {
-    params.KeyConditionExpression += ' and createdTime <= :endDate';
-    params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+    if (startDate && endDate) {
+      params.KeyConditionExpression = 'createdTime BETWEEN :startDate AND :endDate';
+      params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
+      params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+    } else if (startDate) {
+      params.KeyConditionExpression = 'createdTime >= :startDate';
+      params.ExpressionAttributeValues[':startDate'] = new Date(startDate).toISOString();
+    } else if (endDate) {
+      params.KeyConditionExpression = 'createdTime <= :endDate';
+      params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
+    }
   }
 
   try {
@@ -871,4 +913,3 @@ async function retrieveEmployeeReports(employeeID, startDate = null, endDate = n
     throw error;
   }
 }
-

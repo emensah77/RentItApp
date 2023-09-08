@@ -92,12 +92,14 @@ const MyClaims = () => {
     setNextKey(_data.nextKey); // Set the next key from the response
     setLoading(false);
   }, []);
+
   const handleChange = useCallback(
     item => {
       setSelectedStatus(item.value);
     },
     [setSelectedStatus],
   );
+
   const handleEndReached = useCallback(() => {
     if (nextKey) {
       // Only fetch the next set if a next key is present
@@ -120,6 +122,7 @@ const MyClaims = () => {
           label="Select Status"
         />
       )}
+
       <GenericList
         list={data}
         id="DemandID"

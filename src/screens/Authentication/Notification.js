@@ -59,16 +59,30 @@ const Notification = () => {
         createdAt: firestore.Timestamp.fromDate(new Date()),
       };
       if (provider && providerCredential) {
-        const userCredential = await auth()
-          .signInWithCredential(providerCredential)
-          .catch(console.error);
-        if (!userCredential) {
-          return setError('An unknown error occurred. Try again');
-        }
+        const userDetails = firestore()
+          .collection('users')
+          .doc(auth().currentUser?.uid)
+          .get()
+          .then(doc => {
+            if (doc.exists) {
+              return doc.data();
+            } else {
+              return {};
+            }
+          })
+          .catch(e => {
+            console.error(
+              'Something went wrong with fetching the user from firestore: ',
+              e,
+              JSON.stringify(e),
+            );
+            return {};
+          });
+        await auth().signInWithCredential(providerCredential).catch(console.error);
         await firestore()
           .collection('users')
-          .doc(auth().currentUser.uid)
-          .set({...newData, location: location || false})
+          .doc(auth().currentUser?.uid)
+          .set({...userDetails, ...newData, location: location || false})
           .catch(console.error);
         return setTimeout(() => navigation.replace('Home'), 1000);
       }
@@ -78,8 +92,8 @@ const Notification = () => {
         .then(() => {
           return firestore()
             .collection('users')
-            .doc(auth().currentUser.uid)
-            .set({...newData, uid: auth().currentUser.uid})
+            .doc(auth().currentUser?.uid)
+            .set({...newData, uid: auth().currentUser?.uid})
             .catch(e => {
               console.error(
                 'Something went wrong with adding user to firestore: ',

@@ -18,7 +18,15 @@ import {
 
 import * as Utils from '../../utils';
 
-const Inbox = () => {
+const Inbox = props => {
+  const {
+    route: {
+      params: {tab} = {
+        tab: 'Messages',
+      },
+    },
+  } = props;
+
   const user = auth().currentUser;
 
   const [loading, setLoading] = useState(false);
@@ -41,17 +49,10 @@ const Inbox = () => {
 
   const navigation = useNavigation();
 
-  const goToPost = useCallback(
-    postId => {
-      navigation.navigate('Post', {postId});
-    },
-    [navigation],
-  );
-
-  const goToChat = useCallback(
-    (home_id, channel_id, members) => async () => {
+  const goTo = useCallback(
+    (route, params) => async () => {
       await client.disconnectUser(1);
-      navigation.push('Chat', {home_id, channel_id, members});
+      navigation.push(route, params);
     },
     [navigation, client],
   );
@@ -78,7 +79,7 @@ const Inbox = () => {
             ) => (
               <React.Fragment key={channel_id}>
                 <CardDisplay
-                  onPress={goToChat(home_id, channel_id, members)}
+                  onPress={goTo('Chat', {home_id, channel_id, members})}
                   leftImageCircle={30}
                   leftImageSrc={makeUri(uri)}
                   name={name}
@@ -111,7 +112,7 @@ const Inbox = () => {
               !!(image && description && title) && (
                 <React.Fragment key={`${noticeId}${postId}`}>
                   <CardDisplay
-                    onPress={() => goToPost(postId)}
+                    onPress={goTo('Post', {postId})}
                     leftImageCircle={40}
                     leftImageSrc={makeUri(image)}
                     name={title}
@@ -129,7 +130,7 @@ const Inbox = () => {
         ),
       },
     ],
-    [loading, messages, notifications, goToChat, makeUri],
+    [loading, messages, notifications, goTo, makeUri],
   );
 
   const loadNotifications = useCallback(() => {
@@ -251,7 +252,7 @@ const Inbox = () => {
 
       <Whitespace marginTop={40} />
 
-      <Tabs content={content} />
+      <Tabs initial={tab === 'Messages' ? 0 : 1} content={content} />
     </Page>
   );
 };

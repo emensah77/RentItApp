@@ -3,3 +3,4 @@ setupTests.js
 node_modules
 android/
 ios/
+amplify

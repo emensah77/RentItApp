@@ -415,8 +415,8 @@ const styles = StyleSheet.create({
   },
   container1: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 85,
+    justifyContent: 'space-between',
   },
   scheduleButton: {
     flexDirection: 'row',

@@ -4,3 +4,4 @@ export {default as randomInt} from './randomInt';
 export {default as localities, getSubLocalities} from './localities';
 export {default as TYPES} from './data-types';
 export {default as getBlob} from './get-blob';
+export {default as usePreviousValue} from './use-previous-value';

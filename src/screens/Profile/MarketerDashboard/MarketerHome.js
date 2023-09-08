@@ -2,6 +2,7 @@ import React, {useEffect, useState, useMemo, useCallback, useRef} from 'react';
 import {Dimensions, Animated, Alert} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import HomeForm from './HomeForm';
 import DemandForm from './DemandForm';
@@ -115,6 +116,8 @@ const MarketerHome = () => {
 
   const changeMode = useCallback(
     (_mode, success) => e => {
+      e.stopPropagation();
+
       if (success) {
         Alert.alert('Successfully saved the data.');
         if (success && _mode === 'default') {
@@ -143,6 +146,14 @@ const MarketerHome = () => {
       setLoading(true);
 
       try {
+        const userLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          // Use for testing ONLY!
+          // latitude: 5.60589164450265,
+          // longitude: -0.1883120435406709,
+        };
+
         const response = await fetch(
           'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/unverifiedhomes',
           {
@@ -151,13 +162,7 @@ const MarketerHome = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              userLocation: {
-                latitude: `${position.coords.latitude}`,
-                longitude: `${position.coords.longitude}`,
-                // Use for testing ONLY!
-                // latitude: 5.60589164450265,
-                // longitude: -0.1883120435406709,
-              },
+              userLocation,
               searchAfter: searchAfterValue,
             }),
           },
@@ -184,8 +189,7 @@ const MarketerHome = () => {
           setMarkers([..._markers.homes, ...oldMarkers]);
 
           setRegion({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
+            ...userLocation,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0922 * (screen.width / screen.height),
           });
@@ -198,16 +202,6 @@ const MarketerHome = () => {
     },
     [position, searchAfter, markers],
   );
-
-  useEffect(() => {
-    if (!position || ranOnce) {
-      return;
-    }
-
-    setRanOnce(true);
-    setCurrentPosition(position);
-    fetchUnverifiedHomes();
-  }, [position, ranOnce, fetchUnverifiedHomes]);
 
   const degreesToRadians = useCallback(degrees => {
     return (degrees * Math.PI) / 180;
@@ -254,11 +248,14 @@ const MarketerHome = () => {
 
   useEffect(() => {
     const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
+
     _ws.onopen = function () {
       setWS(_ws);
     };
+
     _ws.onmessage = function (event) {
       const message = JSON.parse(event.data);
+
       // Handle the message based on its content
       if (message.action === 'homeUpdate') {
         // 1. Find the marker in the markers state that matches the received update
@@ -273,8 +270,8 @@ const MarketerHome = () => {
           setMarkers(updatedMarkers);
         }
       }
-      // Add other message handling logic as needed
     };
+
     return () => {
       // Send the 'offline' status to the server before closing the WebSocket connection
       if (_ws.readyState === _ws.OPEN) {
@@ -288,18 +285,42 @@ const MarketerHome = () => {
           }),
         );
       }
+
       _ws.close(undefined, 'Unmount');
     };
   }, [markers]);
 
   useEffect(() => {
     if (ws && position) {
+      const user = auth().currentUser;
+
+      const userDetails = firestore()
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then(doc => {
+          if (doc.exists) {
+            return doc.data();
+          } else {
+            return {};
+          }
+        })
+        .catch(e => {
+          console.error(
+            'Something went wrong with fetching the user from firestore: ',
+            e,
+            JSON.stringify(e),
+          );
+          return {};
+        });
+
       const sendLocationUpdate = () => {
         ws.send(
           JSON.stringify({
             action: 'locationUpdate',
             data: {
-              marketerId: auth().currentUser.uid,
+              marketerId: user.uid,
+              marketerName: `${userDetails.fname} ${userDetails.lname}`,
               marketerStatus: 'online',
               location: {
                 latitude: position.coords.latitude,
@@ -367,7 +388,7 @@ const MarketerHome = () => {
                   ? rejected
                   : neutral
               }
-              onPress={changeMode('home')}
+              onPress={changeMode('home', undefined, marker)}
             />
           );
         })}
@@ -394,7 +415,7 @@ const MarketerHome = () => {
             <Whitespace marginTop={10} />
 
             <Typography height={30} size={20} width="50%" color="#000" center>
-              Select a home to update it
+              Tap a home to update it
             </Typography>
 
             <Divider top={25} bottom={25}>
