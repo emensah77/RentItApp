@@ -116,6 +116,7 @@ const MarketerHome = () => {
 
   const changeMode = useCallback(
     (_mode, success) => e => {
+      console.log('changeMode: ', _mode, success);
       if (success) {
         Alert.alert('Successfully saved the data.');
         if (success && _mode === 'default') {
@@ -348,6 +349,10 @@ const MarketerHome = () => {
     fetchUnverifiedHomes();
     setRanOnce(true);
   }, [fetchUnverifiedHomes, position, ranOnce, searchAfter]);
+
+  useEffect(() => {
+    console.log('mode changed to: ', mode);
+  }, [mode]);
 
   return (
     <Page inline type="drawer" header="Marketer Home">
