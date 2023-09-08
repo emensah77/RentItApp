@@ -1,18 +1,15 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-temp_branch="temp-commit-branch"
+last_commit_message=$(git log -1 --pretty=%B)
 
-echo "Bumping version"
-npm run bump:reactnative
-
-echo "Checking out to $temp_branch"
-git checkout -B $temp_branch
-
-git commit -am "Bump version"
-
-git checkout $current_branch
-git merge $temp_branch
-
-git branch -d $temp_branch
+if [[ "$last_commit_message" != *"Bump version. v$LAST_VERSION"* ]]; 
+  then
+    npm run bump:version
+    LAST_VERSION=$(node -p -e "require('./package.json').version")
+    echo "Current version is: $LAST_VERSION"
+    git add android\app\build.gradle ios\AirbnbClone\Info.plist ios\AirbnbCloneTests\Info.plist
+    git commit -am "Bump version. v$LAST_VERSION"
+else
+    echo "Skipping automated commit to avoid infinite loop."
+fi
