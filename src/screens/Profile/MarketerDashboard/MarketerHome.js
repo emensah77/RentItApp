@@ -148,8 +148,8 @@ const MarketerHome = () => {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           // Use for testing ONLY!
-          latitude: 5.60589164450265,
-          longitude: -0.1883120435406709,
+          // latitude: 5.60589164450265,
+          // longitude: -0.1883120435406709,
         };
 
         const response = await fetch(
