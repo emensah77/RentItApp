@@ -224,7 +224,6 @@ const Inbox = props => {
             home_id: data?.home_id,
             channel_id,
             members: Object.keys(state.members || {}),
-            
             messaging_id: state?.messageSets?.[0]?.messages[0].id,
             name: data?.displayName || data?.fname || data?.lname,
             uri: data?.image,

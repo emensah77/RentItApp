@@ -2,6 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 HUSKY=0
-npm run bump:reactnative
 git add -A
-git commit --no-verify -m "Bump version"
+echo "Yeah"
