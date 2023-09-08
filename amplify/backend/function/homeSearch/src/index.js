@@ -330,27 +330,41 @@ exports.handler = async (event) => {
     }
 
 
-  if (httpMethod === 'GET' && path.endsWith('/demands')) {
-    const { locality, sublocality, pageSize, startKey } = event.queryStringParameters;
-
-    const demand = await fetchDemands(
-      locality,
-      sublocality,
-      pageSize ? parseInt(pageSize) : undefined,
-      startKey,
-    );
-
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Headers':
-          'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'OPTIONS,GET',
-      },
-      body: JSON.stringify(demand),
-    };
-  }
+    if (httpMethod === 'GET' && path.endsWith('/demands')) {
+      try {
+        const { locality, sublocality, startDate, endDate, pageSize, startKey } = event.queryStringParameters;
+    
+        const demand = await fetchDemands(
+          locality,
+          sublocality,
+          startDate,
+          endDate,
+          pageSize ? parseInt(pageSize) : undefined,
+          startKey,
+        );
+    
+        return {
+          statusCode: 200,
+          headers: {
+            'Access-Control-Allow-Headers':
+              'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,GET',
+          },
+          body: JSON.stringify(demand),
+        };
+      } catch (error) {
+        console.error('Error handling demands endpoint:', error);
+        return {
+          statusCode: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+          },
+          body: JSON.stringify({ message: "Internal Server Error" }),
+        };
+      }
+    }
+    
 
   if (httpMethod === 'POST' && path.endsWith('/claim')) {
     const { marketerId, DemandId } = JSON.parse(event.body); // Note the changed variable names
@@ -609,6 +623,9 @@ async function fetchDemands(locality, sublocality, startDate, endDate, pageSize 
         ':endDate': endDate
       }
     });
+  } else {
+    // Default to fetching all demands using a scan operation
+    baseParams.ScanFilter = {};
   }
 
   if (startKey) {
@@ -634,6 +651,7 @@ async function fetchDemands(locality, sublocality, startDate, endDate, pageSize 
     throw error;
   }
 }
+
 
 
 async function createDemand(demand) {
