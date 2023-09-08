@@ -74,6 +74,7 @@ const HomeForm = props => {
       } else {
         acc[key] = dataa[key];
       }
+
       return acc;
     }, {});
   }, []);
