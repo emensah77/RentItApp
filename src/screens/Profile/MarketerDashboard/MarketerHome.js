@@ -116,7 +116,6 @@ const MarketerHome = () => {
 
   const changeMode = useCallback(
     (_mode, success) => e => {
-      console.log('changeMode: ', _mode, success);
       e.stopPropagation();
 
       if (success) {
@@ -351,10 +350,6 @@ const MarketerHome = () => {
     fetchUnverifiedHomes();
     setRanOnce(true);
   }, [fetchUnverifiedHomes, position, ranOnce, searchAfter]);
-
-  useEffect(() => {
-    console.log('mode changed to: ', mode);
-  }, [mode]);
 
   return (
     <Page inline type="drawer" header="Marketer Home">
