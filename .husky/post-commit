@@ -3,6 +3,5 @@
 
 npm run bump:reactnative
 git add -A
-HUSKY=0
 echo "YEAH"
-git commit --no-verify -m "Bump version"
+HUSKY=0 git commit --no-verify -m "Bump version"
