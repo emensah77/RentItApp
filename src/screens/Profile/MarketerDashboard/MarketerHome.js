@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useMemo, useCallback, useRef} from 'react';
-import {Dimensions, Animated, Alert, Modal} from 'react-native';
+import {Dimensions, Animated, Alert} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -116,6 +116,8 @@ const MarketerHome = () => {
 
   const changeMode = useCallback(
     (_mode, success) => e => {
+      e.stopPropagation();
+
       if (success) {
         Alert.alert('Successfully saved the data.');
         if (success && _mode === 'default') {
@@ -402,61 +404,59 @@ const MarketerHome = () => {
         </Container>
       )}
 
-      {mode === 'default' ? (
-        <Animated.ScrollView
-          showsVerticalScrollIndicator={false}
-          style={animatedStyle}
-          contentContainerStyle={global.pageContent}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}>
-          <Whitespace marginTop={10} />
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        style={animatedStyle}
+        contentContainerStyle={global.pageContent}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}>
+        {mode === 'default' ? (
+          <>
+            <Whitespace marginTop={10} />
 
-          <Typography height={30} size={20} width="50%" color="#000" center>
-            Tap a home to update it
-          </Typography>
+            <Typography height={30} size={20} width="50%" color="#000" center>
+              Tap a home to update it
+            </Typography>
 
-          <Divider top={25} bottom={25}>
-            or
-          </Divider>
+            <Divider top={25} bottom={25}>
+              or
+            </Divider>
 
-          <Container width="100%" row type="spaceBetween">
-            <Button accessibilityLabel="Demand Form" type="plain" onPress={changeMode('demand')}>
-              Demand
-            </Button>
+            <Container width="100%" row type="spaceBetween">
+              <Button accessibilityLabel="Demand Form" type="plain" onPress={changeMode('demand')}>
+                Demand
+              </Button>
 
-            <Whitespace marginLeft={2} />
+              <Whitespace marginLeft={2} />
 
-            <Button
-              accessibilityLabel="Request Form"
-              type="standard"
-              onPress={changeMode('request')}>
-              Make a Request
-            </Button>
-          </Container>
-        </Animated.ScrollView>
-      ) : (
-        <Modal visible>
-          {mode === 'home' ? (
-            <HomeForm
-              data={markerData}
-              onClose={changeMode('default')}
-              onSuccess={changeMode('default', true)}
-            />
-          ) : mode === 'demand' ? (
-            <DemandForm
-              data={markerData}
-              onClose={changeMode('default')}
-              onSuccess={changeMode('default', true)}
-            />
-          ) : mode === 'request' ? (
-            <RequestForm
-              data={markerData}
-              onClose={changeMode('default')}
-              onSuccess={changeMode('default', true)}
-            />
-          ) : null}
-        </Modal>
-      )}
+              <Button
+                accessibilityLabel="Request Form"
+                type="standard"
+                onPress={changeMode('request')}>
+                Make a Request
+              </Button>
+            </Container>
+          </>
+        ) : mode === 'home' ? (
+          <HomeForm
+            data={markerData}
+            onClose={changeMode('default')}
+            onSuccess={changeMode('default', true)}
+          />
+        ) : mode === 'demand' ? (
+          <DemandForm
+            data={markerData}
+            onClose={changeMode('default')}
+            onSuccess={changeMode('default', true)}
+          />
+        ) : mode === 'request' ? (
+          <RequestForm
+            data={markerData}
+            onClose={changeMode('default')}
+            onSuccess={changeMode('default', true)}
+          />
+        ) : null}
+      </Animated.ScrollView>
     </Page>
   );
 };
