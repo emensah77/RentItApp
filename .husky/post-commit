@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
-HUSKY=0 
 . "$(dirname -- "$0")/_/husky.sh"
 
+HUSKY=0
 npm run bump:reactnative
 git add -A
 echo "YEAH"
