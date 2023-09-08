@@ -9,3 +9,19 @@ echo $HUSKY
 
 
 git commit -m "Bump version" -n
+
+# Define the name of the temporary branch
+temp_branch="temp-commit-branch"
+
+# Switch to the temporary branch or create it if it doesn't exist
+git checkout -B $temp_branch
+
+# Make the commit on the temporary branch
+git commit -am "Bump version"
+
+# Merge the temporary branch into the main branch (or the branch you want to update)
+git checkout main
+git merge $temp_branch
+
+# Delete the temporary branch
+git branch -d $temp_branch
