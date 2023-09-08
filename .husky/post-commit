@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-HUSKY=0
+export HUSKY=0
 npm run bump:reactnative
 git add -A
 echo "YEAH"
 echo $HUSKY
-git commit -m "Bump version"
+git commit -m "Bump version" -n
