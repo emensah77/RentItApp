@@ -10,8 +10,7 @@ npm run bump:reactnative
 echo "Checking out to $temp_branch"
 git checkout -B $temp_branch
 
-git add -A
-git commit -m "Bump version"
+git commit -am "Bump version"
 
 git checkout $current_branch
 git merge $temp_branch
