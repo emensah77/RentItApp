@@ -1,27 +1,19 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-export HUSKY=0
-npm run bump:reactnative
-git add -A
-echo "YEAH"
-echo $HUSKY
-
-
-git commit -m "Bump version" -n
-
-# Define the name of the temporary branch
+current_branch=$(git rev-parse --abbrev-ref HEAD)
 temp_branch="temp-commit-branch"
 
-# Switch to the temporary branch or create it if it doesn't exist
+echo "Bumping version"
+npm run bump:reactnative
+
+echo "Checking out to $temp_branch"
 git checkout -B $temp_branch
 
-# Make the commit on the temporary branch
-git commit -am "Bump version"
+git add -A
+git commit -m "Bump version"
 
-# Merge the temporary branch into the main branch (or the branch you want to update)
-git checkout main
+git checkout $current_branch
 git merge $temp_branch
 
-# Delete the temporary branch
 git branch -d $temp_branch
