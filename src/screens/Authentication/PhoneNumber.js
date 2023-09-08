@@ -3,10 +3,12 @@ import {useNavigation} from '@react-navigation/native';
 import {PhoneNumberUtil} from 'google-libphonenumber';
 import auth from '@react-native-firebase/auth';
 import {startCase, camelCase} from 'lodash';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Social from './Social';
 
 import {Page, Input, Typography, Button, Divider, Dropdown} from '../../components';
+import {usePreviousValue} from '../../utils';
 import arrowDown from '../../assets/images/arrow-down.png';
 
 const PhoneNumber = props => {
@@ -24,6 +26,7 @@ const PhoneNumber = props => {
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [ranOnce, setRanOnce] = useState(false);
 
   const navigation = useNavigation();
 
@@ -124,20 +127,66 @@ const PhoneNumber = props => {
     },
     [onPhoneNumberChange, phoneNumber],
   );
+
+  const prevInitialPhoneNumber = usePreviousValue(initialPhoneNumber);
+
   useEffect(() => {
-    if (!phoneNumber) {
-      setPhoneNumber(initialPhoneNumber);
+    // Run once if the previous value of the initial phone number was falsy
+    // but its current value is truthsy
+    if (!ranOnce && !prevInitialPhoneNumber && !!initialPhoneNumber) {
+      setRanOnce(true);
+
+      // Log initial values
+
+      // Strip the country code from the phone number if it's included
+      const strippedPhoneNumber = initialPhoneNumber.replace(`+${initialCountryCode}`, '');
+
+      // Log the stripped phone number
+
+      if (!strippedPhoneNumber) {
+        console.error('The phone number without the country code is empty.');
+        return;
+      }
+
+      setPhoneNumber(strippedPhoneNumber);
+
+      const phoneUtil = PhoneNumberUtil.getInstance();
+      let phoneNumberLib;
+      try {
+        phoneNumberLib = phoneUtil.parse(`+${initialCountryCode}${strippedPhoneNumber}`);
+      } catch (e) {
+        console.error(
+          'An error occurred while parsing the initial phone number:',
+          initialCountryCode,
+          strippedPhoneNumber,
+          e,
+        );
+      }
+
+      if (
+        !phoneNumberLib ||
+        (phoneNumberLib && !phoneNumberLib.getCountryCode()) ||
+        (phoneNumberLib && phoneNumberLib.getCountryCode() === '+')
+      ) {
+        return;
+      }
+      setCountry({code: phoneNumberLib.getCountryCode()});
     }
-  }, [initialPhoneNumber, phoneNumber]);
+  }, [initialPhoneNumber, initialCountryCode, prevInitialPhoneNumber, ranOnce]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://restcountries.com/v2/all');
-        const data = await response.json();
+        let countryData = JSON.parse((await AsyncStorage.getItem('country::data')) || '[]');
+        if (countryData.length === 0) {
+          const response = await fetch('https://restcountries.com/v2/all');
+          countryData = await response.json();
+          await AsyncStorage.setItem('country::data', JSON.stringify(countryData));
+        }
         const defaultCountry =
-          data.find(country => country.callingCodes?.[0] === initialCountryCode) || data?.[0];
+          countryData.find(_country => _country.callingCodes?.[0] === initialCountryCode) ||
+          countryData?.[0];
         const code = defaultCountry?.callingCodes?.[0];
         setCountry({
           ...defaultCountry,
@@ -147,9 +196,9 @@ const PhoneNumber = props => {
               ? `${defaultCountry?.name.substring(0, 25)}...`
               : defaultCountry?.name,
         });
-        setCountries(data);
+        setCountries(countryData);
       } catch (e) {
-        console.error(e);
+        console.error(e, new Error().stack);
         setError(
           'An error occurred with parsing the countries. Check your internet connection and try again',
         );

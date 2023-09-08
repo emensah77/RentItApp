@@ -334,7 +334,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
         // @ts-ignore
-        const userDoc = firestore().collection('marketers').doc(auth().currentUser.uid);
+        const userDoc = firestore().collection('marketers').doc(auth().currentUser?.uid);
 
         const doc = await userDoc.get();
 
@@ -342,7 +342,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
           await userDoc.update({
             createdAt: new Date(),
             // @ts-ignore
-            uid: auth().currentUser.uid,
+            uid: auth().currentUser?.uid,
             // @ts-ignore
             displayName: auth().currentUser.displayName,
             lat: position.coords.latitude,
@@ -464,7 +464,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       delete formattedFormData[key];
     });
 
-    formattedFormData.MarketerID = auth()?.currentUser.uid;
+    formattedFormData.MarketerID = auth()?.currentUser?.uid;
 
     // Validate formattedFormData
     if (

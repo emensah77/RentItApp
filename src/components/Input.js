@@ -150,7 +150,7 @@ const Input = props => {
         {suffix && <Image source={suffix} style={suffixStyle} />}
 
         <TextInput
-          value={value}
+          value={value || ''}
           keyboardType={keyboardType}
           editable={!disabled}
           selectTextOnFocus={!disabled}

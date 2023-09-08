@@ -352,14 +352,16 @@ const Chat = props => {
     (async () => {
       setLoading(1);
 
-      if (!home_id) {
-        console.error('Home ID is required.');
+      if (!home_id && !channel_id) {
+        console.error('Either of `Home ID` or `Channel ID` is required.');
         return;
       }
 
       const user = auth().currentUser;
-      const homeResult = await API.graphql(graphqlOperation(getPost, {id: home_id}));
-      const _home = homeResult.data.getPost;
+      const homeResult = await API.graphql(
+        graphqlOperation(getPost, {id: home_id || channel_id}),
+      ).catch(e => console.error('An error occurred while fetching the home:', e));
+      const _home = homeResult?.data?.getPost;
       let receiver_id = _home?.userID;
 
       if (!_home || !receiver_id) {
@@ -516,10 +518,6 @@ const Chat = props => {
 
   if (!receiver.displayName && (receiver.fname || receiver.lname)) {
     receiver.displayName = receiver.fname || receiver.lname || '';
-  }
-
-  if (!receiver.displayName) {
-    return <PageSpinner />;
   }
 
   return (

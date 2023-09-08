@@ -1,6 +1,6 @@
 {
   "name": "airbnbclone",
-  "version": "6.6.10",
+  "version": "6.7.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -10,7 +10,7 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testMatch **/*-test.js",
     "lint": "prettier --write . && eslint --fix .",
     "clean": "react-native-clean-project",
-    "postinstall": "npx patch-package",
+    "postinstall": "husky install && npx patch-package",
     "bundle": "run-script-os",
     "bundle:win32": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
     "bundle:macos": "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios --sourcemap-output ios/index.ios.map --sourcemap-use-absolute-path --reset-cache",
@@ -20,7 +20,7 @@
     "appium:clean": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test",
     "appium:doctor:android": "appium-doctor --android",
     "appium:doctor:ios": "appium-doctor --ios",
-    "bump:version": "git stash && npm version patch -f -m \"Bump version to %s\" && git stash pop && npm run bump:reactnative",
+    "bump:version": "npm version patch -f -m \"Bump version to %s\" && npm run bump:reactnative",
     "bump:reactnative": "npx --yes react-native-version"
   },
   "dependencies": {
@@ -183,6 +183,7 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-react-perf": "^3.3.1",
     "eslint-plugin-sort-keys-fix": "^1.1.1",
+    "husky": "^8.0.3",
     "jest": "^27.5.1",
     "jest-cli": "^27.5.1",
     "jest-runner": "^27.5.1",

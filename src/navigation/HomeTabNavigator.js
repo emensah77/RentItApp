@@ -116,6 +116,7 @@ const HomeTabNavigator = () => {
           tabBarIcon: ({color}) => <FontAwesomeIcon icon={faChartLine} size={25} color={color} />,
         }}
       /> */}
+
       <Tab.Screen name="Inbox" component={Inbox} options={options('inbox')} />
 
       <Tab.Screen name="Profile" component={ProfileScreen} options={options('user')} />
