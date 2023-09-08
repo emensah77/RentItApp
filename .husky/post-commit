@@ -7,4 +7,5 @@ git add -A
 echo "YEAH"
 echo $HUSKY
 
+
 git commit -m "Bump version" -n
