@@ -11,7 +11,16 @@ fi
 
 LAST_VERSION=$(node -p -e "require('./package.json').version")
 echo "Current version is: $LAST_VERSION"
-    
+
+# Extract and increment the version (major.minor.patch)
+IFS='.' read -ra VERSION_PARTS <<< "$LAST_VERSION"
+patch_version=$((VERSION_PARTS[2] + 1))
+NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$patch_version"
+echo "Incrementing version from $LAST_VERSION to $NEW_VERSION"
+
+# Update package.json version
+node -p -e "let pkg=require('./package.json'); pkg.version='$NEW_VERSION'; require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));"
+
 # Android: Increment versionCode and update versionName
 android_versionCode_raw=$(grep 'versionCode' android/app/build.gradle | awk '{print $2}' | grep -Eo '^[0-9]+')
 
@@ -27,17 +36,17 @@ new_versionCode=$((android_versionCode_raw + 1))
 echo "Incrementing Android versionCode from $android_versionCode_raw to $new_versionCode"
 sed -i '' -E "s/versionCode $android_versionCode_raw/versionCode $new_versionCode/" android/app/build.gradle
 
-echo "Setting Android versionName to: $LAST_VERSION"
-sed -i '' -E "s/versionName \".*\"/versionName \"$LAST_VERSION\"/" android/app/build.gradle
-    
+echo "Setting Android versionName to: $NEW_VERSION"
+sed -i '' -E "s/versionName \".*\"/versionName \"$NEW_VERSION\"/" android/app/build.gradle
+
 # iOS: Increment CFBundleVersion and update CFBundleShortVersionString
 current_build=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ios/AirbnbClone/Info.plist)
 new_build_number=$(($current_build + 1))
 echo "Incrementing iOS CFBundleVersion from $current_build to $new_build_number"
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $new_build_number" ios/AirbnbClone/Info.plist
-    
-echo "Setting iOS CFBundleShortVersionString to: $LAST_VERSION"
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $LAST_VERSION" ios/AirbnbClone/Info.plist
-    
-git add android/app/build.gradle ios/AirbnbClone/Info.plist ios/AirbnbCloneTests/Info.plist
-git commit -am "AUTOBUMP: Bump version. v$LAST_VERSION"
+
+echo "Setting iOS CFBundleShortVersionString to: $NEW_VERSION"
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $NEW_VERSION" ios/AirbnbClone/Info.plist
+
+git add android/app/build.gradle ios/AirbnbClone/Info.plist ios/AirbnbCloneTests/Info.plist package.json
+git commit -am "AUTOBUMP: Bump version. v$NEW_VERSION"
