@@ -3,18 +3,19 @@
 
 last_commit_message=$(git log -1 --pretty=%B)
 
-if [[ "$last_commit_message" != *"Bump version. v"* ]]; 
-then
+if [[ "$last_commit_message" != *"Bump version."* ]]; then
     LAST_VERSION=$(node -p -e "require('./package.json').version")
+    echo "Current version is: $LAST_VERSION"
     
-    # Incrementing versionCode in Android's build.gradle
-    sed -i.bak -E 's/versionCode ([0-9]+)/echo "versionCode $((\1+1))"/ge' android/app/build.gradle
-    # Remove the backup file created by sed
+    # Android: Increment versionCode and update versionName
+    sed -i.bak -E 's/(versionCode )([0-9]+)/echo "\1$((\2+1))"/ge' android/app/build.gradle
+    sed -i.bak -E "s/versionName \".*\"/versionName \"$LAST_VERSION\"/" android/app/build.gradle
     rm android/app/build.gradle.bak
     
-    # Incrementing CFBundleVersion in iOS's Info.plist
-    new_version=$(($(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ios/AirbnbClone/Info.plist) + 1))
-    /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $new_version" ios/AirbnbClone/Info.plist
+    # iOS: Increment CFBundleVersion and update CFBundleShortVersionString
+    current_build=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" ios/AirbnbClone/Info.plist)
+    /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(($current_build + 1))" ios/AirbnbClone/Info.plist
+    /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $LAST_VERSION" ios/AirbnbClone/Info.plist
     
     git add android/app/build.gradle ios/AirbnbClone/Info.plist ios/AirbnbCloneTests/Info.plist
     git commit --amend --no-edit
