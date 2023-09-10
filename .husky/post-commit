@@ -8,11 +8,16 @@ if [[ "$last_commit_message" != *"Bump version."* ]]; then
     echo "Current version is: $LAST_VERSION"
     
     # Android: Increment versionCode and update versionName
-    android_versionCode=$(grep versionCode android/app/build.gradle | awk '{print $2}')
-    new_versionCode=$((android_versionCode + 1))
-    echo "Incrementing Android versionCode from $android_versionCode to $new_versionCode"
-    sed -i '' -E "s/versionCode $android_versionCode/versionCode $new_versionCode/" android/app/build.gradle
-    
+    android_versionCode_raw=$(grep versionCode android/app/build.gradle | awk '{print $2}')
+    if ! [[ $android_versionCode_raw =~ ^[0-9]+$ ]]; then
+        echo "Error: Failed to extract a valid versionCode from android/app/build.gradle"
+        exit 1
+    fi
+
+    new_versionCode=$((android_versionCode_raw + 1))
+    echo "Incrementing Android versionCode from $android_versionCode_raw to $new_versionCode"
+    sed -i '' -E "s/versionCode $android_versionCode_raw/versionCode $new_versionCode/" android/app/build.gradle
+
     echo "Setting Android versionName to: $LAST_VERSION"
     sed -i '' -E "s/versionName \".*\"/versionName \"$LAST_VERSION\"/" android/app/build.gradle
     
