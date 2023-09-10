@@ -9,8 +9,9 @@ if [[ "$last_commit_message" != *"Bump version."* ]]; then
     
     # Android: Increment versionCode and update versionName
 # Android: Increment versionCode and update versionName
-    android_versionCode_raw=$(grep -oP 'versionCode \K\d+' android/app/build.gradle)
-    if [ -z "$android_versionCode_raw" ]; then
+# Android: Increment versionCode and update versionName
+    android_versionCode_raw=$(awk -F 'versionCode ' '/versionCode/{print $2}' android/app/build.gradle | tr -d '\n')
+    if ! [[ $android_versionCode_raw =~ ^[0-9]+$ ]]; then
         echo "Error: Failed to extract a valid versionCode from android/app/build.gradle"
         exit 1
     fi
