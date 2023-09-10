@@ -919,7 +919,7 @@ PODS:
     - React-Core
   - react-native-image-picker (4.10.3):
     - React-Core
-  - react-native-image-resizer (3.0.5):
+  - react-native-image-resizer (3.0.7):
     - React-Core
   - react-native-maps (0.28.1):
     - React-Core
@@ -1022,14 +1022,14 @@ PODS:
   - RNBackgroundGeolocation (4.13.2):
     - CocoaLumberjack (~> 3.7.2)
     - React-Core
-  - RNCAsyncStorage (1.19.2):
+  - RNCAsyncStorage (1.19.3):
     - React-Core
   - RNCCheckbox (0.5.16):
     - BEMCheckBox (~> 1.4)
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNDateTimePicker (7.4.1):
+  - RNDateTimePicker (7.4.2):
     - React-Core
   - RNFastImage (8.6.3):
     - React-Core
@@ -1546,7 +1546,7 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-google-maps: 915cea64470a6e7581b782d8659bf8a7e2dee302
   react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
-  react-native-image-resizer: 00ceb0e05586c7aadf061eea676957a6c2ec60fa
+  react-native-image-resizer: 681f7607418b97c084ba2d0999b153b103040d8a
   react-native-maps: 60a75aa547d576fdb91be1f95113665215b59461
   react-native-netinfo: 3d3769f0d65de15c83a9bf1346f8be71de5a24bf
   react-native-paystack-webview: d8ed4a0300c7872673e186294cb6176cca46c696
@@ -1573,10 +1573,10 @@ SPEC CHECKSUMS:
   RNAWSCognito: bbfdc784e906e3837d4d996c17ffed19356afc19
   RNBackgroundFetch: 501c34ad6e880818ba17e7840b23f20a2d112923
   RNBackgroundGeolocation: 40f627f972a696942ce8a511f75d6b7c8b600f5a
-  RNCAsyncStorage: f57e929cd7757f2cb3dd8186d123c09e8281a1ad
+  RNCAsyncStorage: c913ede1fa163a71cea118ed4670bbaaa4b511bb
   RNCCheckbox: 75255b03e604bbcc26411eb31c4cbe3e3865f538
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNDateTimePicker: 9b4091348e53f540180abdc54984d839a556f593
+  RNDateTimePicker: a21bfcc694e3190f8ddb5aacb0dd16f97b6be79f
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBAnalytics: 22b976ff218cea90be67fa6261ecff88b96e1579
   RNFBApp: aa6a864798daa054bda002bb3d6905800d6d4156

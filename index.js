@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import AWS from 'aws-sdk';
+import CodePush from 'react-native-code-push';
 import {
   REACT_NATIVE_APP_ENV,
   AWS_ACCESS_KEY,
@@ -21,6 +22,13 @@ import App from './App';
 import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
 import awsmobile from './src/aws-exports';
+
+const codePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+  installMode: CodePush.InstallMode.IMMEDIATE,
+};
+
+const AppWithCodePush = CodePush(codePushOptions)(App);
 
 Amplify.configure(awsmobile);
 if (REACT_NATIVE_APP_ENV === 'development') {
@@ -53,4 +61,4 @@ Reactotron.setAsyncStorageHandler(AsyncStorage) // AsyncStorage would either com
   .useReactNative() // add all built-in react native plugins
   .connect(); // let's connect!
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => AppWithCodePush);

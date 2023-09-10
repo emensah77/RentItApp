@@ -185,10 +185,22 @@ const Menu = () => {
         items: [
           {
             description: 'Log out',
+            width: 24,
+            height: 24,
             onPress: () => auth().signOut(),
           },
         ],
       },
+      // {
+      //   heading: 'By RentIt',
+      //   items: [
+      //     {
+      //       description: 'Made with love by RentIt',
+      //       width: 24,
+      //       height: 24,
+      //     },
+      //   ],
+      // },
       // {
       //   heading: 'Support',
       //   items: [

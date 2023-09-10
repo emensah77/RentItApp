@@ -117,7 +117,7 @@ const Base = props => {
   const transformDataForAPI = useCallback(_data => {
     // Basic transformations
     const transformedData = {
-      newPrice: _data.price,
+      newPrice: Math.round(_data.price * 12 * 1.07),
       type: _data.homeType,
       currency: [_data.currency],
       bed: _data.bedCount,
