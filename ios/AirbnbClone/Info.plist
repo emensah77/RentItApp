@@ -48,7 +48,9 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>223</string>
+	<string>274</string>
+	<key>CodePushDeploymentKey</key>
+	<string>$(CODE_PUSH_DEPLOYMENT_KEY)</string>
 	<key>FacebookAppID</key>
 	<string>238888164818214</string>
 	<key>FacebookClientToken</key>
@@ -74,22 +76,20 @@
 		<string>fbshareextension</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
-	<true />
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false />
+		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true />
+				<true/>
 			</dict>
 		</dict>
 	</dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>RentIt would like to access your microphone for recording video</string>
 	<key>NSCameraUsageDescription</key>
 	<string>RentIt would like to access camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -98,6 +98,8 @@
 	<string>RentIt requires access to your location to show you available homes nearby</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>RentIt requires access to your location to show you available homes nearby</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>RentIt would like to access your microphone for recording video</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Motion permission helps detect when device in in-motion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -169,8 +171,6 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false />
-	<key>CodePushDeploymentKey</key>
-	<string>$(CODE_PUSH_DEPLOYMENT_KEY)</string>
+	<false/>
 </dict>
 </plist>
