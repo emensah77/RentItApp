@@ -19,7 +19,7 @@ NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.$patch_version"
 echo "Incrementing version from $LAST_VERSION to $NEW_VERSION"
 
 # Update package.json version
-node -p -e "let pkg=require('./package.json'); pkg.version='$NEW_VERSION'; require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));"
+node -p -e "let pkg=require('./package.json'); pkg.version='$NEW_VERSION'; require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));" > /dev/null 2>&1
 
 # Android: Increment versionCode and update versionName
 android_versionCode_raw=$(grep 'versionCode' android/app/build.gradle | awk '{print $2}' | grep -Eo '^[0-9]+')
