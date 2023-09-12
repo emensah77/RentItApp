@@ -116,7 +116,9 @@ const MarketerHome = () => {
 
   const changeMode = useCallback(
     (_mode, success) => e => {
-      e.stopPropagation();
+      if (e && typeof e.stopPropagation === 'function') {
+        e.stopPropagation();
+      }
 
       if (success) {
         Alert.alert('Successfully saved the data.');

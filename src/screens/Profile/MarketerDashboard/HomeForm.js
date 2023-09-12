@@ -29,7 +29,7 @@ const oldData = {
   newPrice: 0,
   availabilityDate: '04/01/2023',
   maxGuests: 0,
-  neighbourhood: '',
+  neighborhood: '',
   bathroomNumber: 0,
   bed: 0,
   bedroom: 0,
@@ -117,6 +117,7 @@ const HomeForm = props => {
     const itemId = data.id;
     delete data.id;
     const updateValues = transformData(data);
+
     if (updateValues.status) {
       updateValues.status = updateValues.status.toLowerCase();
     }
@@ -331,12 +332,12 @@ const HomeForm = props => {
       <Whitespace marginTop={30} />
 
       <Input
-        placeholder="Neighbourhood"
+        placeholder="Neighborhood"
         type="text"
-        name="neighbourhood"
-        label="Neighbourhood"
-        value={data.neighbourhood}
-        onChange={onChangeData('neighbourhood')}
+        name="neighborhood"
+        label="Neighborhood"
+        value={data.neighborhood}
+        onChange={onChangeData('neighborhood')}
       />
 
       <Whitespace marginTop={30} />

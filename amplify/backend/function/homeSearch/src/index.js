@@ -592,11 +592,16 @@ exports.handler = async (event) => {
 // ...
 
 async function fetchDemands(locality, sublocality, startDate, endDate, pageSize = 100, startKey) {
+  console.log('fetchDemands called with:', { locality, sublocality, startDate, endDate, pageSize, startKey });
+  
   const baseParams = {
     TableName: 'Demand',
   };
 
-  if (locality && sublocality) {
+  let useScan = false; // Flag to determine if we should use scan or query
+
+  if (locality && locality.trim() !== "" && sublocality && sublocality.trim() !== "") {
+    console.log('Using Locality-Sublocality-index to query.');
     // Query by Locality and Sublocality
     Object.assign(baseParams, {
       IndexName: 'Locality-Sublocality-index',
@@ -611,21 +616,24 @@ async function fetchDemands(locality, sublocality, startDate, endDate, pageSize 
       }
     });
   } else if (startDate && endDate) {
-    // Scan GSI by Date Range using DemandID-DateCreated-index
+    console.log('Using AllDemands-DateCreated-index to query.');
+    // Query the new GSI by Date Range
     Object.assign(baseParams, {
-      IndexName: 'DemandID-DateCreated-index',
-      FilterExpression: '#DateCreated BETWEEN :startDate AND :endDate',
-      ExpressionAttributeNames: {
-        '#DateCreated': 'DateCreated'
-      },
-      ExpressionAttributeValues: {
-        ':startDate': startDate,
-        ':endDate': endDate
-      }
+        IndexName: 'AllDemands-DateCreated-index',
+        KeyConditionExpression: '#AllDemandsPartition = :allValue AND #DateCreated BETWEEN :startDate AND :endDate',
+        ExpressionAttributeNames: {
+            '#AllDemandsPartition': 'AllDemandsPartition',
+            '#DateCreated': 'DateCreated'
+        },
+        ExpressionAttributeValues: {
+            ':allValue': 'ALL',
+            ':startDate': startDate,
+            ':endDate': endDate
+        }
     });
   } else {
-    // Default to fetching all demands using a scan operation
-    baseParams.ScanFilter = {};
+    console.log('Defaulting to scan operation.');
+    useScan = true; // Set the flag
   }
 
   if (startKey) {
@@ -633,16 +641,18 @@ async function fetchDemands(locality, sublocality, startDate, endDate, pageSize 
   }
 
   try {
-    const result = await dynamodb.query(baseParams).promise();
+    console.log('Executing operation with params:', baseParams);
+    let result;
+    if (useScan) {
+      result = await dynamodb.scan(baseParams).promise();
+    } else {
+      result = await dynamodb.query(baseParams).promise();
+    }
+
+    console.log('Operation successful. Items fetched:', result.Items.length);
 
     return {
-      items: result.Items.map(item => ({
-        demandId: item.DemandId,
-        dateCreated: item.DateCreated,
-        claimed: !!item.MarketerId,
-        marketerId: item.MarketerId || null,
-        dateClaimed: item.DateClaimed || null
-      })),
+      items: result.Items,
       nextKey: result.LastEvaluatedKey,
       count: result.Count,
     };
@@ -651,6 +661,8 @@ async function fetchDemands(locality, sublocality, startDate, endDate, pageSize 
     throw error;
   }
 }
+
+
 
 
 

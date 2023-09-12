@@ -2,7 +2,7 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import {AppRegistry, Platform} from 'react-native';
 import {Amplify} from 'aws-amplify';
 import Reactotron from 'reactotron-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,6 +15,10 @@ import {
   AWS_ACCESS_KEY,
   AWS_SECRET_ACCESS_KEY,
   GOOGLE_WEB_CLIENT_ID,
+  ANDROID_PRODUCTION_KEY,
+  ANDROID_STAGING_KEY,
+  IOS_PRODUCTION_KEY,
+  IOS_STAGING_KEY,
 } from 'react-native-dotenv';
 
 import {name as appName} from './app.json';
@@ -23,9 +27,18 @@ import {navigate} from './src/navigation/Router';
 import 'react-native-gesture-handler';
 import awsmobile from './src/aws-exports';
 
+let deploymentKey;
+if (Platform.OS === 'android') {
+  deploymentKey =
+    REACT_NATIVE_APP_ENV === 'production' ? ANDROID_PRODUCTION_KEY : ANDROID_STAGING_KEY;
+} else if (Platform.OS === 'ios') {
+  deploymentKey = REACT_NATIVE_APP_ENV === 'production' ? IOS_PRODUCTION_KEY : IOS_STAGING_KEY;
+}
+
 const codePushOptions = {
   checkFrequency: CodePush.CheckFrequency.ON_APP_START,
   installMode: CodePush.InstallMode.IMMEDIATE,
+  deploymentKey, // <-- Use the dynamically determined deployment key
 };
 
 const AppWithCodePush = CodePush(codePushOptions)(App);
