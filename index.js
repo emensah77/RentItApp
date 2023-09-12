@@ -18,7 +18,6 @@ import {
   ANDROID_PRODUCTION_KEY,
   ANDROID_STAGING_KEY,
   IOS_PRODUCTION_KEY,
-  IOS_STAGING_KEY,
 } from 'react-native-dotenv';
 
 import {name as appName} from './app.json';
