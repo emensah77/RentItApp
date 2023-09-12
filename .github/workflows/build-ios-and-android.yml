@@ -41,6 +41,10 @@ jobs:
           GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
           GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
           STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          ANDROID_PRODUCTION_KEY=${{ secrets.ANDROID_PRODUCTION_KEY }}
+          ANDROID_STAGING_KEY=${{ secrets.ANDROID_STAGING_KEY }}
+          IOS_PRODUCTION_KEY=${{ secrets.IOS_PRODUCTION_KEY }}
+          IOS_STAGING_KEY=${{ secrets.IOS_STAGING_KEY }}
           EOF
 
       - name: Inject test environment variables
@@ -54,6 +58,10 @@ jobs:
           GOOGLE_WEB_CLIENT_ID=${{ secrets.GOOGLE_WEB_CLIENT_ID }}
           GOOGLE_MAP_API_KEY=${{ secrets.GOOGLE_MAP_API_KEY }}
           STREAM_CHAT_KEY=${{ secrets.STREAM_CHAT_KEY }}
+          ANDROID_PRODUCTION_KEY=${{ secrets.ANDROID_PRODUCTION_KEY }}
+          ANDROID_STAGING_KEY=${{ secrets.ANDROID_STAGING_KEY }}
+          IOS_PRODUCTION_KEY=${{ secrets.IOS_PRODUCTION_KEY }}
+          IOS_STAGING_KEY=${{ secrets.IOS_STAGING_KEY }}
           EOF
 
       - name: Install node dependencies
