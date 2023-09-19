@@ -60,43 +60,7 @@ const Chat = props => {
   const [supervisor, setSupervisor] = useState({});
   const [home, setHome] = useState({});
   const [message, setMessage] = useState();
-  const [messages, setMessages] = useState([
-    // Use for testing ONLY!
-    // {
-    //   attachments: [],
-    //   cid: 'messaging:999e997b36777a3be1ca016ffc96607e4cb888a7189a5b388340263a1b93f56d',
-    //   created_at: '2023-08-17T10:39:29.812898Z',
-    //   html: '<p>Ok cool</p>',
-    //   id: 'ab1ae434-ce5b-4b48-b5c9-c10d5df70d7b',
-    //   latest_reactions: [],
-    //   mentioned_users: [],
-    //   own_reactions: [],
-    //   pin_expires: null,
-    //   pinned: false,
-    //   pinned_at: null,
-    //   pinned_by: null,
-    //   reaction_counts: {},
-    //   reaction_scores: {},
-    //   reply_count: 0,
-    //   sender_id: '9BXcEnla6WNrPXmKudvwjFyGhU33',
-    //   shadowed: false,
-    //   silent: false,
-    //   text: 'Ok cool',
-    //   timestamp: 1692268759840,
-    //   type: 'regular',
-    //   updated_at: '2023-08-17T10:39:29.812898Z',
-    //   user: {
-    //     banned: false,
-    //     created_at: '2023-06-02T18:35:32.415216Z',
-    //     id: '9BXcEnla6WNrPXmKudvwjFyGhU33',
-    //     last_active: '2023-08-29T08:30:23.176852815Z',
-    //     name: 'Chijioke Nna',
-    //     online: true,
-    //     role: 'user',
-    //     updated_at: '2023-06-02T18:35:32.417607Z',
-    //   },
-    // },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [channel, setChannel] = useState();
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
@@ -419,7 +383,7 @@ const Chat = props => {
       __DEV__ &&
         console.debug(
           'Chat Between:',
-          user.displayName,
+          user.displayName || user.fname || user.lname,
           `(uid: ${user.uid})`,
           'and',
           _receiver.displayName || _receiver.fname || _receiver.lname,
@@ -470,6 +434,7 @@ const Chat = props => {
           name: _receiver.displayName || _receiver.fname || _receiver.lname,
           image: _receiver.userImg || _receiver.photoUrl,
           members: members || [user.uid, _receiver.uid, _supervisor.uid],
+          ...(home_id && {home_id}), // only add home_id if it exists
         },
       );
 
@@ -589,16 +554,6 @@ const Chat = props => {
                       trim={false}
                     />
                   </Container>
-
-                  {/* <Container
-                    center
-                    type="right-5"
-                    onPress={record}
-                    color="#fff"
-                    width={35}
-                    height={25}>
-                    <Image src={microphone} width={25} height={25} />
-                  </Container> */}
                 </>
               )}
             </Container>
@@ -618,27 +573,6 @@ const Chat = props => {
 
             return (
               <React.Fragment key={id}>
-                {/* <Container row center type="chip">
-                  <CardDisplay
-                    leftImageWidth={16}
-                    leftImageHeight={16}
-                    leftImageSrc={logo}
-                    numberOfLines={2}
-                    description={
-                      <Typography type="levelOneThick" size={12} color="#717171">
-                        Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
-                        <Typography type="link" color="#717171">
-                          Show listing
-                        </Typography>
-                      </Typography>
-                    }
-                    center
-                    bold
-                  />
-                </Container>
-
-                <Whitespace marginTop={24} /> */}
-
                 {isUnread && reverse ? (
                   <Container>
                     {!text ? <Whitespace marginTop={10} /> : null}
@@ -688,97 +622,6 @@ const Chat = props => {
         )}
 
         <Whitespace marginTop={global.header.height} />
-
-        {/* <Typography type="levelOneThick" size={12} color="#717171">
-          Aug 23, 2022
-        </Typography>
-
-        <Whitespace marginTop={24} />
-
-        <Container row center type="chip">
-          <CardDisplay
-            leftImageWidth={16}
-            leftImageHeight={16}
-            leftImageSrc={logo}
-            numberOfLines={2}
-            description={
-              <Typography type="levelOneThick" size={12} color="#717171">
-                Your inquiry for 1 guest on Feb 13 - 14 has been sent.{' '}
-                <Typography type="link" color="#717171">
-                  Show listing
-                </Typography>
-              </Typography>
-            }
-            center
-            bold
-          />
-        </Container>
-
-        <Whitespace marginTop={24} />
-
-        <CardDisplay
-          leftImageCircle={38}
-          leftImageSrc={moon}
-          name="Dolly 2"
-          location="4:26 PM"
-          description="Looking forward to staying"
-          bold={false}
-        />
-
-        <Whitespace marginTop={24} />
-
-        <Container row center type="chip">
-          <CardDisplay
-            leftImageWidth={16}
-            leftImageHeight={16}
-            leftImageSrc={logo}
-            numberOfLines={2}
-            description={
-              <Typography type="levelOneThick" size={12} color="#717171">
-                Your reservation is confirmed for 1 guest on Feb 13 - 14.{' '}
-                <Typography type="link" color="#717171">
-                  Show reservation
-                </Typography>
-              </Typography>
-            }
-            center
-            bold
-          />
-        </Container>
-
-        <Whitespace marginTop={24} />
-
-        <CardDisplay
-          leftImageCircle={38}
-          leftImageSrc={moon}
-          name="Dolly"
-          location="4:26 PM"
-          description="Sorry I need to cancel"
-          bold={false}
-        />
-
-        <Whitespace marginTop={16} />
-
-        <Typography type="levelOneThick" size={12} color="#717171">
-          UNREAD
-        </Typography>
-
-        <Whitespace marginTop={24} />
-
-        <Container row center type="chip">
-          <CardDisplay
-            leftImageWidth={16}
-            leftImageHeight={16}
-            leftImageSrc={logo}
-            description={
-              <Typography type="levelOneThick" size={12} color="#717171">
-                Reservation cancelled by guest
-              </Typography>
-            }
-            center
-            bold
-          />
-        </Container> */}
       </Page>
 
       <Container width="90%" height={100} type={`top-${global.header.height}-center`} color="#FFF">

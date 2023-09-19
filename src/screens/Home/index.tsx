@@ -58,25 +58,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoVersion, setVideoVersion] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    clientNumber: '',
-    type: '',
-    homeType: '',
-    neighborhood: '',
-    description: '',
-    locality: '',
-    sublocality: '',
-  });
   const [showForm, setShowForm] = useState(true);
-
-  const handleInputChange = useCallback((value, name) => {
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }, []);
 
   const fetchVideoWatchStatus = useCallback(async () => {
     const userId = auth().currentUser?.uid;
@@ -452,51 +434,6 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     [],
   );
 
-  const handleSubmit = useCallback(() => {
-    // Copy formData
-    const formattedFormData = {...formData};
-
-    // Remove the undefined key
-    delete formattedFormData.undefined;
-    Object.keys(formattedFormData).forEach(key => {
-      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-      formattedFormData[capitalizedKey] = formattedFormData[key];
-      delete formattedFormData[key];
-    });
-
-    formattedFormData.MarketerID = auth()?.currentUser?.uid;
-
-    // Validate formattedFormData
-    if (
-      !formattedFormData.Name ||
-      !formattedFormData.Price ||
-      !formattedFormData.ClientNumber ||
-      !formattedFormData.HomeType ||
-      !formattedFormData.Neighborhood ||
-      !formattedFormData.Locality ||
-      !formattedFormData.Sublocality ||
-      !formattedFormData.Type
-    ) {
-      Alert.alert('Please fill out all required fields.');
-      return;
-    }
-
-    fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formattedFormData),
-    })
-      .then(response => response.json())
-      .then(() => {
-        handleFormClose();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }, [formData, handleFormClose]);
-
   const goToPostPage = useCallback(() => {
     navigation.navigate('Post', {postId: selectedHome?.id});
   }, [navigation, selectedHome?.id]);
@@ -623,13 +560,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
           handleVideoPlaybackComplete={handleVideoPlaybackComplete}
         />
       )}
-      <SearchModal
-        show={showForm}
-        onClose={handleFormClose}
-        onChange={handleInputChange}
-        type="form"
-        handleSubmit={handleSubmit}
-      />
+      <SearchModal show={showForm} onClose={handleFormClose} type="form" />
     </Page>
   );
 };

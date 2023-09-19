@@ -123,7 +123,7 @@ const DetailedPost = props => {
   }, []);
 
   const goToChat = useCallback(() => {
-    navigation.navigate('Chat', {home_id: post.id});
+    navigation.navigate('Chat', {home_id: post?.id});
   }, [post, navigation]);
 
   const hideDetailsModal = useCallback(() => {

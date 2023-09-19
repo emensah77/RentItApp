@@ -57,42 +57,44 @@ export function extractDate(date) {
 }
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const formatDate = (_date, type = 1) => {
+const formatDate = (_date, type = 1, isEndDate = false) => {
   if (!_date) return '';
-  let date = new Date(_date);
+
+  let date;
+
+  // Check if _date is a string in the format DD/MM/YYYY
+  if (typeof _date === 'string' && /\d{2}\/\d{2}\/\d{4}/.test(_date)) {
+    const [month, day, year] = _date.split('/');
+    date = new Date(Date.UTC(year, month - 1, day));
+  } else {
+    date = new Date(_date);
+  }
+
+  // Check if date is valid
+  if (Number.isNaN(date.getTime())) {
+    console.error(`Invalid date provided: ${_date}`);
+    return '';
+  }
 
   if (type === 1) {
-    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+    return `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
   } else if (type === 2) {
-    let month = date.getMonth() + 1;
+    let month = date.getUTCMonth() + 1;
     month = month < 10 ? `0${month}` : month;
-    let day = date.getDate();
+    let day = date.getUTCDate();
     day = day < 10 ? `0${day}` : day;
-    return `${month}/${day}/${date.getFullYear()}`;
+    return `${month}/${day}/${date.getUTCFullYear()}`;
   } else if (type === 3) {
-    // Just because react-native on Hermes throws "Date value out of bounds" so .toISOString() is not usable
-    // when date is formatted as `DD/MM/YYYY`
-    if (Number.isNaN(date.getMonth()) && /\//.test(_date)) {
-      const parts = _date.split('/');
-      date = new Date(`${parts[2]}-${parts[0]}-${parts[1]}`);
-    }
+    const hour = isEndDate ? '23' : '00';
+    const minute = isEndDate ? '59' : '00';
+    const second = isEndDate ? '59' : '00';
 
-    let month = date.getMonth() + 1;
+    let month = date.getUTCMonth() + 1;
     month = month < 10 ? `0${month}` : month;
-
-    let day = date.getDate();
+    let day = date.getUTCDate();
     day = day < 10 ? `0${day}` : day;
 
-    let hr = date.getHours();
-    hr = hr < 10 ? `0${hr}` : hr;
-
-    let mins = date.getMinutes();
-    mins = mins < 10 ? `0${mins}` : mins;
-
-    let secs = date.getSeconds();
-    secs = secs < 10 ? `0${secs}` : secs;
-
-    return `${date.getFullYear()}-${month}-${day}T${hr}:${mins}:${secs}Z`;
+    return `${date.getUTCFullYear()}-${month}-${day}T${hour}:${minute}:${second}Z`;
   }
 };
 

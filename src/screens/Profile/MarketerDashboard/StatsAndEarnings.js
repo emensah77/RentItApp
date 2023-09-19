@@ -63,11 +63,13 @@ const StatsAndEarnings = () => {
 
     setLoading(true);
 
+    const formattedStartDate = formatDate(start, 3);
+    const formattedEndDate = formatDate(end, 3, true);
+
     const response = await fetch(
-      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/stats?startTime=${formatDate(
-        start,
-        3,
-      )}&endTime=${formatDate(end, 3)}&userId=${auth().currentUser.uid}&pageSize=${30}`,
+      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/stats?startTime=${formattedStartDate}&endTime=${formattedEndDate}&userId=${
+        auth().currentUser.uid
+      }&pageSize=${30}`,
       {
         method: 'GET',
         headers: {

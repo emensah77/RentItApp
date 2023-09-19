@@ -191,16 +191,16 @@ const Menu = () => {
           },
         ],
       },
-      {
-        heading: 'By RentIt',
-        items: [
-          {
-            description: 'Made with love by RentIt',
-            width: 24,
-            height: 24,
-          },
-        ],
-      },
+      // {
+      //   heading: 'By RentIt',
+      //   items: [
+      //     {
+      //       description: 'Made with love by RentIt',
+      //       width: 24,
+      //       height: 24,
+      //     },
+      //   ],
+      // },
       // {
       //   heading: 'Support',
       //   items: [

@@ -60,7 +60,6 @@ const Input = props => {
         if (e.type !== 'set') {
           return;
         }
-
         const newValue = new Date(e.nativeEvent.timestamp);
         let month = (newValue || value).getMonth() + 1;
         month = month < 10 ? `0${month}` : month;

@@ -28,8 +28,6 @@ const EditHome = () => {
   const [maxGuests, setMaxGuests] = useState(homeInfo?.maxGuests?.toString());
   const [price, setPrice] = useState(homeInfo?.newPrice?.toString());
 
-  console.log(description.replace(/(\r\n|\n|\r)/gm, ' '));
-
   const onSelectedItemsChange = selectedItems => {
     setSelectedItems(selectedItems);
   };

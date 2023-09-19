@@ -1,10 +1,11 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Modal, View, TouchableOpacity, ScrollView} from 'react-native';
+import {Modal, View, TouchableOpacity, Alert, ScrollView} from 'react-native';
 import {Icon, SizedBox, Text, Input, Dropdown, Button} from '@components';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Calendar from 'react-native-calendar-range-picker';
 import Video from 'react-native-video';
 import {colors} from '@assets/styles';
+import auth from '@react-native-firebase/auth';
 import styles from './styles';
 import localities, {getSubLocalities} from '../../utils/localities';
 
@@ -16,7 +17,6 @@ interface ModalProps {
   type: 'location' | 'calender' | 'video' | 'form';
   handleVideoPlaybackComplete?: any;
   videoUrl?: string;
-  handleSubmit?: () => void;
   onEmptySubmit?: (e?: string) => typeof e & void;
 }
 
@@ -44,10 +44,24 @@ const padding20 = {paddingBottom: 20};
 
 export const SearchModal = (props: ModalProps) => {
   const [subLocalities, setSubLocalities] = useState([]);
-  const [selectedHomeType, setSelectedHomeType] = useState(null);
-  const [selectedLocality, setSelectedLocality] = useState(null);
-  const [selectedSubLocality, setSelectedSubLocality] = useState(null);
-  const [selectedMode, setSelectedMode] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    price: '',
+    clientNumber: '',
+    type: '',
+    homeType: '',
+    neighborhood: '',
+    description: '',
+    locality: '',
+    sublocality: '',
+  });
+
+  const handleInputChange = useCallback((value, name) => {
+    setFormData(prevState => {
+      const updatedState = {...prevState, [name]: value};
+      return updatedState;
+    });
+  }, []);
 
   const modes = useMemo(
     () => [
@@ -145,20 +159,66 @@ export const SearchModal = (props: ModalProps) => {
 
       if (_type === 'locality') {
         handleLocalityChange(selectedValue);
-        setSelectedLocality(value);
+        handleInputChange(value, 'locality'); // Update formData
       } else if (_type === 'sublocality') {
-        setSelectedSubLocality(value);
+        handleInputChange(value, 'sublocality'); // Update formData
       } else if (_type === 'type') {
         value = selectedValue.value;
-        setSelectedMode(value);
+        handleInputChange(value, 'type'); // Update formData
       } else if (_type === 'homeType') {
         value = selectedValue.value;
-        setSelectedHomeType(value);
+        handleInputChange(value, 'homeType'); // Update formData
       }
-      onChange(value, _type);
+
+      onChange && onChange(value, _type); // Assuming you still want to call the external onChange
     },
-    [handleLocalityChange, onChange],
+    [handleLocalityChange, onChange, handleInputChange],
   );
+
+  const handleSubmit = useCallback(() => {
+    // Copy formData
+    const formattedFormData = {...formData};
+
+    // Remove the undefined key
+    delete formattedFormData.undefined;
+    Object.keys(formattedFormData).forEach(key => {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      formattedFormData[capitalizedKey] = formattedFormData[key];
+      delete formattedFormData[key];
+    });
+
+    formattedFormData.MarketerID = auth()?.currentUser?.uid;
+
+    // Validate formattedFormData
+    if (
+      !formattedFormData.Name ||
+      !formattedFormData.Price ||
+      !formattedFormData.ClientNumber ||
+      !formattedFormData.HomeType ||
+      !formattedFormData.Neighborhood ||
+      !formattedFormData.Locality ||
+      !formattedFormData.Sublocality ||
+      !formattedFormData.Type
+    ) {
+      Alert.alert('Please fill out all required fields.');
+      return;
+    }
+
+    fetch('https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/demands', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formattedFormData),
+    })
+      .then(response => response.json())
+      .then(() => {
+        onClose();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, [formData, onClose]);
 
   const renderRow = useCallback(
     item => (
@@ -222,7 +282,8 @@ export const SearchModal = (props: ModalProps) => {
                   label="Name"
                   name="name"
                   type="text"
-                  onChange={onChange}
+                  onChange={handleInputChange}
+                  value={formData?.name}
                   placeholder="Enter your name"
                 />
 
@@ -232,7 +293,8 @@ export const SearchModal = (props: ModalProps) => {
                   placeholder="Enter your budget"
                   name="price"
                   type="numeric"
-                  onChange={onChange}
+                  value={formData?.price}
+                  onChange={handleInputChange}
                 />
 
                 <SizedBox height={20} />
@@ -242,7 +304,8 @@ export const SearchModal = (props: ModalProps) => {
                   placeholder="Enter your phone number"
                   name="clientNumber"
                   type="phone-pad"
-                  onChange={onChange}
+                  value={formData?.clientNumber}
+                  onChange={handleInputChange}
                 />
 
                 <SizedBox height={20} />
@@ -253,7 +316,8 @@ export const SearchModal = (props: ModalProps) => {
                   type="text"
                   placeholder="Type what you want. The more details the better."
                   multiLine={1}
-                  onChange={onChange}
+                  value={formData?.description}
+                  onChange={handleInputChange}
                 />
 
                 <SizedBox height={20} />
@@ -262,7 +326,8 @@ export const SearchModal = (props: ModalProps) => {
                   label="Neighborhood"
                   name="neighborhood"
                   type="text"
-                  onChange={onChange}
+                  onChange={handleInputChange}
+                  value={formData?.neighborhood}
                   placeholder="Type the exact place you want"
                 />
 
@@ -274,10 +339,8 @@ export const SearchModal = (props: ModalProps) => {
                   name="homeType"
                   displayKey="value"
                   onChange={onChangeCallback('homeType')}
-                  value={selectedHomeType} // To set the current value
+                  value={formData.homeType}
                 />
-
-                <SizedBox height={20} />
 
                 <Dropdown
                   label="Select whether you want to rent or buy"
@@ -285,7 +348,7 @@ export const SearchModal = (props: ModalProps) => {
                   data={modes}
                   displayKey="value"
                   onChange={onChangeCallback('type')}
-                  value={selectedMode} // To set the current value
+                  value={formData.type}
                 />
 
                 <Dropdown
@@ -295,7 +358,7 @@ export const SearchModal = (props: ModalProps) => {
                   data={localities}
                   displayKey="name"
                   onChange={onChangeCallback('locality')}
-                  value={selectedLocality} // To set the current value
+                  value={formData.locality}
                 />
 
                 <Dropdown
@@ -304,11 +367,11 @@ export const SearchModal = (props: ModalProps) => {
                   data={subLocalities}
                   displayKey="name"
                   onChange={onChangeCallback('sublocality')}
-                  value={selectedSubLocality} // To set the current value
+                  value={formData.sublocality}
                 />
 
                 <SizedBox height={20} />
-                <Button type="primary" onPress={props.handleSubmit}>
+                <Button type="primary" onPress={handleSubmit}>
                   Submit
                 </Button>
               </ScrollView>

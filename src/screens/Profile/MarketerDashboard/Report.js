@@ -159,7 +159,7 @@ const Report = () => {
           return false;
         }
 
-        if (!data[item] || data[item] === '0') {
+        if (!data[item]) {
           return true;
         }
 

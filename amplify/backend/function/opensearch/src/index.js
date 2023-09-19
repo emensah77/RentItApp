@@ -697,11 +697,29 @@ async function homeType(typeParameter, userLocation = null, searchAfter = null) 
               'type.keyword': typeParameter,
             },
           },
+          {
+            bool: {
+              should: [
+                {
+                  term: {
+                    'status.keyword': 'APPROVED',
+                  },
+                },
+                {
+                  term: {
+                    'status.keyword': 'approved',
+                  },
+                },
+              ],
+              minimum_should_match: 1,
+            },
+          },
         ],
       },
     },
     sort: [],
   };
+  
 
   if (userLocation) {
     searchQueryBody.sort.push({

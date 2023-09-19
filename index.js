@@ -30,9 +30,14 @@ import awsmobile from './src/aws-exports';
 let deploymentKey;
 if (Platform.OS === 'android') {
   deploymentKey =
-    REACT_NATIVE_APP_ENV === 'production' ? ANDROID_PRODUCTION_KEY : ANDROID_STAGING_KEY;
+    REACT_NATIVE_APP_ENV === 'production' || REACT_NATIVE_APP_ENV === 'development'
+      ? ANDROID_PRODUCTION_KEY
+      : ANDROID_STAGING_KEY;
 } else if (Platform.OS === 'ios') {
-  deploymentKey = REACT_NATIVE_APP_ENV === 'production' ? IOS_PRODUCTION_KEY : IOS_STAGING_KEY;
+  deploymentKey =
+    REACT_NATIVE_APP_ENV === 'production' || REACT_NATIVE_APP_ENV === 'development'
+      ? IOS_PRODUCTION_KEY
+      : IOS_STAGING_KEY;
 }
 
 const codePushOptions = {

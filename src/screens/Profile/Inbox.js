@@ -216,32 +216,53 @@ const Inbox = props => {
         },
       );
 
+      if (_channels.some(channel => channel === null)) {
+        console.error('Found a null channel in the channels array.');
+        return;
+      }
+
       setClient(_client);
       setMessages(
         _channels
           .filter(({state}) => !!state?.messageSets?.[0]?.messages?.reverse()?.[0]?.text)
-          .map(({id: channel_id, data, state}) => ({
-            home_id: data?.home_id,
-            channel_id,
-            members: Object.keys(state.members || {}),
-            messaging_id: state?.messageSets?.[0]?.messages[0].id,
-            name: data?.displayName || data?.fname || data?.lname,
-            uri: data?.image,
-            description: state?.messageSets?.[0]?.messages?.[0]?.text,
-            date: Utils.formatDate(state?.messageSets?.[0]?.messages?.[0]?.updated_at),
-            location: '',
-            status: '',
-            read: state.read[user.uid].unread_messages > 0,
-          })),
+          .map(channel => {
+            if (
+              !channel ||
+              !channel.state ||
+              !channel.state.messageSets ||
+              !channel.state.messageSets[0] ||
+              !channel.state.messageSets[0].messages ||
+              !channel.state.messageSets[0].messages[0]
+            ) {
+              return null;
+            }
+
+            const message = channel.state.messageSets[0].messages[0];
+            if (!message || message === null) {
+              return null;
+            }
+
+            return {
+              home_id: channel.data?.home_id,
+              channel_id: channel?.id,
+              members: Object.keys(channel.state.members || {}),
+              messaging_id: message.id,
+              name: channel.data?.displayName || channel.data?.fname || channel.data?.lname,
+              uri: channel.data?.image,
+              description: message.text,
+              date: Utils.formatDate(message.updated_at),
+              location: '',
+              status: '',
+              read: channel.state.read[user.uid].unread_messages > 0,
+            };
+          })
+          .filter(Boolean),
+        // .filter(item => !!item.home_id),
       );
     })().catch(e => console.error('There was an issue loading the chat', e));
 
-    // channel.countUnread();
-    // channel.countUnreadMentions();
-
     return () => _client.disconnectUser(1);
   }, [user]);
-
   return (
     <Page type="large" header="Inbox">
       <Container type="right-60" onPress={clear}>
