@@ -1,27 +1,85 @@
 /* eslint-disable no-dupe-keys */
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
+const { PredictionServiceClient } = require('@google-cloud/aiplatform');
+const admin = require('firebase-admin');
+const serviceAccount = require('./rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
+const usersRef = db.collection('users');
+
+let miniSuperUserLocalities = {}; // This will be your cache
+
+const dashboardWorkerIDs = [
+  "7hPKvMD7BEAefbT07axJ",
+  "AlSe10LMZXXvmIjq9yDW1GJoI1n2",
+  "Fc43sGs32PaW7v8sooX61FtdaMY2",
+  "INzOOSz9KbVbEMhOKNu7yfCdmhD2",
+  "OfZNIq1Ftyc51aepnGMuidzBA1X2",
+  "TOO86cvFGaZWKSUgBBlBbnpvaZJ3",
+  "TWMtjQ3fSOQAx99eCM38hwbWYBm2",
+  "djzNhBcDRlXu8lxtpcwFkZNJ0BU2",
+  "gGrSg6noBRcDLoGRfAb7ugtxaK32",
+  "kaBivAjCzeME7T4yZyolGuK9XF72",
+  "r3G0H4PGxFfqniM4iozlMPOHert2",
+  "t0AJw2xBBFdt2vLiBnlGb53fLRz2"
+];
+
+
+
+async function fetchSupervisorLocalities() {
+  const usersRef = db.collection('users');
+  
+  // Get users with roles 'SUPERVISOR' or 'ADMIN'
+  const snapshot = await usersRef.where('role', 'in', ['SUPERVISOR', 'ADMIN']).get();
+
+  const localities = {};
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.locality) {
+      localities[doc.id] = data.locality;
+    }
+  });
+
+  return localities;
+}
+
+
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const SUPER_USER_ID = 'UWHvpJ1XoObsFYTFR48zYe6jscJ2'; // Replace with your super user's ID
-const miniSuperUserLocalities = {
-  wRSyTWe2WMPM44PhI4gp5p5Kapg1: 'Greater Accra',
-  omdT6zOzOoVL9YQarlIklkTeEGQ2: 'Ashanti',
-  HHlhY30NQzRYkyTkkkIVumS9Pk42: 'Eastern',
-  qqNXZSXjGRXoysz1j021y2io5ZO2: 'Upper West',
-  ChDf3VW1BBcvIWCmptuKq211kiu2: 'Western North',
-  wlE3aLGQ7YZCRgXQTZLvzV2JRzw2: 'Bono',
-  wlE3aLGQ7YZCRgXQTZLvzV2JRzw2: 'Bono East',
-  wlE3aLGQ7YZCRgXQTZLvzV2JRzw2: 'Ahafo',
-  AhNRlBDbdcPbl2u8rWGtn11jslA2: 'Central',
-  cGKbewQLzpSC7SydQLPp9qxCGCq1: 'Bono',
-  ti51nIREVsbxQR4vRfhkQI3Xu8T2: 'Ashanti',
-  LcmKAonWk3QYpE7m6X0Lx2xsfd52: 'Volta',
-  b8nofL2K1DRRrg0wse91VmJnHmR2: 'Volta',
-  '41Zzeh65qMdST6ZbrqK8iuSsoXd2': 'Eastern',
 
-  // more mini super users and their localities
+
+
+const client = new PredictionServiceClient({
+  keyFilename: './rentitapp-74ea1b526b35.json',
+});
+
+const predict = async (data) => {
+  const projectId = '886188852860';
+  const endpointId = '4751974906038583296';
+  const location = 'us-west2';
+  const endpoint = `projects/${projectId}/locations/${location}/endpoints/${endpointId}`;
+
+  const inputData = { instances: [data] };
+
+  try {
+      const [response] = await client.predict({
+          endpoint: endpoint,
+          instances: inputData.instances
+      });
+      
+      return response;
+
+  } catch (error) {
+      console.error('Error making prediction:', error);
+      throw new Error('Failed to get prediction.');
+  }
 };
 
 async function getHomesByOwner(homeownerName) {
@@ -56,6 +114,7 @@ async function getHomeStats(userId, startTime, endTime) {
     let params = {};
 
     if (userId === SUPER_USER_ID) {
+      // For SUPER_USER_ID, don't add any FilterExpression for isDuplicate
       params = {
         TableName: 'UnverifiedHomes',
         IndexName: 'status-updatedTime-index',
@@ -75,17 +134,19 @@ async function getHomeStats(userId, startTime, endTime) {
         TableName: 'UnverifiedHomes',
         IndexName: 'status-updatedTime-index',
         KeyConditionExpression: '#st = :status and #upTime between :startTime and :endTime',
-        FilterExpression: '#loc = :locality',
+        FilterExpression: '#loc = :locality and #isDup = :noDuplicate',
         ExpressionAttributeNames: {
           '#st': 'status',
           '#upTime': 'updatedTime',
           '#loc': 'locality',
+          '#isDup': 'isDuplicate',
         },
         ExpressionAttributeValues: {
           ':status': status,
           ':startTime': startTime,
           ':endTime': endTime,
           ':locality': miniSuperUserLocalities[userId],
+          ':noDuplicate': 'No',
         },
       };
     } else {
@@ -93,15 +154,17 @@ async function getHomeStats(userId, startTime, endTime) {
         TableName: 'UnverifiedHomes',
         IndexName: 'updatedBy-status-index',
         KeyConditionExpression: 'updatedBy = :updatedBy and #st = :status',
-        FilterExpression: 'updatedTime between :startTime and :endTime',
+        FilterExpression: 'updatedTime between :startTime and :endTime and #isDup = :noDuplicate',
         ExpressionAttributeNames: {
           '#st': 'status',
+          '#isDup': 'isDuplicate',
         },
         ExpressionAttributeValues: {
           ':updatedBy': userId,
           ':status': status,
           ':startTime': startTime,
           ':endTime': endTime,
+          ':noDuplicate': 'No',
         },
       };
     }
@@ -112,7 +175,7 @@ async function getHomeStats(userId, startTime, endTime) {
       stats[status] = { count: data.Items.length, homes: data.Items };
     } catch (error) {
       console.error(`Error fetching ${status} homes for user ${userId}:`, error);
-      throw error; // Re-throw the error to stop execution and propagate it up the call stack
+      throw error;
     }
   }
 
@@ -120,6 +183,7 @@ async function getHomeStats(userId, startTime, endTime) {
 
   return stats;
 }
+
 
 async function updateItem(key, updateValues, userId) {
   let updateExpression = 'set ';
@@ -133,12 +197,21 @@ async function updateItem(key, updateValues, userId) {
     expressionAttributeValues[`:${field}`] = updateValues[field];
   }
 
-  // Add updatedBy and updatedAt to the update expression
-  updateExpression += '#updatedBy = :updatedBy, #updatedTime = :updatedTime';
-  expressionAttributeNames['#updatedBy'] = 'updatedBy';
-  expressionAttributeNames['#updatedTime'] = 'updatedTime';
-  expressionAttributeValues[':updatedBy'] = userId;
-  expressionAttributeValues[':updatedTime'] = new Date().toISOString(); // Current time in Unix epoch format
+  if (dashboardWorkerIDs.includes(userId)) {
+    // This is an update by a dashboard worker
+    updateExpression += '#verifiedBy = :verifiedBy, #verifiedTime = :verifiedTime';
+    expressionAttributeNames['#verifiedBy'] = 'verifiedBy';
+    expressionAttributeNames['#verifiedTime'] = 'verifiedTime';
+    expressionAttributeValues[':verifiedBy'] = userId;
+    expressionAttributeValues[':verifiedTime'] = new Date().toISOString();
+  } else {
+    // This is an update by a field worker
+    updateExpression += '#updatedBy = :updatedBy, #updatedTime = :updatedTime';
+    expressionAttributeNames['#updatedBy'] = 'updatedBy';
+    expressionAttributeNames['#updatedTime'] = 'updatedTime';
+    expressionAttributeValues[':updatedBy'] = userId;
+    expressionAttributeValues[':updatedTime'] = new Date().toISOString();
+  }
 
   // Remove trailing comma
   updateExpression = updateExpression.trim().endsWith(',')
@@ -202,6 +275,10 @@ exports.handler = async (event) => {
   const { httpMethod } = event;
   const { path } = event;
 
+  if (Object.keys(miniSuperUserLocalities).length === 0) {
+    miniSuperUserLocalities = await fetchSupervisorLocalities();
+  }
+
   if (httpMethod === 'POST' && path.endsWith('/demands')) {
     const demandDetails = JSON.parse(event.body);
     const newDemand = await createDemand(demandDetails);
@@ -216,6 +293,40 @@ exports.handler = async (event) => {
       body: JSON.stringify(newDemand),
     };
   }
+
+  if (httpMethod === 'POST' && path.endsWith('/prediction')) {
+    const inputData = JSON.parse(event.body);
+    // Define the fields that should be included in the prediction
+const allowedFields = [
+  "currency", "newPrice", "status", "reviews", "loyaltyProgram", 
+  "latitude", "heating", "verified", "bedroom", "longitude", 
+  "neighborhood", "description", "freeparking", "title", "essentials", 
+  "phoneNumbers", "maxGuests", "wifi", "image", "dedicatedworkspace", 
+  "kitchen", "water", "bathroom", "dryer", "pool", "availabilityDate", 
+  "bed", "furnished", "available", "hottub", "mode", "washingmachine", 
+  "negotiable", "marketerNumber", "toilet", "aircondition", 
+  "bathroomNumber", "locality", "images", "homeownerName", "sublocality", 
+  "type", "neighbourhood"
+];
+
+// Filter out fields not in the allowedFields list
+for (const key in inputData) {
+  if (!allowedFields.includes(key)) {
+      delete inputData[key];
+  }
+}
+
+    const predictionResult = await predict(inputData);
+    return {
+        statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
+        body: JSON.stringify(predictionResult),
+    };
+}
 
   if (httpMethod === 'POST' && path.endsWith('/marketerrequest')) {
     const requestDetails = JSON.parse(event.body);
@@ -454,6 +565,7 @@ exports.handler = async (event) => {
     if (itemId && updateValues && userId) {
       const key = { id: itemId };
       const updatedItem = await updateItem(key, updateValues, userId);
+      console.log('Updated item:', updatedItem);
       return {
         statusCode: 200,
         headers: {
@@ -874,8 +986,8 @@ async function createEmployeeReport(reportDetails) {
 async function retrieveEmployeeReports(employeeID = null, startDate = null, endDate = null) {
   let params;
 
-  if (employeeID) {
-    // Build parameters for querying using the GSI when employeeID is provided
+  if (employeeID && employeeID !== 'UWHvpJ1XoObsFYTFR48zYe6jscJ2') {
+    // Original logic for specific employeeID
     params = {
       TableName: 'EmployeeReports',
       IndexName: 'employeeID-createdTime-index',
@@ -895,7 +1007,7 @@ async function retrieveEmployeeReports(employeeID = null, startDate = null, endD
       params.ExpressionAttributeValues[':endDate'] = new Date(endDate).toISOString();
     }
   } else {
-    // Build parameters for querying based on createdTime GSI when no employeeID is provided
+    // This block now also handles the case where employeeID matches the special ID
     params = {
       TableName: 'EmployeeReports',
       IndexName: 'createdTime-index',  // Assuming you have a GSI on createdTime

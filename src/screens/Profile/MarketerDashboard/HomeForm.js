@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
+import uuid from 'react-native-uuid';
 
 import PhoneNumber from '../../Authentication/PhoneNumber';
 
@@ -26,13 +27,18 @@ const oldData = {
   marketerNumber: [],
   homeownerName: '',
   currency: {value: ''},
+  latitude: null,
+  longitude: null,
   newPrice: 0,
   availabilityDate: '04/01/2023',
   maxGuests: 0,
   neighborhood: '',
   bathroomNumber: 0,
+  locality: '',
+  sublocality: '',
   bed: 0,
   bedroom: 0,
+  isDuplicate: 'No',
   loyaltyProgram: {value: 'No'},
   negotiable: {value: 'No'},
   available: {value: 'No'},
@@ -52,6 +58,7 @@ const HomeForm = props => {
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [originalData, setOriginalData] = useState(null);
 
   const onChangeData = useCallback(
     which => async value => {
@@ -66,6 +73,30 @@ const HomeForm = props => {
     },
     [data],
   );
+
+  const handleDuplicateClick = useCallback(() => {
+    const latVariation = (Math.random() - 0.5) * 0.00006; // generates a random number between -0.00003 and +0.00003
+    const longVariation = (Math.random() - 0.5) * 0.00006;
+
+    const newLatitude = data.latitude ? data.latitude + latVariation : null;
+    const newLongitude = data.longitude ? data.longitude + longVariation : null;
+
+    setOriginalData(JSON.parse(JSON.stringify(data))); // Deep copy
+    setData({
+      ...data,
+      id: uuid.v4(),
+      isDuplicate: 'Yes',
+      latitude: newLatitude,
+      longitude: newLongitude,
+    });
+  }, [data]);
+
+  const handleCancelDuplicate = useCallback(() => {
+    if (originalData) {
+      setData(JSON.parse(JSON.stringify(originalData))); // Deep copy to revert back to the original data
+      setOriginalData(null);
+    }
+  }, [originalData]);
 
   const transformData = useCallback(dataa => {
     return Object.keys(dataa).reduce((acc, key) => {
@@ -169,6 +200,17 @@ const HomeForm = props => {
   return (
     <>
       <Header onClose={onClose}>Edit Homes</Header>
+      {!originalData && (
+        <Button onPress={handleDuplicateClick} type="secondary">
+          Duplicate
+        </Button>
+      )}
+
+      {originalData && (
+        <Button onPress={handleCancelDuplicate} type="danger">
+          Cancel Duplicate
+        </Button>
+      )}
 
       <Whitespace marginTop={10} />
 

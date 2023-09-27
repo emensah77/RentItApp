@@ -14,7 +14,7 @@ https.globalAgent.maxSockets = Infinity;
 
 exports.handler = async (event) => {
   const bucket = 'pics175634-dev';
-  const key = 'LandlordApp_Savannah.xlsx';
+  const key = 'Landlord App_Northern1.xlsx';
   const workbook = new excel.Workbook();
 
   const params = {
@@ -24,7 +24,8 @@ exports.handler = async (event) => {
 
   const data = await s3.getObject(params).promise();
   await workbook.xlsx.load(data.Body);
-  const worksheet = workbook.getWorksheet('Sheet1');
+  const worksheet = workbook.getWorksheet('Sheet2');
+  console.log('Worksheet loaded', worksheet);
   const putPromises = []; // An array to store the promises returned by the Put operations
 
   // Atomically increment the lastProcessedRow value in the LambdaState table
@@ -38,6 +39,8 @@ exports.handler = async (event) => {
   };
   const updatedState = await docClient.update(stateParams).promise();
   const startRow = updatedState.Attributes.value;
+
+  console.log(`Processing rows starting from ${startRow}`);
 
   for (let row = startRow; row <= worksheet.rowCount; row++) {
     // Check if we have reached the end of the worksheet
@@ -72,10 +75,13 @@ exports.handler = async (event) => {
       },
     };
     const queryResult = await docClient.query(queryParams).promise();
+    console.log(`Query returned ${queryResult.Count} items`);
 
     // If there's an existing item, skip this row
     if (queryResult.Count > 0) {
+      console.log(`Skipping row ${row} as there's an existing item with the same latitude and longitude`)
       continue;
+
     }
 
     const item = {

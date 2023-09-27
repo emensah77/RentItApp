@@ -70,6 +70,23 @@ const Location = props => {
               },
             });
 
+            BackgroundGeolocation.getCurrentPosition(
+              {
+                samples: 1,
+                maximumAge: 5000,
+                timeout: 10000,
+                desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+              },
+              position => {
+                if (getPosition && typeof getPosition === 'function') {
+                  getPosition(position);
+                }
+              },
+              e => {
+                console.error('[getCurrentPosition] ERROR -', e);
+              },
+            );
+
             await BackgroundGeolocation.setConfig({
               notification: {
                 title: 'RentIt is accessing your location in background',

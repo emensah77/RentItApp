@@ -1147,7 +1147,7 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
       bool: {
         filter: {
           geo_distance: {
-            distance: '5km',
+            distance: '0.5km',
             location: {
               lat: userLocation.latitude,
               lon: userLocation.longitude,

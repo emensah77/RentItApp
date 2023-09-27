@@ -240,7 +240,7 @@ const MarketerHome = () => {
         currentPosition.coords &&
         _position &&
         _position.coords &&
-        calculateDistance(currentPosition.coords, _position.coords) > 5
+        calculateDistance(currentPosition.coords, _position.coords) > 0.5
       ) {
         makeANewRequest(true);
       }
@@ -368,7 +368,8 @@ const MarketerHome = () => {
         region={region || initialMarker(screen)}
         style={style}
         provider={PROVIDER_GOOGLE}
-        minZoomLevel={12}>
+        minZoomLevel={5}
+        maxZoomLevel={22}>
         {markers.map(marker => {
           return (
             <Marker

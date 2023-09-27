@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "rentitapp",
+  "private_key_id": "74ea1b526b353762196a82b742c807e6a2b8556a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDiOQx3t4NrvMtl\nYGAZxNNgO2likjHZhwtS6CLoK1UW6ILCbhw2mo5nAETen6eAcf6pPEcOjnPqjkrW\nWXWn4UuQfufpMhYtByWPQkOVjOqPRpJUxp0yGPXeih4tfDlYidofZ/RiXGnNKFsm\nViadnshcnlJPVmjyB8XXyVaGlj0F2lWHICYJuzgDAangLQc/HX5lhtdrt29bSM7r\ncsZWuh55JEbjkCdnlRGW3qAslF2H/KoPtyb1bGq/8AkQZ2hdgKpg35QWW/fQwQoY\nP81COjac3qKa7O64lA7rTJ4eFsCOyCxruHYKcGnkTQuE7+tiWJ+XeIYo/+DbcHeq\nEdkjEpEzAgMBAAECggEAFVyWuU1KayeCO1ns6TIFVb52dpjgfS572sHR3gONfuLI\nyixUnLFehgpn9m+0BPR+vCNVgGHiP0Fdfr0m14n2NThOlN4mau0UVmFG+X27fnkH\nA1tX562ktfVr4RasYZhu0O1jjdA1K2rGpKmY7uRZ/ijzE8vQkB48x+Iaug3AyGcG\nmAzwTkVqKITr683OuCWXrCtiWsJvREtPoB4d+kbXw1nYeAabqDIRl6kA53rGjqBX\nZuFgVr0gB7ehJcrTLjC9gD6WXtg8IlM2j+hTq6nxa9d84ZkhncJmwgttdZXN7mev\nTrEOEe/2QvG6ne7jR/5HEKKTgUuuk8Qo8+DNvteONQKBgQD42gtj1PGe8NMhCo79\nTX/U54QmMbCuPtKQoHDJzCVlLClPONzVTH6l1SHnTQHif15YcY2X1+cO9sV8QP1N\noP0FmwmHAl9x/Y6UPoekJLosU/uxoNONgnPsZarpaNqeZxfkFHCf9yMwy3zHRkry\nws5lKon2/IGg9P2l3lhETFEHHwKBgQDouJm34F5wg2u4BmEv281y0Jj1BXUkJ7Xj\nzjbJn3VDNd9SLugJFJVn5nJM2A5/XE7klfXMv1mvOst+gB1uhlOhF320/V/9nxoE\nYCq5MnKnh5+WJut5X9KiCcVigtbDRWKmBZDRTD34lsGERjGW8JikaVkIQq3JHelz\nf37bEvlXbQKBgQCb7rV4ZvTIbYs+hwk2fBt/41qRPE3DwaXb7kz+hidgkB2KgM0P\n8xDhBP5rm3t02+7YaL8ayLUGUWdKBscyn5AstQtxR/Fa0lFHXy9LkZ//KtjqYyZs\n47OUC9jezU9ANsVnq88uzYOFjdywWcGZAKyoA9HTrEHmA93007Bni5KybQKBgQCC\n698mj6XxfC2scIJaTziMYAe8yB43gdOU3dz6nqd0cSk6bcMB4L+QnRcuXdoCEmcb\nt7V5QyjsKJJ0jxR/qjgAB1wj5usKnmgfkA5Y86WG1AiWizyropm3qPGPUvYJEs7F\ngZoP9OlkIUOq62ZYePAWhmGdAQ4Nd7Nu04oFKu51HQKBgB1I9dO4ctppWGkFycAb\nLt92K93c8ch0losd2mIFLZl7NsNdyrucRir5CyRMTQpfxqMdIuyYlqgh2htddVB4\nuuebNbmrQnTiR3AADiIrFR3m9kGnbmaZ1FWtIcjM3ev3fLAX1hHknzrh9CI4NoYc\nyx4Erl/OknuS7UcuqpQCsTGL\n-----END PRIVATE KEY-----\n",
+  "client_email": "rentitapp@appspot.gserviceaccount.com",
+  "client_id": "115101387364350806525",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/rentitapp%40appspot.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
