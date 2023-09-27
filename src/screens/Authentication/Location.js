@@ -9,16 +9,20 @@ import {global} from '../../assets/styles';
 import locationPermission from '../../assets/images/location-permission.png';
 
 const Location = props => {
-  const {noRender, interval, getPosition, singleRequest} = props;
+  const {noRender, interval, getPosition, singleRequest, loader} = props;
 
   const [enabled, setEnabled] = useState(null);
   const [count, setCount] = useState(1);
+  const [fetchingLocation, setFetchingLocation] = useState(false);
 
   const navigation = useNavigation();
 
   const goToNotifications = useCallback(() => navigation.navigate('Notification'), [navigation]);
 
   const init = useCallback(async () => {
+    if (loader) {
+      setFetchingLocation(true); // Start fetching location
+    }
     return new Promise(resolve => {
       BackgroundGeolocation.ready(
         {
@@ -118,12 +122,15 @@ const Location = props => {
               },
             );
           }
+          if (loader) {
+            setFetchingLocation(false); // Finish fetching location after the location has been retrieved or an error occurred
+          }
 
           resolve(state.enabled);
         },
       );
     });
-  }, [getPosition, interval, singleRequest]);
+  }, [getPosition, interval, loader, singleRequest]);
 
   const request = useCallback(async () => {
     const location = await init();
@@ -160,7 +167,7 @@ const Location = props => {
     return null;
   }
 
-  if (enabled === null) {
+  if ((fetchingLocation && loader) || enabled === null) {
     return <PageSpinner />;
   }
 

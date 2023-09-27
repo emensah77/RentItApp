@@ -11,7 +11,6 @@ const PageSpinner = () => {
 
 const styles = StyleSheet.create({
   pageSpinner: {
-    marginVertical: 100,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -21,6 +20,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: 1000,
     backgroundColor: 'rgba(255,255,255,0.8)',
   },
 });
