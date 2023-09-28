@@ -88,9 +88,24 @@ const MarketerHome = () => {
     [top, collapse],
   );
 
-  const onRegionChangeComplete = useCallback(_region => {
-    setRegion(_region);
-  }, []);
+  const onRegionChangeComplete = useCallback(
+    _region => {
+      // Ensure both _region and region are defined before proceeding
+      if (!_region || !region) return;
+
+      // Check if the new region is significantly different from the current region
+      const isDifferent =
+        Math.abs(_region.latitude - region.latitude) > 0.0001 ||
+        Math.abs(_region.longitude - region.longitude) > 0.0001 ||
+        Math.abs(_region.latitudeDelta - region.latitudeDelta) > 0.0001 ||
+        Math.abs(_region.longitudeDelta - region.longitudeDelta) > 0.0001;
+
+      if (isDifferent) {
+        setRegion(_region);
+      }
+    },
+    [region],
+  );
 
   const sendUpdatedHomeData = useCallback(
     updatedHome => {
@@ -233,6 +248,13 @@ const MarketerHome = () => {
   const getPosition = useCallback(
     _position => {
       setPosition(_position);
+
+      setRegion({
+        latitude: _position.coords.latitude,
+        longitude: _position.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0922 * (screen.width / screen.height),
+      });
 
       // If the user moves more than 5KM calculate the euclidean distance
       if (

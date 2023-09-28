@@ -4,12 +4,12 @@ import {Page, GenericList} from '../../../components';
 import Dropdown from '../../../components/Dropdown';
 import {statusOptions} from '../../../utils/claimStatus';
 
-const MyClaims = () => {
+const MyViewings = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  const [selectedClaim, setSelectedClaim] = useState(null);
-  const [nextKey, setNextKey] = useState(null); // Add this state to track the next key
+  const [selectedViewing, setSelectedViewing] = useState(null);
+  const [nextKey, setNextKey] = useState(null);
 
   const updateStatus = useCallback(
     async item => {
@@ -35,16 +35,16 @@ const MyClaims = () => {
                 throw new Error(`Failed to update status: ${text}`);
               });
             }
-            return response.json(); // Parse the response body as JSON
+            return response.json();
           })
           .then(() => {
-            load(); // Refresh the claims after updating the status
-            setSelectedStatus(null); // Reset the selected status
-            setSelectedClaim(null); // Reset selected claim after updating
+            load();
+            setSelectedStatus(null);
+            setSelectedViewing(null);
           })
-          .catch(e => console.error('An error occurred while updating claims', e));
+          .catch(e => console.error('An error occurred while updating viewings', e));
       } else {
-        setSelectedClaim(item);
+        setSelectedViewing(item);
       }
     },
     [selectedStatus, load],
@@ -54,37 +54,36 @@ const MyClaims = () => {
     () => [
       {
         text: item =>
-          selectedClaim && selectedClaim.DemandID === item.DemandID ? 'Confirm' : 'Update',
+          selectedViewing && selectedViewing.DemandID === item.DemandID ? 'Confirm' : 'Update',
         action: item => updateStatus(item),
         condition: () => true,
       },
     ],
-    [updateStatus, selectedClaim],
+    [updateStatus, selectedViewing],
   );
 
   const load = useCallback(async (startKey = null) => {
     setLoading(true);
 
-    const status = 'Claimed'; // replace with the desired status or make it dynamic
+    const status = 'Viewing';
 
     const response = await fetch(
       `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/claimedDemands?marketerId=${
         auth().currentUser.uid
-      }&status=${status}&pageSize=100${startKey ? `&startKey=${startKey}` : ''}`,
+      }&status=${status}&pageSize=30${startKey ? `&startKey=${startKey}` : ''}`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       },
-    ).catch(e => console.error('An error occurred while fetching claims', e));
+    ).catch(e => console.error('An error occurred while fetching viewings', e));
 
     if (!response) {
       return;
     }
     const _data = await response.json();
     setData(prevData => {
-      // Check if the first item of the new data matches the last item of the old data
       const newItems =
         prevData[prevData.length - 1]?.DemandID === _data.items[0]?.DemandID
           ? _data.items.slice(1)
@@ -92,7 +91,7 @@ const MyClaims = () => {
 
       return [...prevData, ...newItems];
     });
-    setNextKey(_data.nextKey); // Set the next key from the response
+    setNextKey(_data.nextKey);
     setLoading(false);
   }, []);
 
@@ -105,7 +104,6 @@ const MyClaims = () => {
 
   const handleEndReached = useCallback(() => {
     if (nextKey) {
-      // Only fetch the next set if a next key is present
       load(nextKey);
     }
   }, [nextKey, load]);
@@ -115,8 +113,8 @@ const MyClaims = () => {
   }, [load]);
 
   return (
-    <Page type="drawer" header="My Claims">
-      {selectedClaim && (
+    <Page type="drawer" header="My Viewings">
+      {selectedViewing && (
         <Dropdown
           data={statusOptions}
           displayKey="label"
@@ -125,7 +123,6 @@ const MyClaims = () => {
           label="Select Status"
         />
       )}
-
       <GenericList
         list={data}
         id="DemandID"
@@ -137,4 +134,4 @@ const MyClaims = () => {
   );
 };
 
-export default MyClaims;
+export default MyViewings;

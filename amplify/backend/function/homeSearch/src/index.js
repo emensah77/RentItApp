@@ -579,10 +579,11 @@ for (const key in inputData) {
     }
   }
   if (httpMethod === 'GET' && path.endsWith('/claimedDemands')) {
-    const { marketerId, pageSize } = event.queryStringParameters;
+    const { marketerId, status, pageSize } = event.queryStringParameters;
 
     const claimedDemands = await fetchClaimedDemandsByMarketer(
       marketerId,
+      status,
       pageSize ? parseInt(pageSize) : undefined,
     );
 
@@ -875,10 +876,10 @@ async function updateDemand(demandId, details, updaterId) {
 }
 
 
-async function fetchClaimedDemandsByMarketer(marketerId, pageSize = 100, startKey) {
+async function fetchClaimedDemandsByMarketer(marketerId, status, pageSize = 10, startKey) {
   const params = {
     TableName: 'Demand',
-    IndexName: 'MarketerID-Status-index', // Replace with the actual name of your GSI
+    IndexName: 'MarketerID-Status-index',
     KeyConditionExpression: '#M = :m AND #S = :s',
     ExpressionAttributeNames: {
       '#M': 'MarketerID',
@@ -886,8 +887,9 @@ async function fetchClaimedDemandsByMarketer(marketerId, pageSize = 100, startKe
     },
     ExpressionAttributeValues: {
       ':m': marketerId,
-      ':s': 'Claimed',
+      ':s': status,
     },
+    Limit: pageSize,  // set the limit to pageSize
   };
 
   if (startKey) {
@@ -897,16 +899,29 @@ async function fetchClaimedDemandsByMarketer(marketerId, pageSize = 100, startKe
   try {
     const result = await dynamodb.query(params).promise();
 
+    // Remove duplicates
+    const uniqueItems = [];
+    const seenDemandIDs = new Set();
+
+    for (const item of result.Items) {
+      if (!seenDemandIDs.has(item.DemandID)) {
+        seenDemandIDs.add(item.DemandID);
+        uniqueItems.push(item);
+      }
+    }
+
     return {
-      items: result.Items,
+      items: uniqueItems,
       nextKey: result.LastEvaluatedKey,
-      count: result.Count,
+      count: uniqueItems.length,
     };
   } catch (error) {
     console.error('Error fetching claimed demands:', error);
     throw error;
   }
 }
+
+
 
 async function createMarketerRequest(requestDetails) {
   requestDetails.requestID = uuid.v4();

@@ -112,6 +112,12 @@ const HomeForm = props => {
   const submit = useCallback(async () => {
     setLoading(true);
 
+    if (data.title === 'defaultTitle' || data.type.value === 'defaultType') {
+      setError('Title or Type should not have default values.');
+      setLoading(false);
+      return;
+    }
+
     if (data.status.value === 'APPROVED') {
       const isInComplete = Object.keys(data).filter(item => {
         if (!data[item] || data[item] === '0') {
