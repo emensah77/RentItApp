@@ -1,8 +1,7 @@
-import React, {useEffect, useState, useMemo, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useMemo, useCallback, useRef, useContext} from 'react';
 import {Dimensions, Animated, Alert} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import {AuthContext} from '../../../navigation/AuthProvider';
 
 import HomeForm from './HomeForm';
 import DemandForm from './DemandForm';
@@ -48,6 +47,7 @@ const MarketerHome = () => {
   const [searchAfter, setSearchAfter] = useState(null);
   const [markerData, setMarkerData] = useState();
   const [mode, setMode] = useState('default');
+  const {user} = useContext(AuthContext);
 
   const top = useRef(new Animated.Value(0.5 * screen.height)).current;
 
@@ -303,7 +303,7 @@ const MarketerHome = () => {
           JSON.stringify({
             action: 'locationUpdate',
             data: {
-              marketerId: auth().currentUser.uid,
+              marketerId: user?.uid,
               marketerStatus: 'offline',
             },
           }),
@@ -312,39 +312,17 @@ const MarketerHome = () => {
 
       _ws.close(undefined, 'Unmount');
     };
-  }, [markers]);
+  }, [markers, user?.uid]);
 
   useEffect(() => {
     if (ws && position) {
-      const user = auth().currentUser;
-
-      const userDetails = firestore()
-        .collection('users')
-        .doc(user.uid)
-        .get()
-        .then(doc => {
-          if (doc.exists) {
-            return doc.data();
-          } else {
-            return {};
-          }
-        })
-        .catch(e => {
-          console.error(
-            'Something went wrong with fetching the user from firestore: ',
-            e,
-            JSON.stringify(e),
-          );
-          return {};
-        });
-
       const sendLocationUpdate = () => {
         ws.send(
           JSON.stringify({
             action: 'locationUpdate',
             data: {
               marketerId: user.uid,
-              marketerName: `${userDetails.fname} ${userDetails.lname}`,
+              marketerName: `${user?.displayName || ''}`,
               marketerStatus: 'online',
               location: {
                 latitude: position.coords.latitude,
@@ -363,7 +341,7 @@ const MarketerHome = () => {
 
       return () => clearInterval(locationUpdateInterval); // Clear the interval when position changes or component unmounts
     }
-  }, [ws, position]);
+  }, [ws, position, user.uid, user?.displayName]);
 
   useEffect(() => {
     if (!position || ranOnce) {

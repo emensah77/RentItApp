@@ -39,10 +39,29 @@ async function findRepForUser(userId) {
 
   return null;
 }
+
 exports.handler = async (event) => {
+  console.log('Event received', event);
+  const body = JSON.parse(event.body);
+  const action = body.action || 'createViewing';  // Default to createViewing if no action is provided
+  
+  switch (action) {
+    case 'createViewing':
+      return await createViewing(body);
+    case 'retrieveViewings':
+      return await retrieveViewings(body);
+    default:
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Invalid action' }),
+      };
+  }
+};
+
+async function createViewing(body) {
   const {
     postId, viewingDate, viewingTime, userName, userContact, userLocation, userId,
-  } = JSON.parse(event.body);
+  } = body;
   const viewingDateTime = `${viewingDate}_${viewingTime}`;
 
   const bufferInMinutes = 30;
@@ -130,4 +149,38 @@ exports.handler = async (event) => {
       }),
     };
   }
-};
+}
+
+async function retrieveViewings(body) {
+  const { userId } = body;  // Extract userId from the parsed data
+
+  if (!userId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: 'userId is required' }),
+    };
+  }
+
+  const params = {
+    TableName: 'Viewing-k5j5uz5yp5d7tl2yzjyruz5db4-dev',
+    IndexName: 'userId-index',  // Assuming there's a GSI on userId
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: {
+      ':userId': userId,
+    },
+  };
+
+  try {
+    const result = await dynamoDb.query(params).promise();
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ viewings: result.Items }),
+    };
+  } catch (error) {
+    console.error('Error retrieving viewings:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'An error occurred while retrieving viewings' }),
+    };
+  }
+}

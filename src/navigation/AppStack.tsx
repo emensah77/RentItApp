@@ -27,6 +27,7 @@ import EFeedback from '../screens/Feedback';
 import Review from '../screens/Reviews';
 import listAHome from '../screens/ListAHome';
 import HomeTabNavigator from './HomeTabNavigator';
+import ViewingDashboard from '../screens/ViewingsDashboard';
 
 const Stack = createStackNavigator<AppStackParamList>();
 
@@ -107,6 +108,8 @@ const AppStack = () => {
       <Stack.Screen name="Edit" component={Edit} options={noHeader} />
 
       <Stack.Screen name="EditPersonalInfo" component={EditPersonalInfo} options={noHeader} />
+
+      <Stack.Screen name="Viewings" component={ViewingDashboard} options={noHeader} />
 
       <Stack.Screen name="Email" component={Email} options={noHeader} />
 

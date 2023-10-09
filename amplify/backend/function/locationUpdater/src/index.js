@@ -83,27 +83,31 @@ async function handleDisconnect(event) {
 
 async function handleLocationUpdate(event) {
   const body = JSON.parse(event.body);
-  const { marketerId } = body.data; // Extract marketerId from data
-  const { marketerStatus } = body.data; // Extract marketerStatus from data
-  const { location } = body.data; // Extract location from data
-  const { latitude, longitude } = location; // Extract latitude and longitude
+  const { marketerId, marketerStatus, location, marketerName } = body.data;
+  const { latitude, longitude } = location;
+
+  const item = {
+    marketerId,
+    timestamp: new Date().toISOString(),
+    latitude,
+    longitude,
+    marketerStatus,
+  };
+
+  // Conditionally add marketerName to the item if it's provided
+  if (marketerName !== undefined) {
+    item.marketerName = marketerName;
+  }
 
   const params = {
     TableName: 'MarketerLocations',
-    Item: {
-      marketerId,
-      timestamp: new Date().toISOString(),
-      latitude,
-      longitude,
-      marketerStatus, // Assuming marketerStatus is part of the input, if not, you can remove this line
-    },
+    Item: item,
   };
 
   try {
     await dynamodb.put(params).promise();
 
     const connections = await getAllConnections();
-
     await broadcastUpdate(connections, body);
 
     return { statusCode: 200, body: 'Location update successful' };
@@ -112,6 +116,7 @@ async function handleLocationUpdate(event) {
     return { statusCode: 500, body: 'Error updating location' };
   }
 }
+
 
 async function broadcastUpdate(connections, data) {
   const postCalls = connections.map(async ({ connectionId }) => {

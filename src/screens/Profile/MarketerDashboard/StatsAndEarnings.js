@@ -20,6 +20,7 @@ import arrowDown from '../../../assets/images/arrow-down.png';
 import pending from '../../../assets/images/markers/pending.png';
 import rejected from '../../../assets/images/markers/rejected.png';
 import approved from '../../../assets/images/markers/approved.png';
+import earnings from '../../../assets/images/earnings.png';
 import {formatDate} from '../../../utils';
 
 const StatsAndEarnings = () => {
@@ -67,9 +68,9 @@ const StatsAndEarnings = () => {
     const formattedEndDate = formatDate(end, 3, true);
 
     const response = await fetch(
-      `https://xprc5hqvgh.execute-api.us-east-2.amazonaws.com/prod/stats?startTime=${formattedStartDate}&endTime=${formattedEndDate}&userId=${
+      `https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/stats?startTime=${formattedStartDate}&endTime=${formattedEndDate}&userId=${
         auth().currentUser.uid
-      }&pageSize=${30}`,
+      }`,
       {
         method: 'GET',
         headers: {
@@ -194,6 +195,26 @@ const StatsAndEarnings = () => {
           status={
             <Typography numberOfLines={1} left size={14} weight="500" width="200%">
               {loading ? '...' : data?.approved?.count || 0} Homes
+            </Typography>
+          }
+          center
+          bold
+        />
+      </Container>
+
+      <Whitespace marginTop={30} />
+
+      <Container type="chipDeSelected" height={100} width="100%" color="black">
+        <CardDisplay
+          name={<Image src={earnings} width={20} height={20} />}
+          location={
+            <Typography left size={18} weight="700" width="100%" color="#FFF">
+              Salary
+            </Typography>
+          }
+          status={
+            <Typography numberOfLines={1} left size={14} weight="500" width="200%" color="#FFF">
+              GHS {loading ? '...' : data?.compensation || 0}
             </Typography>
           }
           center

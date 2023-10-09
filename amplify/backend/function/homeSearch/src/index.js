@@ -41,12 +41,14 @@ async function fetchSupervisorLocalities() {
   snapshot.forEach(doc => {
     const data = doc.data();
     if (data.locality) {
-      localities[doc.id] = data.locality;
+      // Ensure that localities[doc.id] is always an array, whether data.locality is a string or an array
+      localities[doc.id] = Array.isArray(data.locality) ? data.locality : [data.locality];
     }
   });
 
   return localities;
 }
+
 
 
 
@@ -107,82 +109,78 @@ async function getHomesByOwner(homeownerName) {
 async function getHomeStats(userId, startTime, endTime) {
   console.log(`Fetching home stats for user ${userId} between ${startTime} and ${endTime}...`);
 
+  const miniSuperUserLocalities = await fetchSupervisorLocalities();
+  console.log('miniSuperUserLocalities:', miniSuperUserLocalities);
+  homeswithin = []
+  homeswithout = []
+
+  // Convert startTime and endTime to Date objects for comparison
+  const startDate = new Date(startTime);
+  const endDate = new Date(endTime);
+
   const statuses = ['pending', 'approved', 'rejected'];
   const stats = {};
 
   for (const status of statuses) {
-    let params = {};
+    let params = {
+        TableName: 'UnverifiedHomes',
+        IndexName: 'status-updatedTime-index',  // specify the index to use
+        KeyConditionExpression: '#st = :status',  // query only by status
+        ExpressionAttributeNames: {
+            '#st': 'status',
+        },
+        ExpressionAttributeValues: {
+            ':status': status,
+        },
+    };
 
-    if (userId === SUPER_USER_ID) {
-      // For SUPER_USER_ID, don't add any FilterExpression for isDuplicate
-      params = {
-        TableName: 'UnverifiedHomes',
-        IndexName: 'status-updatedTime-index',
-        KeyConditionExpression: '#st = :status and #upTime between :startTime and :endTime',
-        ExpressionAttributeNames: {
-          '#st': 'status',
-          '#upTime': 'updatedTime',
-        },
-        ExpressionAttributeValues: {
-          ':status': status,
-          ':startTime': startTime,
-          ':endTime': endTime,
-        },
-      };
-    } else if (userId in miniSuperUserLocalities) {
-      params = {
-        TableName: 'UnverifiedHomes',
-        IndexName: 'status-updatedTime-index',
-        KeyConditionExpression: '#st = :status and #upTime between :startTime and :endTime',
-        FilterExpression: '#loc = :locality and #isDup = :noDuplicate',
-        ExpressionAttributeNames: {
-          '#st': 'status',
-          '#upTime': 'updatedTime',
-          '#loc': 'locality',
-          '#isDup': 'isDuplicate',
-        },
-        ExpressionAttributeValues: {
-          ':status': status,
-          ':startTime': startTime,
-          ':endTime': endTime,
-          ':locality': miniSuperUserLocalities[userId],
-          ':noDuplicate': 'No',
-        },
-      };
-    } else {
-      params = {
-        TableName: 'UnverifiedHomes',
-        IndexName: 'updatedBy-status-index',
-        KeyConditionExpression: 'updatedBy = :updatedBy and #st = :status',
-        FilterExpression: 'updatedTime between :startTime and :endTime and #isDup = :noDuplicate',
-        ExpressionAttributeNames: {
-          '#st': 'status',
-          '#isDup': 'isDuplicate',
-        },
-        ExpressionAttributeValues: {
-          ':updatedBy': userId,
-          ':status': status,
-          ':startTime': startTime,
-          ':endTime': endTime,
-          ':noDuplicate': 'No',
-        },
-      };
-    }
+      try {
+          const data = await dynamodb.query(params).promise();
+          console.log(`Fetched ${status} homes for user ${userId}:`, data.Items);
 
-    try {
-      const data = await dynamodb.query(params).promise();
-      console.log(`Fetched ${status} homes for user ${userId}:`, data.Items);
-      stats[status] = { count: data.Items.length, homes: data.Items };
-    } catch (error) {
-      console.error(`Error fetching ${status} homes for user ${userId}:`, error);
-      throw error;
-    }
+          // Filter the items based on user type and time range
+          const filteredItems = data.Items.filter(item => {
+            const itemDate = new Date(item.updatedTime);
+            const withinDateRange = itemDate >= startDate && itemDate <= endDate;
+            if (withinDateRange){
+                homeswithin.push(item.updatedTime);
+            }
+            else{
+              homeswithout.push(item.updatedTime);
+            }
+        
+            if (userId === SUPER_USER_ID) {
+                return withinDateRange;  // Super User sees all homes within date range
+            } else if (userId in miniSuperUserLocalities) {
+                // Mini Super User sees all homes within their localities and date range
+                const withinLocality = miniSuperUserLocalities[userId].includes(item.locality);
+                console.log(`Within locality: ${withinLocality}`);  // Add logging statement
+                return withinDateRange && withinLocality;
+            } else {
+                // Regular users see only homes they updated within date range
+                const updatedByUser = item.updatedBy === userId;
+                console.log(`Updated by user: ${updatedByUser}`);  // Add logging statement
+                return withinDateRange && updatedByUser;
+            }
+        });
+        console.log('Homes within',homeswithin);
+        console.log('Homes without', homeswithout)
+        stats[status] = { count: filteredItems.length, homes: filteredItems };
+        
+      } catch (error) {
+          console.error(`Error fetching ${status} homes for user ${userId}:`, error);
+          throw error;
+      }
   }
 
   console.log(`Fetched home stats for user ${userId}:`, stats);
 
   return stats;
 }
+
+
+
+
 
 
 async function updateItem(key, updateValues, userId) {
@@ -195,6 +193,12 @@ async function updateItem(key, updateValues, userId) {
     updateExpression += `#${field} = :${field},`;
     expressionAttributeNames[`#${field}`] = field;
     expressionAttributeValues[`:${field}`] = updateValues[field];
+  }
+
+  if (updateValues.updatedTime) {
+    updateExpression += '#updatedTimeStamp = :updatedTimeStamp,';
+    expressionAttributeNames['#updatedTimeStamp'] = 'updatedTimeStamp';
+    expressionAttributeValues[':updatedTimeStamp'] = new Date(updateValues.updatedTime).getTime();
   }
 
   if (dashboardWorkerIDs.includes(userId)) {
@@ -231,6 +235,7 @@ async function updateItem(key, updateValues, userId) {
 
   return response.Attributes;
 }
+
 
 async function addComment(commentDetails) {
   // Generate a new UUID for the comment
@@ -579,11 +584,12 @@ for (const key in inputData) {
     }
   }
   if (httpMethod === 'GET' && path.endsWith('/claimedDemands')) {
-    const { marketerId, status, pageSize } = event.queryStringParameters;
+    const { marketerId, status, pageSize, startKey} = event.queryStringParameters;
 
     const claimedDemands = await fetchClaimedDemandsByMarketer(
       marketerId,
       status,
+      startKey,
       pageSize ? parseInt(pageSize) : undefined,
     );
 
@@ -876,7 +882,7 @@ async function updateDemand(demandId, details, updaterId) {
 }
 
 
-async function fetchClaimedDemandsByMarketer(marketerId, status, pageSize = 10, startKey) {
+async function fetchClaimedDemandsByMarketer(marketerId, status, startKey, pageSize = 100) {
   const params = {
     TableName: 'Demand',
     IndexName: 'MarketerID-Status-index',
@@ -893,7 +899,7 @@ async function fetchClaimedDemandsByMarketer(marketerId, status, pageSize = 10, 
   };
 
   if (startKey) {
-    params.ExclusiveStartKey = startKey;
+    params.ExclusiveStartKey = JSON.parse(startKey);
   }
 
   try {

@@ -19,9 +19,45 @@ const opensearchDomain = 'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-ea
 const index = 'rentit';
 const endpoint = new AWS.Endpoint(opensearchDomain);
 
+const admin = require('firebase-admin');
+const serviceAccount = require('./rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
+const usersRef = db.collection('users');
+const SUPER_USER_ID = 'UWHvpJ1XoObsFYTFR48zYe6jscJ2'; // Replace with your super user's ID
+
+
+let miniSuperUserLocalities = {};
+
+async function fetchSupervisorLocalities() {
+  const usersRef = db.collection('users');
+  
+  // Get users with roles 'SUPERVISOR' or 'ADMIN'
+  const snapshot = await usersRef.where('role', 'in', ['SUPERVISOR', 'ADMIN']).get();
+
+  const localities = {};
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.locality) {
+      // Ensure that localities[doc.id] is always an array, whether data.locality is a string or an array
+      localities[doc.id] = Array.isArray(data.locality) ? data.locality : [data.locality];
+    }
+  });
+
+  return localities;
+}
+
 exports.handler = async (event) => {
   console.log('Starting execution of Lambda function');
   console.log('Received a request', event);
+
+  if (Object.keys(miniSuperUserLocalities).length === 0) {
+    miniSuperUserLocalities = await fetchSupervisorLocalities();
+  }
 
   if (event.httpMethod === 'OPTIONS') {
     return {
@@ -104,7 +140,51 @@ exports.handler = async (event) => {
         body: 'Internal Server Error. Failed to retrieve home.',
       };
     }
-  } else if (event.httpMethod === 'POST' && event.path === '/unverifiedhomes') {
+  } else if (event.httpMethod === 'GET' && event.path === '/stats') {
+    let userId;
+    let startTime;
+    let endTime;
+    try {
+      // Parse the home id from the queryStringParameters
+      userId = event.queryStringParameters.userId;
+      startTime = event.queryStringParameters.startTime;
+      endTime = event.queryStringParameters.endTime;
+    } catch (error) {
+      console.error('Error parsing stats details: ', error);
+      return {
+        statusCode: 400,
+        body: 'Bad Request. Invalid home id.',
+      };
+    }
+    try {
+      const homeStats = await getHomeStats(userId, startTime, endTime);
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Headers':
+            'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,GET',
+        },
+        body: JSON.stringify(homeStats),
+      };
+    } catch (error) {
+      console.error('Error during retrieving home stats: ', error);
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Headers':
+            'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,GET',
+        },
+        body: 'Internal Server Error. Failed to retrieve home stats.',
+      };
+    }
+  }
+  
+  
+  else if (event.httpMethod === 'POST' && event.path === '/unverifiedhomes') {
     let userLocation; let
       searchAfter;
     try {
@@ -1147,7 +1227,7 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
       bool: {
         filter: {
           geo_distance: {
-            distance: '0.5km',
+            distance: '5km',
             location: {
               lat: userLocation.latitude,
               lon: userLocation.longitude,
@@ -1198,4 +1278,148 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
   });
 
   return searchPromise;
+}
+
+function calculateCompensation(count) {
+  console.log('called with count', count);
+  const rate = 2.5;  // Flat rate per approved home
+  return Math.round(count * rate);
+}
+
+async function getHomeStats(userId, startTime, endTime) {
+  console.log(`Fetching home stats for user ${userId} between ${startTime} and ${endTime}...`);
+
+  const miniSuperUserLocalities = await fetchSupervisorLocalities();
+  console.log('miniSuperUserLocalities:', miniSuperUserLocalities);
+
+ 
+
+  const statuses = ['pending', 'approved', 'rejected', 'PENDING', 'APPROVED', 'REJECTED'];
+  const stats = {};
+
+  for (const status of statuses) {
+    // Common search request setup
+    const searchReq = new AWS.HttpRequest(endpoint);
+    searchReq.method = 'POST';
+    searchReq.path = path.join('/', 'rentitnew', '_search');
+    searchReq.region = 'us-east-2';
+    searchReq.headers['presigned-expires'] = false;
+    searchReq.headers.Host = endpoint.host;
+    searchReq.headers['Content-Type'] = 'application/json';
+
+    // Constructing the query
+    const searchQueryBody = {
+      size: 30,  // Adjust size as needed
+      _source: [
+        'currency',
+        'newPrice',
+        'status',
+        'phoneNumbers',
+        'maxGuests',
+        'loyaltyProgram',
+        'videoUrl',
+        'wifi',
+        'image',
+        'kitchen',
+        'water',
+        'bathroom',
+        'id',
+        'latitude',
+        'bed',
+        'furnished',
+        'mode',
+        'negotiable',
+        'createdAt',
+        'oldPrice',
+        'marketerNumber',
+        'toilet',
+        'aircondition',
+        'bathroomNumber',
+        'bedroom',
+        'locality',
+        'updatedAt',
+        'userID',
+        'longitude',
+        'images',
+        'description',
+        'sublocality',
+        'title',
+        'type',
+        'location',
+        'updatedTime',
+        'availabilityDate',
+        'available',
+        'homeownerName',
+        'neighborhood',
+        'verified'
+      ],
+      sort: [
+        { updatedTime: { order: 'desc' } },  // Sorting by updatedTime in descending order
+      ],
+      query: {
+        bool: {
+          must: [
+            { term: { "status.keyword": status } },
+            { range: { "updatedTime": { gte: startTime, lte: endTime } } }
+          ]
+        }
+      }
+    };
+
+    if (userId === SUPER_USER_ID) {
+      // No additional query adjustments needed for super user
+    } else if (userId in miniSuperUserLocalities) {
+      searchQueryBody.query.bool.must.push({ terms: { "locality.keyword": miniSuperUserLocalities[userId] } });
+      searchQueryBody.query.bool.must_not = [{ term: { "isDuplicate.keyword": "Yes" } }];  // Exclude duplicate homes
+    } else {
+      searchQueryBody.query.bool.must.push({ term: { "updatedBy.keyword": userId } });
+      searchQueryBody.query.bool.must_not = [{ term: { "isDuplicate.keyword": "Yes" } }];  // Exclude duplicate homes
+    }
+
+    searchReq.body = JSON.stringify(searchQueryBody);
+    console.log('STATS search query', searchQueryBody);
+
+    const signer = new AWS.Signers.V4(searchReq, 'es');
+    signer.addAuthorization(AWS.config.credentials, new Date());
+
+    try {
+      const result = await new Promise((resolve, reject) => {
+        const send = new AWS.NodeHttpClient();
+        send.handleRequest(
+          searchReq,
+          null,
+          (httpResp) => {
+            let responseBody = '';
+            httpResp.on('data', (chunk) => {
+              responseBody += chunk;
+            });
+            httpResp.on('end', (chunk) => {
+              const data = JSON.parse(responseBody);
+              console.log('stats data', data);
+              const homesData = data.hits.hits.map((hit) => hit._source);
+              console.log('homesData', homesData);
+              resolve({ count: data.hits.total.value, homes: homesData });
+            });
+          },
+          reject
+        );
+      });
+
+      stats[status] = result;
+
+      // Check if the status is 'approved' or 'APPROVED' to calculate the compensation
+      if (status.toLowerCase() === 'approved') {
+        stats.compensation = calculateCompensation(stats.approved.count);
+      }
+      
+
+    } catch (error) {
+      console.error(`Error fetching ${status} homes for user ${userId}:`, error);
+      throw error;
+    }
+  }
+
+  console.log(`Fetched home stats for user ${userId}:`, stats);
+
+  return stats;
 }

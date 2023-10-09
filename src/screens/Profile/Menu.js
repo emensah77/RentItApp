@@ -135,6 +135,13 @@ const Menu = () => {
             height: 22,
             onPress: goTo('PrivacyAndSharing'),
           },
+          {
+            description: 'Viewing Dashboard',
+            image: profile,
+            width: 23.85,
+            height: 23.85,
+            onPress: goTo('Viewings'),
+          },
         ],
       },
       {

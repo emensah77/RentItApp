@@ -50,7 +50,7 @@
         },
         "viewingScheduler": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/viewingScheduler-464b794567366e366233-build.zip"
+          "s3Key": "amplify-builds/viewingScheduler-426d4532356e73466b56-build.zip"
         },
         "inAppMessenger": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -90,7 +90,7 @@
         },
         "homeSearch": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/homeSearch-306c2f48727633786830-build.zip"
+          "s3Key": "amplify-builds/homeSearch-7944544b596a68455530-build.zip"
         },
         "jwtgenerator": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -98,7 +98,7 @@
         },
         "opensearch": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/opensearch-504e496e566459306933-build.zip"
+          "s3Key": "amplify-builds/opensearch-6e335a6b7a6461333879-build.zip"
         },
         "imageAnalyzer": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
@@ -114,7 +114,7 @@
         },
         "locationUpdater": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/locationUpdater-71652b734d6638594a30-build.zip"
+          "s3Key": "amplify-builds/locationUpdater-6f2f35634e307a6a614b-build.zip"
         }
       },
       "storage": {
