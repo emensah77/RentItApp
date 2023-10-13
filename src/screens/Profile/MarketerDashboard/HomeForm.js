@@ -3,6 +3,7 @@ import auth from '@react-native-firebase/auth';
 import uuid from 'react-native-uuid';
 
 import PhoneNumber from '../../Authentication/PhoneNumber';
+import Location from '../../Authentication/Location';
 
 import {
   Input,
@@ -59,6 +60,7 @@ const HomeForm = props => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [originalData, setOriginalData] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
 
   const onChangeData = useCallback(
     which => async value => {
@@ -98,6 +100,11 @@ const HomeForm = props => {
     }
   }, [originalData]);
 
+  const handleGetPosition = useCallback(position => {
+    const {latitude, longitude} = position.coords;
+    setUserLocation({latitude, longitude});
+  }, []);
+
   const transformData = useCallback(dataa => {
     return Object.keys(dataa).reduce((acc, key) => {
       if (typeof dataa[key].value !== 'undefined') {
@@ -112,8 +119,13 @@ const HomeForm = props => {
   const submit = useCallback(async () => {
     setLoading(true);
 
-    if (data.title === 'defaultTitle' || data.type.value === 'defaultType') {
-      setError('Title or Type should not have default values.');
+    if (
+      data.title === 'defaultTitle' ||
+      data.type.value === 'defaultType' ||
+      data.availabilityDate === 'defaultAvailabilityDate' ||
+      data.status.value === 'defaultStatus'
+    ) {
+      setError('Title, Type, Availability Date, or Status should not have default values.');
       setLoading(false);
       return;
     }
@@ -154,6 +166,7 @@ const HomeForm = props => {
     const itemId = data.id;
     delete data.id;
     const updateValues = transformData(data);
+    updateValues.userLocation = userLocation;
 
     if (updateValues.status) {
       updateValues.status = updateValues.status.toLowerCase();
@@ -180,7 +193,7 @@ const HomeForm = props => {
       onSuccess(_data);
     }
     setLoading(false);
-  }, [data, onSuccess, transformData]);
+  }, [data, onSuccess, transformData, userLocation]);
 
   useEffect(() => {
     const newData = {};
@@ -217,6 +230,10 @@ const HomeForm = props => {
           Cancel Duplicate
         </Button>
       )}
+
+      <Whitespace marginTop={10} />
+
+      <Location getPosition={handleGetPosition} noRender={true} />
 
       <Whitespace marginTop={10} />
 
