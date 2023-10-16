@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useMemo, useCallback, useRef, useContext} from 'react';
 import {Dimensions, Animated, Alert} from 'react-native';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE, Polygon} from 'react-native-maps';
+
 import {AuthContext} from '../../../navigation/AuthProvider';
 
 import HomeForm from './HomeForm';
@@ -33,8 +34,36 @@ const initialMarker = screen => ({
   latitudeDelta: 0.0922,
   longitudeDelta: 0.0922 * (screen.width / screen.height),
 });
+const SQUARE_SIZE = 0.001; // Adjust based on the desired granularity
+const DENSITY_THRESHOLD = 5; // Adjust based on your data
 
 const screen = Dimensions.get('window');
+
+const getColorForSeverity = severity => {
+  switch (severity) {
+    case 'low':
+      return 'green';
+    case 'medium':
+      return 'yellow';
+    case 'high':
+      return 'red';
+    default:
+      return 'gray';
+  }
+};
+
+const getFillColorForSeverity = severity => {
+  switch (severity) {
+    case 'low':
+      return 'rgba(0, 255, 0, 0.1)'; // green with 20% opacity
+    case 'medium':
+      return 'rgba(255, 255, 0, 0.1)'; // yellow with 20% opacity
+    case 'high':
+      return 'rgba(255, 0, 0, 0.1)'; // red with 20% opacity
+    default:
+      return 'rgba(128, 128, 128, 0.1)'; // gray with 20% opacity
+  }
+};
 
 const MarketerHome = () => {
   const [ranOnce, setRanOnce] = useState(false);
@@ -67,7 +96,7 @@ const MarketerHome = () => {
     setMode('default');
 
     Animated.timing(top, {
-      toValue: 0.45 * screen.height,
+      toValue: 0.55 * screen.height,
       duration: 400,
       useNativeDriver: false,
     }).start();
@@ -106,6 +135,51 @@ const MarketerHome = () => {
     },
     [region],
   );
+  const getRectangleCoordinates = useCallback(center => {
+    if (!center) return [];
+
+    const halfSide = SQUARE_SIZE / 2 - 0.00001; // Slightly reduced size
+    return [
+      {latitude: center.latitude - halfSide, longitude: center.longitude - halfSide},
+      {latitude: center.latitude + halfSide, longitude: center.longitude - halfSide},
+      {latitude: center.latitude + halfSide, longitude: center.longitude + halfSide},
+      {latitude: center.latitude - halfSide, longitude: center.longitude + halfSide},
+    ];
+  }, []);
+
+  const computeDenseCells = useCallback(() => {
+    const gridCounts = {};
+
+    markers.forEach(marker => {
+      const gridX = Math.floor(marker.latitude / SQUARE_SIZE);
+      const gridY = Math.floor(marker.longitude / SQUARE_SIZE);
+
+      const key = `${gridX},${gridY}`;
+      gridCounts[key] = (gridCounts[key] || 0) + 1;
+    });
+
+    return Object.keys(gridCounts)
+      .filter(key => gridCounts[key] > DENSITY_THRESHOLD)
+      .map(key => {
+        const [gridX, gridY] = key.split(',').map(Number);
+        const count = gridCounts[key];
+        let severity;
+        if (count <= 10) severity = 'low';
+        else if (count <= 20) severity = 'medium';
+        else severity = 'high';
+
+        return {
+          center: {
+            latitude: (gridX + 0.5) * SQUARE_SIZE,
+            longitude: (gridY + 0.5) * SQUARE_SIZE,
+          },
+          count,
+          severity,
+        };
+      });
+  }, [markers]);
+
+  const denseCells = useMemo(computeDenseCells, [computeDenseCells]);
 
   const sendUpdatedHomeData = useCallback(
     updatedHome => {
@@ -343,6 +417,14 @@ const MarketerHome = () => {
     }
   }, [ws, position, user.uid, user?.displayName]);
 
+  const handleMarkerPress = useCallback(
+    e => {
+      // setDestination(e.nativeEvent.coordinate);
+      changeMode('home')(e);
+    },
+    [changeMode],
+  );
+
   useEffect(() => {
     if (!position || ranOnce) {
       return;
@@ -371,6 +453,15 @@ const MarketerHome = () => {
         minZoomLevel={5}
         maxZoomLevel={22}>
         {markers.map(marker => {
+          const markerImage =
+            marker.status === 'pending'
+              ? pending
+              : marker.status === 'approved'
+              ? approved
+              : marker.status === 'rejected'
+              ? rejected
+              : neutral;
+
           return (
             <Marker
               key={marker.id}
@@ -382,21 +473,22 @@ const MarketerHome = () => {
                   : marker.title
               }
               description={marker.description}
-              image={
-                marker.status === 'pending'
-                  ? pending
-                  : marker.status === 'approved'
-                  ? approved
-                  : marker.status === 'rejected'
-                  ? rejected
-                  : neutral
-              }
-              onPress={changeMode('home', undefined, marker)}
+              image={markerImage}
+              onPress={handleMarkerPress}
             />
           );
         })}
-      </MapView>
 
+        {denseCells.map(cell => (
+          <Polygon
+            key={`${cell.center.latitude},${cell.center.longitude}`}
+            coordinates={getRectangleCoordinates(cell.center)}
+            strokeColor={getColorForSeverity(cell.severity)}
+            fillColor={getFillColorForSeverity(cell.severity)}
+            strokeWidth={2}
+          />
+        ))}
+      </MapView>
       {searchAfter && (
         <Container type="top-25" width="100%" onPress={makeANewRequest}>
           <Container row type="chipSmall" color="#194CC3" width={110}>

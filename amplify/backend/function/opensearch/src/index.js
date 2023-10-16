@@ -1351,6 +1351,7 @@ async function getHomeStats(userId, startTime, endTime) {
         'available',
         'homeownerName',
         'neighborhood',
+        'userLocation',
         'verified'
       ],
       sort: [
