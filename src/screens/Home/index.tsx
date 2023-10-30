@@ -41,6 +41,15 @@ interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
 const loaderStyle = {flex: 1, justifyContent: 'center', alignItems: 'center'};
 
 const HomeScreen: FC<HomeScreenProps> = _props => {
+  const initialRegion = useMemo(() => {
+    return {
+      latitude: 5.602028159656166,
+      longitude: -0.183158678544458,
+      latitudeDelta: 0.8,
+      longitudeDelta: 0.8,
+    };
+  }, []);
+
   const {navigation} = _props;
   const [status, setStatus] = useState('Entire Flat');
   const [latitude, setLatitude] = useState<any>(null);
@@ -59,6 +68,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoVersion, setVideoVersion] = useState(null);
   const [showForm, setShowForm] = useState(true);
+  const [region, setRegion] = useState(initialRegion);
 
   const fetchVideoWatchStatus = useCallback(async () => {
     const userId = auth().currentUser?.uid;
@@ -89,6 +99,33 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       console.error('Error fetching video watch status:', error);
     }
   }, []);
+
+  // Helper function to compute the region that includes all homes
+  const computeRegionForHomes = homes => {
+    const totalHomes = homes.length;
+
+    const averageLat = homes.reduce((sum, home) => sum + home.location.lat, 0) / totalHomes;
+    const averageLon = homes.reduce((sum, home) => sum + home.location.lon, 0) / totalHomes;
+
+    const maxLatDelta =
+      Math.max(...homes.map(home => Math.abs(home.location.lat - averageLat))) * 2;
+    const maxLonDelta =
+      Math.max(...homes.map(home => Math.abs(home.location.lon - averageLon))) * 2;
+
+    return {
+      latitude: averageLat,
+      longitude: averageLon,
+      latitudeDelta: maxLatDelta,
+      longitudeDelta: maxLonDelta,
+    };
+  };
+
+  useEffect(() => {
+    if (showMap && posts.length > 0 && mapRef.current) {
+      const newRegion = computeRegionForHomes(posts);
+      setRegion(newRegion); // Set the new region
+    }
+  }, [posts, showMap]);
 
   const handleModalClose = useCallback(() => {
     setShowVideo(false);
@@ -408,19 +445,12 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
 
   const handleMap = useCallback(
     val => () => {
-      setShowMap(val);
+      if (posts.length > 0) {
+        setShowMap(val);
+      }
     },
-    [],
+    [posts],
   );
-
-  const initialRegion = useMemo(() => {
-    return {
-      latitude: 5.602028159656166,
-      longitude: -0.183158678544458,
-      latitudeDelta: 0.8,
-      longitudeDelta: 0.8,
-    };
-  }, []);
 
   const coords = useCallback(place => {
     return {latitude: place.location.lat, longitude: place.location.lon};
@@ -502,7 +532,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
               minZoomLevel={10}
               maxZoomLevel={500}
               onRegionChangeComplete={onRegionChangeComplete}
-              initialRegion={initialRegion}>
+              initialRegion={region}>
               {visibleHomes.map((place: any) => (
                 <CustomMarker
                   key={place.id}

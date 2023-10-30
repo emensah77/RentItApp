@@ -144,11 +144,18 @@ exports.handler = async (event) => {
     let userId;
     let startTime;
     let endTime;
+    let searchAfter;
+    let paginateStatus;
     try {
       // Parse the home id from the queryStringParameters
       userId = event.queryStringParameters.userId;
       startTime = event.queryStringParameters.startTime;
       endTime = event.queryStringParameters.endTime;
+       // Check if searchAfter and paginateStatus are provided before parsing/using
+      searchAfter = event.queryStringParameters.searchAfter ? 
+      JSON.parse(event.queryStringParameters.searchAfter) : null;
+
+      paginateStatus = event.queryStringParameters.paginateStatus || null;
     } catch (error) {
       console.error('Error parsing stats details: ', error);
       return {
@@ -157,7 +164,7 @@ exports.handler = async (event) => {
       };
     }
     try {
-      const homeStats = await getHomeStats(userId, startTime, endTime);
+      const homeStats = await getHomeStats(userId, startTime, endTime, searchAfter, paginateStatus);
       return {
         statusCode: 200,
         headers: {
@@ -1286,7 +1293,7 @@ function calculateCompensation(count) {
   return Math.round(count * rate);
 }
 
-async function getHomeStats(userId, startTime, endTime) {
+async function getHomeStats(userId, startTime, endTime, searchAfter = null, paginateStatus = null) {
   console.log(`Fetching home stats for user ${userId} between ${startTime} and ${endTime}...`);
 
   const miniSuperUserLocalities = await fetchSupervisorLocalities();
@@ -1352,6 +1359,7 @@ async function getHomeStats(userId, startTime, endTime) {
         'homeownerName',
         'neighborhood',
         'userLocation',
+        'updatedBy',
         'verified'
       ],
       sort: [
@@ -1366,6 +1374,10 @@ async function getHomeStats(userId, startTime, endTime) {
         }
       }
     };
+
+     if (searchAfter && status === paginateStatus) {
+      searchQueryBody.search_after = searchAfter;  // Use the searchAfter value specific to the status
+    }
 
     if (userId === SUPER_USER_ID) {
       // No additional query adjustments needed for super user
@@ -1398,8 +1410,10 @@ async function getHomeStats(userId, startTime, endTime) {
               const data = JSON.parse(responseBody);
               console.log('stats data', data);
               const homesData = data.hits.hits.map((hit) => hit._source);
+              const searchAfterValue = data.hits.hits.length > 0 ? data.hits.hits[data.hits.hits.length - 1].sort : null;
+
               console.log('homesData', homesData);
-              resolve({ count: data.hits.total.value, homes: homesData });
+              resolve({ count: data.hits.total.value, homes: homesData, searchAfter: searchAfterValue });
             });
           },
           reject
@@ -1407,6 +1421,8 @@ async function getHomeStats(userId, startTime, endTime) {
       });
 
       stats[status] = result;
+      console.log('stats', stats);
+
 
       // Check if the status is 'approved' or 'APPROVED' to calculate the compensation
       if (status.toLowerCase() === 'approved') {

@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import {navigate} from '../navigation/Router';
 
 async function requestUserPermission() {
@@ -14,25 +16,47 @@ async function requestUserPermission() {
   }
 }
 
+export const storeFcmTokenInFirestore = async (userId, fcmToken) => {
+  try {
+    // Store the FCM token in Firestore
+    await firestore().collection('deviceFcms').doc(userId).set(
+      {
+        deviceToken: fcmToken,
+        userId,
+      },
+      {merge: true},
+    ); // Use merge to avoid overwriting other fields
+
+    console.debug('FCM Token stored in Firestore:', fcmToken);
+  } catch (error) {
+    console.error('Error storing FCM token in Firestore:', error);
+  }
+};
+
 export const getFcmToken = async () => {
   const fcmToken = await AsyncStorage.getItem('fcmToken');
 
   if (!fcmToken) {
     try {
+      // Attempt to retrieve the new FCM token
       const newFcmToken = await messaging().getToken();
-      // logic for the new installed app on device
       if (newFcmToken) {
+        // Store the new token in AsyncStorage
         await AsyncStorage.setItem('fcmToken', newFcmToken);
-        console.debug('New Token:', newFcmToken);
+        console.debug('New FCM Token:', newFcmToken);
+
+        const userId = auth()?.currentUser?.uid;
+
+        // Store the new token in Firestore
+        await storeFcmTokenInFirestore(userId, newFcmToken);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error getting FCM token:', error);
     }
   } else {
-    console.debug('Old Token:', fcmToken);
+    console.debug('Existing FCM Token:', fcmToken);
   }
 };
-
 export const notificationListener = async () => {
   messaging().onNotificationOpenedApp(remoteMessage => {
     // console.debug(
