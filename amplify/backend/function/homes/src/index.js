@@ -14,7 +14,7 @@ https.globalAgent.maxSockets = Infinity;
 
 exports.handler = async (event) => {
   const bucket = 'pics175634-dev';
-  const key = 'Landlord App_Northern1.xlsx';
+  const key = 'LandlordApp_Central2.xlsx';
   const workbook = new excel.Workbook();
 
   const params = {
@@ -24,7 +24,7 @@ exports.handler = async (event) => {
 
   const data = await s3.getObject(params).promise();
   await workbook.xlsx.load(data.Body);
-  const worksheet = workbook.getWorksheet('Sheet2');
+  const worksheet = workbook.getWorksheet('Sheet1');
   console.log('Worksheet loaded', worksheet);
   const putPromises = []; // An array to store the promises returned by the Put operations
 
@@ -124,7 +124,7 @@ exports.handler = async (event) => {
       newPrice: 0.0, // default new price
       latitude: Number(rowData[7]), // Changed from parseFloat(rowData[9])
       longitude: Number(rowData[8]),
-      neighborhood: rowData[4],
+      neighborhood: rowData[5],
     };
 
     const params = {

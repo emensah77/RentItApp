@@ -86,11 +86,11 @@
         },
         "homes": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/homes-345a794e4d483734714e-build.zip"
+          "s3Key": "amplify-builds/homes-642f5938736d4e425368-build.zip"
         },
         "homeSearch": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",
-          "s3Key": "amplify-builds/homeSearch-77546f4b465a5747414a-build.zip"
+          "s3Key": "amplify-builds/homeSearch-79377850685145414230-build.zip"
         },
         "jwtgenerator": {
           "deploymentBucketName": "amplify-airbnbclone-dev-175634-deployment",

@@ -38,52 +38,68 @@ const Finish = () => {
   }, [navigation]);
 
   const onChangeData = useCallback(
-    which => async value => {
-      const _newData = {...newData, [which]: value};
-      setNewData({..._newData});
+    which => value => {
+      setNewData(prevNewData => {
+        const updatedNewData = {...prevNewData, [which]: value};
 
-      if (which === 'email' && /.+@.+\..+/.test(value)) {
-        showError('email')('');
-      } else if (which === 'email') {
-        showError('email')('Enter a valid email address');
-        _newData.email = '';
-      } else if (
-        which === 'password' &&
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{6,}$/.test(value)
-      ) {
-        showError('password')('');
-      } else if (which === 'password') {
-        showError('password')(
-          'Password must have a minimum six characters, at least one letter, one number and one special character',
-        );
-        _newData.password = '';
-      }
+        // Perform validation inside the updater function
+        if (which === 'email' && /.+@.+\..+/.test(value)) {
+          setError(prevError => ({...prevError, email: ''}));
+        } else if (which === 'email') {
+          setError(prevError => ({...prevError, email: 'Enter a valid email address'}));
+          updatedNewData.email = ''; // Clear the invalid email
+        } else if (
+          which === 'password' &&
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/.test(value)
+        ) {
+          setError(prevError => ({...prevError, password: ''}));
+        } else if (which === 'password') {
+          setError(prevError => ({
+            ...prevError,
+            password:
+              'Password must have a minimum six characters, at least one letter, one number and one special character',
+          }));
+          updatedNewData.password = ''; // Clear the invalid password
+        }
 
-      const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
-      await AsyncStorage.setItem(
-        'authentication::data',
-        JSON.stringify({...authData, ..._newData}),
-      );
-      const {email, firstname, lastname, birthDay, password, phoneNumber, provider} = _newData;
-      setDisabled(
-        !email || !firstname || !lastname || !birthDay || !(provider ? phoneNumber : password),
-      );
+        // After validation, determine if the 'Agree and continue' button should be disabled
+        const isDisabled =
+          !updatedNewData.email ||
+          !updatedNewData.firstname ||
+          !updatedNewData.lastname ||
+          !updatedNewData.birthDay ||
+          !(updatedNewData.provider ? updatedNewData.phoneNumber : updatedNewData.password);
+        setDisabled(isDisabled);
+
+        // Save the updated data to AsyncStorage
+        AsyncStorage.setItem('authentication::data', JSON.stringify(updatedNewData)).catch(err => {
+          console.error('Failed to save data to AsyncStorage:', err);
+        });
+
+        // Return the updated state
+        return updatedNewData;
+      });
     },
-    [newData, showError],
+    [],
   );
 
   const submit = useCallback(async () => {
-    const {email, firstname, lastname, birthDay, password, phoneNumber, provider} = newData;
+    // No need to destructure newData here since we're using it directly
+    setDisabled(true); // Prevent multiple submissions
 
-    if (!email || !firstname || !lastname || !birthDay || !(provider ? phoneNumber : password)) {
-      return showError('general')(
-        'You need to fill in the form completely before you can continue.',
-      );
+    if (
+      !newData.email ||
+      !newData.firstname ||
+      !newData.lastname ||
+      !newData.birthDay ||
+      !(newData.provider ? newData.phoneNumber : newData.password)
+    ) {
+      showError('general')('You need to fill in the form completely before you can continue.');
+      setDisabled(false); // Re-enable submission if there's an error
+      return;
     }
 
-    const authData = JSON.parse((await AsyncStorage.getItem('authentication::data')) || '{}');
-    // `phoneNumber` is set in the inline component and as such is set in `newData` so it works
-    await AsyncStorage.setItem('authentication::data', JSON.stringify({...authData, ...newData}));
+    // Since we're not updating newData here, we can avoid the async function and AsyncStorage call
     goToAgreement();
   }, [newData, goToAgreement, showError]);
 

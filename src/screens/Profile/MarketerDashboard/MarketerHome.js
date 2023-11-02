@@ -464,7 +464,7 @@ const MarketerHome = () => {
 
           return (
             <Marker
-              key={marker.id}
+              key={`${marker.id}-${marker.status}`}
               identifier={marker.id}
               coordinate={marker}
               title={

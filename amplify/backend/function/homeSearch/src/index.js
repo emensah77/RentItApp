@@ -28,22 +28,25 @@ const dashboardWorkerIDs = [
   "gGrSg6noBRcDLoGRfAb7ugtxaK32",
   "kaBivAjCzeME7T4yZyolGuK9XF72",
   "r3G0H4PGxFfqniM4iozlMPOHert2",
-  "t0AJw2xBBFdt2vLiBnlGb53fLRz2"
+  "t0AJw2xBBFdt2vLiBnlGb53fLRz2",
+  "XIrjWTaSfGhxW4nHqJ0l5PhnraY2",
+  "UWHvpJ1XoObsFYTFR48zYe6jscJ2",
 ];
 
 async function getSupervisorEndpointArnFromToken(fcmToken) {
-  const fcmsnsendpointRef = db.collection('fcmsnsendpoint');
-
-  // Query the collection for the document with the matching FCM token
-  const querySnapshot = await fcmsnsendpointRef.where('fcmToken', '==', fcmToken).limit(1).get();
-  
-  if (querySnapshot.empty) {
-    // If no document is found with the FCM token, no endpoint ARN exists
-    console.log('No matching endpoint ARN found for the given FCM token.');
+  if (!fcmToken) {
+    console.log('No FCM token provided.');
     return null;
   }
 
-  // Retrieve the endpoint ARN from the document
+  const fcmsnsendpointRef = db.collection('fcmsnsendpoint');
+  const querySnapshot = await fcmsnsendpointRef.where('fcmToken', '==', fcmToken).limit(1).get();
+  
+  if (querySnapshot.empty) {
+    console.log('No matching endpoint ARN found for the provided FCM token.');
+    return null;
+  }
+
   let endpointArn = null;
   querySnapshot.forEach(doc => {
     endpointArn = doc.data().endpointArn;
@@ -51,8 +54,8 @@ async function getSupervisorEndpointArnFromToken(fcmToken) {
 
   return endpointArn;
 }
+
 async function sendUpdateNotification(endpointArn, updatedAttributes) {
-  // Construct the notification message
   const message = {
     GCM: JSON.stringify({
       notification: {
@@ -65,7 +68,6 @@ async function sendUpdateNotification(endpointArn, updatedAttributes) {
     })
   };
 
-  // Publish a push notification to the supervisor's device using FCM through Amazon SNS
   const publishParams = {
     Message: JSON.stringify(message),
     MessageStructure: 'json',
@@ -82,15 +84,14 @@ async function sendUpdateNotification(endpointArn, updatedAttributes) {
 
 async function createSNSEndpoint(fcmToken, userId) {
   const createEndpointParams = {
-    PlatformApplicationArn: 'arn:aws:sns:us-east-2:945426664553:app/GCM/RentIt', // Your SNS Platform Application ARN
+    PlatformApplicationArn: 'arn:aws:sns:us-east-2:945426664553:app/GCM/RentIt',
     Token: fcmToken,
-    CustomUserData: `UserID: ${userId}`, // Optional user data to associate the endpoint with a specific user
+    CustomUserData: `UserID: ${userId}`,
   };
 
   try {
     const endpointData = await sns.createPlatformEndpoint(createEndpointParams).promise();
     const endpointArn = endpointData.EndpointArn;
-    // Store the endpointArn in your database against the supervisor's user ID
     await storeEndpointArn(userId, endpointArn);
     return endpointArn;
   } catch (err) {
@@ -100,45 +101,37 @@ async function createSNSEndpoint(fcmToken, userId) {
 }
 
 async function storeEndpointArn(userId, endpointArn) {
-  // Implement this function to store the endpoint ARN in Firestore
   const fcmsnsendpointRef = db.collection('fcmsnsendpoint');
   await fcmsnsendpointRef.doc(userId).set({
     endpointArn: endpointArn,
     userId: userId,
   });
 }
+
 async function ensureSNSEndpoint(userId) {
-  const fcmToken = await retrieveFcmToken(userId);
-  
-  // Check if an endpoint ARN already exists for the FCM token
+  const userRef = db.collection('users').doc(userId);
+  const userDoc = await userRef.get();
+
+  if (!userDoc.exists) {
+    console.log(`User document not found for ID: ${userId}`);
+    return null;
+  }
+
+  const user = userDoc.data();
+  const fcmToken = user.fcmToken;
+
+  if (!fcmToken) {
+    console.log(`No FCM token attached to user profile for ID: ${userId}`);
+    return null;
+  }
+
   let endpointArn = await getSupervisorEndpointArnFromToken(fcmToken);
-  
-  // If the endpoint ARN does not exist, create a new endpoint
+
   if (!endpointArn) {
     endpointArn = await createSNSEndpoint(fcmToken, userId);
   }
-  
+
   return endpointArn;
-}
-
-async function retrieveFcmToken(userId) {
-  const deviceFcmsRef = db.collection('deviceFcms');
-  
-  // Get the document for the specified userId
-  const snapshot = await deviceFcmsRef.where('userId', '==', userId).get();
-
-  if (snapshot.empty) {
-    console.log('No matching documents for the given user ID.');
-    return null;
-  }
-  
-  let fcmToken = null;
-  snapshot.forEach(doc => {
-    // Assuming there's only one token per user, break after the first match
-    fcmToken = doc.data().deviceToken;
-  });
-
-  return fcmToken;
 }
 
 
@@ -349,24 +342,24 @@ async function updateItem(key, updateValues, userId) {
       // Retrieve the locality of the updated home
       const homeLocality = response.Attributes.locality;
 
-      // Find the supervisor(s) responsible for the updated home's locality using the pre-fetched data
-      let supervisorUserId = null;
+      const supervisorUserIds = [];
+
+      // Collect all supervisor IDs responsible for the home's locality
       for (const [supervisorId, localities] of Object.entries(miniSuperUserLocalities)) {
         if (localities.includes(homeLocality)) {
-          supervisorUserId = supervisorId;
-          break;
+          supervisorUserIds.push(supervisorId);
         }
       }
 
+
       // If a supervisor is found, ensure there's an SNS endpoint and send a notification
-      if (supervisorUserId) {
+      // Ensure there's an SNS endpoint for each supervisor and send a notification
+      for (const supervisorUserId of supervisorUserIds) {
         const endpointArn = await ensureSNSEndpoint(supervisorUserId);
         if (endpointArn) {
           await sendUpdateNotification(endpointArn, response.Attributes);
         }
-      } else {
-        console.log(`No supervisor found for locality: ${homeLocality}`);
-      }
+      } 
     } catch (error) {
       console.error('Error during the update and notification process:', error);
     }

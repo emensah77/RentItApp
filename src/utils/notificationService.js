@@ -12,7 +12,8 @@ async function requestUserPermission() {
 
   if (enabled) {
     console.debug('Authorization Status:', authStatus);
-    getFcmToken();
+    const userId = auth()?.currentUser?.uid;
+    getFcmToken(userId);
   }
 }
 
@@ -26,6 +27,12 @@ export const storeFcmTokenInFirestore = async (userId, fcmToken) => {
       },
       {merge: true},
     ); // Use merge to avoid overwriting other fields
+    await firestore().collection('users').doc(userId).set(
+      {
+        fcmToken,
+      },
+      {merge: true},
+    );
 
     console.debug('FCM Token stored in Firestore:', fcmToken);
   } catch (error) {
@@ -33,7 +40,7 @@ export const storeFcmTokenInFirestore = async (userId, fcmToken) => {
   }
 };
 
-export const getFcmToken = async () => {
+export const getFcmToken = async userId => {
   const fcmToken = await AsyncStorage.getItem('fcmToken');
 
   if (!fcmToken) {
@@ -45,16 +52,19 @@ export const getFcmToken = async () => {
         await AsyncStorage.setItem('fcmToken', newFcmToken);
         console.debug('New FCM Token:', newFcmToken);
 
-        const userId = auth()?.currentUser?.uid;
-
         // Store the new token in Firestore
         await storeFcmTokenInFirestore(userId, newFcmToken);
       }
     } catch (error) {
       console.error('Error getting FCM token:', error);
     }
-  } else {
+  } else if (fcmToken && userId) {
+    // Existing token in AsyncStorage and the user is logged in
     console.debug('Existing FCM Token:', fcmToken);
+
+    await storeFcmTokenInFirestore(userId, fcmToken); // Update Firestore with the existing token
+  } else {
+    console.error('FCM token retrieval failed or user is not logged in');
   }
 };
 export const notificationListener = async () => {

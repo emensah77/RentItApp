@@ -32,54 +32,61 @@ const Social = props => {
 
   const setDataFromProvider = useCallback(
     async (provider, data) => {
-      if (!data || !data.email) {
-        console.error('No data or email to set for provider:', provider);
+      if (!data) {
         return;
       }
 
-      // Query Firestore to check if a user with the given email already exists
-      const usersRef = firestore().collection('users');
-      const querySnapshot = await usersRef
+      await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, provider}));
+
+      const query = await firestore()
+        .collection('users')
         .where('email', '==', data.email)
         .get()
         .catch(console.error);
+      let route = 'Notification';
+      if (query && query.docs && query.docs.length > 0) {
+        const {_data} = query.docs[0];
+        const {
+          fname: firstname,
+          lname: lastname,
+          email: _email,
+          phoneNumber,
+          birthDay,
+          userImg: profilePicture,
+          marketing,
+          agreement,
+          notification,
+        } = _data;
 
-      let route = 'Notification'; // Default route
-
-      if (querySnapshot && !querySnapshot.empty) {
-        // User already exists, update the existing user document
-        const userDoc = querySnapshot.docs[0];
-        await usersRef.doc(userDoc.id).set({...data, provider}, {merge: true});
-
-        const userData = userDoc.data();
-        // Update AsyncStorage with the latest user data
         await AsyncStorage.setItem(
           'authentication::data',
           JSON.stringify({
             ...data,
-            ...userData,
             provider,
+            email: _email,
+            firstname,
+            lastname,
+            birthDay,
+            phoneNumber,
+            profilePicture,
+            marketing,
+            agreement,
+            notification,
           }),
         );
 
-        // Determine the next route based on user's data
-        route = userData.notification ? 'Main' : 'Notification';
-        route = userData.agreement ? route : 'Agreement';
-        route =
-          userData.email && userData.firstname && userData.lastname && userData.birthDay
-            ? route
-            : 'Finish';
-      } else {
-        // No user exists with the email, create a new user document
-        await usersRef.add({...data, provider});
+        if (!notification) {
+          route = 'Notification';
+        }
 
-        // Set AsyncStorage for new user data
-        await AsyncStorage.setItem('authentication::data', JSON.stringify({...data, provider}));
+        if (!agreement) {
+          route = 'Agreement';
+        }
 
-        // For a new user, the next route would likely be to finish setting up their profile
-        route = 'Finish';
+        if (!_email || !firstname || !lastname || !birthDay) {
+          route = 'Finish';
+        }
       }
-
       goTo(route);
     },
     [goTo],
