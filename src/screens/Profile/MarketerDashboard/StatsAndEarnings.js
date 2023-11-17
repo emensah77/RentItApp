@@ -20,7 +20,7 @@ import arrowDown from '../../../assets/images/arrow-down.png';
 import pending from '../../../assets/images/markers/pending.png';
 import rejected from '../../../assets/images/markers/rejected.png';
 import approved from '../../../assets/images/markers/approved.png';
-import earnings from '../../../assets/images/earnings.png';
+// import earnings from '../../../assets/images/earnings.png';
 import {formatDate} from '../../../utils';
 
 const StatsAndEarnings = () => {
@@ -204,7 +204,7 @@ const StatsAndEarnings = () => {
 
       <Whitespace marginTop={30} />
 
-      <Container type="chipDeSelected" height={100} width="100%" color="black">
+      {/* <Container type="chipDeSelected" height={100} width="100%" color="black">
         <CardDisplay
           name={<Image src={earnings} width={20} height={20} />}
           location={
@@ -220,7 +220,7 @@ const StatsAndEarnings = () => {
           center
           bold
         />
-      </Container>
+      </Container> */}
 
       <Whitespace marginTop={30} />
 

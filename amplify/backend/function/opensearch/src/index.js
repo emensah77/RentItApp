@@ -670,11 +670,10 @@ async function search(params) {
   } else if (searchQuery) {
     searchQueryBody.query.bool = {
       should: [
-        { match_phrase: { title: searchQuery } },
-        { match_phrase: { description: searchQuery } },
         { match: { title: { query: searchQuery, operator: 'and' } } },
-        { match: { description: { query: searchQuery, operator: 'and' } } },
+        { match: { description: { query: searchQuery, operator: 'and' } } }
       ],
+      minimum_should_match: 1
     };
   }
 

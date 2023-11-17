@@ -1,6 +1,9 @@
 import React, {useEffect, useState, useMemo, useCallback, useRef, useContext} from 'react';
 import {Dimensions, Animated, Alert} from 'react-native';
+import {useRoute, useIsFocused} from '@react-navigation/native';
 import MapView, {Marker, PROVIDER_GOOGLE, Polygon} from 'react-native-maps';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Agreement from '../../Authentication/Agreement';
 
 import {AuthContext} from '../../../navigation/AuthProvider';
 
@@ -77,6 +80,9 @@ const MarketerHome = () => {
   const [markerData, setMarkerData] = useState();
   const [mode, setMode] = useState('default');
   const {user} = useContext(AuthContext);
+  const route = useRoute();
+  const isFocused = useIsFocused();
+  const [showAgreement, setShowAgreement] = useState(false);
 
   const top = useRef(new Animated.Value(0.5 * screen.height)).current;
 
@@ -145,6 +151,17 @@ const MarketerHome = () => {
       {latitude: center.latitude + halfSide, longitude: center.longitude + halfSide},
       {latitude: center.latitude - halfSide, longitude: center.longitude + halfSide},
     ];
+  }, []);
+
+  useEffect(() => {
+    const checkAgreement = async () => {
+      const agreement = await AsyncStorage.getItem('marketerTermsAgreed');
+      if (!agreement) {
+        setShowAgreement(true);
+      }
+    };
+
+    checkAgreement();
   }, []);
 
   const computeDenseCells = useCallback(() => {
@@ -345,6 +362,15 @@ const MarketerHome = () => {
   );
 
   useEffect(() => {
+    if (isFocused && route.params?.itemDetails) {
+      // Since the screen is focused, we can safely access route.params here.
+      setMarkerData(route.params.itemDetails); // Directly use the details from the notification
+      setMode('home'); // Set mode to 'home' to show the HomeForm with notification details
+      expand('home'); // Directly call expand to open the HomeForm
+    }
+  }, [isFocused, route.params?.itemDetails, setMarkerData, setMode, expand]);
+
+  useEffect(() => {
     const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
 
     _ws.onopen = function () {
@@ -434,6 +460,10 @@ const MarketerHome = () => {
     fetchUnverifiedHomes();
     setRanOnce(true);
   }, [fetchUnverifiedHomes, position, ranOnce, searchAfter]);
+
+  if (showAgreement) {
+    return <Agreement marketerTerms={true} />;
+  }
 
   return (
     <Page inline type="drawer" header="Marketer Home">

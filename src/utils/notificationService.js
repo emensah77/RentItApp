@@ -73,23 +73,44 @@ export const notificationListener = async () => {
     //   'Notification caused app to open from background state:',
     //   remoteMessage,
     // );
+    if (remoteMessage.data && remoteMessage.data.screen === 'Marketer Home') {
+      // Navigate to the MarketerHome screen with the notification data
+      const itemDetails = JSON.parse(remoteMessage.data.itemDetails);
+      navigate('MarketerDashboard', {
+        screen: 'Marketer Home',
+        params: {itemDetails},
+      });
+    }
     navigate('Post', remoteMessage.data);
   });
 
-  messaging().onMessage(async (/* remoteMessage */) => {
+  messaging().onMessage(async remoteMessage => {
+    const itemDetails = JSON.parse(remoteMessage.data.itemDetails);
+
+    if (remoteMessage.data && remoteMessage.data.screen === 'Marketer Home') {
+      // Navigate to the MarketerHome screen with the notification data
+      navigate('MarketerDashboard', {
+        screen: 'Marketer Home',
+        params: {itemDetails},
+      });
+    }
     // console.debug('received in foreground', remoteMessage),
   });
 
   messaging()
     .getInitialNotification()
     .then(remoteMessage => {
-      if (remoteMessage) {
-        // console.debug(
-        //   'Notification caused app to open from quit state:',
-        //   remoteMessage,
-        // );
-        navigate('Post', remoteMessage.data);
+      const itemDetails = JSON.parse(remoteMessage.data.itemDetails);
+
+      if (remoteMessage && remoteMessage.data && remoteMessage.data.screen === 'Marketer Home') {
+        // Navigate to the MarketerHome screen with the notification data
+        navigate('MarketerDashboard', {
+          screen: 'Marketer Home',
+          params: {itemDetails},
+        });
       }
+
+      navigate('Post', remoteMessage.data);
     });
 };
 

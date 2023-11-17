@@ -5,6 +5,8 @@ const { PredictionServiceClient } = require('@google-cloud/aiplatform');
 const admin = require('firebase-admin');
 const serviceAccount = require('./rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json');
 const sns = new AWS.SNS({ apiVersion: '2010-03-31' });
+const OPENAI_API_KEY = "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";
+const axios = require('axios');
 
 
 admin.initializeApp({
@@ -18,6 +20,7 @@ let miniSuperUserLocalities = {}; // This will be your cache
 
 const dashboardWorkerIDs = [
   "7hPKvMD7BEAefbT07axJ",
+  "KBgNFfnl3cS0TZ8WdoqoEnsBNEn2",
   "AlSe10LMZXXvmIjq9yDW1GJoI1n2",
   "Fc43sGs32PaW7v8sooX61FtdaMY2",
   "INzOOSz9KbVbEMhOKNu7yfCdmhD2",
@@ -31,7 +34,47 @@ const dashboardWorkerIDs = [
   "t0AJw2xBBFdt2vLiBnlGb53fLRz2",
   "XIrjWTaSfGhxW4nHqJ0l5PhnraY2",
   "UWHvpJ1XoObsFYTFR48zYe6jscJ2",
+  "a8TcLIjSfSdmdkjltKdC9A63Yps1",
+  "EMn7WRC0P5M02nnEmLaxNzH3fY83",
+  "t0AJw2xBBFdt2vLiBnlGb53fLRz2",
 ];
+
+
+
+async function handleTextGeneration(prompt, isRevision) {
+  const openAIEndpoint = 'https://api.openai.com/v1/chat/completions';
+  const headers = {
+    'Authorization': `Bearer ${OPENAI_API_KEY}`,
+    'Content-Type': 'application/json'
+  };
+
+  const data = {
+    model: "gpt-3.5-turbo", // Or whichever model you're subscribed to
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful assistant experienced in real estate listings, especially for properties in Ghana."
+      },
+      {
+        role: "user",
+        content: isRevision
+          ? `Revise the following listing based on the provided details: ${prompt}`
+          : `Generate a real estate listing based on the following details: ${prompt}`
+      }
+    ]
+  };
+
+  try {
+    const response = await axios.post(openAIEndpoint, data, { headers });
+    const answer = response.data.choices[0].message.content;
+    return answer;
+  } catch (error) {
+    console.error('Error calling OpenAI Chat API:', error);
+    throw error;
+  }
+}
+
+
 
 async function getSupervisorEndpointArnFromToken(fcmToken) {
   if (!fcmToken) {
@@ -60,10 +103,12 @@ async function sendUpdateNotification(endpointArn, updatedAttributes) {
     GCM: JSON.stringify({
       notification: {
         title: 'Home Update Notification',
-        body: `A home with ID ${updatedAttributes.homeId} has been updated. Check out the new details.`
+        body: `A home with ID ${updatedAttributes.id} has been updated. It is located in ${updatedAttributes.locality}. Homeowner number is ${updatedAttributes.phoneNumber}`
       },
       data: {
-        itemDetails: updatedAttributes
+        itemDetails: updatedAttributes,
+        screen: "Marketer Home",
+
       }
     })
   };
@@ -321,53 +366,60 @@ async function updateItem(key, updateValues, userId) {
     expressionAttributeValues[':updatedTime'] = new Date().toISOString();
   }
 
-  // Remove trailing comma
   updateExpression = updateExpression.trim().endsWith(',')
     ? updateExpression.trim().slice(0, -1)
     : updateExpression.trim();
 
-  const params = {
-    TableName: 'UnverifiedHomes',
-    Key: key,
-    UpdateExpression: updateExpression,
-    ExpressionAttributeNames: expressionAttributeNames,
-    ExpressionAttributeValues: expressionAttributeValues,
-    ReturnValues: 'ALL_NEW',
-  };
+  // Perform the database update independently
+  let updateResponse;
+  try {
+    const params = {
+      TableName: 'UnverifiedHomes',
+      Key: key,
+      UpdateExpression: updateExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
+      ReturnValues: 'ALL_NEW',
+    };
 
-  const response = await dynamodb.update(params).promise();
+    updateResponse = await dynamodb.update(params).promise();
+  } catch (error) {
+    console.error('Error updating item:', error);
+    throw error; // Rethrow the error or handle it as per your error handling strategy
+  }
 
-  if (response.Attributes) {
-    try {
-      // Retrieve the locality of the updated home
-      const homeLocality = response.Attributes.locality;
+  // If the update is successful, proceed with sending notifications
+  if (updateResponse && updateResponse.Attributes) {
+    sendNotifications(updateResponse.Attributes).catch(error => {
+      console.error('Error during the notification process:', error);
+      // Handle the notification error here, but don't throw it
+    });
+  }
 
-      const supervisorUserIds = [];
+  return updateResponse.Attributes;
+}
 
-      // Collect all supervisor IDs responsible for the home's locality
-      for (const [supervisorId, localities] of Object.entries(miniSuperUserLocalities)) {
-        if (localities.includes(homeLocality)) {
-          supervisorUserIds.push(supervisorId);
-        }
-      }
+async function sendNotifications(updatedAttributes) {
+  // Retrieve the locality of the updated home
+  const homeLocality = updatedAttributes.locality;
 
+  const supervisorUserIds = [];
 
-      // If a supervisor is found, ensure there's an SNS endpoint and send a notification
-      // Ensure there's an SNS endpoint for each supervisor and send a notification
-      for (const supervisorUserId of supervisorUserIds) {
-        const endpointArn = await ensureSNSEndpoint(supervisorUserId);
-        if (endpointArn) {
-          await sendUpdateNotification(endpointArn, response.Attributes);
-        }
-      } 
-    } catch (error) {
-      console.error('Error during the update and notification process:', error);
+  // Collect all supervisor IDs responsible for the home's locality
+  for (const [supervisorId, localities] of Object.entries(miniSuperUserLocalities)) {
+    if (localities.includes(homeLocality)) {
+      supervisorUserIds.push(supervisorId);
     }
   }
 
-  return response.Attributes;
+  // Ensure there's an SNS endpoint for each supervisor and send a notification
+  for (const supervisorUserId of supervisorUserIds) {
+    const endpointArn = await ensureSNSEndpoint(supervisorUserId);
+    if (endpointArn) {
+      await sendUpdateNotification(endpointArn, updatedAttributes);
+    }
+  }
 }
-
 
 async function addComment(commentDetails) {
   // Generate a new UUID for the comment
@@ -642,6 +694,26 @@ for (const key in inputData) {
       },
       body: JSON.stringify(updatedDemand),
     };
+  }
+
+  
+  if (event.httpMethod === 'POST' && event.path === '/textgeneration') {
+    const { prompt, isRevision } = JSON.parse(event.body);
+    
+    try {
+      const generatedText = await handleTextGeneration(prompt, isRevision);
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ generatedText })
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: error.message })
+      };
+    }
   }
 
   if (httpMethod === 'POST' && path.endsWith('/comments')) {
