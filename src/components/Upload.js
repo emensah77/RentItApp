@@ -186,102 +186,75 @@ const Upload = props => {
 
   return (
     <>
-      {urls.length > 0 ? (
-        <>
-          <Container center type="chipSmall" color="#FFF" height={50} onPress={openPicker}>
-            <CardDisplay
-              leftImageWidth={20}
-              leftImageHeight={20}
-              leftImageSrc={add}
-              name={
-                <Typography type="notice" left width="100%">
-                  Add more photos
-                </Typography>
-              }
-              center
-              bold
-              onPress={openPicker}
-            />
+      {picker && (
+        <Container center type="chipSmall" color="#FFF" height={50} onPress={openPicker}>
+          <CardDisplay
+            leftImageWidth={20}
+            leftImageHeight={20}
+            leftImageSrc={add}
+            name={
+              <Typography type="notice" left width="100%">
+                Add more photos
+              </Typography>
+            }
+            center
+            bold
+            onPress={openPicker}
+          />
+        </Container>
+      )}
+
+      <Whitespace marginTop={22} />
+
+      {camera && (
+        <Container center type="chipSmall" color="#FFF" height={50} onPress={openCamera}>
+          <CardDisplay
+            leftImageWidth={20}
+            leftImageHeight={20}
+            leftImageSrc={cameraIcon}
+            name={
+              <Typography type="notice" left width="100%">
+                Take a photo
+              </Typography>
+            }
+            center
+            bold
+            onPress={openCamera}
+          />
+        </Container>
+      )}
+
+      <Whitespace marginTop={22} />
+
+      {urls.length > 0 &&
+        (noFlatlist ? (
+          <Container type="rowWrap" width="100%">
+            {urls.map(item => renderItem({item}))}
           </Container>
+        ) : (
+          <FlatList
+            persistentScrollbar
+            data={urls}
+            style={flatListStyle}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            numColumns={2}
+          />
+        ))}
 
-          <Whitespace marginTop={22} />
-
-          {noFlatlist ? (
-            <Container type="rowWrap" width="100%">
-              {urls.map(item => renderItem({item}))}
-            </Container>
-          ) : (
-            <FlatList
-              persistentScrollbar
-              data={urls}
-              style={flatListStyle}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-              numColumns={2}
-            />
-          )}
-        </>
-      ) : (
+      {progress > 0 && (
         <>
-          {picker && (
-            <>
-              <Container center type="chipSmall" color="#FFF" height={50} onPress={openPicker}>
-                <CardDisplay
-                  leftImageWidth={20}
-                  leftImageHeight={20}
-                  leftImageSrc={add}
-                  name={
-                    <Typography type="notice" left width="100%">
-                      Upload photos
-                    </Typography>
-                  }
-                  center
-                  bold
-                  onPress={openPicker}
-                />
-              </Container>
+          <Whitespace marginTop={20} />
 
-              <Whitespace marginTop={22} />
-            </>
-          )}
+          <Typography center height={30} width="100%" color="#1F2D3D" size={22} weight="700">
+            Uploading photos
+          </Typography>
 
-          {camera && (
-            <>
-              <Container center type="chipSmall" color="#FFF" height={50} onPress={openCamera}>
-                <CardDisplay
-                  leftImageWidth={20}
-                  leftImageHeight={20}
-                  leftImageSrc={cameraIcon}
-                  name={
-                    <Typography type="notice" left width="100%">
-                      Take a photo
-                    </Typography>
-                  }
-                  center
-                  bold
-                  onPress={openCamera}
-                />
-              </Container>
+          <Whitespace marginTop={27} />
 
-              <Whitespace marginTop={22} />
-            </>
-          )}
-
-          {progress ? (
-            <>
-              <Whitespace marginTop={20} />
-
-              <Typography center height={30} width="100%" color="#1F2D3D" size={22} weight="700">
-                Uploading your photos of your ID
-              </Typography>
-
-              <Whitespace marginTop={27} />
-
-              <Typography center width="90%" color="#727272" size={14} weight="700">
-                {progress} of {total} uploaded
-              </Typography>
-            </>
-          ) : null}
+          <Typography center width="90%" color="#727272" size={14} weight="700">
+            {progress} of {total} uploaded
+          </Typography>
         </>
       )}
     </>

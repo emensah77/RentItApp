@@ -253,9 +253,8 @@ const HomeForm = props => {
       />
 
       <Whitespace marginTop={30} />
-
       <Upload
-        camera={false}
+        picker={true}
         imageNamePrefix="home-marketer"
         noFlatlist
         initialImages={data.images}
