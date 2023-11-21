@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {Image, BackHandler} from 'react-native';
+import {Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -87,9 +87,9 @@ const Agreement = ({marketerTerms}) => {
         Agree and continue
       </Button>
 
-      <Button type="primary" onPress={BackHandler.exitApp}>
+      {/* <Button type="primary" onPress={BackHandler.exitApp}>
         Decline
-      </Button>
+      </Button> */}
     </Page>
   );
 };

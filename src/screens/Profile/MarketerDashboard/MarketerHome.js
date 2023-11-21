@@ -370,6 +370,43 @@ const MarketerHome = () => {
     }
   }, [isFocused, route.params?.itemDetails, setMarkerData, setMode, expand]);
 
+  // Optimized function to update marker status
+  const updateMarkerStatus = (homeId, newStatus) => {
+    setMarkers(prevMarkers => {
+      // Check if the marker with homeId exists and needs an update
+      const markerIndex = prevMarkers.findIndex(marker => marker.id === homeId);
+      if (markerIndex === -1 || prevMarkers[markerIndex].status === newStatus) {
+        // No update needed
+        return prevMarkers;
+      }
+
+      // Update only the specific marker
+      const updatedMarkers = [...prevMarkers];
+      updatedMarkers[markerIndex] = {...updatedMarkers[markerIndex], status: newStatus};
+      return updatedMarkers;
+    });
+  };
+
+  // Effect for handling WebSocket messages
+  useEffect(() => {
+    const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
+
+    const handleMessage = event => {
+      const message = JSON.parse(event.data);
+      if (message.action === 'homeUpdate') {
+        updateMarkerStatus(message.data.id, message.data.status);
+      }
+    };
+
+    // Set up WebSocket message listener
+    _ws.onmessage = handleMessage;
+
+    // Clean-up function
+    return () => {
+      _ws.onmessage = null;
+    };
+  }, []);
+
   useEffect(() => {
     const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
 
@@ -479,6 +516,7 @@ const MarketerHome = () => {
         onRegionChangeComplete={onRegionChangeComplete}
         region={region || initialMarker(screen)}
         style={style}
+        rotateEnabled={true}
         provider={PROVIDER_GOOGLE}
         minZoomLevel={5}
         maxZoomLevel={22}>

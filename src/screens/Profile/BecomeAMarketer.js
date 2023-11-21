@@ -165,7 +165,7 @@ const BecomeAMarketer = () => {
           data={supervisors}
           displayKey="displayName"
           imageKey="userImg"
-          value={selectedSupervisor?.displayName}
+          value={selectedSupervisor?.fname}
           label="Select a Supervisor"
           onChange={handleSupervisorSelection}
         />
@@ -181,7 +181,7 @@ const BecomeAMarketer = () => {
             spaceBetween
             prefix
             leftImageSrc={leftImageUri}
-            name={selectedSupervisor.displayName}
+            name={selectedSupervisor.fname}
             description={`Contact: ${selectedSupervisor.phoneNumber}`}
             leftImageWidth={50}
             leftImageHeight={50}

@@ -165,28 +165,61 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     [handleModalClose],
   );
 
-  const fetchPosts = useCallback(async () => {
-    // Check if latitude and longitude are both available
-    const userLocation = latitude !== null && longitude !== null ? {latitude, longitude} : null;
+  const fetchPosts = useCallback(
+    async (loadMore = false) => {
+      if (!loadMore) {
+        setIsLoadingType(true);
+      }
+      const userLocation = latitude !== null && longitude !== null ? {latitude, longitude} : null;
+      const currentSearchAfter = loadMore ? searchAfter.current : null;
 
-    const response = await fetch(
-      'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userLocation, // Use the conditionally set value here
-          typeParameter: status,
-          searchAfter: searchAfter.current,
-        }),
-      },
-    );
+      try {
+        const response = await fetch(
+          'https://o0ds966jy0.execute-api.us-east-2.amazonaws.com/prod/hometype',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userLocation,
+              typeParameter: status,
+              searchAfter: currentSearchAfter,
+            }),
+          },
+        );
 
-    const data = await response.json();
-    return data;
-  }, [latitude, longitude, status]);
+        const data = await response.json();
+        if (data && data.homes) {
+          if (loadMore) {
+            setPosts(prevPosts => [...prevPosts, ...data.homes]);
+          } else {
+            setPosts(data.homes);
+          }
+          if (!loadMore) {
+            setIsLoadingType(false);
+          }
+          searchAfter.current = data.searchAfter;
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setIsLoadingType(false);
+      }
+    },
+    [latitude, longitude, status],
+  );
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  useEffect(() => {
+    if (latitude && longitude && !initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchPosts();
+    }
+  }, [latitude, longitude, fetchPosts]);
 
   const setStatusFilter = useCallback(
     _status => () => {
@@ -230,52 +263,8 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   );
 
   useEffect(() => {
-    // Initial fetch when the component mounts
-    (async () => {
-      const data = await fetchPosts();
-      if (data && data.homes) {
-        setPosts(data.homes);
-        searchAfter.current = data.searchAfter;
-      }
-    })();
-  }, [fetchPosts]);
-
-  useEffect(() => {
     fetchVideoWatchStatus();
   }, [fetchVideoWatchStatus]);
-
-  useEffect(() => {
-    if (latitude && longitude) {
-      if (!initialFetchDone.current) {
-        setIsLoadingType(true);
-        const fetchInitialData = async () => {
-          const data = await fetchPosts();
-          if (data && data.homes) {
-            setPosts(data.homes);
-            searchAfter.current = data.searchAfter;
-          }
-          setIsLoadingType(false);
-        };
-
-        fetchInitialData(); // Call the function
-        initialFetchDone.current = true;
-      } else if (prevStatus.current !== status) {
-        setPosts([]);
-        searchAfter.current = null;
-        setIsLoadingType(true);
-        const fetchInitialData = async () => {
-          const data = await fetchPosts();
-          if (data && data.homes) {
-            setPosts(data.homes);
-            searchAfter.current = data.searchAfter;
-          }
-          setIsLoadingType(false);
-        };
-        fetchInitialData(); // Call the function
-      }
-      prevStatus.current = status || null;
-    }
-  }, [fetchPosts, latitude, longitude, status]);
 
   const renderItem = useCallback(
     ({item}) => (
@@ -296,14 +285,12 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   );
 
   const fetchMoreData = useCallback(async () => {
-    setLoadingMore(true); // Start loading
-    const data = await fetchPosts();
-    if (data && data.homes) {
-      setPosts(prevPosts => [...prevPosts, ...data.homes]); // Append the new homes to the existing homes
-      searchAfter.current = data.searchAfter; // Update the searchAfter value for the next fetch
+    if (!loadingMore) {
+      setLoadingMore(true);
+      await fetchPosts(true);
+      setLoadingMore(false);
     }
-    setLoadingMore(false);
-  }, [fetchPosts]);
+  }, [fetchPosts, loadingMore]);
 
   const hasPermissionIOS = useCallback(async () => {
     const openSetting = () => {
@@ -348,47 +335,54 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
       return;
     }
 
-    Geolocation.getCurrentPosition(
-      async position => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-        // @ts-ignore
-        const userDoc = firestore().collection('marketers').doc(auth().currentUser?.uid);
+    const getLocationWithConfig = config => {
+      return new Promise((resolve, reject) => {
+        Geolocation.getCurrentPosition(
+          position => resolve(position),
+          error => reject(error),
+          config,
+        );
+      });
+    };
 
-        const doc = await userDoc.get();
-
-        if (doc.exists) {
-          await userDoc.update({
-            createdAt: new Date(),
-            // @ts-ignore
-            uid: auth().currentUser?.uid,
-            // @ts-ignore
-            displayName: auth().currentUser.displayName,
-            lat: position.coords.latitude,
-            long: position.coords.longitude,
-          });
-        }
-      },
-      error => {
-        Alert.alert(`Code ${error.code}`, error.message);
-        setLatitude(null);
-        setLongitude(null);
-        console.error(error);
-      },
-      {
+    try {
+      // Try with high accuracy
+      const position = await getLocationWithConfig({
         accuracy: {
           android: 'high',
           ios: 'best',
         },
         enableHighAccuracy: true,
-        timeout: 15000,
+        timeout: 30000, // Increased timeout
         maximumAge: 10000,
         distanceFilter: 0,
         forceRequestLocation: true,
-        forceLocationManager: true,
+        forceLocationManager: false,
         showLocationDialog: true,
-      },
-    );
+      });
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+      // Additional logic for updating Firestore goes here
+    } catch (error) {
+      console.error('High accuracy location error:', error);
+      if (error) {
+        // Fallback to lower accuracy
+        try {
+          const position = await getLocationWithConfig({
+            enableHighAccuracy: false,
+            timeout: 20000, // Reduced timeout for lower accuracy
+            maximumAge: 10000,
+          });
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          // Additional logic for updating Firestore goes here
+        } catch (fallbackError) {
+          console.error('Low accuracy location error:', fallbackError);
+        }
+      } else {
+        console.error('Cannot get access to user location');
+      }
+    }
   }, [hasLocationPermission]);
 
   const hasLocationPermissionAndroid = async () => {
