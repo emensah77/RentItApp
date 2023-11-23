@@ -125,6 +125,7 @@ const HomeForm = props => {
   const submit = useCallback(async () => {
     setLoading(true);
 
+    // Check for default values in essential fields
     if (
       data.title === 'defaultTitle' ||
       data.type.value === 'defaultType' ||
@@ -136,45 +137,48 @@ const HomeForm = props => {
       return;
     }
 
-    // Check if status is 'APPROVED' and if there are less than 5 images
+    // Check for at least 5 images if status is 'APPROVED'
     if (data.status.value === 'APPROVED' && data.images.length < 5) {
       setError('At least 5 images are required for approved homes.');
       setLoading(false);
-      return; // Exit out of the submit function
+      return;
     }
 
-    // Check for incomplete fields
-    const isInComplete = Object.keys(data).filter(item => {
-      if (!data[item] || data[item] === '0') {
-        if (item !== 'bathroomNumber' || data[item] !== 0) {
+    // Conditional field completeness check for 'APPROVED' status
+    if (data.status.value === 'APPROVED') {
+      const isInComplete = Object.keys(data).filter(item => {
+        if (!data[item] || data[item] === '0') {
+          if (item !== 'bathroomNumber' || data[item] !== 0) {
+            return true;
+          }
+        }
+
+        if (Array.isArray(data[item]) && data[item].length === 0) {
           return true;
         }
+
+        if (
+          typeof data[item] === 'object' &&
+          !Array.isArray(data[item]) &&
+          !data[item].value &&
+          data[item].value !== 0
+        ) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (isInComplete.length) {
+        setError(
+          `Please complete the following fields before submitting: ${isInComplete.join(', ')}`,
+        );
+        setLoading(false);
+        return;
       }
-
-      if (Array.isArray(data[item]) && data[item].length === 0) {
-        return true;
-      }
-
-      if (
-        typeof data[item] === 'object' &&
-        !Array.isArray(data[item]) &&
-        !data[item].value &&
-        data[item].value !== 0
-      ) {
-        return true;
-      }
-
-      return false;
-    });
-
-    if (isInComplete.length) {
-      setError(
-        `Please complete the following fields before submitting: ${isInComplete.join(', ')}`,
-      );
-      setLoading(false);
-      return; // Exit out of the submit function
     }
 
+    // Continue with the submission process
     const itemId = data.id;
     delete data.id;
     const updateValues = transformData(data);
@@ -197,6 +201,7 @@ const HomeForm = props => {
         }),
       },
     ).catch(setError);
+
     const _data = await response.json();
 
     if (!data || !response || !response.ok) {
