@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
-import {View, Image} from 'react-native';
+import {View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const RentitImage = props => {
   const {width, height, circle, borderRadius, src, mode} = props;
@@ -11,7 +12,6 @@ const RentitImage = props => {
       borderRadius: borderRadius || circle || 0,
       borderColor: '#000000',
       overflow: 'hidden',
-      // borderWidth: __DEV__ ? 1 : 0,
     }),
     [circle, width, height, borderRadius],
   );
@@ -21,14 +21,20 @@ const RentitImage = props => {
       width: circle || width,
       height: circle || height,
       alignSelf: 'flex-start',
-      resizeMode: mode || 'cover',
     }),
-    [circle, width, height, mode],
+    [circle, width, height],
   );
+
+  // Ensure `src` is correctly formatted for FastImage
+  const imageSource = typeof src === 'string' ? {uri: src} : src;
 
   return (
     <View style={containerStyle}>
-      <Image style={imageStyle} source={src} />
+      <FastImage
+        style={imageStyle}
+        source={imageSource}
+        resizeMode={FastImage.resizeMode[mode] || FastImage.resizeMode.cover}
+      />
     </View>
   );
 };

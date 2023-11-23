@@ -333,6 +333,7 @@ async function getHomeStats(userId, startTime, endTime) {
 
 
 async function updateItem(key, updateValues, userId) {
+  console.log('key, updatevalues, userId', key, updateValues, userId);
   let updateExpression = 'set ';
   const expressionAttributeNames = {};
   const expressionAttributeValues = {};

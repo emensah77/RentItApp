@@ -16,7 +16,7 @@ import {
   Header,
 } from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
-import {TYPES} from '../../../utils';
+import {TYPES, getSubLocalities, localities} from '../../../utils';
 
 const oldData = {
   id: '',
@@ -24,6 +24,7 @@ const oldData = {
   images: [],
   title: '',
   description: '',
+  publicDescription: '',
   phoneNumbers: [],
   marketerNumber: [],
   homeownerName: '',
@@ -55,6 +56,7 @@ const oldData = {
 
 const HomeForm = props => {
   const {data: preFillData, onSuccess, onClose} = props;
+  const isNewHome = preFillData.newHome;
 
   const [data, setData] = useState({...oldData});
   const [error, setError] = useState('');
@@ -66,12 +68,16 @@ const HomeForm = props => {
     which => async value => {
       let parsedValue = value;
 
-      // Convert to number if specific fields are updated
-      if (['newPrice', 'maxGuests', 'bathroomNumber', 'bed', 'bedroom'].includes(which)) {
-        parsedValue = parseInt(value, 10);
+      if (which === 'locality') {
+        // Update sublocality options when locality changes
+        setData(prevData => ({...prevData, [which]: parsedValue, sublocality: ''}));
+      } else {
+        // Convert to number if specific fields are updated
+        if (['newPrice', 'maxGuests', 'bathroomNumber', 'bed', 'bedroom'].includes(which)) {
+          parsedValue = parseInt(value, 10);
+        }
+        setData(prevData => ({...prevData, [which]: parsedValue}));
       }
-      const _data = {...data, [which]: parsedValue};
-      setData(_data);
     },
     [data],
   );
@@ -130,37 +136,43 @@ const HomeForm = props => {
       return;
     }
 
-    if (data.status.value === 'APPROVED') {
-      const isInComplete = Object.keys(data).filter(item => {
-        if (!data[item] || data[item] === '0') {
-          if (item !== 'bathroomNumber' || data[item] !== 0) {
-            return true;
-          }
-        }
+    // Check if status is 'APPROVED' and if there are less than 5 images
+    if (data.status.value === 'APPROVED' && data.images.length < 5) {
+      setError('At least 5 images are required for approved homes.');
+      setLoading(false);
+      return; // Exit out of the submit function
+    }
 
-        if (Array.isArray(data[item]) && data[item].length === 0) {
+    // Check for incomplete fields
+    const isInComplete = Object.keys(data).filter(item => {
+      if (!data[item] || data[item] === '0') {
+        if (item !== 'bathroomNumber' || data[item] !== 0) {
           return true;
         }
-
-        if (
-          typeof data[item] === 'object' &&
-          !Array.isArray(data[item]) &&
-          !data[item].value &&
-          data[item].value !== 0
-        ) {
-          return true;
-        }
-
-        return false;
-      });
-
-      if (isInComplete.length) {
-        setError(
-          `Please complete the following fields before approving: ${isInComplete.join(', ')}`,
-        );
-        setLoading(false);
-        return; // Exit out of the submit function
       }
+
+      if (Array.isArray(data[item]) && data[item].length === 0) {
+        return true;
+      }
+
+      if (
+        typeof data[item] === 'object' &&
+        !Array.isArray(data[item]) &&
+        !data[item].value &&
+        data[item].value !== 0
+      ) {
+        return true;
+      }
+
+      return false;
+    });
+
+    if (isInComplete.length) {
+      setError(
+        `Please complete the following fields before submitting: ${isInComplete.join(', ')}`,
+      );
+      setLoading(false);
+      return; // Exit out of the submit function
     }
 
     const itemId = data.id;
@@ -313,6 +325,17 @@ const HomeForm = props => {
 
       <Whitespace marginTop={30} />
 
+      <Input
+        placeholder="Public Description"
+        type="text"
+        name="publicDescription"
+        label="Public Description"
+        value={data.publicDescription}
+        onChange={onChangeData('publicDescription')}
+      />
+
+      <Whitespace marginTop={30} />
+
       <Typography type="label" width="100%">
         Home owner phone number.
       </Typography>
@@ -389,7 +412,7 @@ const HomeForm = props => {
         type="numeric"
         name="maxGuests"
         label="Max Guests"
-        value={data.maxGuests}
+        value={data.maxGuests.toString()}
         onChange={onChangeData('maxGuests')}
       />
 
@@ -538,6 +561,41 @@ const HomeForm = props => {
         label="Furnished"
         suffix={arrowDown}
       />
+
+      {isNewHome && (
+        <>
+          <Whitespace marginTop={20} />
+
+          <Typography size={12} left width="100%">
+            Locality
+          </Typography>
+
+          <Whitespace marginTop={-20} />
+          <Dropdown
+            onChange={onChangeData('locality')}
+            value={data.locality.value}
+            data={localities}
+            displayKey="name" // Ensure this matches the key in your data objects
+            label="Locality"
+            suffix={arrowDown}
+          />
+
+          <Whitespace marginTop={20} />
+          <Typography size={12} left width="100%">
+            Sublocality
+          </Typography>
+          <Whitespace marginTop={-20} />
+
+          <Dropdown
+            onChange={onChangeData('sublocality')}
+            value={data.sublocality.value}
+            data={getSubLocalities(data.locality.value || localities[0].value)}
+            displayKey="value"
+            label="Sublocality"
+            suffix={arrowDown}
+          />
+        </>
+      )}
 
       <Whitespace marginTop={10} />
 

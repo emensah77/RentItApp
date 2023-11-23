@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useEffect} from 'react';
-import {Platform, FlatList} from 'react-native';
+import {Platform, FlatList, Alert} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
 import uuid from 'react-native-uuid';
@@ -96,18 +96,15 @@ const Upload = props => {
             path = `file://${path}`;
           }
 
-          const resizeImage = await ImageResizer.createResizedImage(
-            path,
-            1024,
-            683,
-            'JPEG',
-            80,
-          ).catch(e => {
+          try {
+            const resizeImage = await ImageResizer.createResizedImage(path, 1024, 683, 'JPEG', 80);
+            path = resizeImage.uri; // Use resized image if successful
+          } catch (e) {
             console.error('An error occurred with the resize operation.', e);
-          });
-          if (resizeImage && resizeImage.uri) {
-            path = resizeImage.uri;
+            Alert.alert('Resizing Image Failed', 'Still continuing upload.');
+            // Continue with original image
           }
+
           const rawFile = await Utils.getBlob(path);
 
           const name = `${imageNamePrefix}-${uuid.v4()}`;

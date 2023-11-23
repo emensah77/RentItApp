@@ -3,6 +3,7 @@ import {Linking} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {version} from '../../../package.json';
 
 import {
   Page,
@@ -195,6 +196,14 @@ const Menu = () => {
             width: 24,
             height: 24,
             onPress: () => auth().signOut(),
+          },
+          {
+            description: (
+              <Typography type="regular" size={8}>
+                {' '}
+                {`App Version: ${version}`}
+              </Typography>
+            ),
           },
         ],
       },
