@@ -163,7 +163,7 @@ const BecomeAMarketer = () => {
       {status.state === 'successful' && (
         <Dropdown
           data={supervisors}
-          displayKey="displayName"
+          displayKey="fname"
           imageKey="userImg"
           value={selectedSupervisor?.fname}
           label="Select a Supervisor"

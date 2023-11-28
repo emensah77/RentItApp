@@ -101,16 +101,7 @@ const MarketerHome = () => {
       // Ensure both _region and region are defined before proceeding
       if (!_region || !region) return;
 
-      // Check if the new region is significantly different from the current region
-      const isDifferent =
-        Math.abs(_region.latitude - region.latitude) > 0.0001 ||
-        Math.abs(_region.longitude - region.longitude) > 0.0001 ||
-        Math.abs(_region.latitudeDelta - region.latitudeDelta) > 0.0001 ||
-        Math.abs(_region.longitudeDelta - region.longitudeDelta) > 0.0001;
-
-      if (isDifferent) {
-        setRegion(_region);
-      }
+      setRegion(_region);
     },
     [region],
   );

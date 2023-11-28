@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import {View, Platform, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Icon, SizedBox, Text} from '@components';
+import {SizedBox, Text} from '@components';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FastImage from 'react-native-fast-image';
 
@@ -42,7 +42,7 @@ const Post = props => {
 
   const source = useMemo(
     () => ({
-      uri: post.image,
+      uri: post.images[0],
       priority: FastImage.priority.high,
     }),
     [post],
@@ -101,11 +101,11 @@ const Post = props => {
           </Text>
         </View>
         <SizedBox width={20} />
-        <View style={styles.starContainer}>
+        {/* <View style={styles.starContainer}>
           <Icon icon="starFilled" size={15} />
           <SizedBox width={4} />
           <Text text="4.6" size="sm" />
-        </View>
+        </View> */}
       </View>
     </Pressable>
   );

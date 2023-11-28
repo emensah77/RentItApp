@@ -1382,10 +1382,10 @@ async function getHomeStats(userId, startTime, endTime, searchAfter = null, pagi
       // No additional query adjustments needed for super user
     } else if (userId in miniSuperUserLocalities) {
       searchQueryBody.query.bool.must.push({ terms: { "locality.keyword": miniSuperUserLocalities[userId] } });
-      searchQueryBody.query.bool.must_not = [{ term: { "isDuplicate.keyword": "Yes" } }];  // Exclude duplicate homes
+      //searchQueryBody.query.bool.must_not = [{ term: { "isDuplicate.keyword": "Yes" } }];  // Exclude duplicate homes
     } else {
       searchQueryBody.query.bool.must.push({ term: { "updatedBy.keyword": userId } });
-      searchQueryBody.query.bool.must_not = [{ term: { "isDuplicate.keyword": "Yes" } }];  // Exclude duplicate homes
+      //searchQueryBody.query.bool.must_not = [{ term: { "isDuplicate.keyword": "Yes" } }];  // Exclude duplicate homes
     }
 
     searchReq.body = JSON.stringify(searchQueryBody);
