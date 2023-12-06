@@ -184,7 +184,7 @@ async function fetchSupervisorLocalities() {
   const usersRef = db.collection('users');
   
   // Get users with roles 'SUPERVISOR' or 'ADMIN'
-  const snapshot = await usersRef.where('role', 'in', ['SUPERVISOR', 'ADMIN']).get();
+  const snapshot = await usersRef.where('role', 'in', ['ADMIN']).get();
 
   const localities = {};
   snapshot.forEach(doc => {
