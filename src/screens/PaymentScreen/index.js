@@ -198,12 +198,21 @@ const PaymentScreen = () => {
   );
 
   const onMessage = useCallback(
-    event => {
+    async event => {
       __DEV__ && console.debug('event', event);
 
       const {url} = event.nativeEvent;
       const words = url.split('type=');
       if (words[1] === 'success') {
+        if (selectedType === 'Subscription') {
+          // Set a flag in AsyncStorage indicating that the subscription payment has been made
+          try {
+            await AsyncStorage.setItem(`subscriptionPayment_${user.uid}`, 'true');
+            console.debug('Subscription payment recorded in AsyncStorage');
+          } catch (e) {
+            console.error('Error saving subscription payment flag', e);
+          }
+        }
         if (navigation.canGoBack()) {
           if (homeid === null || homeid === undefined || homeid === '') {
             Alert.alert(
@@ -236,7 +245,16 @@ const PaymentScreen = () => {
         navigation.replace('Home');
       }
     },
-    [_storeData, addHomeOrder, homeid, merchantTransactionID, navigation, route.name],
+    [
+      _storeData,
+      addHomeOrder,
+      homeid,
+      merchantTransactionID,
+      navigation,
+      route.name,
+      selectedType,
+      user.uid,
+    ],
   );
 
   const makeUri = useMemo(() => ({uri: paymentUrl}), [paymentUrl]);

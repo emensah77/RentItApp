@@ -96,6 +96,19 @@ const MarketerHome = () => {
     [top, collapse],
   );
 
+  const getMarkerImage = useCallback(status => {
+    switch (status) {
+      case 'pending':
+        return pending;
+      case 'approved':
+        return approved;
+      case 'rejected':
+        return rejected;
+      default:
+        return neutral;
+    }
+  }, []);
+
   const onRegionChangeComplete = useCallback(
     _region => {
       // Ensure both _region and region are defined before proceeding
@@ -119,13 +132,7 @@ const MarketerHome = () => {
 
   const sendUpdatedHomeData = useCallback(
     updatedHome => {
-      const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
-
-      _ws.onopen = function () {
-        setWS(_ws);
-      };
-
-      if (ws && ws.readyState === ws.OPEN) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(
           JSON.stringify({
             action: 'homeUpdate',
@@ -290,114 +297,122 @@ const MarketerHome = () => {
   }, [isFocused, route.params?.itemDetails, setMarkerData, setMode, expand]);
 
   // Optimized function to update marker status
-  const updateMarkerStatus = (homeId, newStatus) => {
-    setMarkers(prevMarkers => {
-      // Check if the marker with homeId exists and needs an update
-      const markerIndex = prevMarkers.findIndex(marker => marker.id === homeId);
-      if (markerIndex === -1 || prevMarkers[markerIndex].status === newStatus) {
-        // No update needed
-        return prevMarkers;
-      }
-
-      // Update only the specific marker
-      const updatedMarkers = [...prevMarkers];
-      updatedMarkers[markerIndex] = {...updatedMarkers[markerIndex], status: newStatus};
-      return updatedMarkers;
-    });
-  };
+  const updateMarkerStatus = useCallback((homeId, newStatus) => {
+    setMarkers(prevMarkers =>
+      prevMarkers.map(marker => (marker.id === homeId ? {...marker, status: newStatus} : marker)),
+    );
+  }, []);
 
   // Effect for handling WebSocket messages
-  useEffect(() => {
-    const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
+  const setupWebSocket = useCallback(() => {
+    const newWs = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
 
-    const handleMessage = event => {
+    newWs.onopen = () => {
+      setWS(newWs);
+    };
+
+    newWs.onmessage = event => {
       const message = JSON.parse(event.data);
       if (message.action === 'homeUpdate') {
         updateMarkerStatus(message.data.id, message.data.status);
       }
     };
 
-    // Set up WebSocket message listener
-    _ws.onmessage = handleMessage;
-
-    // Clean-up function
-    return () => {
-      _ws.onmessage = null;
+    newWs.onclose = () => {
+      setTimeout(setupWebSocket, 100);
     };
-  }, []);
+
+    return newWs;
+  }, [updateMarkerStatus]);
 
   useEffect(() => {
-    const _ws = new WebSocket('wss://97lnj6qe60.execute-api.us-east-2.amazonaws.com/production/');
+    const wsCurrent = setupWebSocket();
 
-    _ws.onopen = function () {
-      setWS(_ws);
+    return () => {
+      wsCurrent.close();
     };
+  }, [setupWebSocket]);
 
-    _ws.onmessage = function (event) {
-      const message = JSON.parse(event.data);
+  useEffect(() => {
+    if (ws) {
+      const handleMessage = event => {
+        const message = JSON.parse(event.data);
 
-      // Handle the message based on its content
-      if (message.action === 'homeUpdate') {
-        // 1. Find the marker in the markers state that matches the received update
-        const updatedMarkerIndex = markers.findIndex(marker => marker.id === message.data.id);
+        // Handle the message based on its content
+        if (message.action === 'homeUpdate') {
+          const updatedMarkerIndex = markers.findIndex(marker => marker.id === message.data.id);
 
-        if (updatedMarkerIndex !== -1) {
-          // 2. Update that marker's data with the new data from the homeUpdate
-          const updatedMarkers = [...markers];
-          updatedMarkers[updatedMarkerIndex] = message.data;
-
-          // 3. Set the updated list of markers back to the state
-          setMarkers(updatedMarkers);
+          if (updatedMarkerIndex !== -1) {
+            // Update the marker's data with the new data from the homeUpdate
+            const updatedMarkers = [...markers];
+            updatedMarkers[updatedMarkerIndex] = message.data;
+            setMarkers(updatedMarkers);
+          }
         }
-      }
-    };
-
-    return () => {
-      // Send the 'offline' status to the server before closing the WebSocket connection
-      if (_ws.readyState === _ws.OPEN) {
-        _ws.send(
-          JSON.stringify({
-            action: 'locationUpdate',
-            data: {
-              marketerId: user?.uid,
-              marketerStatus: 'offline',
-            },
-          }),
-        );
-      }
-
-      _ws.close(undefined, 'Unmount');
-    };
-  }, [markers, user?.uid]);
-
-  useEffect(() => {
-    if (ws && position) {
-      const sendLocationUpdate = () => {
-        ws.send(
-          JSON.stringify({
-            action: 'locationUpdate',
-            data: {
-              marketerId: user.uid,
-              marketerName: `${user?.displayName || ''}`,
-              marketerStatus: 'online',
-              location: {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              },
-            },
-          }),
-        );
       };
 
+      // Assign the event handler
+      ws.onmessage = handleMessage;
+
+      // Clean-up function
+      return () => {
+        if (ws) {
+          ws.onmessage = null;
+        }
+      };
+    }
+  }, [ws, markers]);
+
+  const sendLocationUpdate = useCallback(() => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(
+        JSON.stringify({
+          action: 'locationUpdate',
+          data: {
+            marketerId: user.uid,
+            marketerName: `${user?.displayName || ''}`,
+            marketerStatus: 'online',
+            location: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            },
+          },
+        }),
+      );
+    }
+  }, [ws, user, position]);
+
+  useEffect(() => {
+    if (position) {
       // Send the initial update immediately after position change
       sendLocationUpdate();
 
       // Set interval to continue sending updates every 10 seconds
       const locationUpdateInterval = setInterval(sendLocationUpdate, 10000);
 
-      return () => clearInterval(locationUpdateInterval); // Clear the interval when position changes or component unmounts
+      return () => {
+        clearInterval(locationUpdateInterval); // Clear the interval when position changes or component unmounts
+
+        // Send 'offline' status before component unmounts
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(
+            JSON.stringify({
+              action: 'locationUpdate',
+              data: {
+                marketerId: user.uid,
+                marketerName: `${user?.displayName || ''}`,
+                marketerStatus: 'offline',
+                location: {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                },
+              },
+            }),
+          );
+        }
+      };
     }
-  }, [ws, position, user.uid, user?.displayName]);
+  }, [position, sendLocationUpdate, ws, user.uid, user?.displayName]);
 
   const handleMarkerPress = useCallback(
     e => {
@@ -455,15 +470,6 @@ const MarketerHome = () => {
         minZoomLevel={5}
         maxZoomLevel={22}>
         {markers.map(marker => {
-          const markerImage =
-            marker.status === 'pending'
-              ? pending
-              : marker.status === 'approved'
-              ? approved
-              : marker.status === 'rejected'
-              ? rejected
-              : neutral;
-
           return (
             <Marker
               key={`${marker.id}-${marker.status}`}
@@ -471,11 +477,11 @@ const MarketerHome = () => {
               coordinate={marker}
               title={
                 marker.title === 'defaultTitle'
-                  ? `${marker.sublocality}, ${marker.locality}`
-                  : marker.title
+                  ? `${marker.sublocality}, ${marker.locality}, ${marker.status}`
+                  : `${marker.title}, ${marker.status}`
               }
               description={marker.description}
-              image={markerImage}
+              image={getMarkerImage(marker.status)}
               onPress={handleMarkerPress}
             />
           );

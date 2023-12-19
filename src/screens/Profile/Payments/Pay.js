@@ -209,7 +209,7 @@ const PaymentScreen = () => {
   );
 
   const onMessage = useCallback(
-    event => {
+    async event => {
       __DEV__ && console.debug('event', event);
 
       const {url} = event.nativeEvent;
@@ -234,6 +234,15 @@ const PaymentScreen = () => {
       }
 
       if (isSuccess) {
+        if (selectedType === 'Subscription') {
+          // Set a flag in AsyncStorage indicating that the subscription payment has been made
+          try {
+            await AsyncStorage.setItem(`subscriptionPayment_${user.uid}`, 'true');
+            console.debug('Subscription payment recorded in AsyncStorage');
+          } catch (e) {
+            console.error('Error saving subscription payment flag', e);
+          }
+        }
         if (navigation.canGoBack()) {
           if (homeid === null || homeid === undefined || homeid === '') {
             Alert.alert(

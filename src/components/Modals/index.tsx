@@ -6,6 +6,7 @@ import Calendar from 'react-native-calendar-range-picker';
 import Video from 'react-native-video';
 import {colors} from '@assets/styles';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
 import localities, {getSubLocalities} from '../../utils/localities';
 
@@ -44,6 +45,7 @@ const padding20 = {paddingBottom: 20};
 
 export const SearchModal = (props: ModalProps) => {
   const [subLocalities, setSubLocalities] = useState([]);
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -131,6 +133,9 @@ export const SearchModal = (props: ModalProps) => {
     }),
     [],
   );
+  const handleNavigateToRentItPay = useCallback(() => {
+    navigation.navigate('RentItPay', {subscription: true});
+  }, [navigation]);
 
   const textInputProps = useMemo(
     () => ({
@@ -376,6 +381,16 @@ export const SearchModal = (props: ModalProps) => {
                 </Button>
               </ScrollView>
             </View>
+          ) : type === 'subscription' ? (
+            <ScrollView style={styles.subscriptionContainer}>
+              <Text text="Premium Membership Benefits" weight="bold" size="lg" />
+              <Text text="Get unlimited access to all properties." size="md" />
+              <Text text="Exclusive deals and discounts." size="md" />
+              <Text text="Priority customer support." size="md" />
+              <Button type="primary" color="#000000" onPress={handleNavigateToRentItPay}>
+                <Text text="Pay Now" size="sm" color="#ffffff" />
+              </Button>
+            </ScrollView>
           ) : null}
         </View>
         {type === 'calender' && (

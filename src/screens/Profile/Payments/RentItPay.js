@@ -6,7 +6,8 @@ import firestore from '@react-native-firebase/firestore';
 import {Page, Input, Typography, Button, Dropdown, Whitespace} from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
 
-const RentItPay = () => {
+const RentItPay = ({route}) => {
+  const {subscription = false} = route.params || {};
   const [data, setData] = useState({paymentType: {value: ''}, amount: '', phoneNumber: ''});
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(false);
@@ -23,6 +24,16 @@ const RentItPay = () => {
     ],
     [],
   );
+
+  useEffect(() => {
+    if (subscription) {
+      setData(prevData => ({
+        ...prevData,
+        amount: '1',
+        paymentType: {value: 'Subscription'},
+      }));
+    }
+  }, [subscription]);
 
   const goToPayments = useCallback(() => {
     navigation.navigate('Home', {
@@ -106,57 +117,71 @@ const RentItPay = () => {
 
       <Whitespace marginTop={55} />
 
-      <Typography type="heading" weight="400" width="100%">
-        Payment Type
-      </Typography>
+      {subscription ? (
+        <>
+          <Typography type="heading" weight="400" width="100%">
+            Amount
+          </Typography>
 
-      <Whitespace marginTop={-15} />
+          <Whitespace marginTop={10} />
 
-      <Dropdown
-        value={data.paymentType.value}
-        data={paymentTypes}
-        displayKey="value"
-        label="Select type of payment"
-        suffix={arrowDown}
-        onChange={onChangeData('paymentType')}
-      />
+          <Input placeholder="Amount" type="numeric" value={data.amount} editable={false} />
+        </>
+      ) : (
+        <>
+          <Typography type="heading" weight="400" width="100%">
+            Payment Type
+          </Typography>
 
-      <Whitespace marginTop={35} />
+          <Whitespace marginTop={-15} />
 
-      <Typography type="heading" weight="400" width="100%">
-        Choose a Marketer
-      </Typography>
+          <Dropdown
+            value={data.paymentType.value}
+            data={paymentTypes}
+            displayKey="value"
+            label="Select type of payment"
+            suffix={arrowDown}
+            onChange={onChangeData('paymentType')}
+          />
 
-      <Whitespace marginTop={-15} />
+          <Whitespace marginTop={35} />
 
-      <Dropdown
-        value={data.marketer?.name || ''}
-        data={names}
-        displayKey="name"
-        label="Select a marketer"
-        suffix={arrowDown}
-        onChange={onChangeData('marketer')}
-      />
+          <Typography type="heading" weight="400" width="100%">
+            Choose a Marketer
+          </Typography>
 
-      <Whitespace marginTop={35} />
+          <Whitespace marginTop={-15} />
 
-      <Typography type="heading" weight="400" width="100%">
-        Amount
-      </Typography>
+          <Dropdown
+            value={data.marketer?.name || ''}
+            data={names}
+            displayKey="name"
+            label="Select a marketer"
+            suffix={arrowDown}
+            onChange={onChangeData('marketer')}
+          />
 
-      <Whitespace marginTop={10} />
+          <Whitespace marginTop={35} />
 
-      <Input
-        placeholder="Type in the payment amount"
-        type="numeric"
-        value={data.amount}
-        onChange={onChangeData('amount')}
-      />
+          <Typography type="heading" weight="400" width="100%">
+            Amount
+          </Typography>
+
+          <Whitespace marginTop={10} />
+
+          <Input
+            placeholder="Type in the payment amount"
+            type="numeric"
+            value={data.amount}
+            onChange={onChangeData('amount')}
+          />
+        </>
+      )}
 
       <Whitespace marginTop={26} />
 
       <Typography type="label">
-        Enter you mobile money number. This is the same number you will use to make payments
+        Enter your mobile money number. This is the same number you will use to make payments.
       </Typography>
 
       <Whitespace marginTop={9} />

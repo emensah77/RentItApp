@@ -115,7 +115,52 @@ exports.handler = async (event) => {
         body: 'Internal Server Error. Failed to perform search.',
       };
     }
-  } else if (event.httpMethod === 'GET' && event.path === '/home') {
+  } 
+  else if (event.httpMethod === 'POST' && event.path === '/dashboardsearch') {
+    let searchParameters;
+    try {
+      // Parse the request body to get the search parameters
+      searchParameters = JSON.parse(event.body);
+    } catch (error) {
+      console.error('Error parsing search parameters: ', error);
+      return {
+        statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Headers':
+            'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
+        body: 'Bad Request. Invalid search parameters.',
+      };
+    }
+    try {
+      const results = await dashboardSearch(searchParameters);
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Headers':
+            'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
+        body: JSON.stringify(results),
+      };
+    } catch (error) {
+      console.error('Error during search: ', error);
+      return {
+        statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Headers':
+            'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        },
+        body: 'Internal Server Error. Failed to perform search.',
+      };
+    }
+  }
+  else if (event.httpMethod === 'GET' && event.path === '/home') {
     let homeId;
     try {
       // Parse the home id from the queryStringParameters
@@ -585,43 +630,7 @@ async function search(params) {
 
   const searchQueryBody = {
     size: 30,
-    _source: [
-      'currency',
-      'newPrice',
-      'status',
-      'phoneNumbers',
-      'maxGuests',
-      'loyaltyProgram',
-      'videoUrl',
-      'wifi',
-      'image',
-      'kitchen',
-      'water',
-      'bathroom',
-      'id',
-      'latitude',
-      'bed',
-      'furnished',
-      'mode',
-      'negotiable',
-      'createdAt',
-      'oldPrice',
-      'marketerNumber',
-      'toilet',
-      'aircondition',
-      'bathroomNumber',
-      'bedroom',
-      'locality',
-      'updatedAt',
-      'userID',
-      'longitude',
-      'images',
-      'description',
-      'sublocality',
-      'title',
-      'type',
-      'location',
-    ],
+    _source: ['*'],
     query: {},
     sort: [],
   };
@@ -719,6 +728,129 @@ async function search(params) {
   console.log(`Finished search in OpenSearch index: ${index}`);
   return searchPromise;
 }
+
+async function dashboardSearch(params) {
+  console.log('this is params for dashboard search', params);
+  const searchReq = new AWS.HttpRequest(endpoint);
+
+  searchReq.method = 'POST';
+  searchReq.path = path.join('/', 'rentitnew', '_search');
+  searchReq.region = 'us-east-2';
+  searchReq.headers['presigned-expires'] = false;
+  searchReq.headers.Host = endpoint.host;
+  searchReq.headers['Content-Type'] = 'application/json';
+
+  const searchQueryBody = {
+    size: 500,
+    _source: ['*'],
+    query: {
+      bool: {
+        must: [],
+        filter: [],
+      },
+    },
+    sort: [
+      { "updatedTime": { "order": "desc" } }, // Sort by updatedTime
+      // Include any additional sorting criteria here if needed
+    ],
+  };
+
+  // General search query
+  if (params.searchQuery) {
+    searchQueryBody.query.bool.must.push({
+      multi_match: {
+        query: params.searchQuery,
+        fields: ['title', 'description', 'locality'], // Add more fields if needed
+      },
+    });
+  }
+
+  // Geo-distance search based on region
+  if (params.region && params.region.latitude && params.region.longitude) {
+    searchQueryBody.query.bool.filter.push({
+      geo_distance: {
+        distance: '10km', // Adjust the distance as needed
+        location: {
+          lat: params.region.latitude,
+          lon: params.region.longitude,
+        },
+      },
+    });
+  }
+
+  // Filters
+  if (params.filterParams) {
+    for (const key in params.filterParams) {
+     // Filters
+    if (params.filterParams) {
+      for (const key in params.filterParams) {
+        if (params.filterParams[key] !== null && params.filterParams[key] !== undefined) {
+          const filter = {};
+
+          // Determine if .keyword should be used
+          // Assuming that strings require '.keyword' and other types do not
+          const shouldUseKeyword = typeof params.filterParams[key] === 'string';
+
+          filter[shouldUseKeyword ? `${key}.keyword` : key] = params.filterParams[key];
+          searchQueryBody.query.bool.filter.push({ term: filter });
+        }
+      }
+    }
+
+    }
+  }
+
+  // Pagination
+  if (params.searchAfter) {
+    searchQueryBody.search_after = params.searchAfter;
+  }
+
+  searchReq.body = JSON.stringify(searchQueryBody);
+
+  // Sign the request
+  const signer = new AWS.Signers.V4(searchReq, 'es');
+  signer.addAuthorization(AWS.config.credentials, new Date());
+
+  try {
+    const result = await new Promise((resolve, reject) => {
+      const send = new AWS.NodeHttpClient();
+      send.handleRequest(
+        searchReq,
+        null,
+        (httpResp) => {
+          let responseBody = '';
+          httpResp.on('data', (chunk) => {
+            responseBody += chunk;
+          });
+          httpResp.on('end', () => {
+            const data = JSON.parse(responseBody);
+            console.log('data results dashboardsearch', data.hits.hits[data.hits.hits.length - 1]);
+
+            // Formatting the results
+            const homesData = data.hits.hits.map(hit => hit._source);
+            const result = {
+              homes: homesData,
+              searchAfter:
+              data.hits.hits.length > 0 ? data.hits.hits[data.hits.hits.length - 1].sort : null,
+              count: data.hits.total.value,
+            };
+
+            resolve(result);
+          });
+        },
+        (err) => {
+          reject(err);
+        }
+      );
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error during dashboard search: ', error);
+    throw error;
+  }
+}
+
 
 async function getHome(id) {
   console.log(`Starting getHome for home id: ${id}`);
@@ -884,43 +1016,7 @@ async function filterHomes(filterParams, userLocation = null, searchAfter = null
 
   const searchQueryBody = {
     size: 30,
-    _source: [
-      'currency',
-      'newPrice',
-      'status',
-      'phoneNumbers',
-      'maxGuests',
-      'loyaltyProgram',
-      'videoUrl',
-      'wifi',
-      'image',
-      'kitchen',
-      'water',
-      'bathroom',
-      'id',
-      'latitude',
-      'bed',
-      'furnished',
-      'mode',
-      'negotiable',
-      'createdAt',
-      'oldPrice',
-      'marketerNumber',
-      'toilet',
-      'aircondition',
-      'bathroomNumber',
-      'bedroom',
-      'locality',
-      'updatedAt',
-      'userID',
-      'longitude',
-      'images',
-      'description',
-      'sublocality',
-      'title',
-      'type',
-      'location',
-    ],
+    _source: ['*'],
     query: {
       bool: {
         filter: [],
@@ -1050,43 +1146,7 @@ async function forSale(userLocation = null, searchAfter = null) {
 
   const searchQueryBody = {
     size: 30,
-    _source: [
-      'currency',
-      'newPrice',
-      'status',
-      'phoneNumbers',
-      'maxGuests',
-      'loyaltyProgram',
-      'videoUrl',
-      'wifi',
-      'image',
-      'kitchen',
-      'water',
-      'bathroom',
-      'id',
-      'latitude',
-      'bed',
-      'furnished',
-      'mode',
-      'negotiable',
-      'createdAt',
-      'oldPrice',
-      'marketerNumber',
-      'toilet',
-      'aircondition',
-      'bathroomNumber',
-      'bedroom',
-      'locality',
-      'updatedAt',
-      'userID',
-      'longitude',
-      'images',
-      'description',
-      'sublocality',
-      'title',
-      'type',
-      'location',
-    ],
+    _source: ['*'],
     query: {
       bool: {
         filter: [

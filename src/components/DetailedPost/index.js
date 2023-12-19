@@ -52,7 +52,9 @@ import {AuthContext} from '../../navigation/AuthProvider';
 import mixpanel from '../../MixpanelConfig';
 import {deletePost} from '../../graphql/mutations';
 import useWishlist from '../../hooks/useWishlist';
+import useViewLimit from '../../hooks/useViewLimit';
 import CardCommentPhoto from '../../screens/Reviews/ReviewCard/CardCommentPhoto';
+import {SearchModal} from '../../components/Modals';
 
 const skeletonLayout = [
   {
@@ -98,6 +100,8 @@ const DetailedPost = props => {
   const navigation = useNavigation();
   const {user} = useContext(AuthContext);
   const {checkIsFav, handleChangeFavorite} = useWishlist();
+  const {canView, incrementViewCount} = useViewLimit(user.uid);
+  const [showLimitReachedModal, setShowLimitReachedModal] = useState(false);
 
   const [usersWithPrivileges, setUsersWithPrivileges] = useState([]);
 
@@ -255,6 +259,14 @@ const DetailedPost = props => {
   }, []);
 
   useEffect(() => {
+    if (canView) {
+      incrementViewCount();
+    } else {
+      setShowLimitReachedModal(true);
+    }
+  }, [canView, incrementViewCount, setShowLimitReachedModal]);
+
+  useEffect(() => {
     mixpanel.track(
       'Video Play Time',
 
@@ -346,26 +358,6 @@ const DetailedPost = props => {
     },
     [],
   );
-
-  // const updateHome = async id => {
-  //   try {
-  //     const input = {
-  //       id,
-  //       title,
-  //       description,
-  //       newPrice: value,
-  //     };
-  //     const deletedTodo = await API.graphql(
-  //       graphqlOperation(updatePost, {
-  //         input,
-  //       }),
-  //     );
-  //     console.log('Succesfully updated the home');
-  //     setmodalvisible(false);
-  //   } catch (e) {
-  //     console.log('Error updating home', e);
-  //   }
-  // };
 
   const deleteFromFavorites = useCallback(async id => {
     const ref = firestore().collection('posts');
@@ -494,6 +486,10 @@ const DetailedPost = props => {
     [makeUri, onPress],
   );
 
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   const keyExtractor = useCallback(item => item.id, []);
 
   const userWithPrivilegeExists = useMemo(
@@ -503,6 +499,9 @@ const DetailedPost = props => {
 
   return (
     <View style={styles.parentContainer}>
+      {showLimitReachedModal && (
+        <SearchModal show={showLimitReachedModal} onClose={goBack} type="subscription" />
+      )}
       {isScheduling && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="blue" />
@@ -955,4 +954,4 @@ const DetailedPost = props => {
   );
 };
 
-export default DetailedPost;
+export default React.memo(DetailedPost);
