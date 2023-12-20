@@ -35,10 +35,15 @@ import Post from '@components/Post';
 import {ExtendedEdge} from '@utils/useSafeAreaInsetsStyle';
 import {mapIcon} from '@assets/images';
 import styles from './styles';
+import useViewLimit from '../../hooks/useViewLimit';
 
 interface HomeScreenProps extends AppStackScreenProps<'Home'> {}
 
 const loaderStyle = {flex: 1, justifyContent: 'center', alignItems: 'center'};
+
+const viewabilityConfig = {
+  itemVisiblePercentThreshold: 50,
+};
 
 const HomeScreen: FC<HomeScreenProps> = _props => {
   const initialRegion = useMemo(() => {
@@ -69,6 +74,9 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const [videoVersion, setVideoVersion] = useState(null);
   const [showForm, setShowForm] = useState(true);
   const [region, setRegion] = useState(initialRegion);
+  const userId = auth().currentUser?.uid;
+  const {canView, incrementViewCount} = useViewLimit(userId, 10);
+  const [subscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const fetchVideoWatchStatus = useCallback(async () => {
     const userId = auth().currentUser?.uid;
@@ -133,8 +141,6 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
 
   const updateWatchVideoStatus = useCallback(
     async version => {
-      const userId = auth().currentUser?.uid;
-
       try {
         const response = await fetch(
           'https://slic66yjz7kusyeujpmojwmaum0kwtgd.lambda-url.us-east-2.on.aws/',
@@ -162,7 +168,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
         console.error('Error updating watch status:', error);
       }
     },
-    [handleModalClose],
+    [handleModalClose, userId],
   );
 
   const fetchPosts = useCallback(
@@ -229,6 +235,27 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     },
     [],
   );
+
+  const onViewableItemsChanged = useCallback(
+    ({viewableItems}) => {
+      // Check if viewable items are more than zero and increment the view count
+      if (viewableItems.length > 0) {
+        incrementViewCount();
+      }
+
+      // Check if the view limit is reached and show subscription modal
+      if (!canView) {
+        setShowSubscriptionModal(true);
+      }
+    },
+    [incrementViewCount, canView],
+  );
+
+  useEffect(() => {
+    if (canView) {
+      setShowSubscriptionModal(false);
+    }
+  }, [canView]);
 
   const open = useCallback(() => {
     // setmodalvisible(true);
@@ -415,6 +442,10 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     getLocation();
   }, [getLocation]);
 
+  const closeSubscriptionModal = useCallback(() => {
+    setShowSubscriptionModal(false);
+  }, []);
+
   const handleSearch = useCallback(() => {
     navigation.navigate('SearchHome');
   }, [navigation]);
@@ -563,6 +594,8 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
             renderItem={renderItem}
             onEndReachedThreshold={0.5}
             onEndReached={fetchMoreData}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
             ListFooterComponent={loadingMore ? renderLoader : null}
           />
         </>
@@ -582,6 +615,13 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
           onClose={handleModalClose}
           videoUrl={videoUrl}
           handleVideoPlaybackComplete={handleVideoPlaybackComplete}
+        />
+      )}
+      {subscriptionModal && (
+        <SearchModal
+          show={subscriptionModal}
+          onClose={closeSubscriptionModal}
+          type="subscription"
         />
       )}
       <SearchModal show={showForm} onClose={handleFormClose} type="form" />

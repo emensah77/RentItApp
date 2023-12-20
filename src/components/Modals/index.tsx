@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useState} from 'react';
-import {Modal, View, TouchableOpacity, Alert, ScrollView} from 'react-native';
+import {Modal, View, TouchableOpacity, Alert, ScrollView, Image} from 'react-native';
 import {Icon, SizedBox, Text, Input, Dropdown, Button} from '@components';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Calendar from 'react-native-calendar-range-picker';
@@ -7,6 +7,12 @@ import Video from 'react-native-video';
 import {colors} from '@assets/styles';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
+import grocerystore from '@assets/images/grocery-store.png';
+import group from '@assets/images/group.png';
+import wrench from '@assets/images/wrench.png';
+import available from '@assets/images/starr.png';
+import mixpanel from '../../MixpanelConfig';
+
 import styles from './styles';
 import localities, {getSubLocalities} from '../../utils/localities';
 
@@ -134,7 +140,12 @@ export const SearchModal = (props: ModalProps) => {
     [],
   );
   const handleNavigateToRentItPay = useCallback(() => {
-    navigation.navigate('RentItPay', {subscription: true});
+    mixpanel.track('Attempted Subscription Payment', {
+      'User ID': auth()?.currentUser?.uid,
+      Amount: 20,
+      Currency: 'GHS',
+    });
+    navigation.replace('RentItPay', {subscription: true});
   }, [navigation]);
 
   const textInputProps = useMemo(
@@ -382,14 +393,45 @@ export const SearchModal = (props: ModalProps) => {
               </ScrollView>
             </View>
           ) : type === 'subscription' ? (
-            <ScrollView style={styles.subscriptionContainer}>
-              <Text text="Premium Membership Benefits" weight="bold" size="lg" />
-              <Text text="Get unlimited access to all properties." size="md" />
-              <Text text="Exclusive deals and discounts." size="md" />
-              <Text text="Priority customer support." size="md" />
-              <Button type="primary" color="#000000" onPress={handleNavigateToRentItPay}>
-                <Text text="Pay Now" size="sm" color="#ffffff" />
-              </Button>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={styles.fullWidthScrollView}
+              contentContainerStyle={styles.scrollViewContent}>
+              <View style={styles.subscriptionModal}>
+                <Text style={styles.subscriptionTitle}>Pay GHS 20 to get all of RentIt</Text>
+                <Text style={styles.subscriptionDescription}>
+                  You have finished your free trial.
+                </Text>
+                <View style={styles.benefitContainer}>
+                  <View style={styles.benefitRow}>
+                    <Image source={available} style={styles.benefitIcon} />
+                    <Text style={styles.benefitText}>
+                      Get unlimited access to all 28,000 properties on RentIt Ghana.
+                    </Text>
+                  </View>
+                  <View style={styles.benefitRow}>
+                    <Image source={group} style={styles.benefitIcon} />
+                    <Text style={styles.benefitText}>
+                      Get personalized viewings of homes on RentIt.
+                    </Text>
+                  </View>
+                  <View style={styles.benefitRow}>
+                    <Image source={grocerystore} style={styles.benefitIcon} />
+                    <Text style={styles.benefitText}>
+                      Get exclusive deals and discounts on homes you like.
+                    </Text>
+                  </View>
+                  <View style={styles.benefitRow}>
+                    <Image source={wrench} style={styles.benefitIcon} />
+                    <Text style={styles.benefitText}>
+                      Get the top most priority when it comes to customer support.
+                    </Text>
+                  </View>
+                </View>
+                <Button type="primary" color="#000000" onPress={handleNavigateToRentItPay}>
+                  <Text text="Pay Now" size="sm" color="#ffffff" />
+                </Button>
+              </View>
             </ScrollView>
           ) : null}
         </View>

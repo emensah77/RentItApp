@@ -96,6 +96,67 @@ const styles = StyleSheet.create({
     padding: 10,
     color: colors.palette.primary,
   },
+
+  subscriptionModal: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+    marginHorizontal: 0,
+    marginTop: 0,
+  },
+  subscriptionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subscriptionDescription: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: 'red',
+  },
+  benefitContainer: {
+    marginBottom: 20,
+  },
+  benefitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  benefitIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  benefitText: {
+    fontSize: 16,
+    flex: 1,
+  },
+  subscriptionPrice: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+    paddingVertical: 10,
+  },
+  fullWidthScrollView: {
+    flex: 1, // Make ScrollView flex to fill the space
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center', // Centers content when less than screen height
+  },
 });
 
 export default styles;

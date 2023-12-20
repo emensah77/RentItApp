@@ -29,7 +29,7 @@ const RentItPay = ({route}) => {
     if (subscription) {
       setData(prevData => ({
         ...prevData,
-        amount: '1',
+        amount: '20',
         paymentType: {value: 'Subscription'},
       }));
     }

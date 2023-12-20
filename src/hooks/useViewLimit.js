@@ -35,7 +35,7 @@ const useViewLimit = (userId, limit = 2) => {
       await AsyncStorage.setItem(key, newCount.toString());
       setCanView(newCount < limit);
     }
-  }, [userId, limit, checkPaymentStatus]);
+  }, [checkPaymentStatus, userId, limit]);
 
   useEffect(() => {
     checkViewLimit();
