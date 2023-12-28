@@ -5,10 +5,12 @@ import firestore from '@react-native-firebase/firestore';
 
 import {Page, Input, Typography, Button, Dropdown, Whitespace} from '../../../components';
 import arrowDown from '../../../assets/images/arrow-down.png';
+import PhoneNumber from '../../Authentication/PhoneNumber';
 
 const RentItPay = ({route}) => {
   const {subscription = false} = route.params || {};
   const [data, setData] = useState({paymentType: {value: ''}, amount: '', phoneNumber: ''});
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState('');
   const [disabled, setDisabled] = useState(false);
   const [names, setNames] = useState([]);
@@ -89,33 +91,57 @@ const RentItPay = ({route}) => {
     return () => unsubscribe();
   }, []);
 
+  const isPhoneNumberValid = phoneNumber => {
+    if (phoneNumber.length <= 3) return false;
+
+    const phoneUtil = PhoneNumberUtil.getInstance();
+    return phoneUtil.isPossibleNumberString(`+${phoneNumber}`, 'ZZ') && !Number.isNaN(phoneNumber);
+  };
+
+  // Update the disabled state based on data validity
+  useEffect(() => {
+    const isAmountValid = data.amount > 0;
+    const isPhoneNumberCorrect = data.phoneNumber && isPhoneNumberValid(data.phoneNumber);
+    const isPaymentTypeSelected = data.paymentType.value !== '';
+
+    const isDisabled = !isAmountValid || !isPhoneNumberCorrect || !isPaymentTypeSelected;
+    setDisabled(isDisabled);
+  }, [data]);
+
   const onChangeData = useCallback(
-    type => async _data => {
+    type => _data => {
       setData(oldData => ({...oldData, [type]: _data}));
 
       if (type === 'phoneNumber') {
-        if (_data.length <= 3) return;
-
-        const phoneUtil = PhoneNumberUtil.getInstance();
-        if (!phoneUtil.isPossibleNumberString(`+${_data}`, 'ZZ') || Number.isNaN(_data)) {
+        if (!isPhoneNumberValid(_data)) {
           setError('Enter your valid mobile number including the country code.');
-          return setDisabled(true);
+          return;
         }
       }
 
       setError('');
-      return setDisabled(!data.phoneNumber || data.amount <= 0 || !data.paymentType.value);
     },
-    [data],
+    [],
   );
 
   return (
     <Page type="large" header="RentIt Pay">
-      <Typography type="notice" left width="100%">
-        Select the type of payment and type in the amount to pay.
-      </Typography>
+      {subscription ? (
+        <>
+          <Typography type="notice" left width="100%">
+            Type in your phone number to pay.
+          </Typography>
+          <Whitespace marginTop={55} />
+        </>
+      ) : (
+        <>
+          <Typography type="notice" left width="100%">
+            Select the type of payment and type in the amount to pay.
+          </Typography>
 
-      <Whitespace marginTop={55} />
+          <Whitespace marginTop={55} />
+        </>
+      )}
 
       {subscription ? (
         <>
@@ -186,12 +212,10 @@ const RentItPay = ({route}) => {
 
       <Whitespace marginTop={9} />
 
-      <Input
-        placeholder="Type in the phone number"
-        type="phone-pad"
-        value={data.phoneNumber}
-        onChange={onChangeData('phoneNumber')}
-        error={error}
+      <PhoneNumber
+        inline={true}
+        onChangeData={onChangeData('phoneNumber')}
+        initialCountryCode="233" // Set initial country code if required
       />
 
       <Whitespace marginTop={26} />

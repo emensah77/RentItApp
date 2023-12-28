@@ -20,7 +20,6 @@ const index = 'rentit';
 const endpoint = new AWS.Endpoint(opensearchDomain);
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -1293,7 +1292,7 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
       bool: {
         filter: {
           geo_distance: {
-            distance: '5km',
+            distance: '50km',
             location: {
               lat: userLocation.latitude,
               lon: userLocation.longitude,

@@ -406,7 +406,7 @@ export const SearchModal = (props: ModalProps) => {
                   <View style={styles.benefitRow}>
                     <Image source={available} style={styles.benefitIcon} />
                     <Text style={styles.benefitText}>
-                      Get unlimited access to all 28,000 properties on RentIt Ghana.
+                      Get unlimited access to all 30,000+ properties on RentIt Ghana.
                     </Text>
                   </View>
                   <View style={styles.benefitRow}>

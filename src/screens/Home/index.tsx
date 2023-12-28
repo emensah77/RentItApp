@@ -77,6 +77,8 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
   const userId = auth().currentUser?.uid;
   const {canView, incrementViewCount} = useViewLimit(userId, 10);
   const [subscriptionModal, setShowSubscriptionModal] = useState(false);
+  const incrementViewCountRef = useRef(incrementViewCount);
+  const canViewRef = useRef(canView);
 
   const fetchVideoWatchStatus = useCallback(async () => {
     const userId = auth().currentUser?.uid;
@@ -236,27 +238,24 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
     [],
   );
 
-  const onViewableItemsChanged = useCallback(
-    ({viewableItems}) => {
-      // Check if viewable items are more than zero and increment the view count
-      if (viewableItems.length > 0) {
-        incrementViewCount();
-      }
-
-      // Check if the view limit is reached and show subscription modal
-      if (!canView) {
-        setShowSubscriptionModal(true);
-      }
-    },
-    [incrementViewCount, canView],
-  );
+  // Update refs when the values change
+  useEffect(() => {
+    incrementViewCountRef.current = incrementViewCount;
+  }, [incrementViewCount]);
 
   useEffect(() => {
-    if (canView) {
-      setShowSubscriptionModal(false);
-    }
+    canViewRef.current = canView;
   }, [canView]);
 
+  const onViewableItemsChanged = useCallback(({viewableItems}) => {
+    if (viewableItems.length > 0) {
+      incrementViewCountRef.current();
+    }
+
+    if (!canViewRef.current) {
+      setShowSubscriptionModal(true);
+    }
+  }, []);
   const open = useCallback(() => {
     // setmodalvisible(true);
     navigation.navigate('Filter');
