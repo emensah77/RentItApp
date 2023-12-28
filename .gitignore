@@ -63,6 +63,10 @@ buck-out/
 /vendor/bundle/
 
 #amplify-do-not-edit-begin
+# Firebase Service Account Key
+amplify/backend/function/opensearch/src/rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json
+amplify/backend/function/homeSearch/src/rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json
+amplify/backend/function/homeSearch/src/rentitapp-c8a070b4fe53.json
 amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/logs
