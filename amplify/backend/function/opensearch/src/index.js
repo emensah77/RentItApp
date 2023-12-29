@@ -14,7 +14,7 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const tableName = 'Post-k5j5uz5yp5d7tl2yzjyruz5db4-dev';
 const lambdaStateTableName = 'LambdaState';
 const stateId = 'LAST_EVALUATED_KEY';
-
+const serviceAccount = require('./rentitapp-8fc19-firebase-adminsdk-ewhh3-ece25ac062.json');
 const opensearchDomain = 'https://search-rentit-kigszj3wbqqurgdplgmtk3bkqa.us-east-2.es.amazonaws.com';
 const index = 'rentit';
 const endpoint = new AWS.Endpoint(opensearchDomain);
@@ -237,12 +237,13 @@ exports.handler = async (event) => {
   
   else if (event.httpMethod === 'POST' && event.path === '/unverifiedhomes') {
     let userLocation; let
-      searchAfter;
+      searchAfter; let radius;
     try {
       // Parse the request body to get the userLocation and optionally searchAfter
       const requestBody = JSON.parse(event.body);
       userLocation = requestBody.userLocation;
       searchAfter = requestBody.searchAfter || null;
+      radius = requestBody.radius || null;
     } catch (error) {
       console.error('Error parsing user location or searchAfter: ', error);
       return {
@@ -257,7 +258,7 @@ exports.handler = async (event) => {
       };
     }
     try {
-      const results = await fetchUnverifiedHomes(userLocation, searchAfter);
+      const results = await fetchUnverifiedHomes(userLocation, searchAfter, radius);
       return {
         statusCode: 200,
         headers: {
@@ -1220,7 +1221,7 @@ async function forSale(userLocation = null, searchAfter = null) {
   return searchPromise;
 }
 
-async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
+async function fetchUnverifiedHomes(userLocation, searchAfter = null, radius = null) {
   console.log('Starting search in OpenSearch index: rentitnew');
 
   const searchReq = new AWS.HttpRequest(endpoint);
@@ -1233,7 +1234,7 @@ async function fetchUnverifiedHomes(userLocation, searchAfter = null) {
   searchReq.headers['Content-Type'] = 'application/json';
 
   const searchQueryBody = {
-    size: 30,
+    size: radius ? 1000 : 30,
     _source: [
       'currency',
       'newPrice',
