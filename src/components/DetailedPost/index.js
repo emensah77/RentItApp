@@ -603,13 +603,12 @@ const DetailedPost = props => {
                 />
               </View>
 
+              <Pressable onPress={makeCall(post.phoneNumbers)} style={styles.callOwner}>
+                <Fontisto name="phone" size={15} style={styles.phoneIcon} />
+                <Text style={styles.white}>Call Homeowner</Text>
+              </Pressable>
               {userWithPrivilegeExists && (
                 <>
-                  <Pressable onPress={makeCall(post.phoneNumbers)} style={styles.callOwner}>
-                    <Fontisto name="phone" size={15} style={styles.phoneIcon} />
-                    <Text style={styles.white}>Call Homeowner</Text>
-                  </Pressable>
-
                   <Pressable onPress={makeCall(post.marketerNumber)} style={styles.callMarketer}>
                     <Fontisto name="phone" size={15} style={styles.phoneIcon} />
                     <Text style={styles.black}>Call Marketer</Text>
