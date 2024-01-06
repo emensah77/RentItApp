@@ -174,6 +174,15 @@ const PaymentScreen = () => {
     }
   }, []);
 
+  const updateSubscriptionStatusInFirestore = useCallback(async () => {
+    try {
+      const userDocRef = firestore().collection('users').doc(user.uid);
+      await userDocRef.set({hasPaid: true}, {merge: true});
+    } catch (error) {
+      console.error('Error updating subscription status in Firestore:', error);
+    }
+  }, [user.uid]);
+
   const generatePaymentUrl = useCallback(
     async () =>
       new Promise((resolve, reject) => {
@@ -235,6 +244,10 @@ const PaymentScreen = () => {
 
       if (isSuccess) {
         if (selectedType === 'Subscription') {
+          // Update the user's subscription status in Firestore
+          await updateSubscriptionStatusInFirestore();
+          console.debug('Subscription payment status updated in Firestore');
+
           // Set a flag in AsyncStorage indicating that the subscription payment has been made
           try {
             await AsyncStorage.setItem(`subscriptionPayment_${user.uid}`, 'true');

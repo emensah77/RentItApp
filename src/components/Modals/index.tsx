@@ -412,7 +412,7 @@ export const SearchModal = (props: ModalProps) => {
                   <View style={styles.benefitRow}>
                     <Image source={group} style={styles.benefitIcon} />
                     <Text style={styles.benefitText}>
-                      Get personalized viewings of homes on RentIt.
+                      Call Homeowners directly. Schedule Viewings of Homes.
                     </Text>
                   </View>
                   <View style={styles.benefitRow}>
