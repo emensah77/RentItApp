@@ -64,8 +64,12 @@ jobs:
           IOS_STAGING_KEY=${{ secrets.IOS_STAGING_KEY }}
           EOF
 
-      - name: Install node dependencies
-        run: yarn cache clean && yarn install --frozen-lockfile
+      - name: Install node dependencies and clear CocoaPods cache
+        run: |
+          yarn cache clean
+          yarn install --frozen-lockfile
+          pod cache clean --all
+
 
       - run: pod install --repo-update
         working-directory: ios
@@ -140,15 +144,8 @@ jobs:
           IOS_STAGING_KEY=${{ secrets.IOS_STAGING_KEY }}
           EOF
 
-     - name: Install node dependencies and clear CocoaPods cache
-      run: |
-        yarn cache clean
-        yarn install --frozen-lockfile
-        pod cache clean --all
-
-      - run: pod install --repo-update
-        working-directory: ios
-
+      - name: Install node dependencies
+        run: yarn cache clean && yarn install --frozen-lockfile
 
       - name: Bundle App
         run: yarn bundle
