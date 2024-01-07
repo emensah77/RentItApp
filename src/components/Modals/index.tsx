@@ -21,7 +21,7 @@ interface ModalProps {
   onClose: any;
   onComplete?: any;
   onChange?: any;
-  type: 'location' | 'calender' | 'video' | 'form';
+  type: 'location' | 'calender' | 'video' | 'form' | 'subscription';
   handleVideoPlaybackComplete?: any;
   videoUrl?: string;
   onEmptySubmit?: (e?: string) => typeof e & void;
