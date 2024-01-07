@@ -143,8 +143,8 @@ android {
         applicationId "com.rentitghana"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 311
-        versionName "6.7.41"
+        versionCode 312
+        versionName "6.7.42"
         vectorDrawables.useSupportLibrary = true
         configurations.all {
             resolutionStrategy { force 'androidx.sqlite:sqlite-framework:2.1.0' }
