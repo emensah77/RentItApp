@@ -69,7 +69,10 @@ jobs:
           yarn cache clean
           yarn install --frozen-lockfile
           pod cache clean --all
-
+          
+      - name: Update CocoaPods repositories
+        run: pod repo update
+        working-directory: ios
 
       - run: pod install --repo-update
         working-directory: ios
