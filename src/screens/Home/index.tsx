@@ -623,7 +623,7 @@ const HomeScreen: FC<HomeScreenProps> = _props => {
           type="subscription"
         />
       )}
-      <SearchModal show={showForm} onClose={handleFormClose} type="form" />
+      {/* <SearchModal show={showForm} onClose={handleFormClose} type="form" /> */}
     </Page>
   );
 };
