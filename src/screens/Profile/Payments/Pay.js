@@ -225,6 +225,15 @@ const PaymentScreen = () => {
       const words = url.split('type=');
       const isSuccess = words[1] === 'success';
       const timestamp = new Date().getTime();
+
+      let subscriptionTier = 'Basic';
+      if (amount === 5) {
+        subscriptionTier = 'Basic';
+      } else if (amount === 20) {
+        subscriptionTier = 'Standard';
+      } else if (amount === 150) {
+        subscriptionTier = 'Premium';
+      }
       const logData = {
         event,
         amount,
@@ -234,6 +243,7 @@ const PaymentScreen = () => {
         user_id: user.uid,
         duration: timestamp - startTime,
         route: route.params,
+        subscriptionTier: selectedType === 'Subscription' ? subscriptionTier : null,
       };
 
       if (isSuccess) {
@@ -244,16 +254,6 @@ const PaymentScreen = () => {
 
       if (isSuccess) {
         if (selectedType === 'Subscription') {
-          // Determine the subscription tier based on payment details
-          let subscriptionTier = 'Basic';
-          if (amount === 5) {
-            subscriptionTier = 'Basic';
-          } else if (amount === 20) {
-            subscriptionTier = 'Standard';
-          } else if (amount === 50) {
-            subscriptionTier = 'Premium';
-          }
-
           // Update Firestore with the new subscription tier
           await firestore().collection('users').doc(user.uid).set(
             {
