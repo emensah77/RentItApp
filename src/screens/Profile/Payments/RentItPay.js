@@ -8,7 +8,7 @@ import arrowDown from '../../../assets/images/arrow-down.png';
 import PhoneNumber from '../../Authentication/PhoneNumber';
 
 const RentItPay = ({route}) => {
-  const {subscription = false} = route.params || {};
+  const {subscription = false, subAmount = ''} = route.params || {};
   const [data, setData] = useState({paymentType: {value: ''}, amount: '', phoneNumber: ''});
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState('');
@@ -31,11 +31,11 @@ const RentItPay = ({route}) => {
     if (subscription) {
       setData(prevData => ({
         ...prevData,
-        amount: '20',
+        amount: subAmount,
         paymentType: {value: 'Subscription'},
       }));
     }
-  }, [subscription]);
+  }, [subAmount, subscription]);
 
   const goToPayments = useCallback(() => {
     navigation.navigate('Home', {

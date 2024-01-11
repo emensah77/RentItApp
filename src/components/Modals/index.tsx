@@ -71,6 +71,27 @@ export const SearchModal = (props: ModalProps) => {
     });
   }, []);
 
+  const subOptions = useMemo(
+    () => [
+      {
+        title: 'Basic',
+        price: 5,
+        optionsNumber: 3,
+      },
+      {
+        title: 'Standard',
+        price: 20,
+        optionsNumber: 15,
+      },
+      {
+        title: 'Premium',
+        price: 150,
+        optionsNumber: 50,
+      },
+    ],
+    [],
+  );
+
   const modes = useMemo(
     () => [
       {
@@ -139,14 +160,22 @@ export const SearchModal = (props: ModalProps) => {
     }),
     [],
   );
-  const handleNavigateToRentItPay = useCallback(() => {
-    mixpanel.track('Attempted Subscription Payment', {
-      'User ID': auth()?.currentUser?.uid,
-      Amount: 20,
-      Currency: 'GHS',
-    });
-    navigation.replace('RentItPay', {subscription: true});
-  }, [navigation]);
+  const handleNavigateToRentItPay = useCallback(
+    amount => {
+      mixpanel.track('Attempted Subscription Payment', {
+        'User ID': auth()?.currentUser?.uid,
+        Amount: amount,
+        Currency: 'GHS',
+        SubscriptionTier: amount === 5 ? 'Basic' : amount === 20 ? 'Standard' : 'Premium',
+      });
+      navigation.replace('RentItPay', {
+        subscription: true,
+        subTier: amount === 5 ? 'Basic' : amount === 20 ? 'Standard' : 'Premium',
+        subAmount: amount.toString(),
+      });
+    },
+    [navigation],
+  );
 
   const textInputProps = useMemo(
     () => ({
@@ -246,6 +275,58 @@ export const SearchModal = (props: ModalProps) => {
     ),
     [],
   );
+
+  const renderSubscriptionOptions = () => {
+    return subOptions.map((option, index) => (
+      <ScrollView
+        key={index}
+        showsVerticalScrollIndicator={false}
+        style={styles.fullWidthScrollView}
+        contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.subscriptionModal}>
+          <Text style={styles.subscriptionTitle}>{`${option.title} - GHS ${option.price}`}</Text>
+          <Text style={styles.subscriptionDescription}>
+            You have finished your free trial. Choose one option to continue using RentIt.
+          </Text>
+          <View style={styles.benefitContainer}>
+            <View style={styles.benefitRow}>
+              <Image source={available} style={styles.benefitIcon} />
+              <Text style={styles.benefitText}>
+                {`Get unlimited access to ${option.optionsNumber} properties on RentIt Ghana.`}
+              </Text>
+            </View>
+            <View style={styles.benefitRow}>
+              <Image source={group} style={styles.benefitIcon} />
+              <Text style={styles.benefitText}>
+                Call Homeowners directly. Schedule Viewings of Homes.
+              </Text>
+            </View>
+            <View style={styles.benefitRow}>
+              <Image source={grocerystore} style={styles.benefitIcon} />
+              <Text style={styles.benefitText}>
+                Get exclusive deals and discounts on homes you like.
+              </Text>
+            </View>
+            {option.title === 'Premium' && (
+              <View style={styles.benefitRow}>
+                <Image source={wrench} style={styles.benefitIcon} />
+                <Text style={styles.benefitText}>
+                  You will get a dedicated RentIt Rep to find you a home you like.
+                </Text>
+              </View>
+            )}
+          </View>
+          <Button
+            type="primary"
+            color="#000000"
+            onPress={() => handleNavigateToRentItPay(option.price)}>
+            <Text text="Pay Now" size="sm" color="#ffffff" />
+          </Button>
+        </View>
+      </ScrollView>
+    ));
+  };
+
   return (
     <Modal animationType="slide" visible={show} transparent={true} onRequestClose={onClose}>
       <View style={styles.modal}>
@@ -394,44 +475,11 @@ export const SearchModal = (props: ModalProps) => {
             </View>
           ) : type === 'subscription' ? (
             <ScrollView
+              horizontal={true}
               showsVerticalScrollIndicator={false}
               style={styles.fullWidthScrollView}
               contentContainerStyle={styles.scrollViewContent}>
-              <View style={styles.subscriptionModal}>
-                <Text style={styles.subscriptionTitle}>Pay GHS 20 to get all of RentIt</Text>
-                <Text style={styles.subscriptionDescription}>
-                  You have finished your free trial.
-                </Text>
-                <View style={styles.benefitContainer}>
-                  <View style={styles.benefitRow}>
-                    <Image source={available} style={styles.benefitIcon} />
-                    <Text style={styles.benefitText}>
-                      Get unlimited access to all 40,000+ properties on RentIt Ghana.
-                    </Text>
-                  </View>
-                  <View style={styles.benefitRow}>
-                    <Image source={group} style={styles.benefitIcon} />
-                    <Text style={styles.benefitText}>
-                      Call Homeowners directly. Schedule Viewings of Homes.
-                    </Text>
-                  </View>
-                  <View style={styles.benefitRow}>
-                    <Image source={grocerystore} style={styles.benefitIcon} />
-                    <Text style={styles.benefitText}>
-                      Get exclusive deals and discounts on homes you like.
-                    </Text>
-                  </View>
-                  <View style={styles.benefitRow}>
-                    <Image source={wrench} style={styles.benefitIcon} />
-                    <Text style={styles.benefitText}>
-                      Get the top most priority when it comes to customer support.
-                    </Text>
-                  </View>
-                </View>
-                <Button type="primary" color="#000000" onPress={handleNavigateToRentItPay}>
-                  <Text text="Pay Now" size="sm" color="#ffffff" />
-                </Button>
-              </View>
+              {renderSubscriptionOptions()}
             </ScrollView>
           ) : null}
         </View>

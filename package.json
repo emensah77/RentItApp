@@ -61,6 +61,7 @@
     "amazon-cognito-identity-js": "^5.0.2",
     "appcenter": "^4.4.5",
     "appcenter-analytics": "^4.4.5",
+    "appcenter-cli": "^2.14.0",
     "appcenter-crashes": "^4.4.5",
     "appium": "^1.22.3",
     "aws-amplify": "^5.3.7",

@@ -101,8 +101,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 10,
-    marginHorizontal: 0,
+    marginHorizontal: 10,
     marginTop: 0,
+    width: Dimensions.get('window').width * 0.8,
   },
   subscriptionTitle: {
     fontSize: 22,
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
   },
   benefitContainer: {
     marginBottom: 20,
+    width: '100%',
   },
   benefitRow: {
     flexDirection: 'row',
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderWidth: 1,
     borderColor: '#f0f0f0',
+    width: '100%',
   },
   benefitIcon: {
     width: 24,
@@ -141,7 +144,8 @@ const styles = StyleSheet.create({
   },
   benefitText: {
     fontSize: 16,
-    flex: 1,
+    flex: 1, // Allows text to wrap and fill available space
+    flexWrap: 'wrap', // Wrap text to next line if needed
   },
   subscriptionPrice: {
     fontSize: 20,

@@ -244,6 +244,23 @@ const PaymentScreen = () => {
 
       if (isSuccess) {
         if (selectedType === 'Subscription') {
+          // Determine the subscription tier based on payment details
+          let subscriptionTier = 'Basic';
+          if (amount === 5) {
+            subscriptionTier = 'Basic';
+          } else if (amount === 20) {
+            subscriptionTier = 'Standard';
+          } else if (amount === 50) {
+            subscriptionTier = 'Premium';
+          }
+
+          // Update Firestore with the new subscription tier
+          await firestore().collection('users').doc(user.uid).set(
+            {
+              subscriptionTier,
+            },
+            {merge: true},
+          );
           // Update the user's subscription status in Firestore
           await updateSubscriptionStatusInFirestore();
           console.debug('Subscription payment status updated in Firestore');
@@ -295,10 +312,12 @@ const PaymentScreen = () => {
       homeid,
       merchantTransactionID,
       navigation,
-      route,
+      route.name,
+      route.params,
       selectedType,
       startTime,
-      user,
+      updateSubscriptionStatusInFirestore,
+      user.uid,
     ],
   );
 
