@@ -359,7 +359,7 @@ const DetailedPost = props => {
   //         input,
   //       }),
   //     );
-  //     console.log('Succesfully updated the home');
+  //     console.log('Successfully updated the home');
   //     setmodalvisible(false);
   //   } catch (e) {
   //     console.log('Error updating home', e);
@@ -403,7 +403,7 @@ const DetailedPost = props => {
           input,
         }),
       );
-      console.debug('Succesfully deleted the post', deletedTodo);
+      console.debug('Successfully deleted the post', deletedTodo);
     } catch (e) {
       console.error('Error deleting post', e);
     }

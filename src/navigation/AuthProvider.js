@@ -62,7 +62,7 @@ export const AuthProvider = ({children}) => {
   //         },
   //       ),
   //     );
-  //     console.log('Succesfully uploaded the home');
+  //     console.log('Successfully uploaded the home');
   //   } catch (e) {
   //     console.log('Error uploading home', e);
   //   }
