@@ -87,7 +87,7 @@ const PaymentScreen = props => {
           input,
         }),
       );
-      console.log('Succesfully deleted the post');
+      console.log('Successfully deleted the post');
     } catch (e) {
       console.log('Error deleting post', e);
     }
